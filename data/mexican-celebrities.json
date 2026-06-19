@@ -1,0 +1,133 @@
+{
+  "celebrities": [
+    {
+      "name": "Canelo Álvarez",
+      "category": "deportes",
+      "birth_date": "1990-07-18",
+      "birth_place": "Guadalajara, Jalisco",
+      "known_for": "Boxeador campeón mundial unificado",
+      "public_traits": ["determinado", "orgulloso", "trabajador", "temperamental", "directo"],
+      "hooks": ["¿Nació para pelear?", "El destino del campeón", "Fuego puro en su Saju"],
+      "hashtags": ["#Canelo", "#CaneloAlvarez", "#Boxing"]
+    },
+    {
+      "name": "Peso Pluma",
+      "category": "música",
+      "birth_date": "1999-06-15",
+      "birth_place": "Guadalajara, Jalisco",
+      "known_for": "Cantante regional mexicano, éxito global explosivo",
+      "public_traits": ["carismático", "controversial", "auténtico", "ambicioso"],
+      "hooks": ["Su explosión musical estaba escrita", "Destinado a romper récords"],
+      "hashtags": ["#PesoPluma", "#MúsicaMexicana", "#RegionalMexicano"]
+    },
+    {
+      "name": "Salma Hayek",
+      "category": "cine",
+      "birth_date": "1966-09-02",
+      "birth_place": "Coatzacoalcos, Veracruz",
+      "known_for": "Actriz, productora, empresaria en Hollywood",
+      "public_traits": ["resiliente", "elegante", "audaz", "apasionada", "visionaria"],
+      "hooks": ["¿Cómo conquistó Hollywood?", "La mexicana que desafió el destino"],
+      "hashtags": ["#SalmaHayek", "#Hollywood", "#MexicanaEnHollywood"]
+    },
+    {
+      "name": "Luis Miguel",
+      "category": "música",
+      "birth_date": "1970-04-19",
+      "birth_place": "San Juan, Puerto Rico",
+      "known_for": "El Sol de México, leyenda musical",
+      "public_traits": ["perfeccionista", "misterioso", "romántico", "solitario", "genio musical"],
+      "hooks": ["¿Por qué es tan misterioso?", "El precio de ser El Sol"],
+      "hashtags": ["#LuisMiguel", "#ElSolDeMéxico"]
+    },
+    {
+      "name": "Checo Pérez",
+      "category": "deportes",
+      "birth_date": "1990-01-26",
+      "birth_place": "Guadalajara, Jalisco",
+      "known_for": "Piloto de F1, Red Bull Racing",
+      "public_traits": ["perseverante", "patriota", "humilde", "consistente"],
+      "hooks": ["El piloto que nunca se rindió", "Su Saju predijo su momento en F1"],
+      "hashtags": ["#ChecoPérez", "#F1", "#RedBull"]
+    },
+    {
+      "name": "Eugenio Derbez",
+      "category": "entretenimiento",
+      "birth_date": "1961-09-02",
+      "birth_place": "Ciudad de México",
+      "known_for": "Comediante, actor, productor",
+      "public_traits": ["gracioso", "versátil", "trabajador", "familiar"],
+      "hooks": ["Nacido para hacer reír", "La comedia estaba en su destino"],
+      "hashtags": ["#EugenioDerbez", "#ComediaMexicana"]
+    },
+    {
+      "name": "Thalía",
+      "category": "música",
+      "birth_date": "1971-08-26",
+      "birth_place": "Ciudad de México",
+      "known_for": "Cantante, actriz, empresaria, reina de las telenovelas",
+      "public_traits": ["carismática", "reinventora", "fuerte", "glamurosa"],
+      "hooks": ["La reinvención constante", "Destinada a ser reina"],
+      "hashtags": ["#Thalía", "#ReinaDeLasTelenovelas"]
+    },
+    {
+      "name": "Frida Kahlo",
+      "category": "históricos",
+      "birth_date": "1907-07-06",
+      "birth_place": "Coyoacán, Ciudad de México",
+      "known_for": "Pintora icónica, feminismo, arte autobiográfico",
+      "public_traits": ["rebelde", "apasionada", "resiliente", "visceral", "libre"],
+      "hooks": ["El dolor que la hizo eterna", "Su arte estaba escrito en las estrellas"],
+      "hashtags": ["#FridaKahlo", "#ArtesMexicanas", "#Feminismo"]
+    },
+    {
+      "name": "Christian Nodal",
+      "category": "música",
+      "birth_date": "1999-01-11",
+      "birth_place": "Caborca, Sonora",
+      "known_for": "Cantante regional mexicano, vida amorosa mediática",
+      "public_traits": ["romántico", "impulsivo", "talentoso", "controversial"],
+      "hooks": ["¿Por qué siempre está en el ojo del huracán?", "El amor y el caos en su Saju"],
+      "hashtags": ["#ChristianNodal", "#Nodal"]
+    },
+    {
+      "name": "Luisito Comunica",
+      "category": "influencer",
+      "birth_date": "1991-03-20",
+      "birth_place": "Puebla, Puebla",
+      "known_for": "YouTuber, viajero, empresario",
+      "public_traits": ["curioso", "emprendedor", "carismático", "adaptable"],
+      "hooks": ["Nacido para explorar el mundo", "Su Saju explica por qué no puede quedarse quieto"],
+      "hashtags": ["#LuisitoComunica", "#YouTube", "#Viajero"]
+    },
+    {
+      "name": "Gael García Bernal",
+      "category": "cine",
+      "birth_date": "1978-11-30",
+      "birth_place": "Guadalajara, Jalisco",
+      "known_for": "Actor de cine internacional, director",
+      "public_traits": ["intelectual", "comprometido", "versátil", "rebelde"],
+      "hooks": ["El actor que desafió fronteras", "Talento que trasciende culturas"],
+      "hashtags": ["#GaelGarcíaBernal", "#CineMexicano"]
+    },
+    {
+      "name": "Selena Quintanilla",
+      "category": "históricos",
+      "birth_date": "1971-04-16",
+      "birth_place": "Lake Jackson, Texas",
+      "known_for": "Reina del Tex-Mex, leyenda musical",
+      "public_traits": ["magnética", "generosa", "trabajadora", "soñadora"],
+      "hooks": ["La reina que el destino nos quitó", "Su luz estaba destinada a brillar"],
+      "hashtags": ["#SelenaQuintanilla", "#Selena", "#ReinaDelTexMex"]
+    }
+  ],
+  "content_calendar_template": {
+    "monday": "celebrity_saju",
+    "tuesday": "daily_fortune",
+    "wednesday": "personality OR educational",
+    "thursday": "celebrity_saju",
+    "friday": "daily_fortune",
+    "saturday": "celebrity_saju OR compatibility",
+    "sunday": "social_proof"
+  }
+}

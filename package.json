@@ -1,0 +1,20 @@
+{
+  "name": "saju-mexico",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "pnpm --filter manseryeok test",
+    "test:engine": "pnpm --filter saju-engine test",
+    "test:report": "pnpm --filter saju-report test",
+    "test:all": "pnpm -r test",
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.105.0"
+  }
+}
