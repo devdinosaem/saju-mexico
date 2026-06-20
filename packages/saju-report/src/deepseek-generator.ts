@@ -3,6 +3,8 @@ import { SYSTEM_PROMPT, CALL1_PROMPT, CALL2_PROMPT, CALL3_PROMPT, CALL4_PROMPT }
 
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 const DEFAULT_MODEL = 'deepseek-reasoner';
+const MAX_RETRIES = 2;
+const TIMEOUT_MS = 50_000;
 
 function buildUserMessage(input: ReportInput, sectionPrompt: string): string {
   return `## Datos del consultante\n\n${JSON.stringify(input, null, 2)}\n\n---\n\n${sectionPrompt}`;
@@ -21,6 +23,17 @@ function parseSections(text: string): ReportSection[] {
   return sections;
 }
 
+async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    return res;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export class DeepSeekReportGenerator {
   private apiKey: string;
   private model: string;
@@ -31,35 +44,51 @@ export class DeepSeekReportGenerator {
   }
 
   private async callApi(input: ReportInput, sectionPrompt: string) {
-    const response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: this.model,
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: buildUserMessage(input, sectionPrompt) },
-        ],
-        max_tokens: 4096,
-        temperature: 0.7,
-      }),
-    });
+    let lastError: Error | null = null;
 
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(`DeepSeek API error: ${response.status} ${err}`);
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const response = await fetchWithTimeout(
+          `${DEEPSEEK_BASE_URL}/chat/completions`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.apiKey}`,
+            },
+            body: JSON.stringify({
+              model: this.model,
+              messages: [
+                { role: 'system', content: SYSTEM_PROMPT },
+                { role: 'user', content: buildUserMessage(input, sectionPrompt) },
+              ],
+              max_tokens: 4096,
+              temperature: 0.7,
+            }),
+          },
+          TIMEOUT_MS,
+        );
+
+        if (!response.ok) {
+          const err = await response.text();
+          throw new Error(`DeepSeek API ${response.status}: ${err}`);
+        }
+
+        return await response.json();
+      } catch (err) {
+        lastError = err instanceof Error ? err : new Error(String(err));
+        if (attempt < MAX_RETRIES) {
+          await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+        }
+      }
     }
 
-    return response.json();
+    throw lastError;
   }
 
   async generate(input: ReportInput): Promise<SajuReport> {
     const callPrompts = [CALL1_PROMPT, CALL2_PROMPT, CALL3_PROMPT, CALL4_PROMPT];
 
-    // 4개 동시 호출
     const results = await Promise.all(
       callPrompts.map((prompt) => this.callApi(input, prompt))
     );

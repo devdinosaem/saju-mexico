@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSaju, updateSaju } from "@/lib/store";
 import { buildReportInput, ReportGenerator, DeepSeekReportGenerator } from "saju-report";
 
+// Vercel 서버리스 타임아웃 확장 (Pro: 최대 300초, Hobby: 최대 60초)
+export const maxDuration = 60;
+
 export async function POST(req: NextRequest) {
   try {
     const { id } = await req.json();
@@ -14,8 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, cached: true });
     }
 
-    if (!process.env.ANTHROPIC_API_KEY) {
-      // MVP: API 키 없으면 더미 리포트 생성
+    if (!process.env.ANTHROPIC_API_KEY && !process.env.DEEPSEEK_API_KEY) {
       const dummyReport = {
         sections: [
           { title: "TU ESENCIA", content: generateDummySection("esencia", saju) },
@@ -41,7 +43,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, cached: false });
     }
 
-    // 리포트 생성: DeepSeek 우선, Claude 폴백
     const birth = saju.birth as { year: number; month: number; day: number; hour: number; minute: number; city: string };
     const input = buildReportInput({
       userName: saju.name as string,
@@ -55,19 +56,34 @@ export async function POST(req: NextRequest) {
       timezone: "America/Mexico_City",
     });
 
-    const useDeepSeek = !!process.env.DEEPSEEK_API_KEY;
-    const provider = useDeepSeek ? "deepseek" : "claude";
+    let report;
+    let provider: string;
 
-    const report = useDeepSeek
-      ? await new DeepSeekReportGenerator().generate(input)
-      : await new ReportGenerator().generate(input);
+    // DeepSeek 우선 시도, 실패 시 Claude 폴백
+    if (process.env.DEEPSEEK_API_KEY) {
+      try {
+        report = await new DeepSeekReportGenerator().generate(input);
+        provider = "deepseek";
+      } catch (deepseekErr) {
+        console.error("DeepSeek failed, falling back to Claude:", deepseekErr);
+        if (process.env.ANTHROPIC_API_KEY) {
+          report = await new ReportGenerator().generate(input);
+          provider = "claude (fallback)";
+        } else {
+          throw deepseekErr;
+        }
+      }
+    } else {
+      report = await new ReportGenerator().generate(input);
+      provider = "claude";
+    }
 
     await updateSaju(id, {
       report: { ...report, provider, generatedAt: new Date().toISOString() },
       paid: true,
     });
 
-    return NextResponse.json({ success: true, cached: false });
+    return NextResponse.json({ success: true, cached: false, provider });
   } catch (err) {
     console.error("Report generation error:", err);
     const message = err instanceof Error ? err.message : String(err);
@@ -83,20 +99,20 @@ function generateDummySection(type: string, saju: Record<string, unknown>): stri
   const yongShinEl = ys?.elementSpanish || "Agua";
 
   const sections: Record<string, string> = {
-    esencia: `${name}, tu Pilar del Día revela una esencia de ${element}. Eres como un gran árbol que crece hacia el cielo con determinación inquebrantable. La energía de ${element} te otorga una naturaleza de líder nato: recto, ambicioso y siempre creciendo.\n\nComo el árbol que busca la luz sin importar los obstáculos, tú también tienes una dirección clara en la vida. Tu honestidad es tu mayor virtud — no sabes mentir, y eso te hace ganar la confianza de quienes te rodean.\n\nSin embargo, como el árbol que no se dobla, a veces tu rigidez puede ser tu talón de Aquiles. Aprender a ser flexible como el bambú, sin perder tu esencia, es tu mayor desafío.`,
-    elementos: `La distribución de los Cinco Elementos en tu carta revela un patrón fascinante. Tu elemento ${element} es la base de todo, pero la interacción con los demás elementos cuenta la historia completa de tu vida.\n\nCada elemento ausente o dominante tiene un significado profundo: un elemento ausente no es una debilidad, sino una invitación a buscarlo en el mundo exterior — en las personas que te rodean, en los lugares que visitas, en las actividades que eliges.`,
-    fuerza: `Tu fuerza interior determina cómo enfrentas los desafíos. Como persona de ${element}, tu energía natural fluye de manera particular. Los aliados en tu carta (las energías que te apoyan) y los desafíos (las que te empujan a crecer) crean el equilibrio único de tu vida.\n\nEste balance es clave para entender por qué ciertas épocas de tu vida se sienten más fáciles que otras.`,
-    dioses: `Los Diez Dioses (십신) en tu carta son las relaciones energéticas entre los elementos. Cada uno representa un aspecto diferente de tu vida: desde tu creatividad hasta tu ambición, desde tus relaciones hasta tu forma de manejar el dinero.\n\nLa distribución particular de estos Dioses en tu carta revela por qué tienes ciertos talentos naturales y por qué algunos aspectos de la vida te resultan más desafiantes.`,
-    amor: `En el amor, tu carta Saju revela patrones fascinantes, ${name}. Tu elemento ${element} busca naturalmente una pareja que complemente tu energía — alguien que traiga el balance que necesitas.\n\nLos periodos más favorables para el amor en tu vida están marcados por las Grandes Estaciones que traen energías compatibles con tu esencia. Presta especial atención a los años donde tu elemento de poder (${yongShinEl}) es fuerte — esos son los momentos donde el amor tiene más probabilidad de florecer.`,
-    dinero: `Tu relación con el dinero está profundamente marcada por tu elemento ${element}. La forma en que generas, conservas y multiplicas tu riqueza sigue patrones que tu Saju revela con claridad.\n\nTu ciclo de riqueza más importante llegará cuando las Grandes Estaciones traigan la energía adecuada. Mientras tanto, tu estrategia ideal de inversión debe alinearse con tu elemento de poder: ${yongShinEl}.`,
-    carrera: `Tu vocación natural está escrita en tu carta, ${name}. El elemento ${element} te orienta hacia profesiones donde puedas expresar tu naturaleza auténtica.\n\nLos campos más favorables para ti son aquellos relacionados con tu elemento dominante y tu elemento de poder. Los momentos ideales para cambios profesionales coinciden con las transiciones en tus Grandes Estaciones.`,
-    salud: `Tu salud está íntimamente conectada con el balance de los Cinco Elementos en tu carta. Cada elemento rige órganos y sistemas específicos del cuerpo.\n\nComo persona de ${element}, debes prestar especial atención a los órganos asociados con los elementos más débiles en tu carta. Tu elemento de poder (${yongShinEl}) te indica qué tipo de ejercicio, alimentación y estilo de vida te benefician más.`,
-    estaciones: `Las Grandes Estaciones (대운) son los ciclos de 10 años que marcan las grandes etapas de tu vida. Cada estación trae una energía diferente que influye en todo: relaciones, carrera, salud y oportunidades.\n\nIdentificar en qué estación te encuentras ahora y qué viene después es una de las herramientas más poderosas del Saju. Te permite prepararte para aprovechar los buenos tiempos y protegerte durante los desafíos.`,
-    año: `Este año trae una energía particular que interactúa con tu carta natal de maneras específicas. Algunos meses serán más favorables que otros — y conocerlos de antemano te da una ventaja enorme.\n\nLos meses donde la energía del año se alinea con tu elemento de poder (${yongShinEl}) son tus mejores momentos para tomar decisiones importantes.`,
-    relaciones: `Las relaciones entre tus pilares revelan las dinámicas internas de tu carta. Las armonías (合) indican áreas de tu vida donde las cosas fluyen naturalmente. Los conflictos (沖) señalan donde necesitas más atención y crecimiento.\n\nEntender estas relaciones te ayuda a comprender por qué ciertas áreas de tu vida siempre han sido más fáciles que otras.`,
-    poder: `Tu Elemento de Poder (용신) es ${yongShinEl} — es la energía que más necesitas en tu vida para alcanzar el equilibrio. Piensa en él como tu "medicina cósmica".\n\nIncorporar más ${yongShinEl} en tu vida diaria — a través de colores, actividades, alimentos, y dirección geográfica — puede mejorar significativamente tu bienestar y suerte general.`,
-    estrellas: `Las Estrellas Especiales en tu carta son indicadores adicionales que refinan la interpretación de tu Saju. Cada estrella aporta una cualidad única a tu personalidad y destino.\n\nEstas estrellas no determinan tu vida, pero sí añaden matices importantes que un análisis superficial podría pasar por alto.`,
-    final: `${name}, recuerda: tu Saju no es una prisión, es un mapa. El destino te dio las cartas — tú decides cómo jugarlas.\n\nConocer tu Saju te da la ventaja de saber cuándo empujar y cuándo esperar, cuándo arriesgar y cuándo proteger. Usa esta sabiduría ancestral como lo que es: una brújula, no una sentencia.\n\n"El sabio gobierna su destino; el ignorante es gobernado por él."\n— Proverbio coreano (현명한 자는 운명을 다스리고, 어리석은 자는 운명에 다스림을 받는다)`,
+    esencia: `${name}, tu esencia es ${element}. Tu energía te otorga una naturaleza única.`,
+    elementos: `La distribución de los Cinco Elementos en tu carta revela un patrón único.`,
+    fuerza: `Tu fuerza interior determina cómo enfrentas los desafíos de la vida.`,
+    dioses: `Los Diez Dioses representan las relaciones energéticas en tu carta.`,
+    amor: `Tu carta revela patrones fascinantes sobre tu vida amorosa.`,
+    dinero: `Tu relación con el dinero está marcada por tu elemento ${element}.`,
+    carrera: `Tu vocación natural está escrita en tu carta, ${name}.`,
+    salud: `Tu salud está conectada con el balance de los Cinco Elementos.`,
+    estaciones: `Las Grandes Estaciones marcan las grandes etapas de tu vida.`,
+    año: `Este año trae una energía particular para ti.`,
+    relaciones: `Las relaciones entre tus pilares revelan dinámicas internas.`,
+    poder: `Tu Elemento de Poder es ${yongShinEl} — la energía que más necesitas.`,
+    estrellas: `Las Estrellas Especiales refinan la interpretación de tu Saju.`,
+    final: `${name}, tu Saju no es una prisión, es un mapa. El destino te dio las cartas — tú decides cómo jugarlas.`,
   };
 
   return sections[type] || `Sección de análisis para ${name}.`;

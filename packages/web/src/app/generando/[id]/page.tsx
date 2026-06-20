@@ -63,18 +63,25 @@ export default function GenerandoPage() {
     return () => clearInterval(tipInterval);
   }, []);
 
-  // 리포트 생성 API 호출
+  const [retryCount, setRetryCount] = useState(0);
+
+  // 리포트 생성 API 호출 (타임아웃 + 재시도)
   useEffect(() => {
     if (startedRef.current) return;
     startedRef.current = true;
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 55000);
 
     fetch("/api/saju/report", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
+      signal: controller.signal,
     })
       .then((res) => res.json())
       .then((data) => {
+        clearTimeout(timeout);
         if (data.success) {
           setProgress(100);
           setCurrentStep(STEPS.length - 1);
@@ -83,8 +90,20 @@ export default function GenerandoPage() {
           setError(true);
         }
       })
-      .catch(() => setError(true));
-  }, [id, router]);
+      .catch((err) => {
+        clearTimeout(timeout);
+        if (retryCount < 2) {
+          startedRef.current = false;
+          setRetryCount((prev) => prev + 1);
+          setProgress(0);
+          setCurrentStep(0);
+        } else {
+          setError(true);
+        }
+      });
+
+    return () => clearTimeout(timeout);
+  }, [id, router, retryCount]);
 
   if (error) {
     return (
