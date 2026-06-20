@@ -126,12 +126,12 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     analogy: "Si los Tallos son lo que el mundo ve de ti, las Ramas son lo que sientes por dentro — tus motivaciones reales y tu ritmo interno.",
   },
   samjae: {
-    term: "Los Tres Desafíos",
+    term: "Las Tres Calamidades",
     korean: "삼재",
     hanja: "三災",
-    short: "Un ciclo de 3 años de pruebas que llega cada 12 años",
-    long: "Los Tres Desafíos son un periodo de 3 años consecutivos donde la energía del universo te pone a prueba. No es 'mala suerte' — es un ciclo natural de purificación y fortalecimiento. El primer año es la entrada (들삼재), el segundo es el punto máximo (눌삼재) y el tercero es la salida (날삼재). Históricamente, los coreanos no toman decisiones financieras arriesgadas durante este periodo y refuerzan su autocuidado.",
-    analogy: "Como el invierno: no es un castigo, es una estación natural. Los árboles pierden hojas para conservar energía y brotar más fuertes en primavera. Los Tres Desafíos funcionan igual — te preparan para un periodo de crecimiento posterior.",
+    short: "三災 = tres desastres. Un ciclo de 3 años de calamidades que llega cada 9 años",
+    long: "Las Tres Calamidades (삼재) son el periodo más temido en la tradición coreana. Cada 9 años, un ciclo de 3 años de adversidades llega a tu vida: accidentes, enfermedades, pérdidas financieras y rupturas de relaciones. El primer año es la calamidad de entrada (들삼재), el segundo es la calamidad máxima (눌삼재), y el tercero es la calamidad de salida (날삼재). En Corea, se evitan inversiones, cirugías, mudanzas y cualquier decisión arriesgada durante estos 3 años.",
+    analogy: "Es como saber que viene un huracán: no puedes evitarlo, pero si sabes exactamente cuándo llega, puedes reforzar tu casa, guardar provisiones y proteger a tu familia. Ignorar las Tres Calamidades es como ignorar la alerta sísmica.",
   },
 };
 

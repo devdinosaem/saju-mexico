@@ -2,10 +2,11 @@ import type { EarthlyBranch } from 'manseryeok';
 import { BRANCHES } from 'manseryeok';
 
 /**
- * 삼재 (三災, Tres Desafíos)
+ * 삼재 (三災, Tres Calamidades — "tres desastres")
  *
  * 12지지를 4그룹으로 나누고, 각 그룹에 해당하는 삼재 연도가 있음.
- * 12년에 한 번, 3년 연속으로 찾아옴.
+ * 9년마다 찾아와 3년 동안 머무는 인생의 위험한 시기.
+ * (12년 주기로 3년 연속 → 실질적으로 9년 간격으로 반복)
  *
  * - 寅午戌 그룹: 申酉戌 년이 삼재
  * - 巳酉丑 그룹: 亥子丑 년이 삼재

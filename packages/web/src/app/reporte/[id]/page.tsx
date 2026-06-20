@@ -326,21 +326,21 @@ export default function ReportePage() {
         {/* ═══ 삼재 (三災) ═══ */}
         {data.samjae && (
           <section className="px-5 py-8 border-t border-white/5">
-            <h2 className="font-serif text-xl font-bold mb-2">⚠️ Los Tres Desafíos (삼재)</h2>
+            <h2 className="font-serif text-xl font-bold mb-2">⚠️ Los Tres Calamidades (삼재)</h2>
             <ConceptCard termKey="samjae" />
 
             <div className={`rounded-2xl p-5 border mb-4 ${data.samjae.isActive ? "bg-red-500/5 border-red-500/20" : "bg-bg-card border-white/5"}`}>
               <p className={`text-sm font-semibold mb-3 ${data.samjae.isActive ? "text-red-400" : "text-green-400"}`}>
                 {data.samjae.isActive
                   ? `⚠️ ${data.samjae.descriptionSpanish}`
-                  : `🛡️ No estás en un periodo de Tres Desafíos`
+                  : `🛡️ No estás en un periodo de Tres Calamidades`
                 }
               </p>
 
               {/* 삼재 타임라인 */}
               {data.samjaeYears && data.samjaeYears.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-xs text-text-muted mb-2">Tu ciclo de Tres Desafíos:</p>
+                  <p className="text-xs text-text-muted mb-2">Tu ciclo de Tres Calamidades:</p>
                   <div className="flex gap-1 flex-wrap">
                     {data.samjaeYears.map((sy) => {
                       const currentYear = new Date().getFullYear();
@@ -362,7 +362,7 @@ export default function ReportePage() {
 
               <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
                 <p>
-                  <strong className="text-text-primary">¿Qué hacer durante los Tres Desafíos?</strong>
+                  <strong className="text-text-primary">¿Qué hacer durante los Tres Calamidades?</strong>
                 </p>
                 <div className="grid grid-cols-1 gap-2">
                   <div className="bg-bg-surface/30 rounded-lg p-3">
@@ -375,7 +375,7 @@ export default function ReportePage() {
                   </div>
                 </div>
                 <p className="text-xs text-text-muted italic">
-                  Nota: Los Tres Desafíos no son una sentencia — son una señal para ser más consciente y cuidadoso. Muchas personas atraviesan estos periodos sin problemas siguiendo las recomendaciones.
+                  Las Tres Calamidades no se pueden evitar, pero sí se puede minimizar el daño. Como un terremoto: no puedes impedirlo, pero si sabes que viene, puedes preparar tu casa y proteger a tu familia.
                 </p>
               </div>
             </div>

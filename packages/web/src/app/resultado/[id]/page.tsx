@@ -364,13 +364,13 @@ export default function ResultadoPage() {
                 <span className="text-2xl">{data.samjae.isActive ? "⚠️" : "🛡️"}</span>
                 <div>
                   <h2 className="font-serif text-lg font-bold">
-                    {data.samjae.isActive ? "Los Tres Desafíos" : "Los Tres Desafíos"}
+                    {data.samjae.isActive ? "Los Tres Calamidades" : "Los Tres Calamidades"}
                     <span className="text-text-muted text-xs ml-2">(삼재)</span>
                   </h2>
                   <p className={`text-sm ${data.samjae.isActive ? "text-red-400" : "text-green-400"}`}>
                     {data.samjae.isActive
                       ? data.samjae.descriptionSpanish
-                      : `No estás en un periodo de Tres Desafíos`
+                      : `No estás en un periodo de Tres Calamidades`
                     }
                   </p>
                 </div>
@@ -394,7 +394,7 @@ export default function ResultadoPage() {
                     ))}
                   </div>
                   <p className="text-text-secondary text-xs leading-relaxed mt-3">
-                    Este periodo no es de &quot;mala suerte&quot; — es un ciclo natural de purificación. Los coreanos lo usan como señal para reforzar la salud, evitar riesgos financieros innecesarios y fortalecer relaciones.
+                    三災 significa literalmente &quot;tres desastres&quot;. Los coreanos lo consideran el periodo más peligroso del ciclo vital — se evitan inversiones, cirugías, mudanzas y cambios arriesgados durante estos 3 años.
                   </p>
                   <div className="mt-2 relative">
                     <p className="text-text-secondary text-xs leading-relaxed blur-content">
@@ -410,7 +410,7 @@ export default function ResultadoPage() {
               ) : (
                 <div>
                   <p className="text-text-secondary text-xs leading-relaxed mb-2">
-                    Tu próximo periodo de Tres Desafíos será en <strong className="text-text-primary">{data.samjae.startYear}-{data.samjae.endYear}</strong>. Conocer estas fechas de antemano te da años de ventaja para prepararte.
+                    Tu próximo periodo de Tres Calamidades será en <strong className="text-text-primary">{data.samjae.startYear}-{data.samjae.endYear}</strong>. Conocer estas fechas de antemano te da años de ventaja para prepararte.
                   </p>
                   {data.samjaeYears && data.samjaeYears.length > 0 && (
                     <div className="flex gap-1 flex-wrap mt-2">
