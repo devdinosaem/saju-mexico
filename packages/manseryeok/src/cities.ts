@@ -165,6 +165,33 @@ export const CITIES: CityData[] = [
   { name: 'Playa del Carmen', country: 'MX', lat: 20.63, lng: -87.08, utcOffset: -5 },
   { name: 'Chetumal', country: 'MX', lat: 18.50, lng: -88.30, utcOffset: -5 },
   { name: 'Tulum', country: 'MX', lat: 20.21, lng: -87.46, utcOffset: -5 },
+  // Central Time 추가
+  { name: 'Reynosa', country: 'MX', lat: 26.09, lng: -98.28, utcOffset: -6 },
+  { name: 'Nuevo Laredo', country: 'MX', lat: 27.48, lng: -99.52, utcOffset: -6 },
+  { name: 'Matamoros', country: 'MX', lat: 25.87, lng: -97.50, utcOffset: -6 },
+  { name: 'Coatzacoalcos', country: 'MX', lat: 18.14, lng: -94.46, utcOffset: -6 },
+  { name: 'Minatitlán', country: 'MX', lat: 17.99, lng: -94.55, utcOffset: -6 },
+  { name: 'Tapachula', country: 'MX', lat: 14.90, lng: -92.26, utcOffset: -6 },
+  { name: 'Comitán', country: 'MX', lat: 16.25, lng: -92.13, utcOffset: -6 },
+  { name: 'San Cristóbal de las Casas', country: 'MX', lat: 16.74, lng: -92.64, utcOffset: -6 },
+  { name: 'Guanajuato', country: 'MX', lat: 21.02, lng: -101.26, utcOffset: -6 },
+  { name: 'San Miguel de Allende', country: 'MX', lat: 20.91, lng: -100.74, utcOffset: -6 },
+  { name: 'Taxco', country: 'MX', lat: 18.56, lng: -99.61, utcOffset: -6 },
+  { name: 'Xalapa', country: 'MX', lat: 19.54, lng: -96.93, utcOffset: -6 },
+  { name: 'Córdoba', nameLocal: 'Córdoba MX', country: 'MX', lat: 18.88, lng: -96.93, utcOffset: -6 },
+  { name: 'Orizaba', country: 'MX', lat: 18.85, lng: -97.10, utcOffset: -6 },
+  { name: 'Uruapan', country: 'MX', lat: 19.42, lng: -102.06, utcOffset: -6 },
+  { name: 'Tehuacán', country: 'MX', lat: 18.46, lng: -97.39, utcOffset: -6 },
+  { name: 'Ciudad Victoria', country: 'MX', lat: 23.74, lng: -99.15, utcOffset: -6 },
+  // Pacific Time 추가
+  { name: 'Puerto Vallarta', country: 'MX', lat: 20.65, lng: -105.23, utcOffset: -7 },
+  { name: 'Ciudad Obregón', country: 'MX', lat: 27.49, lng: -109.94, utcOffset: -7 },
+  { name: 'Navojoa', country: 'MX', lat: 27.07, lng: -109.45, utcOffset: -7 },
+  { name: 'Guaymas', country: 'MX', lat: 27.92, lng: -110.90, utcOffset: -7 },
+  { name: 'Lázaro Cárdenas', country: 'MX', lat: 17.96, lng: -102.20, utcOffset: -6 },
+  { name: 'Zihuatanejo', country: 'MX', lat: 17.64, lng: -101.55, utcOffset: -6 },
+  // Northwest 추가
+  { name: 'Nogales', country: 'MX', lat: 31.31, lng: -110.94, utcOffset: -7 },
 
   // ── 한국 (Korea) ── UTC+9
   { name: 'Seoul', nameLocal: '서울특별시', country: 'KR', lat: 37.57, lng: 126.98, utcOffset: 9 },
