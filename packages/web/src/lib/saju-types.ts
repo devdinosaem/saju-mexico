@@ -17,62 +17,62 @@ function getStrengthCategory(score: number): Strength {
 const TYPE_MAP: Record<string, Record<string, Record<Strength, SajuType>>> = {
   wood: {
     yang: {
-      fuerte: { name: "El Roble", emoji: "🌳", tagline: "Líder nato que crece sin detenerse", keywords: ["Ambicioso", "Recto", "Líder"], personality: "Siempre tienes un plan. La gente te sigue sin que lo pidas — y a veces eso te pesa." },
-      equilibrado: { name: "El Sauce", emoji: "🌿", tagline: "Fuerte por fuera, flexible por dentro", keywords: ["Sabio", "Resiliente", "Noble"], personality: "Pareces tranquilo, pero por dentro analizas todo. Te adaptas sin perder quién eres." },
-      sensible: { name: "El Bambú", emoji: "🎋", tagline: "Flexible pero imposible de romper", keywords: ["Creativo", "Adaptable", "Soñador"], personality: "Te han subestimado toda la vida. Pero sigues aquí, más fuerte que los que dudaron de ti." },
+      fuerte: { name: "El Roble", emoji: "🌳", tagline: "Líder nato que crece sin detenerse", keywords: ["Ambicioso", "Recto", "Líder"], personality: "Tu mente siempre tiene un plan claro. Donde otros ven caos, tú ves una dirección." },
+      equilibrado: { name: "El Sauce", emoji: "🌿", tagline: "Fuerte por fuera, flexible por dentro", keywords: ["Sabio", "Resiliente", "Noble"], personality: "Tu mayor talento es adaptarte sin perder tu esencia. Eres fuerte y flexible al mismo tiempo." },
+      sensible: { name: "El Bambú", emoji: "🎋", tagline: "Flexible pero imposible de romper", keywords: ["Creativo", "Adaptable", "Soñador"], personality: "Tu creatividad es tu superpoder. Encuentras soluciones donde otros solo ven paredes." },
     },
     yin: {
-      fuerte: { name: "La Enredadera", emoji: "🌱", tagline: "Conquista en silencio, paso a paso", keywords: ["Persistente", "Sutil", "Estratega"], personality: "No necesitas gritar para ganar. Mientras otros compiten, tú ya encontraste otro camino." },
-      equilibrado: { name: "La Hierba", emoji: "🍀", tagline: "Donde otros no pueden, tú floreces", keywords: ["Versátil", "Tenaz", "Humilde"], personality: "Creces en cualquier lugar. La gente no sabe cómo lo haces — tú tampoco, simplemente lo haces." },
-      sensible: { name: "La Semilla", emoji: "🌰", tagline: "Todo un mundo esperando germinar", keywords: ["Potencial", "Paciente", "Profundo"], personality: "Sientes que tu momento aún no llegó. Pero todo lo que has vivido te está preparando para algo grande." },
+      fuerte: { name: "La Enredadera", emoji: "🌱", tagline: "Conquista en silencio, paso a paso", keywords: ["Persistente", "Sutil", "Estratega"], personality: "Tu inteligencia es silenciosa pero imparable. Avanzas paso a paso, sin prisa y sin pausa." },
+      equilibrado: { name: "La Hierba", emoji: "🍀", tagline: "Donde otros no pueden, tú floreces", keywords: ["Versátil", "Tenaz", "Humilde"], personality: "Tu versatilidad es extraordinaria. Floreces en cualquier terreno porque te adaptas con naturalidad." },
+      sensible: { name: "La Semilla", emoji: "🌰", tagline: "Todo un mundo esperando germinar", keywords: ["Potencial", "Paciente", "Profundo"], personality: "Llevas dentro un potencial enorme. Tu paciencia es la fuerza que convertirá tus sueños en realidad." },
     },
   },
   fire: {
     yang: {
-      fuerte: { name: "El Sol", emoji: "☀️", tagline: "Ilumina todo, imposible de ignorar", keywords: ["Apasionado", "Carismático", "Valiente"], personality: "Cuando entras a un lugar, la energía cambia. No puedes evitarlo — naciste para brillar." },
-      equilibrado: { name: "La Hoguera", emoji: "🔥", tagline: "Calienta a quien se acerca", keywords: ["Generoso", "Intenso", "Protector"], personality: "Das tanto que a veces te olvidas de ti. Los que te conocen saben que eres su lugar seguro." },
-      sensible: { name: "La Vela", emoji: "🕯️", tagline: "Luz íntima que guía en la oscuridad", keywords: ["Intuitivo", "Cálido", "Artístico"], personality: "Sientes las cosas antes de que pasen. Tu intuición asusta a los demás — y a veces a ti también." },
+      fuerte: { name: "El Sol", emoji: "☀️", tagline: "Ilumina todo, imposible de ignorar", keywords: ["Apasionado", "Carismático", "Valiente"], personality: "Tu carisma es magnético. Tienes la energía natural de encender cualquier espacio con tu presencia." },
+      equilibrado: { name: "La Hoguera", emoji: "🔥", tagline: "Calienta a quien se acerca", keywords: ["Generoso", "Intenso", "Protector"], personality: "Tu generosidad es infinita. Tienes el don de hacer que cualquier persona se sienta segura contigo." },
+      sensible: { name: "La Vela", emoji: "🕯️", tagline: "Luz íntima que guía en la oscuridad", keywords: ["Intuitivo", "Cálido", "Artístico"], personality: "Tu intuición es tu brújula. Percibes matices que otros no ven — un talento artístico natural." },
     },
     yin: {
-      fuerte: { name: "La Brasa", emoji: "🌋", tagline: "Tranquilo por fuera, ardiente por dentro", keywords: ["Reservado", "Apasionado", "Leal"], personality: "Nadie sabe lo intenso que eres por dentro. Solo los que realmente te conocen ven tu fuego." },
-      equilibrado: { name: "La Chispa", emoji: "✨", tagline: "Un instante basta para encender todo", keywords: ["Ingenioso", "Rápido", "Brillante"], personality: "Tu mente va más rápido que las palabras. Las ideas te llegan como relámpagos — el reto es elegir cuál seguir." },
-      sensible: { name: "La Luciérnaga", emoji: "🪲", tagline: "Brilla en su propio ritmo", keywords: ["Sensible", "Único", "Mágico"], personality: "No encajas en ningún molde — y esa es tu mayor fortaleza. Brillas diferente, y eso está bien." },
+      fuerte: { name: "La Brasa", emoji: "🌋", tagline: "Tranquilo por fuera, ardiente por dentro", keywords: ["Reservado", "Apasionado", "Leal"], personality: "Tu pasión arde por dentro con una intensidad profunda. Esa fuerza interior es inagotable." },
+      equilibrado: { name: "La Chispa", emoji: "✨", tagline: "Un instante basta para encender todo", keywords: ["Ingenioso", "Rápido", "Brillante"], personality: "Tu mente es veloz y brillante. Las ideas te llegan como relámpagos — tu ingenio no tiene límite." },
+      sensible: { name: "La Luciérnaga", emoji: "🪲", tagline: "Brilla en su propio ritmo", keywords: ["Sensible", "Único", "Mágico"], personality: "Tu singularidad es tu mayor fortaleza. Tienes una forma única de ver el mundo que nadie más tiene." },
     },
   },
   earth: {
     yang: {
-      fuerte: { name: "La Montaña", emoji: "🏔️", tagline: "Inamovible, confiable, eterno", keywords: ["Confiable", "Paciente", "Protector"], personality: "Todos acuden a ti cuando todo se derrumba. Eres la roca — pero a veces también necesitas apoyo." },
-      equilibrado: { name: "El Valle", emoji: "🌄", tagline: "Acoge todo lo que llega", keywords: ["Receptivo", "Estable", "Generoso"], personality: "Aceptas a las personas como son, sin juzgar. Por eso la gente se abre contigo sin saber por qué." },
-      sensible: { name: "La Arena", emoji: "🏖️", tagline: "Se moldea sin perder su esencia", keywords: ["Adaptable", "Empático", "Fluido"], personality: "Absorbes las emociones de los demás como una esponja. Necesitas tiempo a solas para volver a ser tú." },
+      fuerte: { name: "La Montaña", emoji: "🏔️", tagline: "Inamovible, confiable, eterno", keywords: ["Confiable", "Paciente", "Protector"], personality: "Tu estabilidad es un ancla para todos. Tienes la paciencia y la firmeza que mueve el mundo." },
+      equilibrado: { name: "El Valle", emoji: "🌄", tagline: "Acoge todo lo que llega", keywords: ["Receptivo", "Estable", "Generoso"], personality: "Tu capacidad de escuchar es un don raro. Creas espacios de confianza con naturalidad." },
+      sensible: { name: "La Arena", emoji: "🏖️", tagline: "Se moldea sin perder su esencia", keywords: ["Adaptable", "Empático", "Fluido"], personality: "Tu empatía es tu superpoder. Sientes los matices emocionales con una profundidad extraordinaria." },
     },
     yin: {
-      fuerte: { name: "La Muralla", emoji: "🧱", tagline: "Protege lo que ama sin rendirse", keywords: ["Firme", "Dedicado", "Fuerte"], personality: "Cuando amas, lo das todo. Tu lealtad no tiene límites — pero ten cuidado con quién la merece." },
-      equilibrado: { name: "El Jardín", emoji: "🌺", tagline: "Cultiva belleza donde otros ven tierra", keywords: ["Creativo", "Cuidadoso", "Armónico"], personality: "Ves potencial donde otros ven vacío. Tu talento es transformar lo ordinario en algo hermoso." },
-      sensible: { name: "La Arcilla", emoji: "🏺", tagline: "La presión te convierte en obra maestra", keywords: ["Moldeable", "Profundo", "Artístico"], personality: "Los momentos difíciles te han dado forma. Cada cicatriz es parte de la obra de arte que eres." },
+      fuerte: { name: "La Muralla", emoji: "🧱", tagline: "Protege lo que ama sin rendirse", keywords: ["Firme", "Dedicado", "Fuerte"], personality: "Tu dedicación no tiene igual. Cuando te comprometes con algo, tu determinación es absoluta." },
+      equilibrado: { name: "El Jardín", emoji: "🌺", tagline: "Cultiva belleza donde otros ven tierra", keywords: ["Creativo", "Cuidadoso", "Armónico"], personality: "Tu talento es ver posibilidades invisibles. Transformas lo ordinario en algo hermoso con facilidad." },
+      sensible: { name: "La Arcilla", emoji: "🏺", tagline: "La presión te convierte en obra maestra", keywords: ["Moldeable", "Profundo", "Artístico"], personality: "Tu sensibilidad artística es profunda. Cada experiencia te moldea y te convierte en alguien más sabio." },
     },
   },
   metal: {
     yang: {
-      fuerte: { name: "La Espada", emoji: "⚔️", tagline: "Corta directo al punto, sin rodeos", keywords: ["Decidido", "Directo", "Justo"], personality: "Dices lo que piensas y haces lo que dices. Algunos lo llaman frío — tú lo llamas honesto." },
-      equilibrado: { name: "El Escudo", emoji: "🛡️", tagline: "Defiende a los suyos sin dudar", keywords: ["Protector", "Leal", "Firme"], personality: "No buscas problemas, pero si alguien toca a los tuyos, no hay fuerza que te detenga." },
-      sensible: { name: "La Aguja", emoji: "🪡", tagline: "Preciso donde otros son torpes", keywords: ["Detallista", "Preciso", "Hábil"], personality: "Notas lo que nadie nota. Ese detalle que todos pasan por alto — tú ya lo viste hace rato." },
+      fuerte: { name: "La Espada", emoji: "⚔️", tagline: "Corta directo al punto, sin rodeos", keywords: ["Decidido", "Directo", "Justo"], personality: "Tu claridad mental es tu arma. Tomas decisiones con una precisión que pocos tienen." },
+      equilibrado: { name: "El Escudo", emoji: "🛡️", tagline: "Defiende a los suyos sin dudar", keywords: ["Protector", "Leal", "Firme"], personality: "Tu sentido de justicia es inquebrantable. Tienes el coraje natural de proteger lo que importa." },
+      sensible: { name: "La Aguja", emoji: "🪡", tagline: "Preciso donde otros son torpes", keywords: ["Detallista", "Preciso", "Hábil"], personality: "Tu ojo para el detalle es excepcional. Captas matices que hacen la diferencia entre bueno y perfecto." },
     },
     yin: {
-      fuerte: { name: "La Joya", emoji: "💎", tagline: "Brilla bajo presión, valioso y raro", keywords: ["Elegante", "Valioso", "Refinado"], personality: "No necesitas aprobación. Sabes tu valor — y quienes lo reconocen son los que valen la pena." },
-      equilibrado: { name: "La Moneda", emoji: "🪙", tagline: "Dos caras, un solo valor", keywords: ["Práctico", "Justo", "Versátil"], personality: "Ves ambos lados de todo. Eso te hace justo — pero a veces te cuesta tomar partido." },
-      sensible: { name: "El Anillo", emoji: "💍", tagline: "Pequeño pero cargado de significado", keywords: ["Sentimental", "Fiel", "Delicado"], personality: "Guardas todo en el corazón. Un gesto pequeño puede alegrarte el día — o arruinarlo." },
+      fuerte: { name: "La Joya", emoji: "💎", tagline: "Brilla bajo presión, valioso y raro", keywords: ["Elegante", "Valioso", "Refinado"], personality: "Tu elegancia es innata. Tienes un refinamiento natural que se nota en todo lo que haces." },
+      equilibrado: { name: "La Moneda", emoji: "🪙", tagline: "Dos caras, un solo valor", keywords: ["Práctico", "Justo", "Versátil"], personality: "Tu sentido de la justicia es equilibrado y sabio. Ves las dos caras de todo con claridad única." },
+      sensible: { name: "El Anillo", emoji: "💍", tagline: "Pequeño pero cargado de significado", keywords: ["Sentimental", "Fiel", "Delicado"], personality: "Tu fidelidad es profunda y auténtica. Valoras los vínculos con una intensidad que pocos alcanzan." },
     },
   },
   water: {
     yang: {
-      fuerte: { name: "El Océano", emoji: "🌊", tagline: "Profundo, poderoso, lleno de misterios", keywords: ["Estratégico", "Profundo", "Misterioso"], personality: "Piensas 5 pasos adelante. La gente ve tu calma — no sabe que ya calculaste todas las jugadas." },
-      equilibrado: { name: "El Río", emoji: "🏞️", tagline: "Siempre encuentra su camino", keywords: ["Persistente", "Inteligente", "Fluido"], personality: "Los obstáculos no te detienen — los rodeas. Tu paciencia es tu arma secreta." },
-      sensible: { name: "La Lluvia", emoji: "🌧️", tagline: "Nutre todo lo que toca", keywords: ["Generoso", "Sensible", "Renovador"], personality: "Llegas cuando más te necesitan. Tu presencia sana — aunque a veces tú seas quien necesita sanar." },
+      fuerte: { name: "El Océano", emoji: "🌊", tagline: "Profundo, poderoso, lleno de misterios", keywords: ["Estratégico", "Profundo", "Misterioso"], personality: "Tu pensamiento estratégico es tu mayor ventaja. Ves el panorama completo cuando otros ven fragmentos." },
+      equilibrado: { name: "El Río", emoji: "🏞️", tagline: "Siempre encuentra su camino", keywords: ["Persistente", "Inteligente", "Fluido"], personality: "Tu persistencia tranquila es imparable. Encuentras caminos donde otros solo ven muros." },
+      sensible: { name: "La Lluvia", emoji: "🌧️", tagline: "Nutre todo lo que toca", keywords: ["Generoso", "Sensible", "Renovador"], personality: "Tu capacidad de renovar es un don. Donde llegas, las cosas empiezan a florecer." },
     },
     yin: {
-      fuerte: { name: "La Cascada", emoji: "💦", tagline: "Cae con fuerza, refresca con gracia", keywords: ["Dinámico", "Libre", "Poderoso"], personality: "No puedes quedarte quieto. La rutina te asfixia — necesitas movimiento, cambio, libertad." },
-      equilibrado: { name: "El Arroyo", emoji: "🌿", tagline: "Suave pero constante, nunca se detiene", keywords: ["Tranquilo", "Constante", "Sabio"], personality: "No necesitas ser el centro de atención. Tu fuerza está en la constancia — gota a gota, mueves montañas." },
-      sensible: { name: "El Rocío", emoji: "💧", tagline: "Delicado pero esencial para la vida", keywords: ["Intuitivo", "Sensible", "Puro"], personality: "Sientes todo con una intensidad que otros no entienden. Es tu don — y tu mayor desafío." },
+      fuerte: { name: "La Cascada", emoji: "💦", tagline: "Cae con fuerza, refresca con gracia", keywords: ["Dinámico", "Libre", "Poderoso"], personality: "Tu energía dinámica es contagiosa. Tienes la vitalidad natural de quien nació para explorar." },
+      equilibrado: { name: "El Arroyo", emoji: "🌿", tagline: "Suave pero constante, nunca se detiene", keywords: ["Tranquilo", "Constante", "Sabio"], personality: "Tu constancia silenciosa es tu mayor poder. Avanzas sin pausa y logras lo que otros abandonan." },
+      sensible: { name: "El Rocío", emoji: "💧", tagline: "Delicado pero esencial para la vida", keywords: ["Intuitivo", "Sensible", "Puro"], personality: "Tu sensibilidad es un radar de alta precisión. Percibes verdades que otros necesitan años para ver." },
     },
   },
 };
