@@ -30,40 +30,47 @@ export class DeepSeekReportGenerator {
     this.model = options.model || DEFAULT_MODEL;
   }
 
+  private async callApi(input: ReportInput, sectionPrompt: string) {
+    const response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: this.model,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: buildUserMessage(input, sectionPrompt) },
+        ],
+        max_tokens: 4096,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`DeepSeek API error: ${response.status} ${err}`);
+    }
+
+    return response.json();
+  }
+
   async generate(input: ReportInput): Promise<SajuReport> {
     const callPrompts = [CALL1_PROMPT, CALL2_PROMPT, CALL3_PROMPT, CALL4_PROMPT];
+
+    // 4개 동시 호출
+    const results = await Promise.all(
+      callPrompts.map((prompt) => this.callApi(input, prompt))
+    );
+
     const allSections: ReportSection[] = [];
     const usage = { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheCreationTokens: 0 };
 
-    for (const sectionPrompt of callPrompts) {
-      const response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          model: this.model,
-          messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: buildUserMessage(input, sectionPrompt) },
-          ],
-          max_tokens: 4096,
-          temperature: 0.7,
-        }),
-      });
-
-      if (!response.ok) {
-        const err = await response.text();
-        throw new Error(`DeepSeek API error: ${response.status} ${err}`);
-      }
-
-      const data = await response.json();
+    for (const data of results) {
       const text = data.choices?.[0]?.message?.content || '';
-
       usage.inputTokens += data.usage?.prompt_tokens || 0;
       usage.outputTokens += data.usage?.completion_tokens || 0;
-
       allSections.push(...parseSections(text));
     }
 

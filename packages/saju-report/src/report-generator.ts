@@ -43,8 +43,34 @@ export class ReportGenerator {
     this.model = options.model ?? DEFAULT_MODEL;
   }
 
+  private async callApi(input: ReportInput, sectionPrompt: string) {
+    return this.client.messages.create({
+      model: this.model,
+      max_tokens: 4096,
+      system: [
+        {
+          type: 'text',
+          text: SYSTEM_PROMPT,
+          cache_control: { type: 'ephemeral' },
+        },
+      ],
+      messages: [
+        {
+          role: 'user',
+          content: buildUserMessage(input, sectionPrompt),
+        },
+      ],
+    });
+  }
+
   async generate(input: ReportInput): Promise<SajuReport> {
     const callPrompts = [CALL1_PROMPT, CALL2_PROMPT, CALL3_PROMPT, CALL4_PROMPT];
+
+    // 4개 동시 호출
+    const responses = await Promise.all(
+      callPrompts.map((prompt) => this.callApi(input, prompt))
+    );
+
     const allSections: ReportSection[] = [];
     const usage = {
       inputTokens: 0,
@@ -53,25 +79,7 @@ export class ReportGenerator {
       cacheCreationTokens: 0,
     };
 
-    for (const sectionPrompt of callPrompts) {
-      const response = await this.client.messages.create({
-        model: this.model,
-        max_tokens: 4096,
-        system: [
-          {
-            type: 'text',
-            text: SYSTEM_PROMPT,
-            cache_control: { type: 'ephemeral' },
-          },
-        ],
-        messages: [
-          {
-            role: 'user',
-            content: buildUserMessage(input, sectionPrompt),
-          },
-        ],
-      });
-
+    for (const response of responses) {
       usage.inputTokens += response.usage.input_tokens;
       usage.outputTokens += response.usage.output_tokens;
       usage.cacheReadTokens += response.usage.cache_read_input_tokens ?? 0;
