@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { PurchaseToast } from "@/components/purchase-toast";
 import { ConceptCard } from "@/components/term-tooltip";
-import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement } from "@/lib/translations";
+import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement, ganZhiToElements } from "@/lib/translations";
 import { trackEvent, EVENTS } from "@/components/analytics";
 import { generateElementInsight } from "@/lib/saju-types";
 
@@ -46,6 +46,14 @@ interface SajuData {
     branchTenGod: string;
     phase: string;
   };
+  yearlyFortunes?: {
+    year: number;
+    age: number;
+    ganZhi: string;
+    stemTenGod: string;
+    branchTenGod: string;
+    phase: string;
+  }[];
 }
 
 const ELEMENT_COLORS: Record<string, string> = {
@@ -107,7 +115,13 @@ export default function ResultadoPage() {
     <main className="flex flex-col items-center">
       <div className="w-full max-w-[448px] mx-auto">
         {/* ═══ HEADER ═══ */}
-        <section className="px-5 pt-8 pb-6 text-center">
+        <section className="px-5 pt-8 pb-6 text-center relative">
+          <button
+            onClick={() => router.push("/")}
+            className="absolute left-4 top-8 text-text-muted hover:text-text-primary transition-colors text-sm"
+          >
+            ← Inicio
+          </button>
           <p className="text-gold text-xs tracking-[0.3em] uppercase mb-2">✦ Tu Carta Saju ✦</p>
           <h1 className="font-serif text-2xl font-bold mb-1">{data.name}</h1>
           <p className="text-text-secondary text-sm">
@@ -147,8 +161,7 @@ export default function ResultadoPage() {
         {/* ═══ 오행 분포 (무료) ═══ */}
         <section className="px-5 py-6">
           <h2 className="font-serif text-xl font-bold mb-1">Distribución de los Cinco Elementos</h2>
-          <p className="text-text-secondary text-xs mb-4">오행 분포 — El balance energético de tu carta</p>
-          <ConceptCard termKey="fiveElements" compact />
+          <p className="text-text-secondary text-xs mb-4">El balance energético de tu carta</p>
 
           <div className="space-y-3">
             {[
@@ -267,7 +280,6 @@ export default function ResultadoPage() {
 
         {/* ═══ 일간 요약 (무료, 짧은 버전) ═══ */}
         <section className="px-5 py-6">
-          <ConceptCard termKey="dayMaster" compact />
           <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
             <h2 className="font-serif text-xl font-bold mb-3">
               Tu Elemento Natal: <span className="text-gradient-gold">{data.dayMaster.elementSpanish}</span>
@@ -282,12 +294,12 @@ export default function ResultadoPage() {
               extraordinaria para inspirar a otros. Tu mayor fortaleza radica en tu determinación,
               pero debes cuidarte de la rigidez que puede alejarte de las personas que amas.
             </p>
+            <p className="text-text-muted text-xs mt-2 italic">Análisis completo disponible en tu reporte</p>
           </div>
         </section>
 
         {/* ═══ 신강/신약 (Fuerza Interior) ═══ */}
         <section className="px-5 py-6">
-          <ConceptCard termKey="strength" compact />
           <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
             <h2 className="font-serif text-xl font-bold mb-3">
               Tu Fuerza Interior: <span className="text-gradient-gold">{data.strength.levelSpanish}</span>
@@ -315,12 +327,12 @@ export default function ResultadoPage() {
                 : "Alma Sensible — tu capacidad de percibir y sentir es extraordinaria, un talento que pocos tienen."
               }
             </p>
+            <p className="text-text-muted text-xs mt-2 italic">Interpretación detallada en tu reporte</p>
           </div>
         </section>
 
         {/* ═══ 용신 (Elemento de Poder) ═══ */}
         <section className="px-5 py-6">
-          <ConceptCard termKey="yongShin" compact />
           <div className="bg-bg-card rounded-2xl p-5 border border-gold/20">
             <h2 className="font-serif text-xl font-bold mb-3">
               Tu Elemento de Poder: <span className="text-gradient-gold">{data.yongShin.elementSpanish}</span>
@@ -353,7 +365,6 @@ export default function ResultadoPage() {
 
           return (
             <section className="px-5 py-6">
-              <ConceptCard termKey="majorFortune" compact />
 
               <h2 className="font-serif text-xl font-bold mb-2">
                 📊 El Saju de {data.name} en {currentYear}
@@ -373,7 +384,7 @@ export default function ResultadoPage() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-center">
-                      <p className="font-serif text-2xl text-gold">{currentFortune.ganZhi.split("(")[0]}</p>
+                      <p className="font-serif text-lg text-gold">{ganZhiToElements(currentFortune.ganZhi)}</p>
                       <p className="text-xs text-text-muted">{translateTenGod(currentFortune.stemTenGod)}</p>
                     </div>
                     <div className="flex-1">
@@ -391,7 +402,7 @@ export default function ResultadoPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-center">
-                    <p className="font-serif text-xl text-gold">{data.yearlyFortune.ganZhi}</p>
+                    <p className="font-serif text-lg text-gold">{ganZhiToElements(data.yearlyFortune.ganZhi)}</p>
                   </div>
                   <div className="flex-1">
                     <p className="text-sm">
@@ -412,7 +423,7 @@ export default function ResultadoPage() {
                   </div>
                   <p className="text-sm">
                     A los <strong className="text-text-primary">{nextFortune.age} años</strong> ({birthYear + nextFortune.age}), entrarás en una nueva Gran Estación:
-                    <span className="text-gold font-semibold"> {nextFortune.ganZhi.split("(")[0]}</span> — {translateTenGod(nextFortune.stemTenGod)}
+                    <span className="text-gold font-semibold"> {ganZhiToElements(nextFortune.ganZhi)}</span> — {translateTenGod(nextFortune.stemTenGod)}
                   </p>
                 </div>
               )}
@@ -425,30 +436,42 @@ export default function ResultadoPage() {
           const currentYear = new Date().getFullYear();
           const birthYear = data.birth.year;
           const fortunes = data.majorFortunes.fortunes;
+          const yearlyAll = data.yearlyFortunes || [];
 
-          // 과거 대운 중 가장 최근 (과거 이벤트 1개)
+          // 과거 대운 중 가장 최근
           const pastFortune = [...fortunes]
             .filter(f => birthYear + f.age + 10 <= currentYear)
             .pop();
 
-          // 미래 대운 중 연애/결혼 관련 (정재/편재/정관/편관)
+          // 연애: 세운 8년 먼저 → 없으면 대운
           const loveTenGods = ["정재", "편재", "정관", "편관"];
-          const loveFortune = fortunes.find(f =>
+          const loveYearly = yearlyAll.find(y =>
+            y.year > currentYear && loveTenGods.includes(y.stemTenGod)
+          );
+          const loveMajor = fortunes.find(f =>
             birthYear + f.age > currentYear && loveTenGods.includes(f.stemTenGod)
           );
 
-          // 미래 대운 중 재물 관련 (편재/정재/식신)
+          // 재물: 세운 8년 먼저 → 없으면 대운
           const wealthTenGods = ["편재", "정재", "식신"];
-          const wealthFortune = fortunes.find(f =>
-            birthYear + f.age > currentYear &&
-            wealthTenGods.includes(f.stemTenGod) &&
-            f !== loveFortune
+          const wealthYearly = yearlyAll.find(y =>
+            y.year > currentYear && wealthTenGods.includes(y.stemTenGod) && y !== loveYearly
+          );
+          const wealthMajor = fortunes.find(f =>
+            birthYear + f.age > currentYear && wealthTenGods.includes(f.stemTenGod) && f !== loveMajor
           );
 
-          // 폴백: 미래 대운 아무거나
-          const futureFortunes = fortunes.filter(f => birthYear + f.age > currentYear);
-          const fallbackLove = loveFortune || futureFortunes[0];
-          const fallbackWealth = wealthFortune || futureFortunes[1] || futureFortunes[0];
+          const loveEvent = loveYearly
+            ? { year: loveYearly.year, label: String(loveYearly.year), tenGod: loveYearly.stemTenGod, isYearly: true }
+            : loveMajor
+            ? { year: birthYear + loveMajor.age, label: `${birthYear + loveMajor.age}-${birthYear + loveMajor.age + 9}`, tenGod: loveMajor.stemTenGod, isYearly: false }
+            : null;
+
+          const wealthEvent = wealthYearly
+            ? { year: wealthYearly.year, label: String(wealthYearly.year), tenGod: wealthYearly.stemTenGod, isYearly: true }
+            : wealthMajor
+            ? { year: birthYear + wealthMajor.age, label: `${birthYear + wealthMajor.age}-${birthYear + wealthMajor.age + 9}`, tenGod: wealthMajor.stemTenGod, isYearly: false }
+            : null;
 
           return (
             <section className="px-5 py-6">
@@ -469,17 +492,18 @@ export default function ResultadoPage() {
                         <span className="text-text-muted text-xs">(ya ocurrió)</span>
                       </div>
                       <p className="text-sm">
-                        Un periodo de <strong className="text-text-primary">{translateTenGod(pastFortune.stemTenGod)}</strong> marcó esta etapa de tu vida — ¿lo recuerdas?
+                        Un periodo de <strong className="text-text-primary">{translateTenGod(pastFortune.stemTenGod)}</strong> marcó esta etapa de tu vida.
                       </p>
+                      <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(pastFortune.stemTenGod)}</p>
                     </div>
                   )}
 
-                  {/* 2. 미래: 연애/결혼 (연도+내용 블러) */}
-                  {fallbackLove && (
+                  {/* 2. 미래: 연애/결혼 */}
+                  {loveEvent && (
                     <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
                       <div className="flex items-center gap-2 mb-2">
                         <span>💕</span>
-                        <span className="text-gold font-mono text-sm blur-content">{birthYear + fallbackLove.age}-{birthYear + fallbackLove.age + 9}</span>
+                        <span className="text-gold font-mono text-sm blur-content">{loveEvent.label}</span>
                       </div>
                       <p className="text-sm">
                         Un encuentro que cambiará tu perspectiva del amor.
@@ -488,12 +512,12 @@ export default function ResultadoPage() {
                     </div>
                   )}
 
-                  {/* 3. 미래: 재물 (블러) */}
-                  {fallbackWealth && (
+                  {/* 3. 미래: 재물 */}
+                  {wealthEvent && (
                     <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
                       <div className="flex items-center gap-2 mb-2">
                         <span>💰</span>
-                        <span className="text-gold font-mono text-sm blur-content">{birthYear + fallbackWealth.age}-{birthYear + fallbackWealth.age + 9}</span>
+                        <span className="text-gold font-mono text-sm blur-content">{wealthEvent.label}</span>
                       </div>
                       <p className="text-sm blur-content">
                         Tu ciclo de mayor prosperidad financiera. Una oportunidad que podría cambiar tu nivel de vida por completo.
@@ -514,7 +538,7 @@ export default function ResultadoPage() {
         {/* ═══ 삼재 (三災) ═══ */}
         {data.samjae && (
           <section className="px-5 py-6">
-            <h2 className="font-serif text-xl font-bold mb-1">Tres Calamidades (삼재)</h2>
+            <h2 className="font-serif text-xl font-bold mb-1">Tres Calamidades</h2>
             <p className="text-text-secondary text-xs mb-4">Ciclo de precaución que llega cada 9 años</p>
             <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
               <p className={`text-sm mb-3 ${data.samjae.isActive ? "text-amber" : "text-text-secondary"}`}>

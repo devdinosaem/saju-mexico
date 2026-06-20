@@ -148,6 +148,28 @@ export function translatePhase(korean: string): string {
   return PHASE_ES[korean] || korean;
 }
 
+const STEM_TO_ELEMENT: Record<string, string> = {
+  "甲": "Madera", "乙": "Madera", "丙": "Fuego", "丁": "Fuego",
+  "戊": "Tierra", "己": "Tierra", "庚": "Metal", "辛": "Metal",
+  "壬": "Agua", "癸": "Agua",
+};
+const BRANCH_TO_ELEMENT: Record<string, string> = {
+  "子": "Agua", "丑": "Tierra", "寅": "Madera", "卯": "Madera",
+  "辰": "Tierra", "巳": "Fuego", "午": "Fuego", "未": "Tierra",
+  "申": "Metal", "酉": "Metal", "戌": "Tierra", "亥": "Agua",
+};
+
+export function ganZhiToElements(ganZhi: string): string {
+  const chars = ganZhi.replace(/[()（）]/g, "");
+  const stem = chars[chars.length - 2];
+  const branch = chars[chars.length - 1];
+  const stemEl = STEM_TO_ELEMENT[stem];
+  const branchEl = BRANCH_TO_ELEMENT[branch];
+  if (stemEl && branchEl) return `${stemEl} + ${branchEl}`;
+  if (stemEl) return stemEl;
+  return ganZhi;
+}
+
 export function translateSpiritStar(korean: string): string {
   return SPIRIT_STAR_ES[korean] || SPECIAL_STAR_ES[korean] || korean;
 }

@@ -103,7 +103,13 @@ function ReportePage() {
     <main className="flex flex-col items-center">
       <div className="w-full max-w-[448px] mx-auto">
         {/* ═══ HEADER ═══ */}
-        <section className="px-5 pt-8 pb-4 text-center border-b border-gold/10">
+        <section className="px-5 pt-8 pb-4 text-center border-b border-gold/10 relative">
+          <button
+            onClick={() => router.push(`/resultado/${id}`)}
+            className="absolute left-4 top-8 text-text-muted hover:text-text-primary transition-colors text-sm"
+          >
+            ← Resultado
+          </button>
           <p className="text-gold text-xs tracking-[0.3em] uppercase mb-2">✦ Reporte Saju Completo ✦</p>
           <h1 className="font-serif text-2xl font-bold mb-1">{data.name}</h1>
           <p className="text-text-secondary text-sm mb-3">
@@ -170,7 +176,7 @@ function ReportePage() {
 
         {/* ═══ 오행 분포 차트 ═══ */}
         <section className="px-5 py-4">
-          <h3 className="font-serif text-lg font-bold mb-3">Cinco Elementos (오행)</h3>
+          <h3 className="font-serif text-lg font-bold mb-3">Cinco Elementos</h3>
           <ConceptCard termKey="fiveElements" compact />
           <div className="space-y-2">
             {[
@@ -638,7 +644,7 @@ function ReportePage() {
         {/* ═══ 삼재 (三災) ═══ */}
         {data.samjae && (
           <section className="px-5 py-8 border-t border-white/5">
-            <h2 className="font-serif text-xl font-bold mb-2">⚠️ Los Tres Calamidades (삼재)</h2>
+            <h2 className="font-serif text-xl font-bold mb-2">⚠️ Los Tres Calamidades</h2>
             <ConceptCard termKey="samjae" />
 
             <div className={`rounded-2xl p-5 border mb-4 ${data.samjae.isActive ? "bg-red-500/5 border-red-500/20" : "bg-bg-card border-white/5"}`}>

@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const specials = analyzeSpecialStars(p, saju.dayMaster.stem);
     const fortunes = calculateMajorFortunes(p.month, p.year.stem, gender, year, month, day, saju.dayMaster.stem);
     const currentYear = new Date().getFullYear();
-    const yearly = calculateYearlyFortunes(year, saju.dayMaster.stem, currentYear, currentYear);
+    const yearly = calculateYearlyFortunes(year, saju.dayMaster.stem, currentYear, currentYear + 8);
     const monthly = calculateMonthlyFortunes(currentYear, saju.dayMaster.stem);
     const yongShin = analyzeYongShin(saju.dayMaster.stem, p, saju.fiveElements, tenGods.count);
     const relations = analyzeRelations(p);
@@ -145,6 +145,14 @@ export async function POST(req: NextRequest) {
         branchTenGod: TEN_GOD_KOREAN[yearly[0].branchTenGod],
         phase: PHASE_KOREAN[yearly[0].twelvePhase],
       } : null,
+      yearlyFortunes: yearly.map(y => ({
+        year: y.year,
+        age: y.age,
+        ganZhi: `${STEM_KOREAN[y.ganZhi.stem]}${BRANCH_KOREAN[y.ganZhi.branch]}`,
+        stemTenGod: TEN_GOD_KOREAN[y.stemTenGod],
+        branchTenGod: TEN_GOD_KOREAN[y.branchTenGod],
+        phase: PHASE_KOREAN[y.twelvePhase],
+      })),
       relations: relations.relations.map(r => r.description),
       specialStars: specials.all,
       spiritStars: {

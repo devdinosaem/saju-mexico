@@ -170,7 +170,7 @@ export function generateElementInsight(
     title: "Tu Esencia",
     emoji: EL_EMOJI[el],
     label: EL_NAMES[el],
-    body: `Tu alma es ${EL_NAMES[el]} ${yy} (${dayMasterStem}) — el elemento de ${EL_NATURE[el]}. En el Saju coreano, tu "Día Maestro" (日柱) define quién eres realmente. Eres ${EL_METAPHOR[el]} en esencia.`,
+    body: `Tu alma es ${EL_NAMES[el]} ${yy} (${dayMasterStem}) — el elemento de ${EL_NATURE[el]}. En el Saju coreano, tu Día Maestro define quién eres realmente. Eres ${EL_METAPHOR[el]} en esencia.`,
   };
 
   // 2. Tu Mundo Interior
@@ -216,7 +216,7 @@ export function generateElementInsight(
   }
 
   const ys = yongShinElement.toLowerCase();
-  meaningBody += ` Tu Elemento de Poder (用神) es ${EL_NAMES[ys]} ${EL_EMOJI[ys]} — ${YONGSIN_TIP[ys]} activa tu mejor versión.`;
+  meaningBody += ` Tu Elemento de Poder es ${EL_NAMES[ys]} ${EL_EMOJI[ys]} — ${YONGSIN_TIP[ys]} activa tu mejor versión.`;
 
   const meaning = { title: "Lo Que Esto Significa Para Ti", emoji: EL_EMOJI[ys], label: EL_NAMES[ys], body: meaningBody };
 
