@@ -53,14 +53,14 @@ const TYPE_MAP: Record<string, Record<string, Record<Strength, SajuType>>> = {
   },
   metal: {
     yang: {
-      fuerte: { name: "La Espada", emoji: "⚔️", tagline: "Corta directo al punto, sin rodeos", keywords: ["Decidido", "Directo", "Justo"], personality: "Tu claridad mental es tu arma. Tomas decisiones con una precisión que pocos tienen." },
-      equilibrado: { name: "El Escudo", emoji: "⚔️", tagline: "Defiende a los suyos sin dudar", keywords: ["Protector", "Leal", "Firme"], personality: "Tu sentido de justicia es inquebrantable. Tienes el coraje natural de proteger lo que importa." },
-      sensible: { name: "La Aguja", emoji: "⚔️", tagline: "Preciso donde otros son torpes", keywords: ["Detallista", "Preciso", "Hábil"], personality: "Tu ojo para el detalle es excepcional. Captas matices que hacen la diferencia entre bueno y perfecto." },
+      fuerte: { name: "La Espada", emoji: "💎", tagline: "Corta directo al punto, sin rodeos", keywords: ["Decidido", "Directo", "Justo"], personality: "Tu claridad mental es tu arma. Tomas decisiones con una precisión que pocos tienen." },
+      equilibrado: { name: "El Escudo", emoji: "💎", tagline: "Defiende a los suyos sin dudar", keywords: ["Protector", "Leal", "Firme"], personality: "Tu sentido de justicia es inquebrantable. Tienes el coraje natural de proteger lo que importa." },
+      sensible: { name: "La Aguja", emoji: "💎", tagline: "Preciso donde otros son torpes", keywords: ["Detallista", "Preciso", "Hábil"], personality: "Tu ojo para el detalle es excepcional. Captas matices que hacen la diferencia entre bueno y perfecto." },
     },
     yin: {
-      fuerte: { name: "La Joya", emoji: "⚔️", tagline: "Brilla bajo presión, valioso y raro", keywords: ["Elegante", "Valioso", "Refinado"], personality: "Tu elegancia es innata. Tienes un refinamiento natural que se nota en todo lo que haces." },
-      equilibrado: { name: "La Moneda", emoji: "⚔️", tagline: "Dos caras, un solo valor", keywords: ["Práctico", "Justo", "Versátil"], personality: "Tu sentido de la justicia es equilibrado y sabio. Ves las dos caras de todo con claridad única." },
-      sensible: { name: "El Anillo", emoji: "⚔️", tagline: "Pequeño pero cargado de significado", keywords: ["Sentimental", "Fiel", "Delicado"], personality: "Tu fidelidad es profunda y auténtica. Valoras los vínculos con una intensidad que pocos alcanzan." },
+      fuerte: { name: "La Joya", emoji: "💎", tagline: "Brilla bajo presión, valioso y raro", keywords: ["Elegante", "Valioso", "Refinado"], personality: "Tu elegancia es innata. Tienes un refinamiento natural que se nota en todo lo que haces." },
+      equilibrado: { name: "La Moneda", emoji: "💎", tagline: "Dos caras, un solo valor", keywords: ["Práctico", "Justo", "Versátil"], personality: "Tu sentido de la justicia es equilibrado y sabio. Ves las dos caras de todo con claridad única." },
+      sensible: { name: "El Anillo", emoji: "💎", tagline: "Pequeño pero cargado de significado", keywords: ["Sentimental", "Fiel", "Delicado"], personality: "Tu fidelidad es profunda y auténtica. Valoras los vínculos con una intensidad que pocos alcanzan." },
     },
   },
   water: {

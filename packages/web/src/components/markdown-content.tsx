@@ -35,7 +35,7 @@ function parseMarkdown(text: string): React.ReactNode[] {
     }
 
     // 짧은 이모지 항목 (🎨 Colores: ... 같은 가이드 항목만, 80자 이하)
-    if (line.trim().length < 80 && line.match(/^[🎨🧭🔢💧🍽️⏰💎🌊⚡⚠️✅❌🌳🔥⛰️⚔️🪵🐀🐂🐅🐇🐉🐍🐴🐐🐒🐔🐕🐷]/u)) {
+    if (line.trim().length < 80 && line.match(/^[🎨🧭🔢💧🍽️⏰💎🌊⚡⚠️✅❌🌳🔥⛰️💎🪵🐀🐂🐅🐇🐉🐍🐴🐐🐒🐔🐕🐷]/u)) {
       result.push(
         <div key={i} className="bg-bg-surface/30 rounded-lg px-3 py-2 mb-1.5">
           {parseInline(line)}

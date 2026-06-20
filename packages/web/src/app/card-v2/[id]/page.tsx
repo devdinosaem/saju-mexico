@@ -147,7 +147,7 @@ export default function CardV2Page() {
                 { key: "wood", emoji: "🌳" },
                 { key: "fire", emoji: "🔥" },
                 { key: "earth", emoji: "⛰️" },
-                { key: "metal", emoji: "⚔️" },
+                { key: "metal", emoji: "💎" },
                 { key: "water", emoji: "💧" },
               ].map((el) => {
                 const count = data.fiveElements[el.key] || 0;

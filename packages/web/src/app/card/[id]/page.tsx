@@ -158,7 +158,7 @@ export default function CardPage() {
               { key: "wood", label: "Madera", emoji: "🌳" },
               { key: "fire", label: "Fuego", emoji: "🔥" },
               { key: "earth", label: "Tierra", emoji: "⛰️" },
-              { key: "metal", label: "Metal", emoji: "⚔️" },
+              { key: "metal", label: "Metal", emoji: "💎" },
               { key: "water", label: "Agua", emoji: "💧" },
             ].map((el) => {
               const pct = Math.round(((data.fiveElements[el.key] || 0) / total) * 100);

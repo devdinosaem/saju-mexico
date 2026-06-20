@@ -1,5 +1,5 @@
 const ELEMENT_EMOJI: Record<string, string> = {
-  wood: "🌳", fire: "🔥", earth: "⛰️", metal: "⚔️", water: "💧",
+  wood: "🌳", fire: "🔥", earth: "⛰️", metal: "💎", water: "💧",
 };
 
 const ELEMENT_ES: Record<string, string> = {

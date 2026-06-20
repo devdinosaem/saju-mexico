@@ -150,7 +150,7 @@ export default function ResultadoPage() {
               { key: "wood", label: "Madera (木)", emoji: "🌳" },
               { key: "fire", label: "Fuego (火)", emoji: "🔥" },
               { key: "earth", label: "Tierra (土)", emoji: "⛰️" },
-              { key: "metal", label: "Metal (金)", emoji: "⚔️" },
+              { key: "metal", label: "Metal (金)", emoji: "💎" },
               { key: "water", label: "Agua (水)", emoji: "💧" },
             ].map((el) => {
               const count = data.fiveElements[el.key] || 0;

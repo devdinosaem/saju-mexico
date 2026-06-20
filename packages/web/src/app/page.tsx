@@ -369,11 +369,11 @@ export default function LandingPage() {
             <p className="text-gold text-xs font-semibold uppercase tracking-wider mb-3">Compatibilidad de los Cinco Elementos</p>
             <div className="space-y-2 text-xs">
               {[
-                { me: "🌳 Madera", good: "💧 Agua", bad: "⚔️ Metal", reason: "Agua nutre Madera · Metal la corta" },
+                { me: "🌳 Madera", good: "💧 Agua", bad: "💎 Metal", reason: "Agua nutre Madera · Metal la corta" },
                 { me: "🔥 Fuego", good: "🌳 Madera", bad: "💧 Agua", reason: "Madera alimenta Fuego · Agua lo apaga" },
                 { me: "⛰️ Tierra", good: "🔥 Fuego", bad: "🌳 Madera", reason: "Fuego fortalece Tierra · Madera la penetra" },
-                { me: "⚔️ Metal", good: "⛰️ Tierra", bad: "🔥 Fuego", reason: "Tierra genera Metal · Fuego lo funde" },
-                { me: "💧 Agua", good: "⚔️ Metal", bad: "⛰️ Tierra", reason: "Metal enriquece Agua · Tierra la absorbe" },
+                { me: "💎 Metal", good: "⛰️ Tierra", bad: "🔥 Fuego", reason: "Tierra genera Metal · Fuego lo funde" },
+                { me: "💧 Agua", good: "💎 Metal", bad: "⛰️ Tierra", reason: "Metal enriquece Agua · Tierra la absorbe" },
               ].map((row) => (
                 <div key={row.me} className="flex items-center gap-2 bg-bg-surface/30 rounded-lg p-2">
                   <span className="w-24 font-semibold">{row.me}</span>

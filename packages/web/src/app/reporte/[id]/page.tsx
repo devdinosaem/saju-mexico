@@ -174,7 +174,7 @@ function ReportePage() {
               { key: "wood", label: "Madera", hanja: "木", emoji: "🌳" },
               { key: "fire", label: "Fuego", hanja: "火", emoji: "🔥" },
               { key: "earth", label: "Tierra", hanja: "土", emoji: "⛰️" },
-              { key: "metal", label: "Metal", hanja: "金", emoji: "⚔️" },
+              { key: "metal", label: "Metal", hanja: "金", emoji: "💎" },
               { key: "water", label: "Agua", hanja: "水", emoji: "💧" },
             ].map((el) => {
               const count = data.fiveElements[el.key] || 0;
