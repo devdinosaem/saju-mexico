@@ -125,6 +125,14 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     long: "Son los 12 animales del zodiaco chino/coreano (Rata, Buey, Tigre...). Representan tu energía interna, motivaciones ocultas y el timing de los eventos.",
     analogy: "Si los Tallos son lo que el mundo ve de ti, las Ramas son lo que sientes por dentro — tus motivaciones reales y tu ritmo interno.",
   },
+  samjae: {
+    term: "Los Tres Desafíos",
+    korean: "삼재",
+    hanja: "三災",
+    short: "Un ciclo de 3 años de pruebas que llega cada 12 años",
+    long: "Los Tres Desafíos son un periodo de 3 años consecutivos donde la energía del universo te pone a prueba. No es 'mala suerte' — es un ciclo natural de purificación y fortalecimiento. El primer año es la entrada (들삼재), el segundo es el punto máximo (눌삼재) y el tercero es la salida (날삼재). Históricamente, los coreanos no toman decisiones financieras arriesgadas durante este periodo y refuerzan su autocuidado.",
+    analogy: "Como el invierno: no es un castigo, es una estación natural. Los árboles pierden hojas para conservar energía y brotar más fuertes en primavera. Los Tres Desafíos funcionan igual — te preparan para un periodo de crecimiento posterior.",
+  },
 };
 
 export type GlossaryKey = keyof typeof GLOSSARY;

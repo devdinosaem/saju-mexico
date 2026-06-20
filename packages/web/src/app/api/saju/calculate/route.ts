@@ -8,6 +8,7 @@ import {
   calculateMajorFortunes, calculateYearlyFortunes, calculateMonthlyFortunes,
   analyzeYongShin, STRENGTH_KOREAN, STRENGTH_SPANISH, ELEMENT_KOREAN,
   analyzeRelations,
+  calculateSamjae, getSamjaeYearsAround,
 } from "saju-engine";
 
 import { saveSaju, getSaju } from "@/lib/store";
@@ -148,6 +149,8 @@ export async function POST(req: NextRequest) {
         day: SPIRIT_STAR_KOREAN[spirits.day],
         hour: SPIRIT_STAR_KOREAN[spirits.hour],
       },
+      samjae: calculateSamjae(p.year.branch, currentYear),
+      samjaeYears: getSamjaeYearsAround(p.year.branch, currentYear),
       unknownTime: !!unknownTime,
       createdAt: new Date().toISOString(),
     };

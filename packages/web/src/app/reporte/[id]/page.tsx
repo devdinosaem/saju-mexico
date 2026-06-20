@@ -20,6 +20,8 @@ interface SajuData {
   yongShin: { element: string; elementSpanish: string; elementKorean: string };
   majorFortunes: { direction: string; startAge: number; fortunes: { age: number; ganZhi: string; stemTenGod: string; branchTenGod: string; phase: string }[] };
   yearlyFortune?: { year: number; age: number; ganZhi: string; stemTenGod: string; branchTenGod: string; phase: string };
+  samjae?: { isActive: boolean; phase?: string; phaseSpanish?: string; startYear: number; endYear: number; descriptionSpanish: string };
+  samjaeYears?: { year: number; phase: string }[];
   report?: { sections: ReportSection[]; generatedAt: string };
 }
 
@@ -320,6 +322,65 @@ export default function ReportePage() {
             </section>
           );
         })()}
+
+        {/* ═══ 삼재 (三災) ═══ */}
+        {data.samjae && (
+          <section className="px-5 py-8 border-t border-white/5">
+            <h2 className="font-serif text-xl font-bold mb-2">⚠️ Los Tres Desafíos (삼재)</h2>
+            <ConceptCard termKey="samjae" />
+
+            <div className={`rounded-2xl p-5 border mb-4 ${data.samjae.isActive ? "bg-red-500/5 border-red-500/20" : "bg-bg-card border-white/5"}`}>
+              <p className={`text-sm font-semibold mb-3 ${data.samjae.isActive ? "text-red-400" : "text-green-400"}`}>
+                {data.samjae.isActive
+                  ? `⚠️ ${data.samjae.descriptionSpanish}`
+                  : `🛡️ No estás en un periodo de Tres Desafíos`
+                }
+              </p>
+
+              {/* 삼재 타임라인 */}
+              {data.samjaeYears && data.samjaeYears.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-xs text-text-muted mb-2">Tu ciclo de Tres Desafíos:</p>
+                  <div className="flex gap-1 flex-wrap">
+                    {data.samjaeYears.map((sy) => {
+                      const currentYear = new Date().getFullYear();
+                      const isCurrent = sy.year === currentYear;
+                      return (
+                        <span key={sy.year} className={`text-xs px-2.5 py-1 rounded-full font-mono ${
+                          isCurrent ? "bg-red-500/20 text-red-400 font-bold border border-red-500/30" :
+                          sy.phase === "peak" ? "bg-red-500/10 text-red-400" :
+                          "bg-bg-surface text-text-muted"
+                        }`}>
+                          {sy.year}
+                          {isCurrent && " ←"}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
+                <p>
+                  <strong className="text-text-primary">¿Qué hacer durante los Tres Desafíos?</strong>
+                </p>
+                <div className="grid grid-cols-1 gap-2">
+                  <div className="bg-bg-surface/30 rounded-lg p-3">
+                    <p className="text-xs font-semibold text-red-400 mb-1">❌ Evitar:</p>
+                    <p className="text-xs text-text-secondary">Inversiones riesgosas, cambios laborales impulsivos, cirugías no urgentes, mudanzas innecesarias, préstamos grandes</p>
+                  </div>
+                  <div className="bg-bg-surface/30 rounded-lg p-3">
+                    <p className="text-xs font-semibold text-green-400 mb-1">✅ Reforzar:</p>
+                    <p className="text-xs text-text-secondary">Chequeos médicos regulares, ahorro, fortalecer relaciones cercanas, actividades de tu Elemento de Poder ({data.yongShin?.elementSpanish}), meditación y autocuidado</p>
+                  </div>
+                </div>
+                <p className="text-xs text-text-muted italic">
+                  Nota: Los Tres Desafíos no son una sentencia — son una señal para ser más consciente y cuidadoso. Muchas personas atraviesan estos periodos sin problemas siguiendo las recomendaciones.
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ═══ FOOTER ═══ */}
         <section className="px-5 py-12 text-center border-t border-gold/10">

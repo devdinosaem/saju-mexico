@@ -21,6 +21,15 @@ interface SajuData {
   dayMaster: { element: string; elementSpanish: string; korean: string; stem: string };
   strength: { level: string; levelSpanish: string; score: number };
   yongShin: { element: string; elementSpanish: string };
+  samjae: {
+    isActive: boolean;
+    phase?: string;
+    phaseSpanish?: string;
+    startYear: number;
+    endYear: number;
+    descriptionSpanish: string;
+  };
+  samjaeYears: { year: number; phase: string }[];
   majorFortunes: {
     direction: string;
     startAge: number;
@@ -345,6 +354,80 @@ export default function ResultadoPage() {
             </div>
           </div>
         </section>
+
+        {/* ═══ 삼재 (三災) ═══ */}
+        {data.samjae && (
+          <section className="px-5 py-6">
+            <ConceptCard termKey="samjae" compact />
+            <div className={`rounded-2xl p-5 border ${data.samjae.isActive ? "bg-red-500/5 border-red-500/20" : "bg-bg-card border-white/5"}`}>
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-2xl">{data.samjae.isActive ? "⚠️" : "🛡️"}</span>
+                <div>
+                  <h2 className="font-serif text-lg font-bold">
+                    {data.samjae.isActive ? "Los Tres Desafíos" : "Los Tres Desafíos"}
+                    <span className="text-text-muted text-xs ml-2">(삼재)</span>
+                  </h2>
+                  <p className={`text-sm ${data.samjae.isActive ? "text-red-400" : "text-green-400"}`}>
+                    {data.samjae.isActive
+                      ? data.samjae.descriptionSpanish
+                      : `No estás en un periodo de Tres Desafíos`
+                    }
+                  </p>
+                </div>
+              </div>
+
+              {data.samjae.isActive ? (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { y: data.samjae.startYear, phase: "entering", label: "Entrada", icon: "🌊" },
+                      { y: data.samjae.startYear + 1, phase: "peak", label: "Máximo", icon: "🔥" },
+                      { y: data.samjae.startYear + 2, phase: "leaving", label: "Salida", icon: "🌿" },
+                    ].map((p) => (
+                      <div key={p.y} className={`rounded-xl p-2 text-center text-xs ${
+                        data.samjae.phase === p.phase ? "bg-red-500/10 border border-red-500/30 font-bold" : "bg-bg-surface/30"
+                      }`}>
+                        <p className="text-lg mb-0.5">{p.icon}</p>
+                        <p>{p.y}</p>
+                        <p className="text-text-muted">{p.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-text-secondary text-xs leading-relaxed mt-3">
+                    Este periodo no es de &quot;mala suerte&quot; — es un ciclo natural de purificación. Los coreanos lo usan como señal para reforzar la salud, evitar riesgos financieros innecesarios y fortalecer relaciones.
+                  </p>
+                  <div className="mt-2 relative">
+                    <p className="text-text-secondary text-xs leading-relaxed blur-content">
+                      Tu reporte incluye recomendaciones específicas para navegar este periodo con éxito, incluyendo los meses más delicados y las acciones de protección según tu Elemento de Poder.
+                    </p>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
+                        🔒 Guía completa en el reporte
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-text-secondary text-xs leading-relaxed mb-2">
+                    Tu próximo periodo de Tres Desafíos será en <strong className="text-text-primary">{data.samjae.startYear}-{data.samjae.endYear}</strong>. Conocer estas fechas de antemano te da años de ventaja para prepararte.
+                  </p>
+                  {data.samjaeYears && data.samjaeYears.length > 0 && (
+                    <div className="flex gap-1 flex-wrap mt-2">
+                      {data.samjaeYears.map((sy) => (
+                        <span key={sy.year} className={`text-xs px-2 py-0.5 rounded-full ${
+                          sy.phase === "peak" ? "bg-red-500/15 text-red-400" : "bg-bg-surface text-text-muted"
+                        }`}>
+                          {sy.year}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
         {/* ═══ 운명의 짝 프로필 카드 ═══ */}
         <section className="px-5 py-6">

@@ -11,3 +11,5 @@ export type { TenGod, TenGodEntry, TenGodCount, TenGodResult } from './types.js'
 export type { TwelvePhase, TwelvePhasesResult } from './twelve-phases.js';
 export type { TwelveSpiritStar, SpiritStarResult, SpecialStarsResult } from './spirit-stars.js';
 export { TEN_GOD_KOREAN, TEN_GOD_HANJA, TEN_GOD_SPANISH } from './types.js';
+export { calculateSamjae, getSamjaeYearsAround } from './samjae.js';
+export type { SamjaeInfo } from './samjae.js';

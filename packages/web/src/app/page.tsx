@@ -349,6 +349,58 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ═══ DESAFÍOS: 삼재 소개 ═══ */}
+        <section className="px-5 py-12">
+          <h2 className="font-serif text-2xl font-bold text-center mb-2">
+            Los <span className="text-gradient-gold">Tres Desafíos</span> (삼재)
+          </h2>
+          <p className="text-text-secondary text-sm text-center mb-8">
+            Cada 12 años, un ciclo de 3 años de pruebas llega a tu vida. ¿Sabes cuándo es el tuyo?
+          </p>
+
+          <div className="bg-bg-card rounded-2xl p-5 border border-red-500/10">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-2xl">⚠️</span>
+              <div>
+                <p className="font-semibold text-sm">Un concepto que los coreanos se toman muy en serio</p>
+                <p className="text-text-muted text-xs">78% evita inversiones grandes durante este periodo</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              <div className="bg-bg-surface/50 rounded-xl p-3 text-center">
+                <p className="text-amber text-lg mb-1">🌊</p>
+                <p className="text-xs font-semibold">Año 1</p>
+                <p className="text-text-muted text-xs">Entrada</p>
+              </div>
+              <div className="bg-bg-surface/50 rounded-xl p-3 text-center border border-red-500/20">
+                <p className="text-red-400 text-lg mb-1">🔥</p>
+                <p className="text-xs font-semibold">Año 2</p>
+                <p className="text-text-muted text-xs">Punto máximo</p>
+              </div>
+              <div className="bg-bg-surface/50 rounded-xl p-3 text-center">
+                <p className="text-green-400 text-lg mb-1">🌿</p>
+                <p className="text-xs font-semibold">Año 3</p>
+                <p className="text-text-muted text-xs">Salida</p>
+              </div>
+            </div>
+
+            <p className="text-text-secondary text-xs leading-relaxed mb-3">
+              No es &quot;mala suerte&quot; — es un ciclo natural de purificación, como el invierno
+              para los árboles. <strong className="text-text-primary">Saber cuándo llega te permite
+              prepararte</strong>: reforzar tu salud, evitar riesgos financieros
+              innecesarios, y fortalecer tus relaciones.
+            </p>
+
+            <button
+              onClick={() => setShowForm(true)}
+              className="text-gold text-sm font-semibold hover:underline"
+            >
+              🔮 ¿Estás en un periodo de Tres Desafíos? Descúbrelo →
+            </button>
+          </div>
+        </section>
+
         {/* ═══ CÓMO FUNCIONA ═══ */}
         <section className="px-5 py-12">
           <h2 className="font-serif text-2xl font-bold text-center mb-8">
