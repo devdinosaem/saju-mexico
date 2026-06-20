@@ -187,6 +187,40 @@ export default function ResultadoPage() {
           </div>
         </section>
 
+        {/* ═══ 오행 궁합 (Compatible/Conflicto) ═══ */}
+        {(() => {
+          const compat = getCompatibleElement(data.dayMaster.element);
+          const clash = getClashingElement(data.dayMaster.element);
+          return (
+            <section className="px-5 py-6">
+              <h2 className="font-serif text-xl font-bold mb-1">Tu compatibilidad elemental</h2>
+              <p className="text-text-secondary text-xs mb-4">Basada en tu elemento natal: {data.dayMaster.elementSpanish}</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-bg-card rounded-2xl p-4 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xl">{compat.emoji}</span>
+                    <div>
+                      <p className="text-xs text-green-400">♥ Armonía</p>
+                      <p className="text-sm font-semibold">{compat.spanish}</p>
+                    </div>
+                  </div>
+                  <p className="text-text-muted text-xs">{compat.reason}</p>
+                </div>
+                <div className="bg-bg-card rounded-2xl p-4 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xl">{clash.emoji}</span>
+                    <div>
+                      <p className="text-xs text-amber">✕ Tensión</p>
+                      <p className="text-sm font-semibold">{clash.spanish}</p>
+                    </div>
+                  </div>
+                  <p className="text-text-muted text-xs">{clash.reason}</p>
+                </div>
+              </div>
+            </section>
+          );
+        })()}
+
         {/* ═══ 일간 요약 (무료, 짧은 버전) ═══ */}
         <section className="px-5 py-6">
           <ConceptCard termKey="dayMaster" compact />
@@ -425,83 +459,50 @@ export default function ResultadoPage() {
         {/* ═══ 삼재 (三災) ═══ */}
         {data.samjae && (
           <section className="px-5 py-6">
-            <ConceptCard termKey="samjae" compact />
-            <div className={`rounded-2xl p-5 border ${data.samjae.isActive ? "bg-red-500/5 border-red-500/20" : "bg-bg-card border-white/5"}`}>
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-2xl">{data.samjae.isActive ? "⚠️" : "🛡️"}</span>
-                <div>
-                  <h2 className="font-serif text-lg font-bold">
-                    {data.samjae.isActive ? "Los Tres Calamidades" : "Los Tres Calamidades"}
-                    <span className="text-text-muted text-xs ml-2">(삼재)</span>
-                  </h2>
-                  <p className={`text-sm ${data.samjae.isActive ? "text-red-400" : "text-green-400"}`}>
-                    {data.samjae.isActive
-                      ? data.samjae.descriptionSpanish
-                      : `No estás en un periodo de Tres Calamidades`
-                    }
-                  </p>
-                </div>
-              </div>
+            <h2 className="font-serif text-xl font-bold mb-1">Tres Calamidades (삼재)</h2>
+            <p className="text-text-secondary text-xs mb-4">Ciclo de precaución que llega cada 9 años</p>
+            <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
+              <p className={`text-sm mb-3 ${data.samjae.isActive ? "text-amber" : "text-text-secondary"}`}>
+                {data.samjae.isActive
+                  ? `Ciclo activo: ${data.samjae.startYear}-${data.samjae.endYear}`
+                  : "No estás en un ciclo de Tres Calamidades"
+                }
+              </p>
 
-              {data.samjae.isActive ? (
-                <div className="space-y-2">
-                  <div className="grid grid-cols-3 gap-2">
-                    {[
-                      { y: data.samjae.startYear, phase: "entering", label: "Entrada", icon: "🌊" },
-                      { y: data.samjae.startYear + 1, phase: "peak", label: "Máximo", icon: "🔥" },
-                      { y: data.samjae.startYear + 2, phase: "leaving", label: "Salida", icon: "🌿" },
-                    ].map((p) => (
-                      <div key={p.y} className={`rounded-xl p-2 text-center text-xs ${
-                        data.samjae.phase === p.phase ? "bg-red-500/10 border border-red-500/30 font-bold" : "bg-bg-surface/30"
-                      }`}>
-                        <p className="text-lg mb-0.5">{p.icon}</p>
-                        <p>{p.y}</p>
-                        <p className="text-text-muted">{p.label}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-text-secondary text-xs leading-relaxed mt-3">
-                    三災 significa literalmente &quot;tres desastres&quot;. Los coreanos lo consideran el periodo más peligroso del ciclo vital — se evitan inversiones, cirugías, mudanzas y cambios arriesgados durante estos 3 años.
-                  </p>
-                  <div className="mt-2 relative">
-                    <p className="text-text-secondary text-xs leading-relaxed blur-content">
-                      Tu reporte incluye recomendaciones específicas para navegar este periodo con éxito, incluyendo los meses más delicados y las acciones de protección según tu Elemento de Poder.
-                    </p>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
-                        🔒 Guía completa en el reporte
-                      </span>
+              {data.samjae.isActive && (
+                <div className="flex gap-2 mb-3">
+                  {[
+                    { y: data.samjae.startYear, phase: "entering", label: "Entrada" },
+                    { y: data.samjae.startYear + 1, phase: "peak", label: "Máximo" },
+                    { y: data.samjae.startYear + 2, phase: "leaving", label: "Salida" },
+                  ].map((p) => (
+                    <div key={p.y} className={`flex-1 rounded-xl py-2 text-center text-xs ${
+                      data.samjae.phase === p.phase ? "bg-gold/10 border border-gold/20 text-gold font-semibold" : "bg-bg-surface/30 text-text-muted"
+                    }`}>
+                      <p className="font-mono">{p.y}</p>
+                      <p>{p.label}</p>
                     </div>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <p className="text-text-secondary text-xs leading-relaxed mb-2">
-                    Tus Tres Calamidades no están activas ahora. Pero, ¿sabes exactamente cuándo llega tu próximo ciclo?
-                  </p>
-                  <div className="relative mt-2">
-                    <div className="blur-content">
-                      <p className="text-text-secondary text-xs mb-2">
-                        Tu próximo periodo: {data.samjae.startYear}-{data.samjae.endYear}
-                      </p>
-                      {data.samjaeYears && data.samjaeYears.length > 0 && (
-                        <div className="flex gap-1 flex-wrap">
-                          {data.samjaeYears.map((sy) => (
-                            <span key={sy.year} className="text-xs px-2 py-0.5 rounded-full bg-bg-surface text-text-muted">
-                              {sy.year}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
-                        🔓 Descubrir cuándo llegan →
-                      </span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               )}
+
+              <p className="text-text-secondary text-xs leading-relaxed">
+                En Corea, durante este periodo se evitan inversiones grandes, cirugías no urgentes y cambios arriesgados.
+              </p>
+
+              <div className="mt-3 relative">
+                <p className="text-text-secondary text-xs leading-relaxed blur-content">
+                  {data.samjae.isActive
+                    ? "Recomendaciones específicas para navegar este periodo según tu Elemento de Poder..."
+                    : `Próximo ciclo: ${data.samjae.startYear}-${data.samjae.endYear}. Fechas y guía de preparación...`
+                  }
+                </p>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
+                    🔓 Ver detalles en el reporte →
+                  </span>
+                </div>
+              </div>
             </div>
           </section>
         )}
