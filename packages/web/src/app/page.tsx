@@ -365,9 +365,9 @@ export default function LandingPage() {
             // 2028-2030 삼재: 寅午戌 그룹
             // 寅(호랑이): 1986, 1998, 2010 / 午(말): 1990, 2002 / 戌(개): 1994, 2006
             const cycles = [
-              { range: [2025, 2027], birthYears: [1987, 1991, 1995, 1999, 2003, 2007, 2011] },
-              { range: [2028, 2030], birthYears: [1986, 1990, 1994, 1998, 2002, 2006, 2010] },
-              { range: [2031, 2033], birthYears: [1989, 1993, 1997, 2001, 2005, 2009] },
+              { range: [2025, 2027], birthYears: [1975, 1979, 1983, 1987, 1991, 1995, 1999, 2003, 2007, 2011] },
+              { range: [2028, 2030], birthYears: [1974, 1978, 1982, 1986, 1990, 1994, 1998, 2002, 2006, 2010] },
+              { range: [2031, 2033], birthYears: [1977, 1981, 1985, 1989, 1993, 1997, 2001, 2005, 2009] },
             ];
             const current = cycles.find(c => year >= c.range[0] && year <= c.range[1]);
             const next = cycles.find(c => c.range[0] > year) || cycles[0];
