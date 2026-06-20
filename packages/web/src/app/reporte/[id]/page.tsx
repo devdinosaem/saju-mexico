@@ -104,9 +104,15 @@ function ReportePage() {
         <section className="px-5 pt-8 pb-4 text-center border-b border-gold/10">
           <p className="text-gold text-xs tracking-[0.3em] uppercase mb-2">✦ Reporte Saju Completo ✦</p>
           <h1 className="font-serif text-2xl font-bold mb-1">{data.name}</h1>
-          <p className="text-text-secondary text-sm">
+          <p className="text-text-secondary text-sm mb-3">
             {data.birth.day}/{data.birth.month}/{data.birth.year} · {data.birth.hour}:{String(data.birth.minute).padStart(2, "0")} · {data.birth.city}
           </p>
+          <a
+            href={`/card/${data.id}`}
+            className="inline-flex items-center gap-1.5 bg-gold/10 text-gold text-xs font-medium px-4 py-1.5 rounded-full border border-gold/20 hover:bg-gold/20 transition-colors"
+          >
+            🎴 Descarga tu Tarjeta Saju →
+          </a>
         </section>
 
         {/* ═══ NAV ═══ */}
@@ -574,6 +580,21 @@ function ReportePage() {
             </div>
           </section>
         )}
+
+        {/* ═══ 사주 유형 카드 ═══ */}
+        <section className="px-5 py-8 border-t border-white/5">
+          <div className="gradient-mystic rounded-2xl p-6 border border-gold/10 text-center">
+            <p className="text-4xl mb-3">🎴</p>
+            <h2 className="font-serif text-xl font-bold mb-1">Tu Tarjeta Saju</h2>
+            <p className="text-text-secondary text-sm mb-4">Descarga tu tipo y compártelo en Instagram Stories</p>
+            <a
+              href={`/card/${data.id}`}
+              className="inline-block gradient-gold text-bg-primary text-sm font-bold py-3 px-8 rounded-xl"
+            >
+              📲 Ver y descargar mi tarjeta →
+            </a>
+          </div>
+        </section>
 
         {/* ═══ 공유 ═══ */}
         <section className="px-5 py-8 border-t border-white/5">
