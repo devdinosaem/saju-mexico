@@ -513,10 +513,6 @@ export default function ResultadoPage() {
           <div className="bg-bg-card rounded-2xl p-5 border border-gold/20 relative overflow-hidden">
             <div className="space-y-3 text-sm">
               <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-text-secondary">Estatura</span>
-                <span>1█ █ cm</span>
-              </div>
-              <div className="flex justify-between py-2 border-b border-white/5">
                 <span className="text-text-secondary">Personalidad</span>
                 <span className="blur-content">Amable, introvertido</span>
               </div>
@@ -536,25 +532,21 @@ export default function ResultadoPage() {
           </div>
 
           <h2 className="font-serif text-xl font-bold text-center mt-8 mb-6">
-            ⚠️ <span className="text-red-400">Tu Persona de Cuidado</span>
+            ⚠️ <span className="text-red-400">La persona que más daño te hará</span>
           </h2>
           <div className="bg-bg-card rounded-2xl p-5 border border-red-500/20 relative overflow-hidden">
             <div className="space-y-3 text-sm">
               <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-text-secondary">Estatura</span>
-                <span className="blur-content">1██ cm</span>
-              </div>
-              <div className="flex justify-between py-2 border-b border-white/5">
                 <span className="text-text-secondary">Personalidad</span>
-                <span className="blur-content">Manipulador, ESTJ</span>
+                <span className="blur-content">Manipulador, controlador</span>
               </div>
               <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-text-secondary">Peligro</span>
+                <span className="text-text-secondary">Tipo de daño</span>
                 <span className="blur-content">Pérdida financiera</span>
               </div>
               <div className="flex justify-between py-2">
                 <span className="text-text-secondary">Cuándo aparece</span>
-                <span className="blur-content">2028</span>
+                <span className="blur-content">20██</span>
               </div>
             </div>
           </div>

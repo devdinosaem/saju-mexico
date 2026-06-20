@@ -368,7 +368,6 @@ export default function LandingPage() {
               <span className="text-gold font-semibold text-sm uppercase tracking-wider">Tu Pareja Destinada</span>
             </div>
             <div className="space-y-3 text-sm">
-              <div className="flex justify-between"><span className="text-text-secondary">Estatura:</span><span>17█ cm</span></div>
               <div className="flex justify-between"><span className="text-text-secondary">Personalidad:</span><span className="blur-content">Amable, responsable</span></div>
               <div className="flex justify-between"><span className="text-text-secondary">Profesión:</span><span className="blur-content">Ingeniero de sistemas</span></div>
               <div className="flex justify-between"><span className="text-text-secondary">Cuándo:</span><span className="blur-content">Noviembre 2027</span></div>
