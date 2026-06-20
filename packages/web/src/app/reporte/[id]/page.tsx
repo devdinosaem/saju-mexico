@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState, useRef, Suspense } from "react";
+import { useParams, useSearchParams } from "next/navigation";
 import { ConceptCard, TermTooltip } from "@/components/term-tooltip";
 import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement } from "@/lib/translations";
 
@@ -39,8 +39,18 @@ const YONGSHIN_GUIDE: Record<string, { colors: string; direction: string; number
   water: { colors: "Azul, Negro, Gris oscuro", direction: "Norte", numbers: "1, 6", activities: "Natación, meditación, lectura nocturna", foods: "Mariscos, sopa de miso, alimentos salados", crystal: "Aguamarina, Labradorita" },
 };
 
-export default function ReportePage() {
+export default function ReportePageWrapper() {
+  return (
+    <Suspense>
+      <ReportePage />
+    </Suspense>
+  );
+}
+
+function ReportePage() {
   const { id } = useParams();
+  const searchParams = useSearchParams();
+  const isShared = searchParams.get("shared") === "1";
   const [data, setData] = useState<SajuData | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -580,6 +590,39 @@ export default function ReportePage() {
           </section>
         )}
 
+        {/* ═══ 공유 ═══ */}
+        <section className="px-5 py-8 border-t border-white/5">
+          <h2 className="font-serif text-xl font-bold text-center mb-4">
+            📱 Comparte tu Saju
+          </h2>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/reporte/${data.id}?shared=1`;
+                navigator.clipboard.writeText(url);
+                alert("¡Enlace copiado!");
+              }}
+              className="flex-1 bg-bg-card border border-white/10 rounded-xl py-3 text-sm font-medium hover:border-gold/30 transition-colors"
+            >
+              🔗 Copiar enlace
+            </button>
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/reporte/${data.id}?shared=1`;
+                const text = `Acabo de descubrir mi destino con el Saju coreano — ¡es increíblemente preciso! Descubre el tuyo:`;
+                if (navigator.share) {
+                  navigator.share({ title: `Saju de ${data.name}`, text, url });
+                } else {
+                  window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, "_blank");
+                }
+              }}
+              className="flex-1 bg-green-600/20 border border-green-500/20 rounded-xl py-3 text-sm font-medium text-green-400 hover:bg-green-600/30 transition-colors"
+            >
+              💬 WhatsApp
+            </button>
+          </div>
+        </section>
+
         {/* ═══ FOOTER ═══ */}
         <section className="px-5 py-12 text-center border-t border-gold/10">
           <div className="font-serif text-lg italic text-text-secondary leading-relaxed mb-4">
@@ -592,6 +635,27 @@ export default function ReportePage() {
             Generado el {new Date(report.generatedAt).toLocaleDateString("es-MX")}
           </p>
         </section>
+
+        {/* ═══ 공유 접속 시 CTA ═══ */}
+        {isShared && (
+          <section className="px-5 py-8 border-t border-gold/10">
+            <div className="gradient-mystic rounded-2xl p-6 border border-gold/10 text-center">
+              <p className="text-gold text-sm mb-2">✦ ¿Quieres conocer tu propio Saju? ✦</p>
+              <h3 className="font-serif text-xl font-bold mb-3">
+                Descubre qué dice tu fecha de nacimiento
+              </h3>
+              <p className="text-text-secondary text-sm mb-4">
+                Más de 500 años de tradición coreana, ahora disponible para ti
+              </p>
+              <a
+                href="/"
+                className="inline-block gradient-gold text-bg-primary font-bold text-base py-3 px-8 rounded-xl"
+              >
+                ✦ DESCUBRE TU SAJU ✦
+              </a>
+            </div>
+          </section>
+        )}
 
         <div className="h-8" />
       </div>
