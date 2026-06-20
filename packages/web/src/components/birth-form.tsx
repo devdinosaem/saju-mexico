@@ -174,9 +174,9 @@ export function BirthForm() {
             required
             value={form.month}
             onChange={(e) => update("month", e.target.value)}
-            className="bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm text-text-primary focus:border-gold/40 focus:outline-none appearance-none"
+            className={`bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm focus:border-gold/40 focus:outline-none appearance-none ${form.month ? "text-text-primary" : "text-text-muted"}`}
           >
-            <option value="" disabled>Mes</option>
+            <option value="" disabled hidden>Mes</option>
             {["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"].map((m, i) => (
               <option key={m} value={i + 1}>{m}</option>
             ))}
