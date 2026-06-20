@@ -18,9 +18,22 @@ interface SajuData {
     hour: { stem: string; branch: string; animal: string; element: string };
   };
   fiveElements: Record<string, number>;
-  dayMaster: { element: string; elementSpanish: string };
-  strength: { level: string; score: number };
-  yongShin: { element: string };
+  dayMaster: { element: string; elementSpanish: string; korean: string; stem: string };
+  strength: { level: string; levelSpanish: string; score: number };
+  yongShin: { element: string; elementSpanish: string };
+  majorFortunes: {
+    direction: string;
+    startAge: number;
+    fortunes: { age: number; ganZhi: string; stemTenGod: string; branchTenGod: string; phase: string }[];
+  };
+  yearlyFortune: {
+    year: number;
+    age: number;
+    ganZhi: string;
+    stemTenGod: string;
+    branchTenGod: string;
+    phase: string;
+  };
 }
 
 const ELEMENT_COLORS: Record<string, string> = {
@@ -189,6 +202,106 @@ export default function ResultadoPage() {
             </div>
           </div>
         </section>
+
+        {/* ═══ 대운 시기 분석 + 현시점 사주 ═══ */}
+        {data.majorFortunes && data.yearlyFortune && (() => {
+          const birthYear = data.birth.year;
+          const currentYear = new Date().getFullYear();
+          const currentAge = currentYear - birthYear + 1;
+          const currentFortune = data.majorFortunes.fortunes.find(
+            (f) => currentAge >= f.age && currentAge < f.age + 10
+          );
+          const nextFortune = data.majorFortunes.fortunes.find(
+            (f) => f.age > currentAge
+          );
+
+          return (
+            <section className="px-5 py-6">
+              <ConceptCard termKey="majorFortune" compact />
+
+              <h2 className="font-serif text-xl font-bold mb-2">
+                📊 Tu momento actual
+              </h2>
+              <p className="text-text-secondary text-xs mb-4">
+                Dónde estás ahora y qué viene después
+              </p>
+
+              {/* 현재 대운 */}
+              {currentFortune && (
+                <div className="bg-bg-card rounded-2xl p-5 border border-gold/20 mb-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-gold text-sm">✦ AHORA</span>
+                    <span className="text-text-muted text-xs">
+                      Gran Estación actual ({currentFortune.age}-{currentFortune.age + 9} años)
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="text-center">
+                      <p className="font-serif text-2xl text-gold">{currentFortune.ganZhi.split("(")[0]}</p>
+                      <p className="text-xs text-text-muted">{currentFortune.stemTenGod}</p>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold mb-1">Tienes {currentAge} años — estás en la estación de {currentFortune.stemTenGod}</p>
+                      <p className="text-text-secondary text-xs leading-relaxed">
+                        {getFortuneDescription(currentFortune.stemTenGod)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-xs text-text-muted">
+                    Fase energética: <span className="text-gold">{currentFortune.phase}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* 다음 대운 전환 시기 */}
+              {nextFortune && (
+                <div className="bg-bg-card rounded-2xl p-4 border border-white/5 mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-amber text-sm">⏭️ PRÓXIMO CAMBIO</span>
+                  </div>
+                  <p className="text-sm">
+                    A los <strong className="text-text-primary">{nextFortune.age} años</strong> ({birthYear + nextFortune.age}), entrarás en una nueva Gran Estación:
+                    <span className="text-gold font-semibold"> {nextFortune.ganZhi.split("(")[0]}</span> — {nextFortune.stemTenGod}
+                  </p>
+                  <p className="text-text-secondary text-xs mt-1 leading-relaxed">
+                    {getFortuneDescription(nextFortune.stemTenGod)}
+                  </p>
+                </div>
+              )}
+
+              {/* 올해 세운 */}
+              <div className="bg-bg-card rounded-2xl p-4 border border-white/5">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-amber text-sm">📅 {data.yearlyFortune.year}</span>
+                  <span className="text-text-muted text-xs">Tu fortuna este año</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-center">
+                    <p className="font-serif text-xl text-gold">{data.yearlyFortune.ganZhi}</p>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm">
+                      Energía dominante: <span className="text-gold">{data.yearlyFortune.stemTenGod}/{data.yearlyFortune.branchTenGod}</span>
+                    </p>
+                    <p className="text-text-secondary text-xs">
+                      Fase: <span className="text-gold">{data.yearlyFortune.phase}</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-3 relative">
+                  <p className="text-text-secondary text-xs leading-relaxed blur-content">
+                    Este año trae una energía de transformación importante para ti. Los meses de mayor oportunidad serán aquellos donde tu Elemento de Poder se fortalezca...
+                  </p>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
+                      🔒 Detalles en el reporte completo
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          );
+        })()}
 
         {/* ═══ 3대 사건 예고 ═══ */}
         <section className="px-5 py-6">
@@ -411,4 +524,20 @@ export default function ResultadoPage() {
       <PurchaseToast />
     </main>
   );
+}
+
+function getFortuneDescription(tenGod: string): string {
+  const descriptions: Record<string, string> = {
+    "비견": "Periodo de independencia y competencia. Buen momento para emprender por tu cuenta, pero cuidado con los conflictos por ego.",
+    "겁재": "Energía intensa de acción. Grandes oportunidades, pero también riesgo de pérdidas impulsivas. Controla tus gastos.",
+    "식신": "Época de creatividad y disfrute. Tu expresión artística florece. Buen momento para crear, cocinar, escribir.",
+    "상관": "Periodo de rebeldía productiva. Cuestionas todo y encuentras caminos nuevos. Cuidado con los conflictos laborales.",
+    "편재": "¡Ciclo de oportunidades financieras! Dinero puede llegar de fuentes inesperadas. Buen momento para inversiones.",
+    "정재": "Estabilidad financiera. Ahorro y crecimiento constante. Buen momento para comprar casa o invertir a largo plazo.",
+    "편관": "Periodo de desafíos y presión externa. Puede haber cambios bruscos, pero te fortalecen. Cuidado con la salud.",
+    "정관": "Época de reconocimiento y autoridad. Ascensos, títulos, responsabilidades. Tu esfuerzo finalmente se nota.",
+    "편인": "Periodo de búsqueda espiritual y aprendizaje alternativo. Intuición aguda. Buen momento para estudiar algo nuevo.",
+    "정인": "Época de protección y sabiduría. Mentores aparecen en tu vida. Buen momento para estudiar y crecer internamente.",
+  };
+  return descriptions[tenGod] || "Un periodo de transformación importante que merece análisis detallado en tu reporte completo.";
 }
