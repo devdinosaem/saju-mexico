@@ -207,9 +207,9 @@ function ReportePage() {
             </div>
             <div className="mb-4">
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-blue-400">Muy Débil</span>
-                <span className="text-green-400">Equilibrado</span>
-                <span className="text-red-400">Muy Fuerte</span>
+                <span className="text-blue-400">Sensible</span>
+                <span className="text-green-400">Armónica</span>
+                <span className="text-red-400">Dominante</span>
               </div>
               <div className="h-4 bg-bg-surface rounded-full overflow-hidden relative">
                 <div className="h-full w-full bg-gradient-to-r from-blue-500 via-green-400 to-red-500 opacity-30" />
@@ -225,8 +225,8 @@ function ReportePage() {
                 <p className="text-text-primary font-semibold">Las que te apoyan</p>
                 <p className="text-xs text-text-secondary mt-1">
                   {data.strength?.score >= 0
-                    ? "Tienes suficiente apoyo — no necesitas buscar más aliados"
-                    : "Necesitas rodearte de personas y elementos que te fortalezcan"
+                    ? "Tu energía se sostiene por sí sola — naces con fuerza interior"
+                    : "Tu sensibilidad te conecta con energías que potencian tu talento"
                   }
                 </p>
               </div>
@@ -235,8 +235,8 @@ function ReportePage() {
                 <p className="text-text-primary font-semibold">Las que te empujan</p>
                 <p className="text-xs text-text-secondary mt-1">
                   {data.strength?.score >= 0
-                    ? "Puedes manejar la presión externa con facilidad"
-                    : "La presión externa puede sentirse abrumadora a veces"
+                    ? "Tu fortaleza convierte los desafíos en impulso"
+                    : "Tu receptividad transforma los desafíos en aprendizaje"
                   }
                 </p>
               </div>
@@ -584,14 +584,13 @@ function ReportePage() {
         {/* ═══ 사주 유형 카드 ═══ */}
         <section className="px-5 py-8 border-t border-white/5">
           <div className="gradient-mystic rounded-2xl p-6 border border-gold/10 text-center">
-            <p className="text-4xl mb-3">🎴</p>
-            <h2 className="font-serif text-xl font-bold mb-1">Tu Tarjeta Saju</h2>
-            <p className="text-text-secondary text-sm mb-4">Descarga tu tipo y compártelo en Instagram Stories</p>
+            <h2 className="font-serif text-2xl font-bold mb-1">Tu Tarjeta Saju</h2>
+            <p className="text-text-secondary text-sm mb-4">Descarga tu tipo y compártelo en Stories</p>
             <a
               href={`/card/${data.id}`}
-              className="inline-block gradient-gold text-bg-primary text-sm font-bold py-3 px-8 rounded-xl"
+              className="inline-block gradient-gold text-bg-primary font-serif text-sm font-semibold tracking-wide py-3 px-8 rounded-xl"
             >
-              📲 Ver y descargar mi tarjeta →
+              Ver mi tarjeta &gt;
             </a>
           </div>
         </section>

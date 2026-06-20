@@ -27,11 +27,11 @@ export const PHASE_ES: Record<string, string> = {
 };
 
 export const STRENGTH_ES: Record<string, string> = {
-  "태강": "Muy Fuerte",
-  "신강": "Fuerte",
-  "중화": "Equilibrado",
-  "신약": "Débil",
-  "태약": "Muy Débil",
+  "태강": "Alma Dominante",
+  "신강": "Alma Poderosa",
+  "중화": "Alma Armónica",
+  "신약": "Alma Receptiva",
+  "태약": "Alma Sensible",
 };
 
 export const ELEMENT_ES: Record<string, string> = {

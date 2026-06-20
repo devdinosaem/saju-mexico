@@ -272,10 +272,10 @@ export default function ResultadoPage() {
             </div>
             <p className="text-text-secondary text-xs leading-relaxed">
               {data.strength.score >= 1
-                ? "Tu energía personal es fuerte — eres alguien que lidera naturalmente y toma decisiones con confianza. Pero cuidado con la rigidez."
+                ? "Alma Poderosa — lideras con decisión natural y tu confianza inspira a quienes te rodean."
                 : data.strength.score >= -1
-                ? "Tu energía está equilibrada — tienes la rara capacidad de adaptarte sin perder tu esencia."
-                : "Tu energía personal es receptiva — eres adaptable y empático, pero necesitas rodearte de las personas y elementos correctos para brillar."
+                ? "Alma Armónica — tienes el raro don del equilibrio, adaptándote sin perder tu esencia."
+                : "Alma Sensible — tu capacidad de percibir y sentir es extraordinaria, un talento que pocos tienen."
               }
             </p>
           </div>

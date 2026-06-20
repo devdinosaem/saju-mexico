@@ -81,7 +81,6 @@ export default function CardPage() {
   const compat = getCompatibleElement(data.dayMaster.element);
   const clash = getClashingElement(data.dayMaster.element);
   const total = Object.values(data.fiveElements).reduce((a, b) => a + b, 0) || 1;
-  const yy = data.dayMaster.yinYang === "yang" ? "Yang" : "Yin";
 
   return (
     <main className="flex flex-col items-center min-h-screen bg-bg-primary py-6 px-4">
@@ -106,7 +105,7 @@ export default function CardPage() {
           <div className="text-center mb-3">
             <p className="text-5xl mb-2">{sajuType.emoji}</p>
             <h2 className="font-serif text-xl font-bold text-gradient-gold">&quot;{sajuType.name}&quot;</h2>
-            <p className="text-text-secondary text-xs mt-1">{data.dayMaster.elementSpanish} {yy} · {data.strength.levelSpanish}</p>
+            <p className="text-text-secondary text-xs mt-1">{data.dayMaster.elementSpanish} · {data.strength.levelSpanish}</p>
           </div>
 
           <div className="w-12 h-px bg-gold/30 mx-auto mb-3" />
@@ -175,16 +174,16 @@ export default function CardPage() {
         <button
           onClick={handleShare}
           disabled={saving}
-          className="w-full gradient-gold text-bg-primary rounded-xl py-3.5 text-sm font-bold transition-transform active:scale-[0.98] disabled:opacity-50"
+          className="w-full gradient-gold text-bg-primary rounded-xl py-3.5 font-serif text-sm font-semibold tracking-wide transition-transform active:scale-[0.98] disabled:opacity-50"
         >
-          {saving ? "Preparando..." : "📲 Subir a Instagram Stories"}
+          {saving ? "Preparando..." : "Compartir en Stories"}
         </button>
         <button
           onClick={handleDownload}
           disabled={saving}
-          className="w-full bg-bg-card border border-white/10 rounded-xl py-3.5 text-sm font-medium hover:border-gold/30 transition-colors disabled:opacity-50"
+          className="w-full bg-bg-card border border-white/10 rounded-xl py-3.5 font-serif text-sm tracking-wide hover:border-gold/30 transition-colors disabled:opacity-50"
         >
-          📥 Guardar imagen
+          Guardar imagen
         </button>
       </div>
     </main>

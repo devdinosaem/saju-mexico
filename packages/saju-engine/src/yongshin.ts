@@ -28,8 +28,8 @@ export const STRENGTH_KOREAN: Record<StrengthLevel, string> = {
 };
 
 export const STRENGTH_SPANISH: Record<StrengthLevel, string> = {
-  taegang: 'Muy Fuerte', singang: 'Fuerte', junghwa: 'Equilibrado',
-  sinyak: 'Débil', taeyak: 'Muy Débil',
+  taegang: 'Alma Dominante', singang: 'Alma Poderosa', junghwa: 'Alma Armónica',
+  sinyak: 'Alma Receptiva', taeyak: 'Alma Sensible',
 };
 
 export interface StrengthAnalysis {
