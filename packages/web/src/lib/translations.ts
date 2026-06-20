@@ -59,11 +59,11 @@ export const SPIRIT_STAR_ES: Record<string, string> = {
   "월살": "Alerta Mensual",            // 월간 경고
   "망신살": "Alerta de Reputación",    // 명예의 경고
   "육해살": "Alerta de Conflicto",     // 갈등의 경고
-  // 영향력 (Influencia) — 중립/긍정
-  "장성살": "Influencia de [Comando]",           // [지휘]의 영향력
-  "반안살": "Influencia de [Estabilidad]",       // [안정]의 영향력
-  "역마살": "Influencia de [Vagabundeo]",        // [방랑]의 영향력
-  "화개살": "Influencia de [Espiritualidad]",    // [영성]의 영향력
+  // 기운 (Energía) — 중립/긍정
+  "장성살": "Energía de [Comando]",              // [지휘]의 기운
+  "반안살": "Energía de [Estabilidad]",          // [안정]의 기운
+  "역마살": "Energía de [Vagabundeo]",           // [방랑]의 기운
+  "화개살": "Energía de [Espiritualidad]",       // [영성]의 기운
 };
 
 // ── 특수 신살 (特殊神殺) ──
