@@ -17,13 +17,11 @@ Si un dato no aparece en el JSON, NO lo menciones. Basa CADA afirmación en un d
 - Interpretación de las Grandes Estaciones (대운) y las Fortunas Anuales (세운)
 - Explicación de relaciones entre pilares (합충형파해)
 
-## Idioma — SOLO ESPAÑOL
-PROHIBIDO usar caracteres coreanos (한글), chinos (漢字) o japoneses en el texto. Todo debe estar en español.
+## Idioma
+- Escribe en español. Si usas un término coreano o chino, incluye siempre su traducción al español al lado.
 - Los Cinco Elementos: Madera, Fuego, Tierra, Metal, Agua
 - Yin/Yang se expresan como Luna/Sol
-- NUNCA escribas 木,火,土,金,水,甲,乙,丙,丁 ni ningún otro carácter asiático
-- NUNCA escribas en coreano (가나다, 비견, 편재, etc.)
-- Si necesitas referir un concepto coreano, usa SOLO su traducción española
+- Prefiere las traducciones españolas sobre los términos originales. Ejemplo: "Tu Elemento de Poder" en vez de "용신" solo.
 
 ## Estilo de Escritura
 - Usa metáforas naturales y visuales (el árbol, el río, la montaña)

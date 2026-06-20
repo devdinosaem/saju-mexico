@@ -1,40 +1,34 @@
 import type { ReportInput, SajuReport, ReportSection } from './types.js';
 import { SYSTEM_PROMPT, CALL1_PROMPT, CALL2_PROMPT, CALL3_PROMPT, CALL4_PROMPT } from './prompts.js';
 
-const KOREAN_SPANISH: Record<string, string> = {
+const DICT: Record<string, string> = {
+  // 십신 (의미가 명확한 1:1 대응)
   "비견": "Autonomía", "겁재": "Apuesta Audaz", "식신": "Creatividad", "상관": "Talento Rebelde",
   "편재": "Fortuna Inesperada", "정재": "Sueldo Fijo", "편관": "Carisma", "정관": "Ascenso",
   "편인": "Intuición", "정인": "Protección",
-  "갑": "Jiǎ", "을": "Yǐ", "병": "Bǐng", "정": "Dīng", "무": "Wù",
-  "기": "Jǐ", "경": "Gēng", "신": "Xīn", "임": "Rén", "계": "Guǐ",
-  "목": "Madera", "화": "Fuego", "토": "Tierra", "금": "Metal", "수": "Agua",
+  // 오행
+  "목(木)": "Madera", "화(火)": "Fuego", "토(土)": "Tierra", "금(金)": "Metal", "수(水)": "Agua",
+  // 강약
   "용신": "Elemento de Poder", "기신": "Elemento Adverso",
   "신강": "Alma Poderosa", "신약": "Alma Sensible", "태강": "Alma Dominante", "태약": "Alma Sensible", "중화": "Alma Armónica",
+  // 운
   "대운": "Gran Estación", "세운": "Fortuna Anual", "월운": "Fortuna Mensual",
-  "합": "armonía", "충": "choque", "형": "tensión", "파": "ruptura", "해": "daño",
-};
-
-const HANJA_SPANISH: Record<string, string> = {
-  "木": "Madera", "火": "Fuego", "土": "Tierra", "金": "Metal", "水": "Agua",
-  "甲": "Madera Sol", "乙": "Madera Luna", "丙": "Fuego Sol", "丁": "Fuego Luna",
-  "戊": "Tierra Sol", "己": "Tierra Luna", "庚": "Metal Sol", "辛": "Metal Luna",
-  "壬": "Agua Sol", "癸": "Agua Luna",
-  "子": "Rata", "丑": "Buey", "寅": "Tigre", "卯": "Conejo", "辰": "Dragón", "巳": "Serpiente",
-  "午": "Caballo", "未": "Cabra", "申": "Mono", "酉": "Gallo", "戌": "Perro", "亥": "Cerdo",
+  // 관계 (2자 이상 복합어만)
+  "천간합": "Unión Celestial", "천간충": "Choque Celestial",
+  "육합": "Armonía Dual", "삼합": "Triple Armonía", "방합": "Armonía Direccional",
+  "삼형살": "Triple Tensión", "상충": "Choque",
+  // 한자 (의미가 명확한 것만)
   "用神": "Elemento de Poder", "忌神": "Elemento Adverso",
   "日柱": "Pilar del Día", "四柱": "Cuatro Pilares",
+  "木": "Madera", "火": "Fuego", "土": "Tierra", "金": "Metal", "水": "Agua",
 };
 
-function sanitizeAsianChars(text: string): string {
+function sanitizeWithDict(text: string): string {
   let result = text;
-  for (const [kr, es] of Object.entries(KOREAN_SPANISH)) {
-    result = result.replace(new RegExp(kr, 'g'), es);
+  const sorted = Object.entries(DICT).sort((a, b) => b[0].length - a[0].length);
+  for (const [original, translated] of sorted) {
+    result = result.replace(new RegExp(original, 'g'), translated);
   }
-  for (const [ch, es] of Object.entries(HANJA_SPANISH)) {
-    result = result.replace(new RegExp(ch, 'g'), es);
-  }
-  result = result.replace(/[가-힯]+/g, '');
-  result = result.replace(/\(\s*\)/g, '');
   return result;
 }
 
@@ -141,8 +135,8 @@ export class DeepSeekReportGenerator {
     }
 
     for (const section of allSections) {
-      section.content = sanitizeAsianChars(section.content);
-      section.title = sanitizeAsianChars(section.title);
+      section.content = sanitizeWithDict(section.content);
+      section.title = sanitizeWithDict(section.title);
     }
 
     return { sections: allSections, usage };
