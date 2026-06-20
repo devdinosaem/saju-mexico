@@ -6,7 +6,7 @@ import { trackEvent, EVENTS } from "@/components/analytics";
 import { generateElementInsight } from "@/lib/saju-types";
 import { ConceptCard, TermTooltip } from "@/components/term-tooltip";
 import { MarkdownContent, getSectionIcon } from "@/components/markdown-content";
-import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement } from "@/lib/translations";
+import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement, ganZhiToElements } from "@/lib/translations";
 
 interface ReportSection {
   title: string;
@@ -356,7 +356,7 @@ function ReportePage() {
                       <div className={`w-px self-stretch ${isCurrent ? "bg-gold" : "bg-gold/20"}`} />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <p className={`text-sm font-semibold ${isCurrent ? "text-gold" : ""}`}>{f.ganZhi}</p>
+                          <p className={`text-sm font-semibold ${isCurrent ? "text-gold" : ""}`}>{ganZhiToElements(f.ganZhi)}</p>
                           {isCurrent && <span className="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded-full">← AHORA</span>}
                         </div>
                         <p className="text-xs text-text-secondary">{translateTenGod(f.stemTenGod)} · {translatePhase(f.phase)}</p>
@@ -376,7 +376,7 @@ function ReportePage() {
                   <h3 className="font-serif text-lg font-bold mb-3">📅 Tu año {data.yearlyFortune.year}</h3>
                   <div className="flex items-center gap-4 mb-3">
                     <div className="text-center">
-                      <p className="font-serif text-2xl text-gold">{data.yearlyFortune.ganZhi}</p>
+                      <p className="font-serif text-lg text-gold">{ganZhiToElements(data.yearlyFortune.ganZhi)}</p>
                     </div>
                     <div className="flex-1">
                       <p className="text-sm">
@@ -407,7 +407,7 @@ function ReportePage() {
                     </div>
                     <p className="text-sm">
                       A los <strong className="text-text-primary">{nextFortune.age} años</strong> ({birthYear + nextFortune.age}), entrarás en una nueva Gran Estación:
-                      <span className="text-gold font-semibold"> {nextFortune.ganZhi.split("(")[0]}</span> — {translateTenGod(nextFortune.stemTenGod)}
+                      <span className="text-gold font-semibold"> {ganZhiToElements(nextFortune.ganZhi)}</span> — {translateTenGod(nextFortune.stemTenGod)}
                     </p>
                     <p className="text-text-secondary text-xs mt-2 leading-relaxed">
                       {getFortuneDescription(nextFortune.stemTenGod)}
