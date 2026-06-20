@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
-import { getSajuType, getInsightLine } from "@/lib/saju-types";
+import { getSajuType } from "@/lib/saju-types";
 import { getCompatibleElement, getClashingElement } from "@/lib/translations";
 
 interface SajuData {
@@ -78,7 +78,6 @@ export default function CardPage() {
   }
 
   const sajuType = getSajuType(data.dayMaster.element, data.dayMaster.yinYang, data.strength.score);
-  const insight = getInsightLine(data.dayMaster.element, data.strength.score, data.fiveElements);
   const compat = getCompatibleElement(data.dayMaster.element);
   const clash = getClashingElement(data.dayMaster.element);
   const total = Object.values(data.fiveElements).reduce((a, b) => a + b, 0) || 1;
@@ -117,28 +116,29 @@ export default function CardPage() {
             &quot;{sajuType.tagline}&quot;
           </p>
 
-          {/* 인사이트 1줄 */}
-          <p className="text-center text-text-muted text-xs leading-relaxed mb-4 px-2">
-            {insight}
+          {/* 성격 공감 1줄 */}
+          <p className="text-center text-text-secondary text-xs leading-relaxed mb-5 px-2">
+            {sajuType.personality}
           </p>
 
-          {/* 오행 수직 바 */}
-          <div className="flex gap-2 justify-center mb-4">
+          {/* 오행 수평 바 */}
+          <div className="space-y-1.5 mb-5 px-2">
             {[
-              { key: "wood", label: "木" },
-              { key: "fire", label: "火" },
-              { key: "earth", label: "土" },
-              { key: "metal", label: "金" },
-              { key: "water", label: "水" },
+              { key: "wood", label: "Madera", hanja: "木", emoji: "🌳" },
+              { key: "fire", label: "Fuego", hanja: "火", emoji: "🔥" },
+              { key: "earth", label: "Tierra", hanja: "土", emoji: "⛰️" },
+              { key: "metal", label: "Metal", hanja: "金", emoji: "⚔️" },
+              { key: "water", label: "Agua", hanja: "水", emoji: "💧" },
             ].map((el) => {
               const pct = Math.round(((data.fiveElements[el.key] || 0) / total) * 100);
               return (
-                <div key={el.key} className="flex flex-col items-center gap-0.5">
-                  <div className="w-8 h-16 bg-bg-surface rounded-full overflow-hidden flex flex-col-reverse">
-                    <div className="w-full rounded-full" style={{ height: `${Math.max(pct, 5)}%`, backgroundColor: ELEMENT_COLORS[el.key] }} />
+                <div key={el.key} className="flex items-center gap-1.5">
+                  <span className="text-xs w-4 shrink-0">{el.emoji}</span>
+                  <span className="text-[10px] text-text-muted w-12 shrink-0">{el.label}</span>
+                  <div className="flex-1 h-1.5 bg-bg-surface rounded-full overflow-hidden">
+                    <div className="h-full rounded-full" style={{ width: `${Math.max(pct, 3)}%`, backgroundColor: ELEMENT_COLORS[el.key] }} />
                   </div>
-                  <span className="text-[10px] text-text-muted">{el.label}</span>
-                  <span className="text-[10px] font-mono" style={{ color: ELEMENT_COLORS[el.key] }}>{pct}%</span>
+                  <span className="text-[10px] font-mono w-8 shrink-0 text-right" style={{ color: ELEMENT_COLORS[el.key] }}>{pct}%</span>
                 </div>
               );
             })}
