@@ -414,47 +414,95 @@ export default function ResultadoPage() {
         })()}
 
         {/* ═══ 3대 사건 예고 ═══ */}
-        <section className="px-5 py-6">
-          <div className="gradient-mystic rounded-2xl p-6 border border-gold/10">
-            <h2 className="font-serif text-xl font-bold text-center mb-6">
-              🔮 3 eventos que cambiarán
-              <br />
-              <span className="text-gradient-gold">la vida de {data.name}</span>
-            </h2>
+        {data.majorFortunes && (() => {
+          const currentYear = new Date().getFullYear();
+          const birthYear = data.birth.year;
+          const fortunes = data.majorFortunes.fortunes;
 
-            <div className="space-y-4">
-              <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
-                <div className="flex items-center gap-2 mb-2">
-                  <span>⚡</span>
-                  <span className="text-gold font-mono text-sm">
-                    {["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"][Math.floor(Math.random() * 12)]} 2027
-                  </span>
-                </div>
-                <p className="text-sm">&quot;Un encuentro inesperado que cambiará tu perspectiva del amor para siempre...&quot;</p>
-              </div>
+          // 과거 대운 중 가장 최근 (과거 이벤트 1개)
+          const pastFortune = [...fortunes]
+            .filter(f => birthYear + f.age + 10 <= currentYear)
+            .pop();
 
-              <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
-                <div className="flex items-center gap-2 mb-2">
-                  <span>💰</span>
-                  <span className="text-gold font-mono text-sm">██ 20██</span>
-                </div>
-                <p className="text-sm">
-                  &quot;Una cantidad <span className="blur-content">importante de dinero</span> llegará de una fuente inesperada&quot;
-                </p>
-              </div>
+          // 미래 대운 중 연애/결혼 관련 (정재/편재/정관/편관)
+          const loveTenGods = ["정재", "편재", "정관", "편관"];
+          const loveFortune = fortunes.find(f =>
+            birthYear + f.age > currentYear && loveTenGods.includes(f.stemTenGod)
+          );
 
-              <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5 opacity-50">
-                <div className="flex items-center gap-2 mb-2">
-                  <span>⚠️</span>
-                  <span className="text-gold font-mono text-sm">████ 20██</span>
+          // 미래 대운 중 재물 관련 (편재/정재/식신)
+          const wealthTenGods = ["편재", "정재", "식신"];
+          const wealthFortune = fortunes.find(f =>
+            birthYear + f.age > currentYear &&
+            wealthTenGods.includes(f.stemTenGod) &&
+            f !== loveFortune
+          );
+
+          // 폴백: 미래 대운 아무거나
+          const futureFortunes = fortunes.filter(f => birthYear + f.age > currentYear);
+          const fallbackLove = loveFortune || futureFortunes[0];
+          const fallbackWealth = wealthFortune || futureFortunes[1] || futureFortunes[0];
+
+          return (
+            <section className="px-5 py-6">
+              <div className="gradient-mystic rounded-2xl p-6 border border-gold/10">
+                <h2 className="font-serif text-xl font-bold text-center mb-6">
+                  🔮 3 eventos que cambiarán
+                  <br />
+                  <span className="text-gradient-gold">la vida de {data.name}</span>
+                </h2>
+
+                <div className="space-y-4">
+                  {/* 1. 과거 이벤트 (공개) */}
+                  {pastFortune && (
+                    <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span>⏪</span>
+                        <span className="text-gold font-mono text-sm">{birthYear + pastFortune.age}-{birthYear + pastFortune.age + 9}</span>
+                        <span className="text-text-muted text-xs">(ya ocurrió)</span>
+                      </div>
+                      <p className="text-sm">
+                        Un periodo de <strong className="text-text-primary">{translateTenGod(pastFortune.stemTenGod)}</strong> marcó esta etapa de tu vida — ¿lo recuerdas?
+                      </p>
+                    </div>
+                  )}
+
+                  {/* 2. 미래: 연애/결혼 (일부 블러) */}
+                  {fallbackLove && (
+                    <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span>💕</span>
+                        <span className="text-gold font-mono text-sm">{birthYear + fallbackLove.age}-{birthYear + fallbackLove.age + 9}</span>
+                      </div>
+                      <p className="text-sm">
+                        Un encuentro que cambiará tu perspectiva del amor.
+                        <span className="blur-content"> La persona llegará cuando menos lo esperes, en un contexto que jamás imaginaste.</span>
+                      </p>
+                    </div>
+                  )}
+
+                  {/* 3. 미래: 재물 (블러) */}
+                  {fallbackWealth && (
+                    <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span>💰</span>
+                        <span className="text-gold font-mono text-sm blur-content">{birthYear + fallbackWealth.age}-{birthYear + fallbackWealth.age + 9}</span>
+                      </div>
+                      <p className="text-sm blur-content">
+                        Tu ciclo de mayor prosperidad financiera. Una oportunidad que podría cambiar tu nivel de vida por completo.
+                      </p>
+                      <div className="mt-2 flex justify-center">
+                        <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
+                          🔓 Ver fechas exactas en el reporte
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <p className="text-sm blur-content">
-                  &quot;Un momento de precaución que deberías conocer con anticipación&quot;
-                </p>
               </div>
-            </div>
-          </div>
-        </section>
+            </section>
+          );
+        })()}
 
         {/* ═══ 삼재 (三災) ═══ */}
         {data.samjae && (
