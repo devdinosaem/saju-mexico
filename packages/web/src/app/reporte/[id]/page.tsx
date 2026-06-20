@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, Suspense } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { ConceptCard, TermTooltip } from "@/components/term-tooltip";
+import { MarkdownContent, getSectionIcon } from "@/components/markdown-content";
 import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement } from "@/lib/translations";
 
 interface ReportSection {
@@ -135,7 +136,7 @@ function ReportePage() {
                 onClick={() => scrollTo(i)}
                 className="px-3 py-1.5 text-xs rounded-full bg-bg-card hover:bg-bg-surface text-text-secondary hover:text-gold transition-colors whitespace-nowrap"
               >
-                {i + 1}
+                {getSectionIcon(i)} {i + 1}
               </button>
             ))}
           </div>
@@ -211,19 +212,23 @@ function ReportePage() {
         {/* ═══ 리포트 섹션들 ═══ */}
         {report.sections.map((section, i) => {
           const conceptKey = getSectionConcept(section.title);
+          const icon = getSectionIcon(i);
           return (
             <section
               key={i}
               ref={(el) => { sectionRefs.current[i] = el; }}
               className="px-5 py-8 border-t border-white/5"
             >
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-gold font-mono text-xs">{String(i + 1).padStart(2, "0")}</span>
-                <h2 className="font-serif text-xl font-bold">{section.title}</h2>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">{icon}</span>
+                <div>
+                  <span className="text-gold font-mono text-xs">Cap.{String(i + 1).padStart(2, "0")}</span>
+                  <h2 className="font-serif text-xl font-bold">{section.title}</h2>
+                </div>
               </div>
               {conceptKey && <ConceptCard termKey={conceptKey} compact />}
-              <div className="text-text-secondary text-sm leading-relaxed whitespace-pre-line">
-                {section.content}
+              <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
+                <MarkdownContent content={section.content} sectionIndex={i} />
               </div>
             </section>
           );
