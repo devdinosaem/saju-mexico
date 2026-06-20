@@ -195,6 +195,71 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ═══ PREVIEW: 대운 타임라인 ═══ */}
+        <section className="px-5 py-12">
+          <h2 className="font-serif text-2xl font-bold text-center mb-2">
+            Conoce las <span className="text-gradient-gold">Grandes Estaciones</span> de tu vida
+          </h2>
+          <p className="text-text-secondary text-sm text-center mb-8">
+            El Saju divide tu vida en ciclos de 10 años — cada uno con su propia energía
+          </p>
+
+          <div className="bg-bg-card rounded-2xl p-5 border border-gold/10 relative overflow-hidden">
+            {/* 타임라인 미리보기 */}
+            <div className="space-y-3">
+              {[
+                { age: "1-10", label: "Formación", emoji: "🌱", desc: "Tu personalidad se forma", visible: true },
+                { age: "11-20", label: "Descubrimiento", emoji: "🔥", desc: "Encuentras tu camino", visible: true },
+                { age: "21-30", label: "Construcción", emoji: "🏗️", desc: "Construyes tu futuro", visible: true },
+                { age: "31-40", label: "???", emoji: "🔒", desc: "Periodo de gran cambio...", visible: false },
+                { age: "41-50", label: "???", emoji: "🔒", desc: "Tu mayor oportunidad...", visible: false },
+              ].map((period) => (
+                <div key={period.age} className={`flex items-center gap-3 ${!period.visible ? "opacity-40" : ""}`}>
+                  <div className="w-12 text-right">
+                    <span className="text-gold font-mono text-xs">{period.age}</span>
+                  </div>
+                  <div className="w-px h-8 bg-gold/20" />
+                  <span className="text-lg">{period.emoji}</span>
+                  <div className="flex-1">
+                    <p className={`text-sm font-semibold ${!period.visible ? "blur-content" : ""}`}>{period.label}</p>
+                    <p className={`text-text-secondary text-xs ${!period.visible ? "blur-content" : ""}`}>{period.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-white/5 text-center">
+              <p className="text-text-secondary text-xs mb-2">
+                Tu reporte incluye los <strong className="text-text-primary">10 periodos</strong> de tu vida con fechas exactas,
+                la energía de cada década, y cuándo llegan tus mejores oportunidades.
+              </p>
+              <button
+                onClick={() => setShowForm(true)}
+                className="text-gold text-sm font-semibold hover:underline"
+              >
+                🔓 Ver mi línea de tiempo completa →
+              </button>
+            </div>
+          </div>
+
+          {/* 현시점 분석 미리보기 */}
+          <div className="mt-4 gradient-mystic rounded-2xl p-5 border border-gold/10">
+            <h3 className="font-serif text-lg font-bold mb-3 text-center">
+              ¿En qué momento de tu vida estás <span className="text-gradient-gold">ahora</span>?
+            </h3>
+            <p className="text-text-secondary text-sm text-center leading-relaxed">
+              El Saju no solo te dice quién eres — te dice <strong className="text-text-primary">en qué
+              punto del camino estás</strong>. ¿Estás en un ciclo de crecimiento o de cosecha?
+              ¿Se acerca un cambio de energía importante? Tu reporte te lo dice con fechas exactas.
+            </p>
+            <div className="flex justify-center gap-4 mt-4 text-xs text-text-muted">
+              <span>✦ Tu Gran Estación actual</span>
+              <span>✦ Cuándo cambia</span>
+              <span>✦ Qué viene después</span>
+            </div>
+          </div>
+        </section>
+
         {/* ═══ PREVIEW: 운명의 짝 카드 ═══ */}
         <section className="px-5 py-12">
           <h2 className="font-serif text-2xl font-bold text-center mb-2">

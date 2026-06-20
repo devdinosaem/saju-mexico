@@ -18,7 +18,8 @@ interface SajuData {
   fiveElements: Record<string, number>;
   strength: { levelSpanish: string; levelKorean: string; score: number };
   yongShin: { element: string; elementSpanish: string; elementKorean: string };
-  majorFortunes: { direction: string; startAge: number; fortunes: { age: number; ganZhi: string; stemTenGod: string; phase: string }[] };
+  majorFortunes: { direction: string; startAge: number; fortunes: { age: number; ganZhi: string; stemTenGod: string; branchTenGod: string; phase: string }[] };
+  yearlyFortune?: { year: number; age: number; ganZhi: string; stemTenGod: string; branchTenGod: string; phase: string };
   report?: { sections: ReportSection[]; generatedAt: string };
 }
 
@@ -248,33 +249,77 @@ export default function ReportePage() {
         </section>
 
         {/* ═══ 대운 타임라인 ═══ */}
-        {data.majorFortunes && (
-          <section className="px-5 py-8 border-t border-white/5">
-            <h2 className="font-serif text-xl font-bold mb-2">📊 Línea de Tiempo de tu Vida</h2>
-            <ConceptCard termKey="majorFortune" compact />
-            <p className="text-text-secondary text-xs mb-4">
-              Dirección: {data.majorFortunes.direction === "forward" ? "Progresiva (순행)" : "Regresiva (역행)"} · Inicio: {data.majorFortunes.startAge} años
-            </p>
-            <div className="space-y-2">
-              {data.majorFortunes.fortunes.map((f, i) => {
-                const yearStart = data.birth.year + f.age;
-                return (
-                  <div key={i} className="flex gap-3 items-start">
-                    <div className="w-16 shrink-0 text-right">
-                      <span className="text-gold font-mono text-xs">{f.age}-{f.age + 9}</span>
-                      <p className="text-text-muted text-xs">{yearStart}</p>
+        {data.majorFortunes && (() => {
+          const currentYear = new Date().getFullYear();
+          const currentAge = currentYear - data.birth.year + 1;
+
+          return (
+            <section className="px-5 py-8 border-t border-white/5">
+              <h2 className="font-serif text-xl font-bold mb-2">📊 Línea de Tiempo de tu Vida</h2>
+              <ConceptCard termKey="majorFortune" compact />
+              <p className="text-text-secondary text-xs mb-4">
+                Dirección: {data.majorFortunes.direction === "forward" ? "Progresiva (순행)" : "Regresiva (역행)"} · Inicio: {data.majorFortunes.startAge} años
+              </p>
+
+              <div className="space-y-3">
+                {data.majorFortunes.fortunes.map((f, i) => {
+                  const yearStart = data.birth.year + f.age;
+                  const isCurrent = currentAge >= f.age && currentAge < f.age + 10;
+                  const isPast = currentAge >= f.age + 10;
+
+                  return (
+                    <div
+                      key={i}
+                      className={`flex gap-3 items-start rounded-xl p-3 transition-colors ${
+                        isCurrent ? "bg-gold/10 border border-gold/20" : isPast ? "opacity-50" : ""
+                      }`}
+                    >
+                      <div className="w-16 shrink-0 text-right">
+                        <span className={`font-mono text-xs ${isCurrent ? "text-gold font-bold" : "text-text-muted"}`}>
+                          {f.age}-{f.age + 9}
+                        </span>
+                        <p className="text-text-muted text-xs">{yearStart}</p>
+                      </div>
+                      <div className={`w-px self-stretch ${isCurrent ? "bg-gold" : "bg-gold/20"}`} />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className={`text-sm font-semibold ${isCurrent ? "text-gold" : ""}`}>{f.ganZhi}</p>
+                          {isCurrent && <span className="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded-full">← AHORA</span>}
+                        </div>
+                        <p className="text-xs text-text-secondary">{f.stemTenGod} · {f.phase}</p>
+                        <p className="text-xs text-text-muted mt-1 leading-relaxed">
+                          {getFortuneDescription(f.stemTenGod)}
+                        </p>
+                      </div>
                     </div>
-                    <div className="w-px bg-gold/20 self-stretch" />
-                    <div className="flex-1 pb-2">
-                      <p className="text-sm font-semibold">{f.ganZhi}</p>
-                      <p className="text-xs text-text-secondary">{f.stemTenGod} · {f.phase}</p>
+                  );
+                })}
+              </div>
+
+              {/* 올해 세운 */}
+              {data.yearlyFortune && (
+                <div className="mt-6 bg-bg-card rounded-2xl p-5 border border-gold/10">
+                  <ConceptCard termKey="yearlyFortune" compact />
+                  <h3 className="font-serif text-lg font-bold mb-3">📅 Tu año {data.yearlyFortune.year}</h3>
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="text-center">
+                      <p className="font-serif text-2xl text-gold">{data.yearlyFortune.ganZhi}</p>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm">
+                        Energía: <span className="text-gold font-semibold">{data.yearlyFortune.stemTenGod} / {data.yearlyFortune.branchTenGod}</span>
+                      </p>
+                      <p className="text-xs text-text-secondary">Fase: {data.yearlyFortune.phase}</p>
+                      <p className="text-xs text-text-muted mt-1 leading-relaxed">
+                        {getFortuneDescription(data.yearlyFortune.stemTenGod)}
+                      </p>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
+                </div>
+              )}
+            </section>
+          );
+        })()}
 
         {/* ═══ FOOTER ═══ */}
         <section className="px-5 py-12 text-center border-t border-gold/10">
@@ -308,4 +353,20 @@ function getSectionConcept(title: string): import("@/lib/glossary").GlossaryKey 
   if (t.includes("elemento de poder") || t.includes("용신")) return "yongShin";
   if (t.includes("estrellas") || t.includes("신살")) return "spiritStars";
   return null;
+}
+
+function getFortuneDescription(tenGod: string): string {
+  const descriptions: Record<string, string> = {
+    "비견": "Periodo de independencia y competencia. Buen momento para emprender por tu cuenta, pero cuidado con los conflictos por ego.",
+    "겁재": "Energía intensa de acción. Grandes oportunidades, pero también riesgo de pérdidas impulsivas. Controla tus gastos.",
+    "식신": "Época de creatividad y disfrute. Tu expresión artística florece. Buen momento para crear, cocinar, escribir.",
+    "상관": "Periodo de rebeldía productiva. Cuestionas todo y encuentras caminos nuevos. Cuidado con los conflictos laborales.",
+    "편재": "¡Ciclo de oportunidades financieras! Dinero puede llegar de fuentes inesperadas. Buen momento para inversiones.",
+    "정재": "Estabilidad financiera. Ahorro y crecimiento constante. Buen momento para comprar casa o invertir a largo plazo.",
+    "편관": "Periodo de desafíos y presión externa. Puede haber cambios bruscos, pero te fortalecen. Cuidado con la salud.",
+    "정관": "Época de reconocimiento y autoridad. Ascensos, títulos, responsabilidades. Tu esfuerzo finalmente se nota.",
+    "편인": "Periodo de búsqueda espiritual y aprendizaje alternativo. Intuición aguda. Buen momento para estudiar algo nuevo.",
+    "정인": "Época de protección y sabiduría. Mentores aparecen en tu vida. Buen momento para estudiar y crecer internamente.",
+  };
+  return descriptions[tenGod] || "Un periodo de transformación que merece análisis detallado.";
 }
