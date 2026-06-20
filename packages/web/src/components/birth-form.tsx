@@ -163,7 +163,7 @@ export function BirthForm() {
             max="2010"
             value={form.year}
             onChange={(e) => update("year", e.target.value)}
-            placeholder="Año"
+            placeholder="Año (1990)"
             className="bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-gold/40 focus:outline-none"
           />
           <select
@@ -172,7 +172,7 @@ export function BirthForm() {
             onChange={(e) => update("month", e.target.value)}
             className="bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm text-text-primary focus:border-gold/40 focus:outline-none appearance-none"
           >
-            <option value="">Mes</option>
+            <option value="" disabled>Mes</option>
             {["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"].map((m, i) => (
               <option key={m} value={i + 1}>{m}</option>
             ))}
@@ -184,7 +184,7 @@ export function BirthForm() {
             max="31"
             value={form.day}
             onChange={(e) => update("day", e.target.value)}
-            placeholder="Día"
+            placeholder="Día (15)"
             className="bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-gold/40 focus:outline-none"
           />
         </div>
