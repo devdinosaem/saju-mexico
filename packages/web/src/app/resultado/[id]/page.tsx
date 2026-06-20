@@ -6,6 +6,7 @@ import { CountdownTimer } from "@/components/countdown-timer";
 import { PurchaseToast } from "@/components/purchase-toast";
 import { ConceptCard } from "@/components/term-tooltip";
 import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement } from "@/lib/translations";
+import { trackEvent, EVENTS } from "@/components/analytics";
 
 interface SajuData {
   id: string;
@@ -656,6 +657,7 @@ export default function ResultadoPage() {
             disabled={purchasing}
             onClick={async () => {
               setPurchasing(true);
+              trackEvent(EVENTS.PAYMENT_START, { sajuId: id });
               try {
                 const res = await fetch("/api/payment/create", {
                   method: "POST",

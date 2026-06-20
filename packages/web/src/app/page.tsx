@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { BirthForm } from "@/components/birth-form";
+import { trackEvent, EVENTS } from "@/components/analytics";
 
 export default function LandingPage() {
   const [showForm, setShowForm] = useState(false);
@@ -560,7 +561,7 @@ export default function LandingPage() {
       <div className="fixed bottom-0 inset-x-0 z-40">
         <div className="max-w-[448px] mx-auto bg-bg-primary/95 backdrop-blur-lg border-t border-gold/10 px-5 py-4">
           <button
-            onClick={() => setShowForm(true)}
+            onClick={() => { trackEvent(EVENTS.CTA_CLICK, { location: "sticky_bottom" }); setShowForm(true); }}
             className="w-full gradient-gold text-bg-primary font-bold text-base py-4 rounded-xl animate-pulse-gold transition-transform active:scale-[0.98]"
           >
             ✦ DESCUBRE TU SAJU ✦

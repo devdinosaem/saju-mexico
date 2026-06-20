@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent, EVENTS } from "@/components/analytics";
 
 interface CityResult {
   name: string;
@@ -93,6 +94,7 @@ export function BirthForm() {
       return;
     }
     setLoading(true);
+    trackEvent(EVENTS.FORM_SUBMIT, { city: selectedCity.name, gender: form.gender, unknownTime });
 
     let hour24: number;
     if (unknownTime) {
