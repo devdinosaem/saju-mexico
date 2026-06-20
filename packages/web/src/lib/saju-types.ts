@@ -53,7 +53,7 @@ const TYPE_MAP: Record<string, Record<string, Record<Strength, SajuType>>> = {
   },
   metal: {
     yang: {
-      fuerte: { name: "La Espada", emoji: "⚔️", tagline: "Corta directo al punto, sin rodeos", keywords: ["Decidido", "Directo", "Justo"], personality: "Tu claridad mental es tu arma. Tomas decisiones con una precisión que pocos tienen." },
+      fuerte: { name: "La Espada", emoji: "💎", tagline: "Corta directo al punto, sin rodeos", keywords: ["Decidido", "Directo", "Justo"], personality: "Tu claridad mental es tu arma. Tomas decisiones con una precisión que pocos tienen." },
       equilibrado: { name: "El Escudo", emoji: "🛡️", tagline: "Defiende a los suyos sin dudar", keywords: ["Protector", "Leal", "Firme"], personality: "Tu sentido de justicia es inquebrantable. Tienes el coraje natural de proteger lo que importa." },
       sensible: { name: "La Aguja", emoji: "🪡", tagline: "Preciso donde otros son torpes", keywords: ["Detallista", "Preciso", "Hábil"], personality: "Tu ojo para el detalle es excepcional. Captas matices que hacen la diferencia entre bueno y perfecto." },
     },

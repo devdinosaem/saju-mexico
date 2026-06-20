@@ -150,7 +150,7 @@ export default function ResultadoPage() {
               { key: "wood", label: "Madera (木)", emoji: "🌳" },
               { key: "fire", label: "Fuego (火)", emoji: "🔥" },
               { key: "earth", label: "Tierra (土)", emoji: "⛰️" },
-              { key: "metal", label: "Metal (金)", emoji: "⚔️" },
+              { key: "metal", label: "Metal (金)", emoji: "💎" },
               { key: "water", label: "Agua (水)", emoji: "💧" },
             ].map((el) => {
               const count = data.fiveElements[el.key] || 0;
@@ -258,8 +258,8 @@ export default function ResultadoPage() {
             <div className="flex items-center gap-4 mb-3">
               <div className="flex-1">
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-text-secondary">Débil</span>
-                  <span className="text-text-secondary">Fuerte</span>
+                  <span className="text-text-secondary">Sensible</span>
+                  <span className="text-text-secondary">Dominante</span>
                 </div>
                 <div className="h-3 bg-bg-surface rounded-full overflow-hidden relative">
                   <div

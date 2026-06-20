@@ -369,11 +369,11 @@ export default function LandingPage() {
             <p className="text-gold text-xs font-semibold uppercase tracking-wider mb-3">Compatibilidad de los Cinco Elementos</p>
             <div className="space-y-2 text-xs">
               {[
-                { me: "🌳 Madera", good: "💧 Agua", bad: "⚔️ Metal", reason: "Agua nutre Madera · Metal la corta" },
+                { me: "🌳 Madera", good: "💧 Agua", bad: "💎 Metal", reason: "Agua nutre Madera · Metal la corta" },
                 { me: "🔥 Fuego", good: "🌳 Madera", bad: "💧 Agua", reason: "Madera alimenta Fuego · Agua lo apaga" },
                 { me: "⛰️ Tierra", good: "🔥 Fuego", bad: "🌳 Madera", reason: "Fuego fortalece Tierra · Madera la penetra" },
-                { me: "⚔️ Metal", good: "⛰️ Tierra", bad: "🔥 Fuego", reason: "Tierra genera Metal · Fuego lo funde" },
-                { me: "💧 Agua", good: "⚔️ Metal", bad: "⛰️ Tierra", reason: "Metal enriquece Agua · Tierra la absorbe" },
+                { me: "💎 Metal", good: "⛰️ Tierra", bad: "🔥 Fuego", reason: "Tierra genera Metal · Fuego lo funde" },
+                { me: "💧 Agua", good: "💎 Metal", bad: "⛰️ Tierra", reason: "Metal enriquece Agua · Tierra la absorbe" },
               ].map((row) => (
                 <div key={row.me} className="flex items-center gap-2 bg-bg-surface/30 rounded-lg p-2">
                   <span className="w-24 font-semibold">{row.me}</span>
@@ -497,9 +497,9 @@ export default function LandingPage() {
           </h2>
           <div className="space-y-4">
             {[
-              { name: "Car***@gmail.com", sign: "甲子 · Madera Yang", stars: 5, text: "Pensé que sería como cualquier horóscopo, pero la precisión de las fechas me dejó sin palabras. Exactamente en el mes que dijo, cambié de trabajo.", date: "Hace 3 días" },
-              { name: "Ana***@hotmail.com", sign: "丙午 · Fuego Yang", stars: 5, text: "Lo de la 'pareja destinada' sonaba a cuento, pero la descripción coincide EXACTAMENTE con mi novio actual. Casi da miedo.", date: "Hace 1 semana" },
-              { name: "Lui***@gmail.com", sign: "壬申 · Agua Yang", stars: 5, text: "Mi reporte de salud me dijo que cuidara el estómago. Literalmente una semana después me diagnosticaron gastritis. Ahora sigo todos los consejos.", date: "Hace 2 semanas" },
+              { name: "Car***@gmail.com", sign: "🌳 Alma Armónica", stars: 5, text: "Pensé que sería como cualquier horóscopo, pero la precisión de las fechas me dejó sin palabras. Exactamente en el mes que dijo, cambié de trabajo.", date: "Hace 3 días" },
+              { name: "Ana***@hotmail.com", sign: "🔥 Alma Poderosa", stars: 5, text: "Lo de la 'pareja destinada' sonaba a cuento, pero la descripción coincide EXACTAMENTE con mi novio actual. Casi da miedo.", date: "Hace 1 semana" },
+              { name: "Lui***@gmail.com", sign: "💧 Alma Sensible", stars: 5, text: "Mi reporte de salud me dijo que cuidara el estómago. Literalmente una semana después me diagnosticaron gastritis. Ahora sigo todos los consejos.", date: "Hace 2 semanas" },
             ].map((review) => (
               <div key={review.name} className="bg-bg-card rounded-2xl p-4 border border-white/5">
                 <div className="flex items-center justify-between mb-2">

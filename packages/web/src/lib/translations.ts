@@ -63,8 +63,8 @@ export function translatePhase(korean: string): string {
 }
 
 const ELEMENT_EMOJI: Record<string, string> = {
-  wood: "🌳", fire: "🔥", earth: "⛰️", metal: "⚔️", water: "💧",
-  Madera: "🌳", Fuego: "🔥", Tierra: "⛰️", Metal: "⚔️", Agua: "💧",
+  wood: "🌳", fire: "🔥", earth: "⛰️", metal: "💎", water: "💧",
+  Madera: "🌳", Fuego: "🔥", Tierra: "⛰️", Metal: "💎", Agua: "💧",
 };
 
 const GENERATES_ME: Record<string, string> = {
