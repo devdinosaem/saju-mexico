@@ -259,6 +259,101 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ═══ 삼재: 인생의 위험한 시기 ═══ */}
+        <section className="px-5 py-12">
+          <h2 className="font-serif text-2xl font-bold text-center mb-2">
+            ¿Sabes cuándo llegan los <span className="text-red-400">3 años más peligrosos</span> de tu vida?
+          </h2>
+          <p className="text-text-secondary text-sm text-center mb-8">
+            En Corea lo llaman 삼재 (三災) — &quot;tres desastres&quot;. Un ciclo de calamidades que llega cada 9 años
+          </p>
+
+          {(() => {
+            const year = new Date().getFullYear();
+            const cycles = [
+              { range: [2025, 2027], birthYears: [1975, 1979, 1983, 1987, 1991, 1995, 1999, 2003, 2007, 2011] },
+              { range: [2028, 2030], birthYears: [1974, 1978, 1982, 1986, 1990, 1994, 1998, 2002, 2006, 2010] },
+              { range: [2031, 2033], birthYears: [1977, 1981, 1985, 1989, 1993, 1997, 2001, 2005, 2009] },
+            ];
+            const current = cycles.find(c => year >= c.range[0] && year <= c.range[1]);
+            const next = cycles.find(c => c.range[0] > year) || cycles[0];
+            const active = current || null;
+
+            const phases = [
+              { icon: "⚡", label: "Calamidad de entrada", color: "text-amber" },
+              { icon: "🔥", label: "Calamidad máxima", color: "text-red-400" },
+              { icon: "🌪️", label: "Calamidad de salida", color: "text-red-300" },
+            ];
+            const startYear = active ? active.range[0] : next.range[0];
+            const targetBirthYears = active ? active.birthYears : next.birthYears;
+
+            return (
+              <div className="bg-bg-card rounded-2xl p-5 border border-red-500/15">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">🚨</span>
+                  <div>
+                    <p className="font-semibold text-sm text-red-400">
+                      {active
+                        ? `${year}: Las Tres Calamidades están activas`
+                        : `Próximo ciclo: ${next.range[0]}-${next.range[1]}`
+                      }
+                    </p>
+                    <p className="text-text-muted text-xs">
+                      Los coreanos consideran este periodo como el más peligroso de cada ciclo vital
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                  {phases.map((p, i) => {
+                    const phaseYear = startYear + i;
+                    const isCurrent = phaseYear === year;
+                    return (
+                      <div key={i} className={`bg-bg-surface/50 rounded-xl p-3 text-center ${isCurrent ? "border border-red-500/30 bg-red-500/8" : ""}`}>
+                        <p className={`${p.color} text-lg mb-1`}>{p.icon}</p>
+                        <p className={`text-xs font-bold ${isCurrent ? "text-red-400" : ""}`}>{phaseYear}</p>
+                        <p className="text-text-muted text-xs">{p.label}</p>
+                        {isCurrent && <p className="text-red-400 text-xs mt-0.5 font-bold">← AHORA</p>}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="bg-red-500/5 rounded-xl p-3 mb-4 border border-red-500/10">
+                  <p className="text-xs font-semibold text-red-400 mb-2">
+                    ⚠️ {active ? `${active.range[0]}-${active.range[1]}` : `${next.range[0]}-${next.range[1]}`} — ¿Naciste en uno de estos años?
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {targetBirthYears.map((by) => (
+                      <span key={by} className="bg-red-500/10 text-red-300 text-xs px-2.5 py-1 rounded-full font-mono font-semibold">
+                        {by}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-text-muted text-xs mt-2">
+                    Si naciste en uno de estos años, {active ? "estás" : "estarás"} en un periodo de Tres Calamidades
+                  </p>
+                </div>
+
+                <p className="text-text-secondary text-xs leading-relaxed mb-3">
+                  En Corea, las Tres Calamidades son <strong className="text-text-primary">tomadas con extrema
+                  seriedad</strong>. Durante estos 3 años, se evitan decisiones financieras grandes,
+                  cirugías no urgentes, mudanzas y cambios laborales arriesgados.
+                  Conocer las fechas exactas de tu ciclo te da <strong className="text-text-primary">años de ventaja
+                  para prepararte</strong>.
+                </p>
+
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="text-red-400 text-sm font-semibold hover:underline"
+                >
+                  🔮 ¿Cuándo llegan tus Tres Calamidades? Descúbrelo →
+                </button>
+              </div>
+            );
+          })()}
+        </section>
+
         {/* ═══ PREVIEW: 운명의 짝 카드 ═══ */}
         <section className="px-5 py-12">
           <h2 className="font-serif text-2xl font-bold text-center mb-2">
@@ -346,108 +441,6 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-        </section>
-
-        {/* ═══ DESAFÍOS: 삼재 소개 ═══ */}
-        <section className="px-5 py-12">
-          <h2 className="font-serif text-2xl font-bold text-center mb-2">
-            Las <span className="text-red-400">Tres Calamidades</span> (삼재)
-          </h2>
-          <p className="text-text-secondary text-sm text-center mb-8">
-            三災 significa literalmente &quot;tres desastres&quot;. Cada 9 años, un ciclo de 3 años de calamidades llega a tu vida.
-          </p>
-
-          {(() => {
-            const year = new Date().getFullYear();
-            // 삼재 그룹별 대상 출생연도 (20~40대 주요 사용층)
-            // 2025-2027 삼재: 亥卯未 그룹
-            // 亥(돼지): 1995, 2007 / 卯(토끼): 1987, 1999, 2011 / 未(양): 1991, 2003
-            // 2028-2030 삼재: 寅午戌 그룹
-            // 寅(호랑이): 1986, 1998, 2010 / 午(말): 1990, 2002 / 戌(개): 1994, 2006
-            const cycles = [
-              { range: [2025, 2027], birthYears: [1975, 1979, 1983, 1987, 1991, 1995, 1999, 2003, 2007, 2011] },
-              { range: [2028, 2030], birthYears: [1974, 1978, 1982, 1986, 1990, 1994, 1998, 2002, 2006, 2010] },
-              { range: [2031, 2033], birthYears: [1977, 1981, 1985, 1989, 1993, 1997, 2001, 2005, 2009] },
-            ];
-            const current = cycles.find(c => year >= c.range[0] && year <= c.range[1]);
-            const next = cycles.find(c => c.range[0] > year) || cycles[0];
-            const active = current || null;
-
-            const phases = [
-              { icon: "⚡", label: "Calamidad de entrada", color: "text-amber" },
-              { icon: "🔥", label: "Calamidad máxima", color: "text-red-400" },
-              { icon: "🌪️", label: "Calamidad de salida", color: "text-red-300" },
-            ];
-            const startYear = active ? active.range[0] : next.range[0];
-            const targetBirthYears = active ? active.birthYears : next.birthYears;
-
-            return (
-              <div className="bg-bg-card rounded-2xl p-5 border border-red-500/15">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">🚨</span>
-                  <div>
-                    <p className="font-semibold text-sm text-red-400">
-                      {active
-                        ? `${year}: Las Tres Calamidades están activas`
-                        : `Próximo ciclo: ${next.range[0]}-${next.range[1]}`
-                      }
-                    </p>
-                    <p className="text-text-muted text-xs">
-                      Los coreanos consideran este periodo como el más peligroso de cada ciclo vital
-                    </p>
-                  </div>
-                </div>
-
-                {/* 3년 타임라인 */}
-                <div className="grid grid-cols-3 gap-2 mb-4">
-                  {phases.map((p, i) => {
-                    const phaseYear = startYear + i;
-                    const isCurrent = phaseYear === year;
-                    return (
-                      <div key={i} className={`bg-bg-surface/50 rounded-xl p-3 text-center ${isCurrent ? "border border-red-500/30 bg-red-500/8" : ""}`}>
-                        <p className={`${p.color} text-lg mb-1`}>{p.icon}</p>
-                        <p className={`text-xs font-bold ${isCurrent ? "text-red-400" : ""}`}>{phaseYear}</p>
-                        <p className="text-text-muted text-xs">{p.label}</p>
-                        {isCurrent && <p className="text-red-400 text-xs mt-0.5 font-bold">← AHORA</p>}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* 대상 출생연도 */}
-                <div className="bg-red-500/5 rounded-xl p-3 mb-4 border border-red-500/10">
-                  <p className="text-xs font-semibold text-red-400 mb-2">
-                    ⚠️ {active ? `${active.range[0]}-${active.range[1]}` : `${next.range[0]}-${next.range[1]}`} — ¿Naciste en uno de estos años?
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {targetBirthYears.map((by) => (
-                      <span key={by} className="bg-red-500/10 text-red-300 text-xs px-2.5 py-1 rounded-full font-mono font-semibold">
-                        {by}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="text-text-muted text-xs mt-2">
-                    Si naciste en uno de estos años, {active ? "estás" : "estarás"} en un periodo de Tres Calamidades
-                  </p>
-                </div>
-
-                <p className="text-text-secondary text-xs leading-relaxed mb-3">
-                  En Corea, las Tres Calamidades son <strong className="text-text-primary">tomadas con extrema
-                  seriedad</strong>. Durante estos 3 años, se evitan decisiones financieras grandes,
-                  cirugías no urgentes, mudanzas y cambios laborales arriesgados.
-                  Conocer las fechas exactas de tu ciclo te da <strong className="text-text-primary">años de ventaja
-                  para prepararte</strong>.
-                </p>
-
-                <button
-                  onClick={() => setShowForm(true)}
-                  className="text-red-400 text-sm font-semibold hover:underline"
-                >
-                  🔮 ¿Cuándo llegan tus Tres Calamidades? Descúbrelo →
-                </button>
-              </div>
-            );
-          })()}
         </section>
 
         {/* ═══ CÓMO FUNCIONA ═══ */}
