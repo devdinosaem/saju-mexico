@@ -135,7 +135,7 @@ export default function CardV2Page() {
               {sajuType.name}
             </h2>
             <p style={{ fontSize: "11px", color: "#9B96A0", marginTop: "4px" }}>
-              {data.dayMaster.elementSpanish} · {data.strength.levelSpanish}
+              {data.strength.levelSpanish}
             </p>
           </div>
 

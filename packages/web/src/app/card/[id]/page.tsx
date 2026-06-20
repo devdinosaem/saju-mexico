@@ -139,7 +139,7 @@ export default function CardPage() {
             <h2 style={{ fontFamily: "Playfair Display, Georgia, serif", fontSize: "22px", fontWeight: 700, background: "linear-gradient(135deg, #D4A853, #E8924A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               &quot;{sajuType.name}&quot;
             </h2>
-            <p className="text-text-secondary text-xs mt-1">{data.dayMaster.elementSpanish} · {data.strength.levelSpanish}</p>
+            <p className="text-text-secondary text-xs mt-1">{data.strength.levelSpanish}</p>
           </div>
 
           <div className="w-12 h-px mx-auto mb-3" style={{ backgroundColor: "rgba(212,168,83,0.3)" }} />
