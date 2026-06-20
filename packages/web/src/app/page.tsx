@@ -205,33 +205,32 @@ export default function LandingPage() {
           </p>
 
           <div className="bg-bg-card rounded-2xl p-5 border border-gold/10 relative overflow-hidden">
-            {/* 타임라인 미리보기 */}
             <div className="space-y-3">
               {[
-                { age: "1-10", label: "Formación", emoji: "🌱", desc: "Tu personalidad se forma", visible: true },
-                { age: "11-20", label: "Descubrimiento", emoji: "🔥", desc: "Encuentras tu camino", visible: true },
-                { age: "21-30", label: "Construcción", emoji: "🏗️", desc: "Construyes tu futuro", visible: true },
-                { age: "31-40", label: "???", emoji: "🔒", desc: "Periodo de gran cambio...", visible: false },
-                { age: "41-50", label: "???", emoji: "🔒", desc: "Tu mayor oportunidad...", visible: false },
+                { age: "11-20", label: "Descubrimiento", emoji: "🔥", desc: "Encuentras tu identidad y tus primeras pasiones", type: "good" as const },
+                { age: "21-30", label: "Turbulencia", emoji: "🌊", desc: "¿Por qué algunos logran todo a los 25 y otros luchan hasta los 30? Tu Gran Estación lo explica", type: "warn" as const },
+                { age: "31-40", label: "???", emoji: "🔒", desc: "Un periodo que puede cambiar todo...", type: "locked" as const },
+                { age: "41-50", label: "???", emoji: "🔒", desc: "Tu mayor oportunidad está aquí...", type: "locked" as const },
               ].map((period) => (
-                <div key={period.age} className={`flex items-center gap-3 ${!period.visible ? "opacity-40" : ""}`}>
+                <div key={period.age} className={`flex items-center gap-3 ${period.type === "locked" ? "opacity-40" : ""}`}>
                   <div className="w-12 text-right">
                     <span className="text-gold font-mono text-xs">{period.age}</span>
                   </div>
-                  <div className="w-px h-8 bg-gold/20" />
+                  <div className={`w-px h-10 ${period.type === "warn" ? "bg-amber/40" : "bg-gold/20"}`} />
                   <span className="text-lg">{period.emoji}</span>
                   <div className="flex-1">
-                    <p className={`text-sm font-semibold ${!period.visible ? "blur-content" : ""}`}>{period.label}</p>
-                    <p className={`text-text-secondary text-xs ${!period.visible ? "blur-content" : ""}`}>{period.desc}</p>
+                    <p className={`text-sm font-semibold ${period.type === "locked" ? "blur-content" : period.type === "warn" ? "text-amber" : ""}`}>{period.label}</p>
+                    <p className={`text-text-secondary text-xs leading-relaxed ${period.type === "locked" ? "blur-content" : ""}`}>{period.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-4 pt-3 border-t border-white/5 text-center">
-              <p className="text-text-secondary text-xs mb-2">
-                Tu reporte incluye los <strong className="text-text-primary">10 periodos</strong> de tu vida con fechas exactas,
-                la energía de cada década, y cuándo llegan tus mejores oportunidades.
+            <div className="mt-4 pt-3 border-t border-white/5">
+              <p className="text-text-secondary text-xs leading-relaxed mb-2">
+                Cada persona tiene un ritmo diferente. Lo que para uno es un periodo de éxito, para otro puede ser de pruebas
+                — <strong className="text-text-primary">todo depende de tu Gran Estación</strong>.
+                Tu reporte revela los <strong className="text-text-primary">10 periodos</strong> de tu vida con fechas exactas.
               </p>
               <button
                 onClick={() => setShowForm(true)}
@@ -358,47 +357,65 @@ export default function LandingPage() {
             Cada 12 años, un ciclo de 3 años de pruebas llega a tu vida. ¿Sabes cuándo es el tuyo?
           </p>
 
-          <div className="bg-bg-card rounded-2xl p-5 border border-red-500/10">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl">⚠️</span>
-              <div>
-                <p className="font-semibold text-sm">Un concepto que los coreanos se toman muy en serio</p>
-                <p className="text-text-muted text-xs">78% evita inversiones grandes durante este periodo</p>
-              </div>
-            </div>
+          {(() => {
+            const year = new Date().getFullYear();
+            // 2026년 삼재 대상: 申子辰 그룹 (Mono, Rata, Dragón) → 寅卯辰 년(2022-2024 끝남)
+            // 寅午戌 그룹 (Tigre, Caballo, Perro) → 申酉戌 년 = 2028-2030
+            // 巳酉丑 그룹 (Serpiente, Gallo, Buey) → 亥子丑 년 = 2025-2027 ← 현재!
+            // 亥卯未 그룹 (Cerdo, Conejo, Cabra) → 巳午未 년 = 2025-2027도? 아니 2025=乙巳
+            // 실제: 2025=乙巳, 2026=丙午, 2027=丁未 → 亥卯未 그룹이 삼재
+            // 2025-2027: 亥卯未 (Cerdo 2007/1995, Conejo 1999/2011, Cabra 2003/2015)
+            const samjaeAnimals = year <= 2027
+              ? { animals: "Cerdo (🐷), Conejo (🐇), Cabra (🐐)", years: "2025-2027", currentPhase: year - 2025 }
+              : { animals: "Tigre (🐅), Caballo (🐴), Perro (🐕)", years: "2028-2030", currentPhase: year - 2028 };
+            const phases = [
+              { icon: "🌊", label: "Entrada", color: "text-amber" },
+              { icon: "🔥", label: "Máximo", color: "text-red-400" },
+              { icon: "🌿", label: "Salida", color: "text-green-400" },
+            ];
+            const startYear = parseInt(samjaeAnimals.years.split("-")[0]);
 
-            <div className="grid grid-cols-3 gap-2 mb-4">
-              <div className="bg-bg-surface/50 rounded-xl p-3 text-center">
-                <p className="text-amber text-lg mb-1">🌊</p>
-                <p className="text-xs font-semibold">Año 1</p>
-                <p className="text-text-muted text-xs">Entrada</p>
-              </div>
-              <div className="bg-bg-surface/50 rounded-xl p-3 text-center border border-red-500/20">
-                <p className="text-red-400 text-lg mb-1">🔥</p>
-                <p className="text-xs font-semibold">Año 2</p>
-                <p className="text-text-muted text-xs">Punto máximo</p>
-              </div>
-              <div className="bg-bg-surface/50 rounded-xl p-3 text-center">
-                <p className="text-green-400 text-lg mb-1">🌿</p>
-                <p className="text-xs font-semibold">Año 3</p>
-                <p className="text-text-muted text-xs">Salida</p>
-              </div>
-            </div>
+            return (
+              <div className="bg-bg-card rounded-2xl p-5 border border-red-500/10">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">⚠️</span>
+                  <div>
+                    <p className="font-semibold text-sm">En {year}, los nacidos en año del {samjaeAnimals.animals.split(",")[0].trim()} están en los Tres Desafíos</p>
+                    <p className="text-text-muted text-xs">Ciclo actual: {samjaeAnimals.years} · {samjaeAnimals.animals}</p>
+                  </div>
+                </div>
 
-            <p className="text-text-secondary text-xs leading-relaxed mb-3">
-              No es &quot;mala suerte&quot; — es un ciclo natural de purificación, como el invierno
-              para los árboles. <strong className="text-text-primary">Saber cuándo llega te permite
-              prepararte</strong>: reforzar tu salud, evitar riesgos financieros
-              innecesarios, y fortalecer tus relaciones.
-            </p>
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                  {phases.map((p, i) => {
+                    const phaseYear = startYear + i;
+                    const isCurrent = phaseYear === year;
+                    return (
+                      <div key={i} className={`bg-bg-surface/50 rounded-xl p-3 text-center ${isCurrent ? "border border-red-500/30 bg-red-500/5" : ""}`}>
+                        <p className={`${p.color} text-lg mb-1`}>{p.icon}</p>
+                        <p className={`text-xs font-semibold ${isCurrent ? "text-red-400" : ""}`}>{phaseYear}</p>
+                        <p className="text-text-muted text-xs">{p.label}</p>
+                        {isCurrent && <p className="text-red-400 text-xs mt-0.5">← Ahora</p>}
+                      </div>
+                    );
+                  })}
+                </div>
 
-            <button
-              onClick={() => setShowForm(true)}
-              className="text-gold text-sm font-semibold hover:underline"
-            >
-              🔮 ¿Estás en un periodo de Tres Desafíos? Descúbrelo →
-            </button>
-          </div>
+                <p className="text-text-secondary text-xs leading-relaxed mb-3">
+                  No es &quot;mala suerte&quot; — es un ciclo natural de purificación, como el invierno
+                  para los árboles. <strong className="text-text-primary">Saber cuándo llega te permite
+                  prepararte</strong>: reforzar tu salud, evitar riesgos financieros
+                  innecesarios, y fortalecer tus relaciones.
+                </p>
+
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="text-gold text-sm font-semibold hover:underline"
+                >
+                  🔮 ¿Estás en un periodo de Tres Desafíos? Descúbrelo →
+                </button>
+              </div>
+            );
+          })()}
         </section>
 
         {/* ═══ CÓMO FUNCIONA ═══ */}
