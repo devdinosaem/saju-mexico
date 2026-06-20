@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, Suspense } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { ConceptCard, TermTooltip } from "@/components/term-tooltip";
 import { MarkdownContent, getSectionIcon } from "@/components/markdown-content";
 import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement } from "@/lib/translations";
@@ -50,11 +50,11 @@ export default function ReportePageWrapper() {
 
 function ReportePage() {
   const { id } = useParams();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const isShared = searchParams.get("shared") === "1";
   const [data, setData] = useState<SajuData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [generating, setGenerating] = useState(false);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
@@ -63,38 +63,20 @@ function ReportePage() {
       .then(async (d) => {
         if (!d || !d.fiveElements) { setLoading(false); return; }
         if (!d.report) {
-          setGenerating(true);
-          await fetch("/api/saju/report", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id }),
-          });
-          const updated = await fetch(`/api/saju/calculate?id=${id}`).then(r => r.json());
-          setData(updated);
-          setGenerating(false);
-        } else {
-          setData(d);
+          // 리포트 없으면 생성 페이지로
+          router.push(`/generando/${id}`);
+          return;
         }
+        setData(d);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, [id]);
 
-  if (loading || generating) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center px-8">
-          <div className="w-16 h-16 border-4 border-gold/20 border-t-gold rounded-full animate-spin mx-auto mb-6" />
-          <h2 className="font-serif text-xl font-bold mb-2">
-            {generating ? "Generando tu reporte..." : "Cargando..."}
-          </h2>
-          {generating && (
-            <div className="space-y-2 text-text-secondary text-sm">
-              <p>Analizando los 8 pilares de tu carta</p>
-              <p className="text-xs text-text-muted">Esto puede tomar hasta 2 minutos</p>
-            </div>
-          )}
-        </div>
+        <div className="w-12 h-12 border-4 border-gold/20 border-t-gold rounded-full animate-spin" />
       </div>
     );
   }

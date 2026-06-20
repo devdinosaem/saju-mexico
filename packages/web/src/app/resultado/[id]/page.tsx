@@ -668,15 +668,10 @@ export default function ResultadoPage() {
                 if (data.mode === "payment" && data.initPoint) {
                   window.location.href = data.initPoint;
                 } else {
-                  await fetch("/api/saju/report", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id }),
-                  });
-                  router.push(`/reporte/${id}`);
+                  router.push(`/generando/${id}`);
                 }
               } catch {
-                router.push(`/reporte/${id}`);
+                router.push(`/generando/${id}`);
               }
             }}
             className="w-full gradient-gold text-bg-primary font-bold text-base py-4 rounded-xl animate-pulse-gold transition-transform active:scale-[0.98] disabled:opacity-50"

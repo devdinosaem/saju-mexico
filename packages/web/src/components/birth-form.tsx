@@ -34,19 +34,32 @@ export function BirthForm() {
   const cityRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const [form, setForm] = useState({
-    name: "",
-    year: "",
-    month: "",
-    day: "",
-    hour: "",
-    minute: "",
-    ampm: "AM" as "AM" | "PM",
-    gender: "" as "" | "male" | "female",
+  const [form, setForm] = useState(() => {
+    if (typeof window === "undefined") return { name: "", year: "", month: "", day: "", hour: "", minute: "", ampm: "AM" as "AM" | "PM", gender: "" as "" | "male" | "female" };
+    try {
+      const saved = localStorage.getItem("saju_form");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return { ...parsed, ampm: parsed.ampm || "AM", gender: parsed.gender || "" };
+      }
+    } catch {}
+    return { name: "", year: "", month: "", day: "", hour: "", minute: "", ampm: "AM" as "AM" | "PM", gender: "" as "" | "male" | "female" };
   });
 
+  // localStorage에서 도시 복원
+  useEffect(() => {
+    try {
+      const savedCity = localStorage.getItem("saju_city");
+      if (savedCity) {
+        const city = JSON.parse(savedCity);
+        setSelectedCity(city);
+        setCityQuery(`${city.name}, ${city.country}`);
+      }
+    } catch {}
+  }, []);
+
   const update = (field: string, value: string) =>
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev: typeof form) => ({ ...prev, [field]: value }));
 
   // 도시 검색 API 호출 (debounced)
   const searchCities = useCallback((query: string) => {
@@ -125,6 +138,11 @@ export function BirthForm() {
 
       const data = await res.json();
       if (data.id) {
+        // 다음 방문을 위해 저장
+        try {
+          localStorage.setItem("saju_form", JSON.stringify(form));
+          if (selectedCity) localStorage.setItem("saju_city", JSON.stringify(selectedCity));
+        } catch {}
         router.push(`/resultado/${data.id}`);
       }
     } catch {
