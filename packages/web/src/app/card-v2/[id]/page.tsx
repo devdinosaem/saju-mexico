@@ -139,18 +139,30 @@ export default function CardV2Page() {
             </p>
           </div>
 
-          {/* 내 세계 — 아이콘 시각화 */}
-          <div className="text-center mb-3">
-            <p style={{ fontSize: "10px", color: "#9B96A0", marginBottom: "8px" }}>Tu mundo interior:</p>
-            <div className="flex justify-center gap-1 flex-wrap px-4">
-              {elementIcons.map((icon, i) => (
-                <span key={i} style={{ fontSize: "20px" }}>{icon.emoji}</span>
-              ))}
+          {/* 내 세계 — 오행 개수 */}
+          <div className="mb-3">
+            <p className="text-center" style={{ fontSize: "10px", color: "#9B96A0", marginBottom: "8px" }}>Tu mundo interior:</p>
+            <div className="flex justify-center gap-3">
+              {[
+                { key: "wood", emoji: "🌳" },
+                { key: "fire", emoji: "🔥" },
+                { key: "earth", emoji: "⛰️" },
+                { key: "metal", emoji: "⚔️" },
+                { key: "water", emoji: "💧" },
+              ].map((el) => {
+                const count = data.fiveElements[el.key] || 0;
+                return (
+                  <div key={el.key} className="flex flex-col items-center" style={{ opacity: count === 0 ? 0.3 : 1 }}>
+                    <span style={{ fontSize: "18px" }}>{el.emoji}</span>
+                    <span style={{ fontSize: "14px", fontFamily: "monospace", fontWeight: 700, color: count === 0 ? "#5C5775" : "#F0ECE3", marginTop: "2px" }}>{count}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           {/* 스토리 라인 */}
-          <p className="text-center mb-4 px-4" style={{ fontFamily: "Playfair Display, Georgia, serif", fontSize: "13px", fontStyle: "italic", color: "#F0ECE3", lineHeight: "1.5" }}>
+          <p className="text-center mb-3 px-4" style={{ fontFamily: "Playfair Display, Georgia, serif", fontSize: "13px", fontStyle: "italic", color: "#F0ECE3", lineHeight: "1.5" }}>
             &quot;{storyLine}&quot;
           </p>
 
@@ -159,20 +171,17 @@ export default function CardV2Page() {
             {sajuType.personality}
           </p>
 
-          {/* 구분선 */}
-          <div className="w-12 h-px mx-auto mb-3" style={{ backgroundColor: "rgba(212,168,83,0.2)" }} />
-
-          {/* 궁합 */}
-          <div className="space-y-1 mb-3 px-6">
-            <div className="flex items-center gap-2" style={{ fontSize: "11px" }}>
-              <span style={{ color: "#4ADE80", width: "60px", textAlign: "right", flexShrink: 0 }}>Armonía</span>
-              <span style={{ width: "1px", height: "10px", backgroundColor: "rgba(255,255,255,0.1)" }} />
-              <span style={{ color: "#F0ECE3" }}>{compat.emoji} {compat.spanish}</span>
+          {/* 궁합 — 2칸 카드 */}
+          <div className="flex gap-2 mb-4 px-2">
+            <div className="flex-1 py-3 rounded-xl text-center" style={{ backgroundColor: "rgba(74,222,128,0.06)", border: "1px solid rgba(74,222,128,0.15)" }}>
+              <p style={{ fontSize: "9px", color: "#4ADE80", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "4px" }}>Armonía</p>
+              <span style={{ fontSize: "22px" }}>{compat.emoji}</span>
+              <p style={{ fontSize: "12px", fontWeight: 600, color: "#F0ECE3", marginTop: "2px" }}>{compat.spanish}</p>
             </div>
-            <div className="flex items-center gap-2" style={{ fontSize: "11px" }}>
-              <span style={{ color: "#FBBF24", width: "60px", textAlign: "right", flexShrink: 0 }}>Tensión</span>
-              <span style={{ width: "1px", height: "10px", backgroundColor: "rgba(255,255,255,0.1)" }} />
-              <span style={{ color: "#F0ECE3" }}>{clash.emoji} {clash.spanish}</span>
+            <div className="flex-1 py-3 rounded-xl text-center" style={{ backgroundColor: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.15)" }}>
+              <p style={{ fontSize: "9px", color: "#FBBF24", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "4px" }}>Tensión</p>
+              <span style={{ fontSize: "22px" }}>{clash.emoji}</span>
+              <p style={{ fontSize: "12px", fontWeight: 600, color: "#F0ECE3", marginTop: "2px" }}>{clash.spanish}</p>
             </div>
           </div>
 
