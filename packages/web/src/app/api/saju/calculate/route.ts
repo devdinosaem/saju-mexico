@@ -179,8 +179,25 @@ export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "ID requerido" }, { status: 400 });
 
-  const data = await getSaju(id);
+  const data = await getSaju(id) as Record<string, unknown> | null;
   if (!data) return NextResponse.json({ error: "No encontrado" }, { status: 404 });
+
+  if (!data.yearlyFortunes || (data.yearlyFortunes as unknown[]).length === 0) {
+    try {
+      const birth = data.birth as { year: number };
+      const dm = data.dayMaster as { stem: string };
+      const currentYear = new Date().getFullYear();
+      const yearly = calculateYearlyFortunes(birth.year, dm.stem as Parameters<typeof calculateYearlyFortunes>[1], currentYear, currentYear + 8);
+      (data as Record<string, unknown>).yearlyFortunes = yearly.map(y => ({
+        year: y.year,
+        age: y.age,
+        ganZhi: `${STEM_KOREAN[y.ganZhi.stem]}${BRANCH_KOREAN[y.ganZhi.branch]}`,
+        stemTenGod: TEN_GOD_KOREAN[y.stemTenGod],
+        branchTenGod: TEN_GOD_KOREAN[y.branchTenGod],
+        phase: PHASE_KOREAN[y.twelvePhase],
+      }));
+    } catch {}
+  }
 
   return NextResponse.json(data);
 }
