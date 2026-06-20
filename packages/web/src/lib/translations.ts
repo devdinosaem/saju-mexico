@@ -19,18 +19,18 @@ export const TEN_GOD_ES: Record<string, string> = {
 
 // ── 12운성 (十二運星, 열두 단계 별) ──
 export const PHASE_ES: Record<string, string> = {
-  "장생": "[Energía de Nuevo Comienzo]",       // 새 시작의 기운
-  "목욕": "[Alerta de Inestabilidad]",         // 불안정의 경고
-  "관대": "[Energía de Preparación]",          // 준비의 기운
-  "건록": "[Fuerza de Independencia]",         // 자립의 힘
-  "제왕": "[Fuerza Máxima]",                   // 최고의 힘
-  "쇠": "[Alerta de Declive]",                 // 쇠퇴의 경고
-  "병": "[Alerta de Debilitamiento]",          // 약화의 경고
-  "사": "[Riesgo de Parálisis]",               // 정지의 위험
-  "묘": "[Riesgo de Latencia]",                // 잠복의 위험
-  "절": "[Riesgo de Extinción]",               // 소멸의 위험
-  "태": "[Energía de Nueva Vida]",             // 새 생명의 기운
-  "양": "[Energía de Gestación]",              // 잉태의 기운
+  "장생": "[Nuevo Comienzo] — buen momento para empezar proyectos y relaciones",
+  "목욕": "[Inestabilidad] — periodo de cambios, mantén la calma y evita decisiones impulsivas",
+  "관대": "[Preparación] — estás acumulando fuerza, ideal para estudiar y planificar",
+  "건록": "[Independencia] — tu mejor momento para actuar con autonomía y confianza",
+  "제왕": "[Máximo Poder] — estás en tu punto más alto, aprovecha para liderar",
+  "쇠": "[Declive] — momento de soltar, delegar y descansar sin culpa",
+  "병": "[Debilitamiento] — cuida tu salud y rodéate de personas que te nutran",
+  "사": "[Pausa] — un alto necesario, como el invierno antes de la primavera",
+  "묘": "[Latencia] — la energía se guarda bajo la superficie, ten paciencia",
+  "절": "[Renovación] — un ciclo termina para que otro mejor pueda nacer",
+  "태": "[Nueva Vida] — algo nuevo se está gestando en tu destino",
+  "양": "[Gestación] — las bases de tu próximo gran momento se están formando",
 };
 
 // ── 음양 (陰陽) ──
