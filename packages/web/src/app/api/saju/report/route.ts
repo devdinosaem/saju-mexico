@@ -66,7 +66,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, cached: false });
   } catch (err) {
     console.error("Report generation error:", err);
-    return NextResponse.json({ error: "Error al generar el reporte" }, { status: 500 });
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: "Error al generar el reporte", detail: message }, { status: 500 });
   }
 }
 
