@@ -111,7 +111,7 @@ function ReportePage() {
             href={`/card/${data.id}`}
             className="inline-flex items-center gap-1.5 bg-gold/10 text-gold text-xs font-medium px-4 py-1.5 rounded-full border border-gold/20 hover:bg-gold/20 transition-colors"
           >
-            🎴 Descarga tu Tarjeta Saju →
+            Descarga tu Tarjeta Saju &gt;
           </a>
         </section>
 
