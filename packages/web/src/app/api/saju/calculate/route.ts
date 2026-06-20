@@ -15,9 +15,12 @@ import { saveSaju, getSaju } from "@/lib/store";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, gender, year, month, day, hour, minute, city } = body;
+    const { name, gender, year, month, day, hour, minute, city, unknownTime } = body;
 
-    if (!name || !year || !month || !day || hour === undefined || minute === undefined || !city) {
+    if (!name || !year || !month || !day || !city) {
+      return NextResponse.json({ error: "Faltan campos requeridos" }, { status: 400 });
+    }
+    if (!unknownTime && (hour === undefined || minute === undefined)) {
       return NextResponse.json({ error: "Faltan campos requeridos" }, { status: 400 });
     }
 
@@ -145,6 +148,7 @@ export async function POST(req: NextRequest) {
         day: SPIRIT_STAR_KOREAN[spirits.day],
         hour: SPIRIT_STAR_KOREAN[spirits.hour],
       },
+      unknownTime: !!unknownTime,
       createdAt: new Date().toISOString(),
     };
 

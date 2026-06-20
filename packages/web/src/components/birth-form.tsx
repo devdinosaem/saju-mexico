@@ -29,6 +29,7 @@ const MEXICAN_CITIES = [
 export function BirthForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [unknownTime, setUnknownTime] = useState(false);
   const [form, setForm] = useState({
     name: "",
     year: "",
@@ -36,6 +37,7 @@ export function BirthForm() {
     day: "",
     hour: "",
     minute: "",
+    ampm: "AM" as "AM" | "PM",
     city: MEXICAN_CITIES[0],
     gender: "female" as "male" | "female",
   });
@@ -47,6 +49,16 @@ export function BirthForm() {
     e.preventDefault();
     setLoading(true);
 
+    let hour24: number;
+    if (unknownTime) {
+      hour24 = 12;
+    } else {
+      let h = parseInt(form.hour);
+      if (form.ampm === "PM" && h !== 12) h += 12;
+      if (form.ampm === "AM" && h === 12) h = 0;
+      hour24 = h;
+    }
+
     try {
       const res = await fetch("/api/saju/calculate", {
         method: "POST",
@@ -57,9 +69,10 @@ export function BirthForm() {
           year: parseInt(form.year),
           month: parseInt(form.month),
           day: parseInt(form.day),
-          hour: parseInt(form.hour),
-          minute: parseInt(form.minute),
+          hour: hour24,
+          minute: unknownTime ? 0 : parseInt(form.minute || "0"),
           city: form.city,
+          unknownTime,
         }),
       });
 
@@ -146,37 +159,84 @@ export function BirthForm() {
       {/* Hora de nacimiento */}
       <div>
         <label className="text-xs text-text-secondary mb-1 block">
-          Hora exacta de nacimiento
+          Hora de nacimiento
         </label>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="relative">
-            <input
-              type="number"
-              required
-              min="0"
-              max="23"
-              value={form.hour}
-              onChange={(e) => update("hour", e.target.value)}
-              placeholder="Hora (0-23)"
-              className="w-full bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-gold/40 focus:outline-none"
-            />
+
+        {/* 시간 모름 토글 */}
+        <button
+          type="button"
+          onClick={() => setUnknownTime(!unknownTime)}
+          className={`w-full mb-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+            unknownTime
+              ? "bg-amber/15 border-amber/40 text-amber border"
+              : "bg-bg-card border border-white/10 text-text-muted"
+          }`}
+        >
+          {unknownTime ? "⏰ No sé mi hora exacta (seleccionado)" : "🤔 No sé mi hora de nacimiento"}
+        </button>
+
+        {unknownTime ? (
+          <div className="bg-bg-card rounded-xl p-3 border border-amber/10">
+            <p className="text-text-secondary text-xs leading-relaxed">
+              💡 Sin la hora exacta, el reporte se genera con los <strong className="text-text-primary">3 pilares disponibles</strong> (año, mes, día).
+              El pilar de la hora se omite, pero el análisis sigue siendo muy detallado y preciso para tu personalidad, fortuna y relaciones.
+            </p>
           </div>
-          <div className="relative">
-            <input
-              type="number"
-              required
-              min="0"
-              max="59"
-              value={form.minute}
-              onChange={(e) => update("minute", e.target.value)}
-              placeholder="Minutos"
-              className="w-full bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-gold/40 focus:outline-none"
-            />
-          </div>
-        </div>
-        <p className="text-text-muted text-xs mt-1">
-          💡 Revisa tu acta de nacimiento o pregúntale a tu mamá
-        </p>
+        ) : (
+          <>
+            <div className="grid grid-cols-3 gap-2">
+              <select
+                required={!unknownTime}
+                value={form.hour}
+                onChange={(e) => update("hour", e.target.value)}
+                className="bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm text-text-primary focus:border-gold/40 focus:outline-none appearance-none"
+              >
+                <option value="">Hora</option>
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
+                  <option key={h} value={h}>{h}</option>
+                ))}
+              </select>
+              <select
+                required={!unknownTime}
+                value={form.minute}
+                onChange={(e) => update("minute", e.target.value)}
+                className="bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm text-text-primary focus:border-gold/40 focus:outline-none appearance-none"
+              >
+                <option value="">Min</option>
+                {Array.from({ length: 12 }, (_, i) => i * 5).map((m) => (
+                  <option key={m} value={m}>{String(m).padStart(2, "0")}</option>
+                ))}
+              </select>
+              <div className="grid grid-cols-2 gap-1">
+                <button
+                  type="button"
+                  onClick={() => update("ampm", "AM")}
+                  className={`rounded-xl text-sm font-medium transition-all ${
+                    form.ampm === "AM"
+                      ? "bg-gold/20 border-gold/40 text-gold border"
+                      : "bg-bg-card border border-white/10 text-text-secondary"
+                  }`}
+                >
+                  AM
+                </button>
+                <button
+                  type="button"
+                  onClick={() => update("ampm", "PM")}
+                  className={`rounded-xl text-sm font-medium transition-all ${
+                    form.ampm === "PM"
+                      ? "bg-gold/20 border-gold/40 text-gold border"
+                      : "bg-bg-card border border-white/10 text-text-secondary"
+                  }`}
+                >
+                  PM
+                </button>
+              </div>
+            </div>
+            <p className="text-text-muted text-xs mt-1">
+              💡 Revisa tu acta de nacimiento o pregúntale a tu mamá
+            </p>
+          </>
+        )}
       </div>
 
       {/* Ciudad */}
