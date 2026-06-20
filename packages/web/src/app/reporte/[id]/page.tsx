@@ -17,7 +17,7 @@ interface SajuData {
   id: string;
   name: string;
   birth: { year: number; month: number; day: number; hour: number; minute: number; city: string };
-  pillars: Record<string, { stem: string; branch: string; korean: string; animal: string; element: string }>;
+  pillars: Record<string, { stem: string; branch: string; korean: string; animal: string; element: string; stemElement?: string; branchElement?: string }>;
   dayMaster: { stem: string; element: string; elementSpanish: string; korean: string; solLuna: string };
   fiveElements: Record<string, number>;
   strength: { levelSpanish: string; levelKorean: string; score: number };
@@ -152,6 +152,7 @@ function ReportePage() {
                     <div className="bg-bg-surface rounded-xl p-2">
                       <p className="text-2xl">{pillar.animal}</p>
                       <p className="text-lg font-serif text-text-secondary">{pillar.branch}</p>
+                      <p className="text-xs text-text-muted">{pillar.branchElement}</p>
                     </div>
                   </div>
                 );
@@ -212,19 +213,19 @@ function ReportePage() {
               <div className="space-y-3">
                 <div className="bg-bg-card rounded-2xl p-4 border border-gold/10">
                   <h4 className="font-serif text-base font-bold mb-1.5 flex items-center gap-2">
-                    <span>☀️</span> {insight.essence.title}
+                    <span>{insight.essence.emoji}</span> {insight.essence.title} <span className="text-gold text-sm font-normal">— {insight.essence.label}</span>
                   </h4>
                   <p className="text-text-secondary text-sm leading-relaxed">{insight.essence.body}</p>
                 </div>
                 <div className="bg-bg-card rounded-2xl p-4 border border-white/5">
                   <h4 className="font-serif text-base font-bold mb-1.5 flex items-center gap-2">
-                    <span>🌍</span> {insight.world.title}
+                    <span>{insight.world.emoji}</span> {insight.world.title} <span className="text-gold text-sm font-normal">— {insight.world.label}</span>
                   </h4>
                   <p className="text-text-secondary text-sm leading-relaxed">{insight.world.body}</p>
                 </div>
                 <div className="bg-bg-card rounded-2xl p-4 border border-gold/10">
                   <h4 className="font-serif text-base font-bold mb-1.5 flex items-center gap-2">
-                    <span>⚡</span> {insight.meaning.title}
+                    <span>{insight.meaning.emoji}</span> {insight.meaning.title} <span className="text-gold text-sm font-normal">— {insight.meaning.label}</span>
                   </h4>
                   <p className="text-text-secondary text-sm leading-relaxed">{insight.meaning.body}</p>
                 </div>
@@ -383,6 +384,31 @@ function ReportePage() {
                   </div>
                 </div>
               )}
+
+              {/* PRÓXIMO CAMBIO — 다음 대운 */}
+              {(() => {
+                const birthYear = data.birth.year;
+                const currentYear = new Date().getFullYear();
+                const currentAge = currentYear - birthYear + 1;
+                const nextFortune = data.majorFortunes.fortunes.find(
+                  (f: { age: number }) => f.age > currentAge
+                );
+                if (!nextFortune) return null;
+                return (
+                  <div className="mt-4 bg-bg-card rounded-2xl p-5 border border-amber/15">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-amber text-sm">⏭️ PRÓXIMO CAMBIO</span>
+                    </div>
+                    <p className="text-sm">
+                      A los <strong className="text-text-primary">{nextFortune.age} años</strong> ({birthYear + nextFortune.age}), entrarás en una nueva Gran Estación:
+                      <span className="text-gold font-semibold"> {nextFortune.ganZhi.split("(")[0]}</span> — {translateTenGod(nextFortune.stemTenGod)}
+                    </p>
+                    <p className="text-text-secondary text-xs mt-2 leading-relaxed">
+                      {getFortuneDescription(nextFortune.stemTenGod)}
+                    </p>
+                  </div>
+                );
+              })()}
             </section>
           );
         })()}

@@ -87,9 +87,9 @@ export function getSajuType(element: string, solLuna: string, strengthScore: num
 }
 
 export interface ElementInsight {
-  essence: { title: string; body: string };
-  world: { title: string; body: string };
-  meaning: { title: string; body: string };
+  essence: { title: string; emoji: string; label: string; body: string };
+  world: { title: string; emoji: string; label: string; body: string };
+  meaning: { title: string; emoji: string; label: string; body: string };
 }
 
 const EL_NAMES: Record<string, string> = { wood: "Madera", fire: "Fuego", earth: "Tierra", metal: "Metal", water: "Agua" };
@@ -142,10 +142,24 @@ export function generateElementInsight(
   const rawSL = (solLuna || "yang").toLowerCase();
   const yy = rawSL === "yang" || rawSL === "양" || rawSL === "sol" ? "Sol" : "Luna";
 
-  const dominant = Object.entries(fiveElements).sort((a, b) => b[1] - a[1])[0];
-  const dominantKey = dominant[0];
-  const dominantPct = Math.round((dominant[1] / total) * 100);
-  const dominantCount = dominant[1];
+  const sorted = Object.entries(fiveElements).sort((a, b) => b[1] - a[1]);
+  const dominantKey = sorted[0][0];
+  const dominantCount = sorted[0][1];
+  const dominantPct = Math.round((dominantCount / total) * 100);
+
+  const topTied = sorted.filter(([, v]) => v === dominantCount);
+  let worldLabel: string;
+  let worldEmoji: string;
+  if (topTied.length >= 3) {
+    worldLabel = "Equilibrio";
+    worldEmoji = "⚖️";
+  } else if (topTied.length === 2) {
+    worldLabel = `${EL_NAMES[topTied[0][0]]} · ${EL_NAMES[topTied[1][0]]}`;
+    worldEmoji = `${EL_EMOJI[topTied[0][0]]}${EL_EMOJI[topTied[1][0]]}`;
+  } else {
+    worldLabel = EL_NAMES[dominantKey];
+    worldEmoji = EL_EMOJI[dominantKey];
+  }
 
   const missing = Object.entries(fiveElements).filter(([, v]) => v === 0).map(([k]) => k);
   const nurtureKey = EL_NURTURE_KEY[el];
@@ -154,6 +168,8 @@ export function generateElementInsight(
   // 1. Tu Esencia
   const essence = {
     title: "Tu Esencia",
+    emoji: EL_EMOJI[el],
+    label: EL_NAMES[el],
     body: `Tu alma es ${EL_NAMES[el]} ${yy} (${dayMasterStem}) — el elemento de ${EL_NATURE[el]}. En el Saju coreano, tu "Día Maestro" (日柱) define quién eres realmente. Eres ${EL_METAPHOR[el]} en esencia.`,
   };
 
@@ -177,7 +193,7 @@ export function generateElementInsight(
     worldBody += ` ${EL_NURTURE[el]} (${EL_EMOJI[nurtureKey]}), lo que nutre tu ${EL_NAMES[el]}, es escaso — necesitas buscar activamente esa energía.`;
   }
 
-  const world = { title: "Tu Mundo Interior", body: worldBody };
+  const world = { title: "Tu Mundo Interior", emoji: worldEmoji, label: worldLabel, body: worldBody };
 
   // 3. Lo Que Esto Significa
   let meaningBody = "";
@@ -202,7 +218,7 @@ export function generateElementInsight(
   const ys = yongShinElement.toLowerCase();
   meaningBody += ` Tu Elemento de Poder (用神) es ${EL_NAMES[ys]} ${EL_EMOJI[ys]} — ${YONGSIN_TIP[ys]} activa tu mejor versión.`;
 
-  const meaning = { title: "Lo Que Esto Significa Para Ti", body: meaningBody };
+  const meaning = { title: "Lo Que Esto Significa Para Ti", emoji: EL_EMOJI[ys], label: EL_NAMES[ys], body: meaningBody };
 
   return { essence, world, meaning };
 }

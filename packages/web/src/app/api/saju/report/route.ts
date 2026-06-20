@@ -1,9 +1,78 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSaju, updateSaju } from "@/lib/store";
-import { buildReportInput, ReportGenerator, DeepSeekReportGenerator } from "saju-report";
+import { ReportGenerator, DeepSeekReportGenerator } from "saju-report";
+import type { ReportInput } from "saju-report";
 
-// Vercel 서버리스 타임아웃 확장 (Pro: 최대 300초, Hobby: 최대 60초)
+type AnyReportInput = {
+  [K in keyof ReportInput]: unknown;
+};
+
 export const maxDuration = 60;
+
+function dbToReportInput(saju: Record<string, unknown>): AnyReportInput {
+  const birth = saju.birth as { year: number; month: number; day: number; hour: number; minute: number; city: string };
+  const pillars = saju.pillars as Record<string, { stem: string; branch: string; korean?: string; element: string; branchElement?: string }>;
+  const dayMaster = saju.dayMaster as { stem: string; element: string; elementSpanish: string; solLuna?: string; yinYang?: string; korean: string };
+  const tenGods = saju.tenGods as { entries: { position: string; char: string; tenGod: string; korean: string; spanish: string }[]; percentages: Record<string, number> };
+  const twelvePhases = saju.twelvePhases as Record<string, { phase: string; korean: string; spanish: string }>;
+  const strength = saju.strength as { level: string; levelKorean: string; levelSpanish: string; score: number };
+  const yongShin = saju.yongShin as { element: string; elementKorean: string; elementSpanish: string };
+  const giShin = saju.giShin as { element: string; elementKorean: string } | undefined;
+  const majorFortunes = saju.majorFortunes as { direction: string; startAge: number; fortunes: { age: number; ganZhi: string; stemTenGod: string; branchTenGod: string; phase: string }[] };
+  const yearlyFortune = saju.yearlyFortune as { year: number; age: number; ganZhi: string; stemTenGod: string; branchTenGod: string; phase: string };
+  const monthlyFortunes = saju.monthlyFortunes as { month: number; ganZhi: string; stemTenGod: string; phase: string }[] | undefined;
+  const spiritStars = saju.spiritStars as Record<string, string> | undefined;
+  const specialStars = saju.specialStars as string[] | undefined;
+  const relations = saju.relations as string[] | undefined;
+
+  const makePillar = (p: typeof pillars.year) => ({
+    stem: p.stem,
+    branch: p.branch,
+    korean: p.korean || "",
+    stemElement: p.element,
+    branchElement: p.branchElement || p.element,
+    tenGod: tenGods?.entries?.find(e => e.char === p.stem)?.korean || "",
+  });
+
+  return {
+    userName: saju.name as string,
+    gender: saju.gender as "male" | "female",
+    birth: {
+      date: `${birth.year}-${String(birth.month).padStart(2, "0")}-${String(birth.day).padStart(2, "0")}`,
+      time: `${String(birth.hour).padStart(2, "0")}:${String(birth.minute).padStart(2, "0")}`,
+      city: birth.city,
+      timezone: "America/Mexico_City",
+    },
+    fourPillars: {
+      year: makePillar(pillars.year),
+      month: makePillar(pillars.month),
+      day: makePillar(pillars.day),
+      hour: makePillar(pillars.hour),
+    },
+    fiveElements: saju.fiveElements as Record<string, number>,
+    dayMaster: {
+      stem: dayMaster.stem,
+      element: dayMaster.element,
+      elementSpanish: dayMaster.elementSpanish,
+      yinYang: dayMaster.solLuna || dayMaster.yinYang || "yang",
+      korean: dayMaster.korean,
+    },
+    tenGods: {
+      entries: tenGods.entries,
+      percentages: tenGods.percentages,
+    },
+    twelvePhases,
+    spiritStars: spiritStars || {},
+    specialStars: specialStars || [],
+    strength: { ...strength, deukryeong: 0, friendCount: 0, foeCount: 0 },
+    yongShin: { ...yongShin, category: "" },
+    giShin: giShin || { element: "", elementKorean: "" },
+    majorFortunes,
+    yearlyFortune,
+    monthlyFortunes: monthlyFortunes || [],
+    relations: relations || [],
+  };
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -43,38 +112,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, cached: false });
     }
 
-    const birth = saju.birth as { year: number; month: number; day: number; hour: number; minute: number; city: string };
-    const input = buildReportInput({
-      userName: saju.name as string,
-      gender: (saju.gender as "male" | "female"),
-      year: birth.year,
-      month: birth.month,
-      day: birth.day,
-      hour: birth.hour,
-      minute: birth.minute,
-      city: birth.city,
-      timezone: "America/Mexico_City",
-    });
+    const input = dbToReportInput(saju);
 
     let report;
     let provider: string;
 
-    // DeepSeek 우선 시도, 실패 시 Claude 폴백
     if (process.env.DEEPSEEK_API_KEY) {
       try {
-        report = await new DeepSeekReportGenerator().generate(input);
+        report = await new DeepSeekReportGenerator().generate(input as ReportInput);
         provider = "deepseek";
       } catch (deepseekErr) {
         console.error("DeepSeek failed, falling back to Claude:", deepseekErr);
         if (process.env.ANTHROPIC_API_KEY) {
-          report = await new ReportGenerator().generate(input);
+          report = await new ReportGenerator().generate(input as ReportInput);
           provider = "claude (fallback)";
         } else {
           throw deepseekErr;
         }
       }
     } else {
-      report = await new ReportGenerator().generate(input);
+      report = await new ReportGenerator().generate(input as ReportInput);
       provider = "claude";
     }
 

@@ -15,10 +15,10 @@ interface SajuData {
   gender: string;
   birth: { year: number; month: number; day: number; hour: number; minute: number; city: string };
   pillars: {
-    year: { stem: string; branch: string; animal: string; element: string };
-    month: { stem: string; branch: string; animal: string; element: string };
-    day: { stem: string; branch: string; animal: string; element: string };
-    hour: { stem: string; branch: string; animal: string; element: string };
+    year: { stem: string; branch: string; animal: string; element: string; stemElement?: string; branchElement?: string };
+    month: { stem: string; branch: string; animal: string; element: string; stemElement?: string; branchElement?: string };
+    day: { stem: string; branch: string; animal: string; element: string; stemElement?: string; branchElement?: string };
+    hour: { stem: string; branch: string; animal: string; element: string; stemElement?: string; branchElement?: string };
   };
   fiveElements: Record<string, number>;
   dayMaster: { element: string; elementSpanish: string; korean: string; stem: string; solLuna: string };
@@ -135,6 +135,7 @@ export default function ResultadoPage() {
                     <div className="bg-bg-surface rounded-xl p-2">
                       <p className="text-2xl">{pillar.animal}</p>
                       <p className="text-lg font-serif text-text-secondary">{pillar.branch}</p>
+                      <p className="text-xs text-text-muted">{pillar.branchElement}</p>
                     </div>
                   </div>
                 );
@@ -206,21 +207,24 @@ export default function ResultadoPage() {
               <div className="space-y-4">
                 <div className="bg-bg-card rounded-2xl p-5 border border-gold/10">
                   <h3 className="font-serif text-lg font-bold mb-2 flex items-center gap-2">
-                    <span>☀️</span> {insight.essence.title}
+                    <span>{insight.essence.emoji}</span> {insight.essence.title} <span className="text-gold text-sm font-normal">— {insight.essence.label}</span>
                   </h3>
                   <p className="text-text-secondary text-sm leading-relaxed">{insight.essence.body}</p>
                 </div>
                 <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
                   <h3 className="font-serif text-lg font-bold mb-2 flex items-center gap-2">
-                    <span>🌍</span> {insight.world.title}
+                    <span>{insight.world.emoji}</span> {insight.world.title} <span className="text-gold text-sm font-normal">— {insight.world.label}</span>
                   </h3>
                   <p className="text-text-secondary text-sm leading-relaxed">{insight.world.body}</p>
                 </div>
-                <div className="bg-bg-card rounded-2xl p-5 border border-gold/10">
+                <div className="bg-bg-card rounded-2xl p-5 border border-gold/10 relative">
                   <h3 className="font-serif text-lg font-bold mb-2 flex items-center gap-2">
-                    <span>⚡</span> {insight.meaning.title}
+                    <span>{insight.meaning.emoji}</span> {insight.meaning.title} <span className="text-gold text-sm font-normal">— {insight.meaning.label}</span>
                   </h3>
-                  <p className="text-text-secondary text-sm leading-relaxed">{insight.meaning.body}</p>
+                  <p className="text-text-secondary text-sm leading-relaxed blur-content">{insight.meaning.body}</p>
+                  <div className="absolute inset-0 flex items-end justify-center pb-4 bg-gradient-to-t from-bg-card/90 to-transparent rounded-2xl">
+                    <span className="text-gold text-xs font-medium">🔒 Desbloquear en el reporte completo</span>
+                  </div>
                 </div>
               </div>
             </section>
@@ -273,18 +277,11 @@ export default function ResultadoPage() {
               Este elemento define tu esencia — cómo piensas, cómo amas y cómo enfrentas los desafíos de la vida.
               Es la base sobre la que se construye todo tu destino...
             </p>
-            <div className="relative">
-              <p className="text-text-secondary text-sm leading-relaxed blur-content">
-                Las personas con este elemento tienden a ser líderes naturales con una capacidad
-                extraordinaria para inspirar a otros. Tu mayor fortaleza radica en tu determinación,
-                pero debes cuidarte de la rigidez que puede alejarte de las personas que amas.
-              </p>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="bg-bg-card/80 text-gold text-xs font-semibold px-4 py-2 rounded-full border border-gold/20">
-                  🔒 Desbloquear análisis completo
-                </span>
-              </div>
-            </div>
+            <p className="text-text-secondary text-sm leading-relaxed blur-content">
+              Las personas con este elemento tienden a ser líderes naturales con una capacidad
+              extraordinaria para inspirar a otros. Tu mayor fortaleza radica en tu determinación,
+              pero debes cuidarte de la rigidez que puede alejarte de las personas que amas.
+            </p>
           </div>
         </section>
 
@@ -310,7 +307,7 @@ export default function ResultadoPage() {
               </div>
               <span className="font-mono text-gold text-sm font-bold">{data.strength.score.toFixed(1)}</span>
             </div>
-            <p className="text-text-secondary text-xs leading-relaxed">
+            <p className="text-text-secondary text-xs leading-relaxed blur-content">
               {data.strength.score >= 1
                 ? "Alma Poderosa — lideras con decisión natural y tu confianza inspira a quienes te rodean."
                 : data.strength.score >= -1
@@ -333,18 +330,11 @@ export default function ResultadoPage() {
               lo que más necesitas en tu vida para alcanzar el equilibrio. Incorporarlo en tu día a día
               puede mejorar tu suerte, salud y relaciones.
             </p>
-            <div className="relative">
-              <div className="grid grid-cols-2 gap-2 blur-content">
-                <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">🎨 Colores de suerte</div>
-                <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">🧭 Dirección favorable</div>
-                <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">💎 Cristales ideales</div>
-                <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">🍽️ Alimentos favorables</div>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="bg-bg-card/80 text-gold text-xs font-semibold px-4 py-2 rounded-full border border-gold/20">
-                  🔒 Guía completa en el reporte
-                </span>
-              </div>
+            <div className="grid grid-cols-2 gap-2 blur-content">
+              <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">🎨 Colores de suerte</div>
+              <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">🧭 Dirección favorable</div>
+              <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">💎 Cristales ideales</div>
+              <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">🍽️ Alimentos favorables</div>
             </div>
           </div>
         </section>
@@ -366,64 +356,38 @@ export default function ResultadoPage() {
               <ConceptCard termKey="majorFortune" compact />
 
               <h2 className="font-serif text-xl font-bold mb-2">
-                📊 Tu momento actual
+                📊 El Saju de {data.name} en {currentYear}
               </h2>
               <p className="text-text-secondary text-xs mb-4">
-                Dónde estás ahora y qué viene después
+                Tu energía actual, este año y lo que viene
               </p>
 
-              {/* 현재 대운 */}
+              {/* 1. AHORA — 현재 대운 */}
               {currentFortune && (
-                <div className="bg-bg-card rounded-2xl p-5 border border-gold/20 mb-4">
+                <div className="bg-bg-card rounded-2xl p-5 border border-gold/20 mb-3">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-gold text-sm">✦ AHORA</span>
                     <span className="text-text-muted text-xs">
-                      Gran Estación actual ({currentFortune.age}-{currentFortune.age + 9} años)
+                      Gran Estación ({currentFortune.age}-{currentFortune.age + 9} años)
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 mb-3">
+                  <div className="flex items-center gap-4">
                     <div className="text-center">
                       <p className="font-serif text-2xl text-gold">{currentFortune.ganZhi.split("(")[0]}</p>
                       <p className="text-xs text-text-muted">{translateTenGod(currentFortune.stemTenGod)}</p>
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-semibold mb-1">Tienes {currentAge} años — estás en la estación de {translateTenGod(currentFortune.stemTenGod)}</p>
-                      <div className="relative mt-1">
-                        <p className="text-text-secondary text-xs leading-relaxed blur-content">
-                          {getFortuneDescription(currentFortune.stemTenGod)}
-                        </p>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
-                            🔓 Desbloquear análisis →
-                          </span>
-                        </div>
-                      </div>
+                      <p className="text-sm font-semibold">Tienes {currentAge} años — estás en la estación de {translateTenGod(currentFortune.stemTenGod)}</p>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* 다음 대운 전환 시기 */}
-              {nextFortune && (
-                <div className="bg-bg-card rounded-2xl p-4 border border-white/5 mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-amber text-sm">⏭️ PRÓXIMO CAMBIO</span>
-                  </div>
-                  <p className="text-sm">
-                    A los <strong className="text-text-primary">{nextFortune.age} años</strong> ({birthYear + nextFortune.age}), entrarás en una nueva Gran Estación:
-                    <span className="text-gold font-semibold"> {nextFortune.ganZhi.split("(")[0]}</span> — {translateTenGod(nextFortune.stemTenGod)}
-                  </p>
-                  <p className="text-text-secondary text-xs mt-1 leading-relaxed">
-                    {getFortuneDescription(nextFortune.stemTenGod)}
-                  </p>
-                </div>
-              )}
-
-              {/* 올해 세운 */}
-              <div className="bg-bg-card rounded-2xl p-4 border border-white/5">
+              {/* 2. 올해 세운 */}
+              <div className="bg-bg-card rounded-2xl p-4 border border-white/5 mb-3">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-amber text-sm">📅 {data.yearlyFortune.year}</span>
-                  <span className="text-text-muted text-xs">Tu fortuna este año</span>
+                  <span className="text-text-muted text-xs">Tu año</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-center">
@@ -438,17 +402,20 @@ export default function ResultadoPage() {
                     </p>
                   </div>
                 </div>
-                <div className="mt-3 relative">
-                  <p className="text-text-secondary text-xs leading-relaxed blur-content">
-                    Este año trae una energía de transformación importante para ti. Los meses de mayor oportunidad serán aquellos donde tu Elemento de Poder se fortalezca...
-                  </p>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
-                      🔒 Detalles en el reporte completo
-                    </span>
-                  </div>
-                </div>
               </div>
+
+              {/* 3. PRÓXIMO CAMBIO — 다음 대운 */}
+              {nextFortune && (
+                <div className="bg-bg-card rounded-2xl p-4 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-amber text-sm">⏭️ PRÓXIMO CAMBIO</span>
+                  </div>
+                  <p className="text-sm">
+                    A los <strong className="text-text-primary">{nextFortune.age} años</strong> ({birthYear + nextFortune.age}), entrarás en una nueva Gran Estación:
+                    <span className="text-gold font-semibold"> {nextFortune.ganZhi.split("(")[0]}</span> — {translateTenGod(nextFortune.stemTenGod)}
+                  </p>
+                </div>
+              )}
             </section>
           );
         })()}
@@ -507,12 +474,12 @@ export default function ResultadoPage() {
                     </div>
                   )}
 
-                  {/* 2. 미래: 연애/결혼 (일부 블러) */}
+                  {/* 2. 미래: 연애/결혼 (연도+내용 블러) */}
                   {fallbackLove && (
                     <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
                       <div className="flex items-center gap-2 mb-2">
                         <span>💕</span>
-                        <span className="text-gold font-mono text-sm">{birthYear + fallbackLove.age}-{birthYear + fallbackLove.age + 9}</span>
+                        <span className="text-gold font-mono text-sm blur-content">{birthYear + fallbackLove.age}-{birthYear + fallbackLove.age + 9}</span>
                       </div>
                       <p className="text-sm">
                         Un encuentro que cambiará tu perspectiva del amor.
@@ -533,7 +500,7 @@ export default function ResultadoPage() {
                       </p>
                       <div className="mt-2 flex justify-center">
                         <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
-                          🔓 Ver fechas exactas en el reporte
+                          🔒 Desbloquear en el reporte completo
                         </span>
                       </div>
                     </div>
@@ -578,19 +545,12 @@ export default function ResultadoPage() {
                 En Corea, durante este periodo se evitan inversiones grandes, cirugías no urgentes y cambios arriesgados.
               </p>
 
-              <div className="mt-3 relative">
-                <p className="text-text-secondary text-xs leading-relaxed blur-content">
-                  {data.samjae.isActive
-                    ? "Recomendaciones específicas para navegar este periodo según tu Elemento de Poder..."
-                    : `Próximo ciclo: ${data.samjae.startYear}-${data.samjae.endYear}. Fechas y guía de preparación...`
-                  }
-                </p>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
-                    🔓 Ver detalles en el reporte →
-                  </span>
-                </div>
-              </div>
+              <p className="text-text-secondary text-xs leading-relaxed blur-content mt-3">
+                {data.samjae.isActive
+                  ? "Recomendaciones específicas para navegar este periodo según tu Elemento de Poder..."
+                  : `Próximo ciclo: ${data.samjae.startYear}-${data.samjae.endYear}. Fechas y guía de preparación...`
+                }
+              </p>
             </div>
           </section>
         )}

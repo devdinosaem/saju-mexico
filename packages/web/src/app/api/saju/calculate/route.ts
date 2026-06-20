@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
           korean: `${STEM_KOREAN[p.year.stem]}${BRANCH_KOREAN[p.year.branch]}`,
           animal: animals[p.year.branch] || "✦",
           element: ELEMENT_SPANISH[STEM_ELEMENT[p.year.stem]],
+          stemElement: ELEMENT_SPANISH[STEM_ELEMENT[p.year.stem]],
           branchElement: ELEMENT_SPANISH[BRANCH_ELEMENT[p.year.branch]],
         },
         month: {
@@ -64,6 +65,7 @@ export async function POST(req: NextRequest) {
           korean: `${STEM_KOREAN[p.month.stem]}${BRANCH_KOREAN[p.month.branch]}`,
           animal: animals[p.month.branch] || "✦",
           element: ELEMENT_SPANISH[STEM_ELEMENT[p.month.stem]],
+          stemElement: ELEMENT_SPANISH[STEM_ELEMENT[p.month.stem]],
           branchElement: ELEMENT_SPANISH[BRANCH_ELEMENT[p.month.branch]],
         },
         day: {
@@ -72,6 +74,7 @@ export async function POST(req: NextRequest) {
           korean: `${STEM_KOREAN[p.day.stem]}${BRANCH_KOREAN[p.day.branch]}`,
           animal: animals[p.day.branch] || "✦",
           element: ELEMENT_SPANISH[STEM_ELEMENT[p.day.stem]],
+          stemElement: ELEMENT_SPANISH[STEM_ELEMENT[p.day.stem]],
           branchElement: ELEMENT_SPANISH[BRANCH_ELEMENT[p.day.branch]],
         },
         hour: {
@@ -80,6 +83,7 @@ export async function POST(req: NextRequest) {
           korean: `${STEM_KOREAN[p.hour.stem]}${BRANCH_KOREAN[p.hour.branch]}`,
           animal: animals[p.hour.branch] || "✦",
           element: ELEMENT_SPANISH[STEM_ELEMENT[p.hour.stem]],
+          stemElement: ELEMENT_SPANISH[STEM_ELEMENT[p.hour.stem]],
           branchElement: ELEMENT_SPANISH[BRANCH_ELEMENT[p.hour.branch]],
         },
       },
