@@ -28,14 +28,14 @@ function parseMarkdown(text: string): React.ReactNode[] {
       result.push(
         <div key={i} className="flex gap-2 ml-1 mb-1">
           <span className="text-gold text-xs mt-0.5">✦</span>
-          <span>{parseInline(line.replace(/^\s*[-•]\s/, ""))}</span>
+          <span className="flex-1">{parseInline(line.replace(/^\s*[-•]\s/, ""))}</span>
         </div>
       );
       continue;
     }
 
-    // 이모지로 시작하는 항목 (🎨, 🧭, etc)
-    if (line.match(/^\s*[🎨🧭🔢💧🍽️⏰💎🌊⚡💰⚠️✅❌]/u)) {
+    // 짧은 이모지 항목 (🎨 Colores: ... 같은 가이드 항목만, 80자 이하)
+    if (line.trim().length < 80 && line.match(/^[🎨🧭🔢💧🍽️⏰💎🌊⚡⚠️✅❌🌳🔥⛰️⚔️🪵🐀🐂🐅🐇🐉🐍🐴🐐🐒🐔🐕🐷]/u)) {
       result.push(
         <div key={i} className="bg-bg-surface/30 rounded-lg px-3 py-2 mb-1.5">
           {parseInline(line)}
@@ -99,20 +99,20 @@ function parseInline(text: string): React.ReactNode {
 }
 
 const SECTION_ICONS: Record<number, string> = {
-  0: "🪞",  // Tu Esencia
-  1: "⚖️",  // Cinco Elementos
-  2: "💪",  // Fuerza Interior
-  3: "🔮",  // Diez Dioses
-  4: "💕",  // Amor
-  5: "💰",  // Dinero
-  6: "🚀",  // Carrera
-  7: "🏥",  // Salud
-  8: "📊",  // Grandes Estaciones
-  9: "📅",  // Año Actual
-  10: "🔗", // Relaciones
-  11: "✨",  // Elemento de Poder
-  12: "⭐",  // Estrellas
-  13: "🧭",  // Mensaje Final
+  0: "🪞",
+  1: "⚖️",
+  2: "💪",
+  3: "🔮",
+  4: "💕",
+  5: "💰",
+  6: "🚀",
+  7: "🏥",
+  8: "📊",
+  9: "📅",
+  10: "🔗",
+  11: "✨",
+  12: "⭐",
+  13: "🧭",
 };
 
 interface MarkdownContentProps {
