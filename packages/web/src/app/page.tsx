@@ -376,7 +376,7 @@ export default function LandingPage() {
             const phases = [
               { icon: "⚡", label: "Calamidad de entrada", color: "text-amber" },
               { icon: "🔥", label: "Calamidad máxima", color: "text-red-400" },
-              { icon: "💀", label: "Calamidad de salida", color: "text-red-300" },
+              { icon: "🌪️", label: "Calamidad de salida", color: "text-red-300" },
             ];
             const startYear = active ? active.range[0] : next.range[0];
             const targetBirthYears = active ? active.birthYears : next.birthYears;
@@ -384,7 +384,7 @@ export default function LandingPage() {
             return (
               <div className="bg-bg-card rounded-2xl p-5 border border-red-500/15">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">💀</span>
+                  <span className="text-3xl">🚨</span>
                   <div>
                     <p className="font-semibold text-sm text-red-400">
                       {active
@@ -443,7 +443,7 @@ export default function LandingPage() {
                   onClick={() => setShowForm(true)}
                   className="text-red-400 text-sm font-semibold hover:underline"
                 >
-                  💀 ¿Cuándo llegan tus Tres Calamidades? Descúbrelo →
+                  🔮 ¿Cuándo llegan tus Tres Calamidades? Descúbrelo →
                 </button>
               </div>
             );
