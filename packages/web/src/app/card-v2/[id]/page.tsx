@@ -152,9 +152,9 @@ export default function CardV2Page() {
               ].map((el) => {
                 const count = data.fiveElements[el.key] || 0;
                 return (
-                  <div key={el.key} className="flex flex-col items-center" style={{ opacity: count === 0 ? 0.3 : 1 }}>
+                  <div key={el.key} className="flex flex-col items-center">
                     <span style={{ fontSize: "18px" }}>{el.emoji}</span>
-                    <span style={{ fontSize: "14px", fontFamily: "monospace", fontWeight: 700, color: count === 0 ? "#5C5775" : "#F0ECE3", marginTop: "2px" }}>{count}</span>
+                    <span style={{ fontSize: "14px", fontFamily: "monospace", fontWeight: 700, color: "#F0ECE3", marginTop: "2px" }}>{count}</span>
                   </div>
                 );
               })}
