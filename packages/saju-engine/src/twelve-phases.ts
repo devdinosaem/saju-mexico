@@ -39,10 +39,12 @@ export const PHASE_HANJA: Record<TwelvePhase, string> = {
 };
 
 export const PHASE_SPANISH: Record<TwelvePhase, string> = {
-  jangsaeng: 'Nacimiento', mogyok: 'Baño', gwandae: 'Corona',
-  geonrok: 'Prosperidad', jewang: 'Emperador', soe: 'Declive',
-  byeong: 'Enfermedad', sa: 'Amenaza', myo: 'Amenaza',
-  jeol: 'Extinción', tae: 'Concepción', yang: 'Crianza',
+  jangsaeng: '[Energía de Nuevo Comienzo]', mogyok: '[Alerta de Inestabilidad]',
+  gwandae: '[Energía de Preparación]', geonrok: '[Fuerza de Independencia]',
+  jewang: '[Fuerza Máxima]', soe: '[Alerta de Declive]',
+  byeong: '[Alerta de Debilitamiento]', sa: '[Riesgo de Parálisis]',
+  myo: '[Riesgo de Latencia]', jeol: '[Riesgo de Extinción]',
+  tae: '[Energía de Nueva Vida]', yang: '[Energía de Gestación]',
 };
 
 /**

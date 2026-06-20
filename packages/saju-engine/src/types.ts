@@ -43,16 +43,16 @@ export const TEN_GOD_HANJA: Record<TenGod, string> = {
 
 /** 십신 스페인어 */
 export const TEN_GOD_SPANISH: Record<TenGod, string> = {
-  bijeon: 'Compañero',
-  geopjae: 'Rival',
-  siksin: 'Creador',
-  sanggwan: 'Rebelde',
-  pyeonjae: 'Fortuna Inesperada',
-  jeongjae: 'Fortuna Estable',
-  pyeongwan: 'Guerrero',
-  jeonggwan: 'Líder',
-  pyeonin: 'Místico',
-  jeongin: 'Maestro',
+  bijeon: '[Fuerza de Autonomía]',
+  geopjae: '[Riesgo de Apuesta Audaz]',
+  siksin: '[Fortuna de Creatividad]',
+  sanggwan: '[Fuerza de Talento Rebelde]',
+  pyeonjae: '[Fortuna Inesperada]',
+  jeongjae: '[Fortuna de Sueldo Fijo]',
+  pyeongwan: '[Fuerza de Carisma]',
+  jeonggwan: '[Fuerza de Ascenso]',
+  pyeonin: '[Energía de Intuición]',
+  jeongin: '[Energía de Protección]',
 };
 
 /** 사주 한 글자의 십신 분석 결과 */

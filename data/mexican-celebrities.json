@@ -1,43 +1,138 @@
 {
+  "popularity_scale": {
+    "5": "멕시코 전 국민 인지도 — 남녀노소 누구나 안다",
+    "4": "대부분의 멕시코인이 안다 — 뉴스/SNS 상시 노출",
+    "3": "젊은 세대(Z/밀레니얼)에서 매우 유명 — 특정 팬층 강력",
+    "2": "특정 분야에서 급부상 중 — 곧 주류 진입 가능",
+    "1": "니치/떠오르는 인물 — 코어 팬만 인지"
+  },
+
+  "carousel_themes": [
+    {
+      "id": "estaba_escrito",
+      "name": "Estaba Escrito ✨",
+      "name_ko": "운명이었다",
+      "concept": "최근 대성공한 사람의 사주를 분석 → '이건 처음부터 정해진 거였다'",
+      "hook_template": "Su éxito NO fue suerte. Su Saju lo predijo hace años.",
+      "best_for": ["Fátima Bosch", "Isaac del Toro", "Peso Pluma", "Grupo Frontera"],
+      "cta": "¿Tu destino también está escrito? Descúbrelo →"
+    },
+    {
+      "id": "saju_de_oro",
+      "name": "Saju de Oro 🏆",
+      "name_ko": "황금 사주",
+      "concept": "사주 구성 자체가 극상인 사람들 → '이 사람의 사주는 굉장히 좋다'",
+      "hook_template": "Tiene uno de los mejores Saju que hemos analizado. Mira por qué.",
+      "best_for": ["Salma Hayek", "Luis Miguel", "Thalía", "Eugenio Derbez"],
+      "cta": "¿Tienes un Saju de Oro? Analiza el tuyo →"
+    },
+    {
+      "id": "la_caida",
+      "name": "La Caída Estaba en su Saju 📉",
+      "name_ko": "추락도 사주에 있었다",
+      "concept": "최근 위기/패배/스캔들이 사주의 대운/세운과 일치 → 경고성 콘텐츠",
+      "hook_template": "Su crisis NO fue casualidad. Su Saju ya lo advertía.",
+      "best_for": ["Canelo Álvarez", "Checo Pérez", "Christian Nodal"],
+      "cta": "¿Hay una caída en tu futuro? Prepárate →"
+    },
+    {
+      "id": "de_cero_a_estrella",
+      "name": "De Cero a Estrella 🚀",
+      "name_ko": "무명에서 스타로",
+      "concept": "무명이었다가 폭발적으로 뜬 사람 → 대운 전환기와 매칭",
+      "hook_template": "Hace 3 años nadie lo conocía. Su Saju explica todo.",
+      "best_for": ["Peso Pluma", "Yeri Mua", "Kimberly Loaiza", "Junior H", "Grupo Frontera"],
+      "cta": "¿Cuándo llega TU momento? Descúbrelo →"
+    },
+    {
+      "id": "el_ano_es_suyo",
+      "name": "2026 Es Su Año 📅",
+      "name_ko": "올해는 이 사람의 해",
+      "concept": "2026년 세운이 특별히 좋은 사람 → '올해 이 사람 대박 난다'",
+      "hook_template": "2026 será su MEJOR año. El Saju no miente.",
+      "best_for": ["Isaac del Toro", "Fátima Bosch", "Eiza González"],
+      "cta": "¿2026 será TU año? Analiza tu Saju →"
+    },
+    {
+      "id": "amor_y_destino",
+      "name": "Amor y Destino 💕",
+      "name_ko": "사랑과 운명",
+      "concept": "유명인 커플의 사주 궁합 분석 → 잘 맞는지/왜 헤어졌는지",
+      "hook_template": "¿Eran compatibles según el Saju? La respuesta te sorprenderá.",
+      "best_for": ["Christian Nodal", "Peso Pluma", "Kimberly Loaiza"],
+      "cta": "¿Eres compatible con tu pareja? Haz la prueba →"
+    },
+    {
+      "id": "por_que_siempre_gana",
+      "name": "¿Por Qué Siempre Gana? 👑",
+      "name_ko": "왜 항상 이길까",
+      "concept": "수십 년간 꾸준히 정상에 있는 사람 → 사주의 안정적 구조 분석",
+      "hook_template": "Lleva décadas en la cima. Su Saju explica por qué NUNCA cae.",
+      "best_for": ["Salma Hayek", "Eugenio Derbez", "Thalía", "Luis Miguel"],
+      "cta": "¿Tu Saju tiene la fórmula del éxito? →"
+    },
+    {
+      "id": "el_precio_de_la_fama",
+      "name": "El Precio de la Fama 🖤",
+      "name_ko": "명성의 대가",
+      "concept": "재능은 있지만 고통/비극도 사주에 있었던 사람 → 감성적 콘텐츠",
+      "hook_template": "Su talento vino con un precio. El Saju lo revela.",
+      "best_for": ["Frida Kahlo", "Selena Quintanilla", "Luis Miguel", "Juan Gabriel"],
+      "cta": "¿Qué sacrificio pide tu destino? Descúbrelo →"
+    }
+  ],
+
   "celebrities": [
     {
       "name": "Canelo Álvarez",
       "category": "deportes",
       "birth_date": "1990-07-18",
       "birth_place": "Guadalajara, Jalisco",
+      "popularity": 5,
       "known_for": "Boxeador campeón mundial unificado",
+      "recent_news": "Perdió los 4 títulos de supermedianos ante Terence Crawford en 2025. Momento de crisis tras años de dominio absoluto.",
+      "carousel_themes": ["la_caida", "saju_de_oro"],
       "public_traits": ["determinado", "orgulloso", "trabajador", "temperamental", "directo"],
-      "hooks": ["¿Nació para pelear?", "El destino del campeón", "Fuego puro en su Saju"],
-      "hashtags": ["#Canelo", "#CaneloAlvarez", "#Boxing"]
+      "hooks": ["¿Nació para pelear?", "El destino del campeón", "Su derrota ante Crawford estaba escrita en su Saju"],
+      "hashtags": ["#Canelo", "#CaneloAlvarez", "#Boxing", "#CrawfordCanelo"]
     },
     {
       "name": "Peso Pluma",
       "category": "música",
       "birth_date": "1999-06-15",
       "birth_place": "Guadalajara, Jalisco",
+      "popularity": 4,
       "known_for": "Cantante regional mexicano, éxito global explosivo",
+      "recent_news": "Nominación #21 a Premio Lo Nuestro 2026. Colaboración 'Last Breath' con Kanye West en álbum 'Bully' (marzo 2026). Presencia en Coachella 2025.",
+      "carousel_themes": ["estaba_escrito", "de_cero_a_estrella"],
       "public_traits": ["carismático", "controversial", "auténtico", "ambicioso"],
-      "hooks": ["Su explosión musical estaba escrita", "Destinado a romper récords"],
-      "hashtags": ["#PesoPluma", "#MúsicaMexicana", "#RegionalMexicano"]
+      "hooks": ["De Guadalajara al mundo: estaba escrito", "Kanye lo eligió por algo — mira su Saju"],
+      "hashtags": ["#PesoPluma", "#MúsicaMexicana", "#RegionalMexicano", "#PremioLoNuestro"]
     },
     {
       "name": "Salma Hayek",
       "category": "cine",
       "birth_date": "1966-09-02",
       "birth_place": "Coatzacoalcos, Veracruz",
+      "popularity": 5,
       "known_for": "Actriz, productora, empresaria en Hollywood",
+      "recent_news": "Forbes 100 Mujeres Más Poderosas de México 2025. Sigue activa en Hollywood con producciones y activismo.",
+      "carousel_themes": ["saju_de_oro", "por_que_siempre_gana"],
       "public_traits": ["resiliente", "elegante", "audaz", "apasionada", "visionaria"],
-      "hooks": ["¿Cómo conquistó Hollywood?", "La mexicana que desafió el destino"],
-      "hashtags": ["#SalmaHayek", "#Hollywood", "#MexicanaEnHollywood"]
+      "hooks": ["30 años en Hollywood y sigue subiendo. Su Saju explica por qué.", "La mexicana con Saju de Oro"],
+      "hashtags": ["#SalmaHayek", "#Hollywood", "#ForbesMéxico"]
     },
     {
       "name": "Luis Miguel",
       "category": "música",
       "birth_date": "1970-04-19",
       "birth_place": "San Juan, Puerto Rico",
+      "popularity": 5,
       "known_for": "El Sol de México, leyenda musical",
+      "recent_news": "Serie biográfica en Netflix sigue generando interés. Giras con sold-out constante en Latinoamérica.",
+      "carousel_themes": ["saju_de_oro", "el_precio_de_la_fama", "por_que_siempre_gana"],
       "public_traits": ["perfeccionista", "misterioso", "romántico", "solitario", "genio musical"],
-      "hooks": ["¿Por qué es tan misterioso?", "El precio de ser El Sol"],
+      "hooks": ["El misterio de Luis Miguel explicado por su Saju", "Talento y soledad: el precio en su destino"],
       "hashtags": ["#LuisMiguel", "#ElSolDeMéxico"]
     },
     {
@@ -45,9 +140,12 @@
       "category": "deportes",
       "birth_date": "1990-01-26",
       "birth_place": "Guadalajara, Jalisco",
+      "popularity": 5,
       "known_for": "Piloto de F1, Red Bull Racing",
+      "recent_news": "Temporada 2025 complicada en Red Bull. Rumores de retiro/cambio de equipo. Año de transición difícil.",
+      "carousel_themes": ["la_caida", "estaba_escrito"],
       "public_traits": ["perseverante", "patriota", "humilde", "consistente"],
-      "hooks": ["El piloto que nunca se rindió", "Su Saju predijo su momento en F1"],
+      "hooks": ["El Saju de Checo predijo su crisis en F1", "¿Es el fin o una transformación?"],
       "hashtags": ["#ChecoPérez", "#F1", "#RedBull"]
     },
     {
@@ -55,9 +153,12 @@
       "category": "entretenimiento",
       "birth_date": "1961-09-02",
       "birth_place": "Ciudad de México",
+      "popularity": 5,
       "known_for": "Comediante, actor, productor",
+      "recent_news": "Continúa expandiendo su carrera en Hollywood. Proyectos de producción en streaming.",
+      "carousel_themes": ["saju_de_oro", "por_que_siempre_gana"],
       "public_traits": ["gracioso", "versátil", "trabajador", "familiar"],
-      "hooks": ["Nacido para hacer reír", "La comedia estaba en su destino"],
+      "hooks": ["40 años haciéndonos reír. ¿Suerte o destino?", "Nacido para hacer reír — literalmente"],
       "hashtags": ["#EugenioDerbez", "#ComediaMexicana"]
     },
     {
@@ -65,19 +166,25 @@
       "category": "música",
       "birth_date": "1971-08-26",
       "birth_place": "Ciudad de México",
+      "popularity": 5,
       "known_for": "Cantante, actriz, empresaria, reina de las telenovelas",
+      "recent_news": "Forbes 100 Mujeres Más Poderosas. Sigue reinventándose con música y marcas.",
+      "carousel_themes": ["saju_de_oro", "por_que_siempre_gana"],
       "public_traits": ["carismática", "reinventora", "fuerte", "glamurosa"],
-      "hooks": ["La reinvención constante", "Destinada a ser reina"],
-      "hashtags": ["#Thalía", "#ReinaDeLasTelenovelas"]
+      "hooks": ["Se reinventa cada década. Su Saju explica esta capacidad.", "Destinada a ser reina — y su Saju lo confirma"],
+      "hashtags": ["#Thalía", "#ReinaDeLasTelenovelas", "#ForbesMéxico"]
     },
     {
       "name": "Frida Kahlo",
       "category": "históricos",
       "birth_date": "1907-07-06",
       "birth_place": "Coyoacán, Ciudad de México",
+      "popularity": 5,
       "known_for": "Pintora icónica, feminismo, arte autobiográfico",
+      "recent_news": "Ícono cultural permanente. Exposiciones y homenajes constantes a nivel mundial.",
+      "carousel_themes": ["el_precio_de_la_fama", "saju_de_oro"],
       "public_traits": ["rebelde", "apasionada", "resiliente", "visceral", "libre"],
-      "hooks": ["El dolor que la hizo eterna", "Su arte estaba escrito en las estrellas"],
+      "hooks": ["Su dolor y su arte estaban escritos en su Saju", "El destino más intenso que hemos analizado"],
       "hashtags": ["#FridaKahlo", "#ArtesMexicanas", "#Feminismo"]
     },
     {
@@ -85,19 +192,25 @@
       "category": "música",
       "birth_date": "1999-01-11",
       "birth_place": "Caborca, Sonora",
+      "popularity": 4,
       "known_for": "Cantante regional mexicano, vida amorosa mediática",
+      "recent_news": "Colaboración 'La Intención' con Peso Pluma #1 en Regional Mexican Airplay. Matrimonio con Ángela Aguilar sigue en titulares.",
+      "carousel_themes": ["amor_y_destino", "la_caida", "de_cero_a_estrella"],
       "public_traits": ["romántico", "impulsivo", "talentoso", "controversial"],
-      "hooks": ["¿Por qué siempre está en el ojo del huracán?", "El amor y el caos en su Saju"],
-      "hashtags": ["#ChristianNodal", "#Nodal"]
+      "hooks": ["Nodal y Ángela: ¿compatibles según el Saju?", "El caos en su vida amorosa tiene explicación"],
+      "hashtags": ["#ChristianNodal", "#Nodal", "#LaIntención"]
     },
     {
       "name": "Luisito Comunica",
       "category": "influencer",
       "birth_date": "1991-03-20",
       "birth_place": "Puebla, Puebla",
+      "popularity": 4,
       "known_for": "YouTuber, viajero, empresario",
+      "recent_news": "Sigue siendo el YouTuber mexicano más influyente. Empresas y marcas en expansión.",
+      "carousel_themes": ["por_que_siempre_gana", "estaba_escrito"],
       "public_traits": ["curioso", "emprendedor", "carismático", "adaptable"],
-      "hooks": ["Nacido para explorar el mundo", "Su Saju explica por qué no puede quedarse quieto"],
+      "hooks": ["Su Saju explica por qué no puede quedarse quieto", "Nacido para explorar el mundo"],
       "hashtags": ["#LuisitoComunica", "#YouTube", "#Viajero"]
     },
     {
@@ -105,9 +218,12 @@
       "category": "cine",
       "birth_date": "1978-11-30",
       "birth_place": "Guadalajara, Jalisco",
+      "popularity": 4,
       "known_for": "Actor de cine internacional, director",
+      "recent_news": "Continúa con proyectos internacionales de cine y dirección.",
+      "carousel_themes": ["saju_de_oro", "por_que_siempre_gana"],
       "public_traits": ["intelectual", "comprometido", "versátil", "rebelde"],
-      "hooks": ["El actor que desafió fronteras", "Talento que trasciende culturas"],
+      "hooks": ["El actor que trasciende fronteras — su Saju lo predijo", "Talento que trasciende culturas"],
       "hashtags": ["#GaelGarcíaBernal", "#CineMexicano"]
     },
     {
@@ -115,12 +231,224 @@
       "category": "históricos",
       "birth_date": "1971-04-16",
       "birth_place": "Lake Jackson, Texas",
+      "popularity": 5,
       "known_for": "Reina del Tex-Mex, leyenda musical",
+      "recent_news": "Legado cultural intacto. Musical y serie siguen generando contenido nuevo.",
+      "carousel_themes": ["el_precio_de_la_fama", "saju_de_oro"],
       "public_traits": ["magnética", "generosa", "trabajadora", "soñadora"],
-      "hooks": ["La reina que el destino nos quitó", "Su luz estaba destinada a brillar"],
+      "hooks": ["La reina que el destino nos quitó", "Su brillo y su tragedia estaban en su Saju"],
       "hashtags": ["#SelenaQuintanilla", "#Selena", "#ReinaDelTexMex"]
+    },
+    {
+      "name": "Fátima Bosch",
+      "category": "belleza",
+      "birth_date": "2000-05-19",
+      "birth_place": "Teapa, Tabasco",
+      "popularity": 4,
+      "known_for": "Miss Universo 2025, modelo, activista",
+      "recent_news": "Coronada Miss Universo 2025 en Tailandia (nov 2025). Polémicas por la votación. Orgullo nacional como segunda mexicana en ganar.",
+      "carousel_themes": ["estaba_escrito", "el_ano_es_suyo"],
+      "public_traits": ["elegante", "determinada", "carismática", "resiliente"],
+      "hooks": ["Miss Universo NO fue suerte. Su Saju lo predijo.", "De Tabasco a la corona mundial — estaba escrito"],
+      "hashtags": ["#FátimaBosch", "#MissUniverso2025", "#MéxicoGana"]
+    },
+    {
+      "name": "Isaac del Toro",
+      "category": "deportes",
+      "birth_date": "2003-11-27",
+      "birth_place": "Ensenada, Baja California",
+      "popularity": 3,
+      "known_for": "Ciclista profesional, UAE Emirates, historia en el Giro d'Italia",
+      "recent_news": "Maglia Rosa por 11 etapas en Giro d'Italia 2025 (2° general). 3° en ranking mundial UCI. Anunció participación en Tour de France 2026.",
+      "carousel_themes": ["estaba_escrito", "de_cero_a_estrella", "el_ano_es_suyo"],
+      "public_traits": ["disciplinado", "joven prodigio", "humilde", "competitivo"],
+      "hooks": ["22 años y ya hace historia. Su Saju explica todo.", "El ciclista que México esperaba — su destino es épico"],
+      "hashtags": ["#IsaacDelToro", "#GiroDItalia", "#CiclismoMexicano", "#TourDeFrance2026"]
+    },
+    {
+      "name": "Claudia Sheinbaum",
+      "category": "política",
+      "birth_date": "1962-06-24",
+      "birth_place": "Ciudad de México",
+      "popularity": 5,
+      "known_for": "Presidenta de México, primera mujer presidenta, científica ambiental",
+      "recent_news": "Primer año de gobierno (2025) marcado por tensiones comerciales con EEUU y política energética. Figura polarizante pero histórica.",
+      "carousel_themes": ["estaba_escrito", "saju_de_oro"],
+      "public_traits": ["intelectual", "determinada", "metódica", "controvertida", "histórica"],
+      "hooks": ["La primera presidenta de México. ¿Su Saju la destinó al poder?", "El destino de gobernar 130 millones de personas"],
+      "hashtags": ["#Sheinbaum", "#PresidentaDeMéxico"]
+    },
+    {
+      "name": "Kimberly Loaiza",
+      "category": "influencer",
+      "birth_date": "1997-12-12",
+      "birth_place": "Mexicali, Baja California",
+      "popularity": 4,
+      "known_for": "TikToker #1 de México, cantante, empresaria",
+      "recent_news": "Sigue siendo la influencer mexicana con más seguidores a nivel mundial. Top 10 crecimiento en redes 2025.",
+      "carousel_themes": ["de_cero_a_estrella", "por_que_siempre_gana"],
+      "public_traits": ["magnética", "emprendedora", "familiar", "estratégica"],
+      "hooks": ["La reina de TikTok México. ¿Suerte o Saju?", "80M de seguidores no son casualidad"],
+      "hashtags": ["#KimberlyLoaiza", "#TikTok", "#InfluencerMexicana"]
+    },
+    {
+      "name": "Eiza González",
+      "category": "cine",
+      "birth_date": "1990-01-30",
+      "birth_place": "Ciudad de México",
+      "popularity": 4,
+      "known_for": "Actriz de Hollywood, modelo, ex-Nickelodeon",
+      "recent_news": "Presente en Coachella 2025. Carrera consolidada en Hollywood con papeles en blockbusters. Ícono de moda latina.",
+      "carousel_themes": ["saju_de_oro", "por_que_siempre_gana"],
+      "public_traits": ["ambiciosa", "elegante", "transformadora", "disciplinada"],
+      "hooks": ["De telenovelas a Hollywood — su Saju lo predijo", "La mexicana que conquista cada alfombra roja"],
+      "hashtags": ["#EizaGonzález", "#Hollywood", "#MexicanaEnHollywood"]
+    },
+    {
+      "name": "Yeri Mua",
+      "category": "influencer",
+      "birth_date": "2001-12-17",
+      "birth_place": "Veracruz, Veracruz",
+      "popularity": 3,
+      "known_for": "Influencer, cantante de reggaetón, personalidad viral",
+      "recent_news": "Explosión en TikTok e Instagram 2025. Carrera musical en ascenso. Personalidad polarizante que genera engagement masivo.",
+      "carousel_themes": ["de_cero_a_estrella", "amor_y_destino"],
+      "public_traits": ["extrovertida", "controversial", "carismática", "auténtica"],
+      "hooks": ["De Veracruz a viral — su Saju explica el fenómeno", "¿Por qué no puedes dejar de verla? Su Saju lo dice"],
+      "hashtags": ["#YeriMua", "#InfluencerMexicana", "#Viral"]
+    },
+    {
+      "name": "Junior H",
+      "category": "música",
+      "birth_date": "2001-04-23",
+      "birth_place": "Guanajuato, Guanajuato",
+      "popularity": 3,
+      "known_for": "Cantante de corridos tumbados, pionero del sad sierreño",
+      "recent_news": "Consolidado como referente del movimiento corridos tumbados. Giras sold-out en EEUU y México.",
+      "carousel_themes": ["de_cero_a_estrella", "estaba_escrito"],
+      "public_traits": ["introspectivo", "auténtico", "melancólico", "innovador"],
+      "hooks": ["Inventó un género musical a los 19. Su Saju lo explica.", "El Saju más creativo del regional mexicano"],
+      "hashtags": ["#JuniorH", "#CorridosTumbados", "#SadSierreño"]
+    },
+    {
+      "name": "Grupo Frontera",
+      "category": "música",
+      "birth_date": "1998-06-24",
+      "birth_place": "Edinburg, Texas",
+      "popularity": 4,
+      "known_for": "Grupo norteño, éxito viral 'No se va', colaboraciones con Bad Bunny",
+      "recent_news": "Colaboración 'No Capea' con Xavi (2025). Gira masiva 2026. De viral en TikTok a llenar estadios.",
+      "carousel_themes": ["de_cero_a_estrella", "estaba_escrito"],
+      "public_traits": ["humildes", "auténticos", "trabajadores", "carismáticos"],
+      "hooks": ["De tocar en quinceañeras a llenar estadios. Estaba escrito.", "El Saju del líder de Grupo Frontera revela todo"],
+      "hashtags": ["#GrupoFrontera", "#NorteñoMusic", "#NoSeVa"]
+    },
+    {
+      "name": "Diego Luna",
+      "category": "cine",
+      "birth_date": "1979-12-29",
+      "birth_place": "Ciudad de México",
+      "popularity": 4,
+      "known_for": "Actor internacional, Rogue One, Andor (Star Wars)",
+      "recent_news": "Serie Andor S2 consolidó su estatus en Hollywood. Activismo social y producción cinematográfica en México.",
+      "carousel_themes": ["saju_de_oro", "por_que_siempre_gana"],
+      "public_traits": ["comprometido", "versátil", "intelectual", "apasionado"],
+      "hooks": ["De Y Tu Mamá También a Star Wars. ¿Destino o suerte?", "El mexicano que conquistó la galaxia"],
+      "hashtags": ["#DiegoLuna", "#Andor", "#StarWars", "#CineMexicano"]
+    },
+    {
+      "name": "Yalitza Aparicio",
+      "category": "cine",
+      "birth_date": "1993-12-11",
+      "birth_place": "Tlaxiaco, Oaxaca",
+      "popularity": 4,
+      "known_for": "Actriz nominada al Oscar por Roma, activista indígena",
+      "recent_news": "Embajadora de buena voluntad UNESCO. Activismo por derechos indígenas. Proyectos cinematográficos nuevos.",
+      "carousel_themes": ["estaba_escrito", "de_cero_a_estrella"],
+      "public_traits": ["humilde", "valiente", "inspiradora", "resiliente"],
+      "hooks": ["De maestra rural a nominada al Oscar. Su Saju es extraordinario.", "El destino más improbable y más hermoso"],
+      "hashtags": ["#YalitzaAparicio", "#Roma", "#OrgulloOaxaqueño"]
+    },
+    {
+      "name": "Yuya",
+      "category": "influencer",
+      "birth_date": "1993-03-13",
+      "birth_place": "Cuernavaca, Morelos",
+      "popularity": 4,
+      "known_for": "Pionera de YouTube México, beauty influencer, empresaria",
+      "recent_news": "16.8M seguidores. Transición de beauty vlogger a empresaria y madre. Marca de belleza en crecimiento.",
+      "carousel_themes": ["por_que_siempre_gana", "saju_de_oro"],
+      "public_traits": ["cercana", "emprendedora", "auténtica", "evolutiva"],
+      "hooks": ["La primera YouTuber de México. ¿Por qué sigue vigente?", "Su reinvención constante tiene explicación"],
+      "hashtags": ["#Yuya", "#BeautyMexicana", "#YouTube"]
+    },
+    {
+      "name": "Kenia Os",
+      "category": "música",
+      "birth_date": "1999-07-15",
+      "birth_place": "Mazatlán, Sinaloa",
+      "popularity": 3,
+      "known_for": "Cantante pop/urbano, influencer, actriz",
+      "recent_news": "Carrera musical en ascenso con hits en streaming. Presencia fuerte en redes sociales y eventos de moda.",
+      "carousel_themes": ["de_cero_a_estrella", "el_ano_es_suyo"],
+      "public_traits": ["versátil", "carismática", "emprendedora", "trendsetter"],
+      "hooks": ["De influencer a estrella pop — su Saju predijo la transformación", "El destino musical que nadie esperaba"],
+      "hashtags": ["#KeniaOs", "#PopMexicano", "#InfluencerToStar"]
+    },
+    {
+      "name": "Juan Gabriel",
+      "category": "históricos",
+      "birth_date": "1950-01-07",
+      "birth_place": "Parácuaro, Michoacán",
+      "popularity": 5,
+      "known_for": "El Divo de Juárez, compositor e intérprete legendario",
+      "recent_news": "Legado cultural permanente. Homenajes y tributos constantes. Música sigue en charts.",
+      "carousel_themes": ["el_precio_de_la_fama", "saju_de_oro"],
+      "public_traits": ["genio", "apasionado", "generoso", "libre", "incomprendido"],
+      "hooks": ["El genio que sufrió. Su Saju revela el precio de su talento.", "De la pobreza al trono — el destino más dramático"],
+      "hashtags": ["#JuanGabriel", "#ElDivoDeJuárez", "#LeyendaMexicana"]
+    },
+    {
+      "name": "Mar de Regil",
+      "category": "influencer",
+      "birth_date": "2003-04-11",
+      "birth_place": "Ciudad de México",
+      "popularity": 3,
+      "known_for": "Influencer de bienestar, hija de Bárbara de Regil, empoderamiento femenino",
+      "recent_news": "Top 10 influencers con mayor crecimiento en redes 2025. Contenido de bienestar, libros e inteligencia emocional.",
+      "carousel_themes": ["de_cero_a_estrella", "el_ano_es_suyo"],
+      "public_traits": ["empoderada", "intelectual", "auténtica", "joven líder"],
+      "hooks": ["22 años y ya empodera a millones. ¿Qué dice su Saju?", "La nueva voz de la Gen Z mexicana"],
+      "hashtags": ["#MarDeRegil", "#Empoderamiento", "#BienestarMexicano"]
+    },
+    {
+      "name": "Ángela Aguilar",
+      "category": "música",
+      "birth_date": "2003-10-08",
+      "birth_place": "Los Ángeles, California",
+      "popularity": 4,
+      "known_for": "Cantante de música mexicana, dinastía Aguilar, esposa de Nodal",
+      "recent_news": "Matrimonio con Christian Nodal (2024) generó polémica masiva. Carrera musical propia en crecimiento. Figura polarizante.",
+      "carousel_themes": ["amor_y_destino", "la_caida", "estaba_escrito"],
+      "public_traits": ["talentosa", "controversial", "orgullosa", "joven"],
+      "hooks": ["Nodal y Ángela: ¿el Saju predijo este amor?", "La dinastía Aguilar en su destino"],
+      "hashtags": ["#ÁngelaAguilar", "#DinastíaAguilar", "#NodalYÁngela"]
+    },
+    {
+      "name": "Willibaldo García",
+      "category": "deportes",
+      "birth_date": "1998-03-15",
+      "birth_place": "Guadalajara, Jalisco",
+      "popularity": 2,
+      "known_for": "Boxeador, campeón mundial 2025",
+      "recent_news": "Se coronó campeón mundial en mayo 2025. Parte del resurgimiento del boxeo mexicano.",
+      "carousel_themes": ["estaba_escrito", "de_cero_a_estrella"],
+      "public_traits": ["guerrero", "humilde", "determinado", "hambriento"],
+      "hooks": ["Nuevo campeón mundial. Su Saju predijo esta corona.", "El boxeo mexicano resurge — y su destino lo confirma"],
+      "hashtags": ["#WillibaldoGarcía", "#BoxeoMexicano", "#NuevoCampeón"]
     }
   ],
+
   "content_calendar_template": {
     "monday": "celebrity_saju",
     "tuesday": "daily_fortune",

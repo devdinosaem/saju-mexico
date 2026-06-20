@@ -1,35 +1,36 @@
 // ══════════════════════════════════════
 // 프로젝트 전체 사전 — 한글 → 스페인어
+// 포맷: [감싸는단어 de 내용] 또는 [감싸는단어 형용사]
 // ══════════════════════════════════════
 
 // ── 십신 (十神, 열 가지 신) ──
 export const TEN_GOD_ES: Record<string, string> = {
-  "비견": "Compañero",            // 동료 — 같은 기운
-  "겁재": "Rival",                // 경쟁자 — 재물을 빼앗는 기운
-  "식신": "Creador",              // 창조자 — 표현과 창작
-  "상관": "Rebelde",              // 반항자 — 권위에 도전
-  "편재": "Fortuna Inesperada",   // 뜻밖의 행운 — 투기적 재물
-  "정재": "Fortuna Estable",      // 안정적 행운 — 꾸준한 재물
-  "편관": "Guerrero",             // 전사 — 외부 압박
-  "정관": "Líder",                // 지도자 — 질서와 권위
-  "편인": "Místico",              // 신비가 — 비정통 직감
-  "정인": "Maestro",              // 스승 — 정통 학문
+  "비견": "[Fuerza de Autonomía]",            // 자립의 힘
+  "겁재": "[Riesgo de Apuesta Audaz]",        // 대담한 승부의 위험
+  "식신": "[Fortuna de Creatividad]",          // 창작의 복
+  "상관": "[Fuerza de Talento Rebelde]",       // 반항적 재능의 힘
+  "편재": "[Fortuna Inesperada]",              // 뜻밖의 복
+  "정재": "[Fortuna de Sueldo Fijo]",          // 고정 수입의 복
+  "편관": "[Fuerza de Carisma]",               // 카리스마의 힘
+  "정관": "[Fuerza de Ascenso]",               // 승진의 힘
+  "편인": "[Energía de Intuición]",            // 직감의 기운
+  "정인": "[Energía de Protección]",           // 보호의 기운
 };
 
 // ── 12운성 (十二運星, 열두 단계 별) ──
 export const PHASE_ES: Record<string, string> = {
-  "장생": "Nacimiento",     // 탄생
-  "목욕": "Purificación",   // 정화, 씻김
-  "관대": "Crecimiento",    // 성장, 관을 씀
-  "건록": "Prosperidad",    // 번영, 녹봉
-  "제왕": "Plenitud",       // 절정, 황제
-  "쇠": "Declive",          // 쇠퇴
-  "병": "Enfermedad",       // 병듦
-  "사": "Amenaza",          // 위협 (死)
-  "묘": "Amenaza",          // 위협 (墓)
-  "절": "Extinción",        // 소멸
-  "태": "Gestación",        // 잉태
-  "양": "Nutrición",        // 양육
+  "장생": "[Energía de Nuevo Comienzo]",       // 새 시작의 기운
+  "목욕": "[Alerta de Inestabilidad]",         // 불안정의 경고
+  "관대": "[Energía de Preparación]",          // 준비의 기운
+  "건록": "[Fuerza de Independencia]",         // 자립의 힘
+  "제왕": "[Fuerza Máxima]",                   // 최고의 힘
+  "쇠": "[Alerta de Declive]",                 // 쇠퇴의 경고
+  "병": "[Alerta de Debilitamiento]",          // 약화의 경고
+  "사": "[Riesgo de Parálisis]",               // 정지의 위험
+  "묘": "[Riesgo de Latencia]",                // 잠복의 위험
+  "절": "[Riesgo de Extinción]",               // 소멸의 위험
+  "태": "[Energía de Nueva Vida]",             // 새 생명의 기운
+  "양": "[Energía de Gestación]",              // 잉태의 기운
 };
 
 // ── 강약 (身强/身弱) ──
@@ -51,44 +52,44 @@ export const ELEMENT_ES: Record<string, string> = {
 // ── 12신살 (十二神殺) ──
 export const SPIRIT_STAR_ES: Record<string, string> = {
   // 경고 (Alerta) — 부정
-  "겁살": "Alerta de Asalto",          // 약탈의 경고
-  "재살": "Alerta de Desastre",        // 재앙의 경고
-  "천살": "Alerta Celestial",          // 하늘의 경고
-  "지살": "Alerta Terrenal",           // 땅의 경고
-  "년살": "Alerta Anual",              // 연간 경고
-  "월살": "Alerta Mensual",            // 월간 경고
-  "망신살": "Alerta de Reputación",    // 명예의 경고
-  "육해살": "Alerta de Conflicto",     // 갈등의 경고
+  "겁살": "[Alerta de Asalto]",              // 약탈의 경고
+  "재살": "[Alerta de Desastre]",            // 재앙의 경고
+  "천살": "[Alerta Celestial]",              // 하늘의 경고
+  "지살": "[Alerta Terrenal]",               // 땅의 경고
+  "년살": "[Alerta Anual]",                  // 연간 경고
+  "월살": "[Alerta Mensual]",                // 월간 경고
+  "망신살": "[Alerta de Reputación]",        // 명예의 경고
+  "육해살": "[Alerta de Conflicto]",         // 갈등의 경고
   // 기운 (Energía) — 중립/긍정
-  "장성살": "Energía de [Comando]",              // [지휘]의 기운
-  "반안살": "Energía de [Estabilidad]",          // [안정]의 기운
-  "역마살": "Energía de [Vagabundeo]",           // [방랑]의 기운
-  "화개살": "Energía de [Espiritualidad]",       // [영성]의 기운
+  "장성살": "[Energía de Liderazgo]",        // 리더십의 기운
+  "반안살": "[Energía de Estabilidad]",      // 안정의 기운
+  "역마살": "[Energía de Vagabundeo]",       // 방랑의 기운
+  "화개살": "[Energía de Espiritualidad]",   // 영성의 기운
 };
 
 // ── 특수 신살 (特殊神殺) ──
 export const SPECIAL_STAR_ES: Record<string, string> = {
   // Energía — 긍정
-  "천덕귀인": "Energía de [Protector contra Desastres]",     // [재앙의 수호자]의 기운
-  "월덕귀인": "Energía de [Virtud Natural]",                 // [타고난 덕망]의 기운
-  "문창귀인": "Energía de [Talento Literario]",              // [글재주]의 기운
-  "학당귀인": "Energía de [Éxito en Estudios]",              // [학업 성취]의 기운
-  "천을귀인": "Energía de [Protector Supremo]",              // [최고의 수호자]의 기운
-  "태극귀인": "Energía de [Intuición Protectora]",           // [직감의 보호]의 기운
-  "천복귀인": "Energía de [Bendición Celestial]",            // [하늘의 축복]의 기운
-  "암록": "Energía de [Fortuna Oculta]",                     // [숨겨진 재물]의 기운
-  "정록": "Energía de [Ingreso Estable]",                    // [안정적 수입]의 기운
-  "관귀학관": "Energía de [Éxito por Mérito]",               // [실력으로 성공]의 기운
-  "금여성": "Energía de [Pareja Afortunada]",                // [배우자 행운]의 기운
-  "천문성": "Energía de [Sabiduría Profunda]",               // [깊은 지혜]의 기운
-  "현침살": "Energía de [Análisis Agudo]",                   // [예민한 분석력]의 기운
-  // Energía — 양면
-  "괴강살": "Energía de [Liderazgo Extremo]",                // [극강의 리더십]의 기운
-  "홍염살": "Energía de [Magnetismo Romántico]",             // [연애 자석]의 기운
-  "도화살": "Energía de [Atractivo Irresistible]",           // [거부할 수 없는 매력]의 기운
+  "천덕귀인": "[Energía de Protección Divina]",        // 신의 보호의 기운
+  "월덕귀인": "[Energía de Virtud Natural]",           // 타고난 덕망의 기운
+  "문창귀인": "[Energía de Talento Escrito]",           // 글재주의 기운
+  "학당귀인": "[Energía de Éxito Académico]",           // 학업 성취의 기운
+  "천을귀인": "[Energía de Protector Supremo]",         // 최고 수호자의 기운
+  "태극귀인": "[Energía de Intuición Protectora]",      // 직감 보호의 기운
+  "천복귀인": "[Energía de Bendición]",                 // 축복의 기운
+  "암록": "[Fortuna Oculta]",                           // 숨겨진 재물
+  "정록": "[Fortuna de Ingreso Estable]",               // 안정적 수입의 복
+  "관귀학관": "[Energía de Éxito por Mérito]",          // 실력 성공의 기운
+  "금여성": "[Fortuna de Buena Pareja]",                // 좋은 배우자의 복
+  "천문성": "[Energía de Sabiduría]",                   // 지혜의 기운
+  "현침살": "[Energía de Análisis Agudo]",              // 예민한 분석력의 기운
+  // Fuerza/Energía — 양면
+  "괴강살": "[Fuerza de Liderazgo Extremo]",            // 극강 리더십의 힘
+  "홍염살": "[Energía de Magnetismo Romántico]",        // 연애 자석의 기운
+  "도화살": "[Energía de Atractivo]",                   // 매력의 기운
   // Riesgo — 부정
-  "백호대살": "Riesgo de [Accidente]",                       // [사고]의 위험
-  "비인살": "Riesgo de [Conflicto Súbito]",                  // [급작스러운 다툼]의 위험
+  "백호대살": "[Riesgo de Accidente]",                  // 사고의 위험
+  "비인살": "[Riesgo de Conflicto Súbito]",             // 급작스러운 다툼의 위험
 };
 
 // ── 합충형파해 (合沖刑破害) ──
@@ -113,8 +114,8 @@ export const BRANCH_ANIMAL_ES: Record<string, string> = {
 
 // ── 방향 ──
 export const DIRECTION_ES: Record<string, string> = {
-  "순행": "Progresiva",   // 순행
-  "역행": "Regresiva",    // 역행
+  "순행": "Progresiva",
+  "역행": "Regresiva",
   "Progresiva (순행)": "Progresiva",
   "Regresiva (역행)": "Regresiva",
 };
@@ -143,15 +144,12 @@ export function translateSpiritStar(korean: string): string {
 
 export function translateRelation(description: string): string {
   let result = description;
-  // 관계 타입 교체
   for (const [kr, es] of Object.entries(RELATION_TYPE_ES)) {
     result = result.replace(new RegExp(kr, 'g'), es);
   }
-  // 지지 동물 교체
   for (const [branch, animal] of Object.entries(BRANCH_ANIMAL_ES)) {
     result = result.replace(new RegExp(branch, 'g'), animal);
   }
-  // 오행 교체
   result = result.replace(/목\(木\)/g, 'Madera');
   result = result.replace(/화\(火\)/g, 'Fuego');
   result = result.replace(/토\(土\)/g, 'Tierra');

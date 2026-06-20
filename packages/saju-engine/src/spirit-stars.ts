@@ -25,12 +25,12 @@ export const SPIRIT_STAR_KOREAN: Record<TwelveSpiritStar, string> = {
 };
 
 export const SPIRIT_STAR_SPANISH: Record<TwelveSpiritStar, string> = {
-  geobsal: 'Alerta de [Asalto]', jaesal: 'Alerta de [Desastre]',
-  cheonsal: 'Alerta [Celestial]', jisal: 'Alerta [Terrenal]',
-  nyeonsal: 'Alerta [Anual]', wolsal: 'Alerta [Mensual]',
-  mangsinsal: 'Alerta de [Reputación]', jangseong: 'Energía de [Comando]',
-  banan: 'Energía de [Estabilidad]', yeokma: 'Energía de [Vagabundeo]',
-  yukhae: 'Alerta de [Conflicto]', hwagae: 'Energía de [Espiritualidad]',
+  geobsal: '[Alerta de Asalto]', jaesal: '[Alerta de Desastre]',
+  cheonsal: '[Alerta Celestial]', jisal: '[Alerta Terrenal]',
+  nyeonsal: '[Alerta Anual]', wolsal: '[Alerta Mensual]',
+  mangsinsal: '[Alerta de Reputación]', jangseong: '[Energía de Liderazgo]',
+  banan: '[Energía de Estabilidad]', yeokma: '[Energía de Vagabundeo]',
+  yukhae: '[Alerta de Conflicto]', hwagae: '[Energía de Espiritualidad]',
 };
 
 const SPIRIT_STAR_ORDER: readonly TwelveSpiritStar[] = [
