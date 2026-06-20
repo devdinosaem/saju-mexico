@@ -144,16 +144,16 @@ export default function CardPage() {
           </div>
 
           {/* 궁합 */}
-          <div className="flex gap-2 justify-center mb-4">
-            <div className="flex items-center gap-1 bg-bg-card rounded-full px-3 py-1.5 border border-white/5 text-xs">
-              <span>{compat.emoji}</span>
-              <span className="text-green-400">♥</span>
-              <span>{compat.spanish}</span>
+          <div className="space-y-1.5 mb-4 px-4">
+            <div className="flex items-center gap-2 text-xs">
+              <span className="text-green-400 w-20 shrink-0 text-right">Armonía</span>
+              <span className="w-px h-3 bg-white/10" />
+              <span>{compat.emoji} {compat.spanish} — {compat.reason.split("—")[0].trim()}</span>
             </div>
-            <div className="flex items-center gap-1 bg-bg-card rounded-full px-3 py-1.5 border border-white/5 text-xs">
-              <span>{clash.emoji}</span>
-              <span className="text-amber">✕</span>
-              <span>{clash.spanish}</span>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="text-amber w-20 shrink-0 text-right">Tensión</span>
+              <span className="w-px h-3 bg-white/10" />
+              <span>{clash.emoji} {clash.spanish} — {clash.reason.split("—")[0].trim()}</span>
             </div>
           </div>
 
