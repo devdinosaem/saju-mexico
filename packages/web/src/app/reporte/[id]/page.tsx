@@ -373,6 +373,114 @@ export default function ReportePage() {
           );
         })()}
 
+        {/* ═══ 3대 사건 예고 (풀 버전) ═══ */}
+        <section className="px-5 py-8 border-t border-white/5">
+          <div className="gradient-mystic rounded-2xl p-6 border border-gold/10">
+            <h2 className="font-serif text-xl font-bold text-center mb-2">
+              🔮 3 eventos que cambiarán la vida de {data.name}
+            </h2>
+            <p className="text-text-secondary text-xs text-center mb-6">
+              Calculados a partir de tu carta natal y tus Grandes Estaciones
+            </p>
+
+            <div className="space-y-4">
+              {data.majorFortunes?.fortunes.slice(0, 3).map((f, i) => {
+                const yearStart = data.birth.year + f.age;
+                const icons = ["⚡", "💰", "🔄"];
+                const titles = [
+                  "Un encuentro o evento que transformará tu perspectiva",
+                  "Un cambio financiero significativo",
+                  "Una transición importante en tu vida personal",
+                ];
+                return (
+                  <div key={i} className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span>{icons[i]}</span>
+                      <span className="text-gold font-mono text-sm">{yearStart}-{yearStart + 9}</span>
+                      <span className="text-text-muted text-xs">({translateTenGod(f.stemTenGod)})</span>
+                    </div>
+                    <p className="text-sm leading-relaxed">{titles[i]}</p>
+                    <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(f.stemTenGod)}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ 운명의 짝/악인 프로필 카드 ═══ */}
+        {data.dayMaster && (() => {
+          const compat = getCompatibleElement(data.dayMaster.element);
+          const clash = getClashingElement(data.dayMaster.element);
+          return (
+            <section className="px-5 py-8 border-t border-white/5">
+              <h2 className="font-serif text-xl font-bold text-center mb-6">
+                💫 <span className="text-gradient-gold">Tu Pareja Destinada</span>
+              </h2>
+              <div className="bg-bg-card rounded-2xl p-5 border border-gold/20 mb-4">
+                <div className="bg-gold/5 rounded-xl p-3 mb-4 border border-gold/10">
+                  <p className="text-xs text-gold mb-1">Tu elemento: {data.dayMaster.elementSpanish} · Compatibilidad ideal:</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{compat.emoji}</span>
+                    <div>
+                      <p className="text-sm font-semibold">{compat.spanish}</p>
+                      <p className="text-text-muted text-xs">{compat.reason}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between py-2 border-b border-white/5">
+                    <span className="text-text-secondary">Personalidad</span>
+                    <span>Amable, empático, introvertido</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-white/5">
+                    <span className="text-text-secondary">Profesión</span>
+                    <span>Campo creativo o tecnológico</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-white/5">
+                    <span className="text-text-secondary">Cuándo lo conocerás</span>
+                    <span>Durante tu Gran Estación de {translateTenGod(data.majorFortunes?.fortunes[1]?.stemTenGod || "정재")}</span>
+                  </div>
+                  <div className="flex justify-between py-2">
+                    <span className="text-text-secondary">Señal</span>
+                    <span>Sentirás una conexión inmediata e inexplicable</span>
+                  </div>
+                </div>
+              </div>
+
+              <h2 className="font-serif text-xl font-bold text-center mt-8 mb-6">
+                ⚠️ <span className="text-red-400">La persona que más daño te hará</span>
+              </h2>
+              <div className="bg-bg-card rounded-2xl p-5 border border-red-500/20">
+                <div className="bg-red-500/5 rounded-xl p-3 mb-4 border border-red-500/10">
+                  <p className="text-xs text-red-400 mb-1">Elemento de conflicto:</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{clash.emoji}</span>
+                    <div>
+                      <p className="text-sm font-semibold text-red-300">{clash.spanish}</p>
+                      <p className="text-text-muted text-xs">{clash.reason}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between py-2 border-b border-white/5">
+                    <span className="text-text-secondary">Personalidad</span>
+                    <span>Controlador, manipulador, competitivo</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-white/5">
+                    <span className="text-text-secondary">Tipo de daño</span>
+                    <span>Pérdida financiera o emocional</span>
+                  </div>
+                  <div className="flex justify-between py-2">
+                    <span className="text-text-secondary">Cómo protegerte</span>
+                    <span>Refuerza tu Elemento de Poder ({data.yongShin?.elementSpanish})</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          );
+        })()}
+
         {/* ═══ 오행 궁합 — 운명의 짝/악인 ═══ */}
         {data.dayMaster && (() => {
           const compat = getCompatibleElement(data.dayMaster.element);
