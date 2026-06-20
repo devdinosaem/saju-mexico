@@ -372,22 +372,13 @@ function ReportePage() {
               {/* 올해 세운 */}
               {data.yearlyFortune && (
                 <div className="mt-6 bg-bg-card rounded-2xl p-5 border border-gold/10">
-                  <ConceptCard termKey="yearlyFortune" compact />
                   <h3 className="font-serif text-lg font-bold mb-3">📅 Tu año {data.yearlyFortune.year}</h3>
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="text-center">
-                      <p className="font-serif text-lg text-gold">{ganZhiToElements(data.yearlyFortune.ganZhi)}</p>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm">
-                        Energía: <span className="text-gold font-semibold">{translateTenGod(data.yearlyFortune.stemTenGod)} / {translateTenGod(data.yearlyFortune.branchTenGod)}</span>
-                      </p>
-                      <p className="text-xs text-text-secondary">Fase: {translatePhase(data.yearlyFortune.phase)}</p>
-                      <p className="text-xs text-text-muted mt-1 leading-relaxed">
-                        {getFortuneDescription(data.yearlyFortune.stemTenGod)}
-                      </p>
-                    </div>
-                  </div>
+                  <p className="font-serif text-base text-gold mb-2">{ganZhiToElements(data.yearlyFortune.ganZhi)}</p>
+                  <p className="text-sm">Energía: <span className="text-gold font-semibold">{translateTenGod(data.yearlyFortune.stemTenGod)} / {translateTenGod(data.yearlyFortune.branchTenGod)}</span></p>
+                  <p className="text-text-secondary text-xs mt-1">{translatePhase(data.yearlyFortune.phase)}</p>
+                  <p className="text-text-muted text-xs mt-2 leading-relaxed">
+                    {getFortuneDescription(data.yearlyFortune.stemTenGod)}
+                  </p>
                 </div>
               )}
 
@@ -402,13 +393,12 @@ function ReportePage() {
                 if (!nextFortune) return null;
                 return (
                   <div className="mt-4 bg-bg-card rounded-2xl p-5 border border-amber/15">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-2">
                       <span className="text-amber text-sm">⏭️ PRÓXIMO CAMBIO</span>
+                      <span className="text-text-muted text-xs">A los {nextFortune.age} años ({birthYear + nextFortune.age})</span>
                     </div>
-                    <p className="text-sm">
-                      A los <strong className="text-text-primary">{nextFortune.age} años</strong> ({birthYear + nextFortune.age}), entrarás en una nueva Gran Estación:
-                      <span className="text-gold font-semibold"> {ganZhiToElements(nextFortune.ganZhi)}</span> — {translateTenGod(nextFortune.stemTenGod)}
-                    </p>
+                    <p className="font-serif text-base text-gold mb-1">{ganZhiToElements(nextFortune.ganZhi)}</p>
+                    <p className="text-sm">Nueva estación: <span className="text-gold font-semibold">{translateTenGod(nextFortune.stemTenGod)}</span></p>
                     <p className="text-text-secondary text-xs mt-2 leading-relaxed">
                       {getFortuneDescription(nextFortune.stemTenGod)}
                     </p>
@@ -424,26 +414,30 @@ function ReportePage() {
           const currentYear = new Date().getFullYear();
           const birthYear = data.birth.year;
           const fortunes = data.majorFortunes.fortunes;
+          const yearlyAll = (data as unknown as Record<string, unknown>).yearlyFortunes as { year: number; stemTenGod: string }[] || [];
 
           const pastFortune = [...fortunes]
             .filter(f => birthYear + f.age + 10 <= currentYear)
             .pop();
 
           const loveTenGods = ["정재", "편재", "정관", "편관"];
-          const loveFortune = fortunes.find(f =>
-            birthYear + f.age > currentYear && loveTenGods.includes(f.stemTenGod)
-          );
+          const loveYearly = yearlyAll.find(y => y.year > currentYear && loveTenGods.includes(y.stemTenGod));
+          const loveMajor = fortunes.find(f => birthYear + f.age > currentYear && loveTenGods.includes(f.stemTenGod));
 
           const wealthTenGods = ["편재", "정재", "식신"];
-          const wealthFortune = fortunes.find(f =>
-            birthYear + f.age > currentYear &&
-            wealthTenGods.includes(f.stemTenGod) &&
-            f !== loveFortune
-          );
+          const wealthYearly = yearlyAll.find(y => y.year > currentYear && wealthTenGods.includes(y.stemTenGod) && y !== loveYearly);
+          const wealthMajor = fortunes.find(f => birthYear + f.age > currentYear && wealthTenGods.includes(f.stemTenGod) && f !== loveMajor);
 
-          const futureFortunes = fortunes.filter(f => birthYear + f.age > currentYear);
-          const fallbackLove = loveFortune || futureFortunes[0];
-          const fallbackWealth = wealthFortune || futureFortunes[1] || futureFortunes[0];
+          const loveEvent = loveYearly
+            ? { label: String(loveYearly.year), tenGod: loveYearly.stemTenGod }
+            : loveMajor
+            ? { label: `${birthYear + loveMajor.age}-${birthYear + loveMajor.age + 9}`, tenGod: loveMajor.stemTenGod }
+            : null;
+          const wealthEvent = wealthYearly
+            ? { label: String(wealthYearly.year), tenGod: wealthYearly.stemTenGod }
+            : wealthMajor
+            ? { label: `${birthYear + wealthMajor.age}-${birthYear + wealthMajor.age + 9}`, tenGod: wealthMajor.stemTenGod }
+            : null;
 
           return (
             <section className="px-5 py-8 border-t border-white/5">
@@ -470,31 +464,31 @@ function ReportePage() {
                     </div>
                   )}
 
-                  {fallbackLove && (
+                  {loveEvent && (
                     <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
                       <div className="flex items-center gap-2 mb-2">
                         <span>💕</span>
-                        <span className="text-gold font-mono text-sm">{birthYear + fallbackLove.age}-{birthYear + fallbackLove.age + 9}</span>
-                        <span className="text-text-muted text-xs">({translateTenGod(fallbackLove.stemTenGod)})</span>
+                        <span className="text-gold font-mono text-sm">{loveEvent.label}</span>
+                        <span className="text-text-muted text-xs">({translateTenGod(loveEvent.tenGod)})</span>
                       </div>
                       <p className="text-sm">
                         Un encuentro que cambiará tu perspectiva del amor. La persona llegará cuando menos lo esperes, en un contexto que jamás imaginaste.
                       </p>
-                      <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(fallbackLove.stemTenGod)}</p>
+                      <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(loveEvent.tenGod)}</p>
                     </div>
                   )}
 
-                  {fallbackWealth && (
+                  {wealthEvent && (
                     <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
                       <div className="flex items-center gap-2 mb-2">
                         <span>💰</span>
-                        <span className="text-gold font-mono text-sm">{birthYear + fallbackWealth.age}-{birthYear + fallbackWealth.age + 9}</span>
-                        <span className="text-text-muted text-xs">({translateTenGod(fallbackWealth.stemTenGod)})</span>
+                        <span className="text-gold font-mono text-sm">{wealthEvent.label}</span>
+                        <span className="text-text-muted text-xs">({translateTenGod(wealthEvent.tenGod)})</span>
                       </div>
                       <p className="text-sm">
                         Tu ciclo de mayor prosperidad financiera. Una oportunidad que podría cambiar tu nivel de vida por completo.
                       </p>
-                      <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(fallbackWealth.stemTenGod)}</p>
+                      <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(wealthEvent.tenGod)}</p>
                     </div>
                   )}
                 </div>

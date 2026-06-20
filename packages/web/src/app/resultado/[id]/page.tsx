@@ -376,21 +376,14 @@ export default function ResultadoPage() {
               {/* 1. AHORA — 현재 대운 */}
               {currentFortune && (
                 <div className="bg-bg-card rounded-2xl p-5 border border-gold/20 mb-3">
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-2 mb-2">
                     <span className="text-gold text-sm">✦ AHORA</span>
                     <span className="text-text-muted text-xs">
                       Gran Estación ({currentFortune.age}-{currentFortune.age + 9} años)
                     </span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-center">
-                      <p className="font-serif text-lg text-gold">{ganZhiToElements(currentFortune.ganZhi)}</p>
-                      <p className="text-xs text-text-muted">{translateTenGod(currentFortune.stemTenGod)}</p>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold">Tienes {currentAge} años — estás en la estación de {translateTenGod(currentFortune.stemTenGod)}</p>
-                    </div>
-                  </div>
+                  <p className="font-serif text-base text-gold mb-1">{ganZhiToElements(currentFortune.ganZhi)}</p>
+                  <p className="text-sm">Tienes {currentAge} años — estás en la estación de <span className="text-gold font-semibold">{translateTenGod(currentFortune.stemTenGod)}</span></p>
                 </div>
               )}
 
@@ -400,19 +393,9 @@ export default function ResultadoPage() {
                   <span className="text-amber text-sm">📅 {data.yearlyFortune.year}</span>
                   <span className="text-text-muted text-xs">Tu año</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="text-center">
-                    <p className="font-serif text-lg text-gold">{ganZhiToElements(data.yearlyFortune.ganZhi)}</p>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm">
-                      Energía dominante: <span className="text-gold">{translateTenGod(data.yearlyFortune.stemTenGod)}/{translateTenGod(data.yearlyFortune.branchTenGod)}</span>
-                    </p>
-                    <p className="text-text-secondary text-xs">
-                      Fase: <span className="text-gold">{translatePhase(data.yearlyFortune.phase)}</span>
-                    </p>
-                  </div>
-                </div>
+                <p className="font-serif text-base text-gold mb-1">{ganZhiToElements(data.yearlyFortune.ganZhi)}</p>
+                <p className="text-sm">Energía: <span className="text-gold font-semibold">{translateTenGod(data.yearlyFortune.stemTenGod)} / {translateTenGod(data.yearlyFortune.branchTenGod)}</span></p>
+                <p className="text-text-secondary text-xs mt-1">{translatePhase(data.yearlyFortune.phase)}</p>
               </div>
 
               {/* 3. PRÓXIMO CAMBIO — 다음 대운 */}
@@ -420,11 +403,10 @@ export default function ResultadoPage() {
                 <div className="bg-bg-card rounded-2xl p-4 border border-white/5">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-amber text-sm">⏭️ PRÓXIMO CAMBIO</span>
+                    <span className="text-text-muted text-xs">A los {nextFortune.age} años ({birthYear + nextFortune.age})</span>
                   </div>
-                  <p className="text-sm">
-                    A los <strong className="text-text-primary">{nextFortune.age} años</strong> ({birthYear + nextFortune.age}), entrarás en una nueva Gran Estación:
-                    <span className="text-gold font-semibold"> {ganZhiToElements(nextFortune.ganZhi)}</span> — {translateTenGod(nextFortune.stemTenGod)}
-                  </p>
+                  <p className="font-serif text-base text-gold mb-1">{ganZhiToElements(nextFortune.ganZhi)}</p>
+                  <p className="text-sm">Nueva estación: <span className="text-gold font-semibold">{translateTenGod(nextFortune.stemTenGod)}</span></p>
                 </div>
               )}
             </section>

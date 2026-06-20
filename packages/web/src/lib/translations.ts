@@ -152,20 +152,36 @@ const STEM_TO_ELEMENT: Record<string, string> = {
   "甲": "Madera", "乙": "Madera", "丙": "Fuego", "丁": "Fuego",
   "戊": "Tierra", "己": "Tierra", "庚": "Metal", "辛": "Metal",
   "壬": "Agua", "癸": "Agua",
+  "갑": "Madera", "을": "Madera", "병": "Fuego", "정": "Fuego",
+  "무": "Tierra", "기": "Tierra", "경": "Metal", "신": "Metal",
+  "임": "Agua", "계": "Agua",
 };
 const BRANCH_TO_ELEMENT: Record<string, string> = {
   "子": "Agua", "丑": "Tierra", "寅": "Madera", "卯": "Madera",
   "辰": "Tierra", "巳": "Fuego", "午": "Fuego", "未": "Tierra",
   "申": "Metal", "酉": "Metal", "戌": "Tierra", "亥": "Agua",
+  "자": "Agua", "축": "Tierra", "인": "Madera", "묘": "Madera",
+  "진": "Tierra", "사": "Fuego", "오": "Fuego", "미": "Tierra",
+  "신": "Metal", "유": "Metal", "술": "Tierra", "해": "Agua",
+};
+
+const STEM_SOLLUNA: Record<string, string> = {
+  "甲": "Sol", "乙": "Luna", "丙": "Sol", "丁": "Luna",
+  "戊": "Sol", "己": "Luna", "庚": "Sol", "辛": "Luna",
+  "壬": "Sol", "癸": "Luna",
+  "갑": "Sol", "을": "Luna", "병": "Sol", "정": "Luna",
+  "무": "Sol", "기": "Luna", "경": "Sol", "신": "Luna",
+  "임": "Sol", "계": "Luna",
 };
 
 export function ganZhiToElements(ganZhi: string): string {
-  const chars = ganZhi.replace(/[()（）]/g, "");
-  const stem = chars[chars.length - 2];
-  const branch = chars[chars.length - 1];
+  const clean = ganZhi.replace(/[()（）]/g, "");
+  const stem = clean[clean.length - 2];
+  const branch = clean[clean.length - 1];
   const stemEl = STEM_TO_ELEMENT[stem];
   const branchEl = BRANCH_TO_ELEMENT[branch];
-  if (stemEl && branchEl) return `${stemEl} + ${branchEl}`;
+  const sl = STEM_SOLLUNA[stem];
+  if (stemEl && branchEl) return `${stemEl} ${sl || ""} · ${branchEl}`.trim();
   if (stemEl) return stemEl;
   return ganZhi;
 }
