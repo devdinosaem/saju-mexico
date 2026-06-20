@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useRef, Suspense } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { trackEvent, EVENTS } from "@/components/analytics";
+import { generateElementInsight } from "@/lib/saju-types";
 import { ConceptCard, TermTooltip } from "@/components/term-tooltip";
 import { MarkdownContent, getSectionIcon } from "@/components/markdown-content";
 import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement } from "@/lib/translations";
@@ -16,7 +18,7 @@ interface SajuData {
   name: string;
   birth: { year: number; month: number; day: number; hour: number; minute: number; city: string };
   pillars: Record<string, { stem: string; branch: string; korean: string; animal: string; element: string }>;
-  dayMaster: { stem: string; element: string; elementSpanish: string; korean: string; yinYang: string };
+  dayMaster: { stem: string; element: string; elementSpanish: string; korean: string; solLuna: string };
   fiveElements: Record<string, number>;
   strength: { levelSpanish: string; levelKorean: string; score: number };
   yongShin: { element: string; elementSpanish: string; elementKorean: string };
@@ -63,11 +65,11 @@ function ReportePage() {
       .then(async (d) => {
         if (!d || !d.fiveElements) { setLoading(false); return; }
         if (!d.report) {
-          // 리포트 없으면 생성 페이지로
           router.push(`/generando/${id}`);
           return;
         }
         setData(d);
+        trackEvent(EVENTS.REPORT_VIEW, { sajuId: id, name: d.name, shared: isShared });
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -194,6 +196,42 @@ function ReportePage() {
             })}
           </div>
         </section>
+
+        {/* ═══ 오행 해석 ═══ */}
+        {(() => {
+          const insight = generateElementInsight(
+            data.dayMaster.element,
+            data.dayMaster.solLuna || "yang",
+            data.fiveElements,
+            data.strength.score,
+            data.yongShin.element,
+            data.dayMaster.stem,
+          );
+          return (
+            <section className="px-5 py-4">
+              <div className="space-y-3">
+                <div className="bg-bg-card rounded-2xl p-4 border border-gold/10">
+                  <h4 className="font-serif text-base font-bold mb-1.5 flex items-center gap-2">
+                    <span>☀️</span> {insight.essence.title}
+                  </h4>
+                  <p className="text-text-secondary text-sm leading-relaxed">{insight.essence.body}</p>
+                </div>
+                <div className="bg-bg-card rounded-2xl p-4 border border-white/5">
+                  <h4 className="font-serif text-base font-bold mb-1.5 flex items-center gap-2">
+                    <span>🌍</span> {insight.world.title}
+                  </h4>
+                  <p className="text-text-secondary text-sm leading-relaxed">{insight.world.body}</p>
+                </div>
+                <div className="bg-bg-card rounded-2xl p-4 border border-gold/10">
+                  <h4 className="font-serif text-base font-bold mb-1.5 flex items-center gap-2">
+                    <span>⚡</span> {insight.meaning.title}
+                  </h4>
+                  <p className="text-text-secondary text-sm leading-relaxed">{insight.meaning.body}</p>
+                </div>
+              </div>
+            </section>
+          );
+        })()}
 
         {/* ═══ 신강/신약 (Fuerza Interior) ═══ */}
         <section className="px-5 py-8 border-t border-white/5">

@@ -56,7 +56,7 @@ async function getSupa(id: string): Promise<unknown | null> {
     unknownTime: data.unknown_time,
     pillars: data.pillars,
     fiveElements: data.five_elements,
-    dayMaster: data.day_master,
+    dayMaster: { ...data.day_master, solLuna: data.day_master?.solLuna || data.day_master?.yinYang || "yang" },
     tenGods: data.ten_gods,
     twelvePhases: data.twelve_phases,
     strength: data.strength,

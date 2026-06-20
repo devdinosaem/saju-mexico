@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { trackEvent, EVENTS } from "@/components/analytics";
 
 const STEPS = [
   { icon: "📜", text: "Leyendo tu fecha de nacimiento..." },
@@ -85,6 +86,7 @@ export default function GenerandoPage() {
         if (data.success) {
           setProgress(100);
           setCurrentStep(STEPS.length - 1);
+          trackEvent(EVENTS.PAYMENT_COMPLETE, { sajuId: id });
           setTimeout(() => router.push(`/reporte/${id}`), 800);
         } else {
           setError(true);

@@ -33,6 +33,16 @@ export const PHASE_ES: Record<string, string> = {
   "양": "[Energía de Gestación]",              // 잉태의 기운
 };
 
+// ── 음양 (陰陽) ──
+export const YINYANG_ES: Record<string, string> = {
+  "양": "Sol",    // 태양 — 능동, 외향, 확장
+  "음": "Luna",   // 달 — 수용, 내향, 수렴
+  "yang": "Sol",
+  "yin": "Luna",
+  "Yang": "Sol",
+  "Yin": "Luna",
+};
+
 // ── 강약 (身强/身弱) ──
 export const STRENGTH_ES: Record<string, string> = {
   "태강": "Alma Dominante",   // 지배적인 영혼
@@ -171,6 +181,9 @@ export function translateKorean(text: string): string {
     result = result.replace(new RegExp(kr, 'g'), es);
   }
   for (const [kr, es] of Object.entries(STRENGTH_ES)) {
+    result = result.replace(new RegExp(kr, 'g'), es);
+  }
+  for (const [kr, es] of Object.entries(YINYANG_ES)) {
     result = result.replace(new RegExp(kr, 'g'), es);
   }
   for (const [kr, es] of Object.entries(SPIRIT_STAR_ES)) {

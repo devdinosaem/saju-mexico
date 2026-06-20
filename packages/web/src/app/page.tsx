@@ -234,7 +234,7 @@ export default function LandingPage() {
                 Tu reporte revela los <strong className="text-text-primary">10 periodos</strong> de tu vida con fechas exactas.
               </p>
               <button
-                onClick={() => setShowForm(true)}
+                onClick={() => { trackEvent(EVENTS.FORM_OPEN, { location: "inline" }); setShowForm(true); }}
                 className="text-gold text-sm font-semibold hover:underline"
               >
                 🔓 Ver mi línea de tiempo completa →
@@ -345,7 +345,7 @@ export default function LandingPage() {
                 </p>
 
                 <button
-                  onClick={() => setShowForm(true)}
+                  onClick={() => { trackEvent(EVENTS.FORM_OPEN, { location: "inline" }); setShowForm(true); }}
                   className="text-gold text-sm font-semibold hover:underline"
                 >
                   🔮 ¿Cuándo llegan tus Tres Calamidades? Descúbrelo →
@@ -401,7 +401,7 @@ export default function LandingPage() {
             </div>
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-bg-card to-transparent" />
             <div className="relative text-center mt-6">
-              <button onClick={() => setShowForm(true)} className="text-gold text-sm font-semibold hover:underline">
+              <button onClick={() => { trackEvent(EVENTS.FORM_OPEN, { location: "inline" }); setShowForm(true); }} className="text-gold text-sm font-semibold hover:underline">
                 🔓 Desbloquear perfil completo →
               </button>
             </div>
@@ -561,7 +561,7 @@ export default function LandingPage() {
       <div className="fixed bottom-0 inset-x-0 z-40">
         <div className="max-w-[448px] mx-auto bg-bg-primary/95 backdrop-blur-lg border-t border-gold/10 px-5 py-4">
           <button
-            onClick={() => { trackEvent(EVENTS.CTA_CLICK, { location: "sticky_bottom" }); setShowForm(true); }}
+            onClick={() => { trackEvent(EVENTS.CTA_CLICK, { location: "sticky_bottom" }); trackEvent(EVENTS.FORM_OPEN, { location: "sticky_bottom" }); setShowForm(true); }}
             className="w-full gradient-gold text-bg-primary font-bold text-base py-4 rounded-xl animate-pulse-gold transition-transform active:scale-[0.98]"
           >
             ✦ DESCUBRE TU SAJU ✦

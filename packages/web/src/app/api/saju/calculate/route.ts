@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
         stem: saju.dayMaster.stem,
         element: saju.dayMaster.element,
         elementSpanish: ELEMENT_SPANISH[saju.dayMaster.element],
-        yinYang: saju.dayMaster.yinYang,
+        solLuna: saju.dayMaster.yinYang,
         korean: STEM_KOREAN[saju.dayMaster.stem],
       },
       tenGods: {

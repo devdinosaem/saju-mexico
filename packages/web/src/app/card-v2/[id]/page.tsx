@@ -9,7 +9,7 @@ import { buildElementIcons, buildStoryLine } from "@/lib/saju-story";
 interface SajuData {
   name: string;
   birth: { year: number; month: number; day: number; hour: number; minute: number; city: string };
-  dayMaster: { element: string; elementSpanish: string; yinYang: string };
+  dayMaster: { element: string; elementSpanish: string; solLuna: string };
   fiveElements: Record<string, number>;
   strength: { score: number; levelSpanish: string };
 }
@@ -97,7 +97,7 @@ export default function CardV2Page() {
     );
   }
 
-  const sajuType = getSajuType(data.dayMaster.element, data.dayMaster.yinYang, data.strength.score);
+  const sajuType = getSajuType(data.dayMaster.element, data.dayMaster.solLuna, data.strength.score);
   const compat = getCompatibleElement(data.dayMaster.element);
   const clash = getClashingElement(data.dayMaster.element);
   const elementIcons = buildElementIcons(data.fiveElements);
@@ -166,6 +166,10 @@ export default function CardV2Page() {
             &quot;{sajuType.tagline}&quot;
           </p>
 
+          {/* 사주 개연성 */}
+          <p className="text-center mb-1.5 px-4" style={{ fontSize: "11px", color: "#D4A853", lineHeight: "1.5", opacity: 0.85 }}>
+            {sajuType.sajuIntro}
+          </p>
           {/* 성격 문구 */}
           <p className="text-center mb-4 px-4" style={{ fontSize: "11px", color: "#9B96A0", lineHeight: "1.5" }}>
             {sajuType.personality}

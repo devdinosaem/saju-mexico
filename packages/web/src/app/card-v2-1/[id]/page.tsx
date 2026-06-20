@@ -8,7 +8,7 @@ import { getCompatibleElement, getClashingElement } from "@/lib/translations";
 interface SajuData {
   name: string;
   birth: { year: number; month: number; day: number; hour: number; minute: number; city: string };
-  dayMaster: { element: string; elementSpanish: string; yinYang: string };
+  dayMaster: { element: string; elementSpanish: string; solLuna: string };
   fiveElements: Record<string, number>;
   strength: { score: number; levelSpanish: string };
 }
@@ -63,7 +63,7 @@ export default function CardV21Page() {
 
   if (!data) return <div className="flex items-center justify-center min-h-screen"><div className="w-12 h-12 border-4 border-gold/20 border-t-gold rounded-full animate-spin" /></div>;
 
-  const t = getSajuType(data.dayMaster.element, data.dayMaster.yinYang, data.strength.score);
+  const t = getSajuType(data.dayMaster.element, data.dayMaster.solLuna, data.strength.score);
   const compat = getCompatibleElement(data.dayMaster.element);
   const clash = getClashingElement(data.dayMaster.element);
   const elList = [

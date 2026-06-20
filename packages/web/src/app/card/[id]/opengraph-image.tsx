@@ -28,7 +28,7 @@ const ELEMENT_LABELS: Record<string, string> = {
 
 interface SajuResult {
   name?: string;
-  dayMaster?: { element: string; elementSpanish: string; stem: string; yinYang?: string };
+  dayMaster?: { element: string; elementSpanish: string; stem: string; solLuna?: string };
   strength?: { level: string; levelSpanish: string };
   fiveElements?: Record<string, number>;
 }
@@ -47,7 +47,7 @@ export default async function OGImage({ params }: { params: Promise<{ id: string
   const color = ELEMENT_COLORS[elementKey] || "#D4A853";
   const emoji = ELEMENT_EMOJI[elementKey] || "✦";
   const strengthLabel = data?.strength?.levelSpanish || "";
-  const yinYang = data?.dayMaster?.yinYang === "양" ? "Yang" : data?.dayMaster?.yinYang === "음" ? "Yin" : "";
+  const solLuna = data?.dayMaster?.solLuna === "양" ? "Sol ☀️" : data?.dayMaster?.solLuna === "음" ? "Luna 🌙" : "";
 
   const fiveElements = data?.fiveElements;
   const total = fiveElements ? Object.values(fiveElements).reduce((a, b) => a + b, 0) : 0;
@@ -105,9 +105,9 @@ export default async function OGImage({ params }: { params: Promise<{ id: string
         </h1>
 
         {/* Yin/Yang + Strength */}
-        {(yinYang || strengthLabel) && (
+        {(solLuna || strengthLabel) && (
           <p style={{ fontSize: "20px", color: "#9B96A0", margin: "0 0 16px 0", letterSpacing: "2px" }}>
-            {[yinYang, strengthLabel].filter(Boolean).join(" · ")}
+            {[solLuna, strengthLabel].filter(Boolean).join(" · ")}
           </p>
         )}
 

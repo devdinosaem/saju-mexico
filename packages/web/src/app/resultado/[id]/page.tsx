@@ -7,6 +7,7 @@ import { PurchaseToast } from "@/components/purchase-toast";
 import { ConceptCard } from "@/components/term-tooltip";
 import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement } from "@/lib/translations";
 import { trackEvent, EVENTS } from "@/components/analytics";
+import { generateElementInsight } from "@/lib/saju-types";
 
 interface SajuData {
   id: string;
@@ -20,7 +21,7 @@ interface SajuData {
     hour: { stem: string; branch: string; animal: string; element: string };
   };
   fiveElements: Record<string, number>;
-  dayMaster: { element: string; elementSpanish: string; korean: string; stem: string };
+  dayMaster: { element: string; elementSpanish: string; korean: string; stem: string; solLuna: string };
   strength: { level: string; levelSpanish: string; score: number };
   yongShin: { element: string; elementSpanish: string };
   samjae: {
@@ -71,7 +72,10 @@ export default function ResultadoPage() {
     fetch(`/api/saju/calculate?id=${id}`)
       .then((r) => r.json())
       .then((d) => {
-        if (d && d.fiveElements) setData(d);
+        if (d && d.fiveElements) {
+          setData(d);
+          trackEvent(EVENTS.RESULT_VIEW, { sajuId: id, name: d.name });
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -186,6 +190,42 @@ export default function ResultadoPage() {
             })}
           </div>
         </section>
+
+        {/* ═══ 오행 해석 (Tu Esencia / Tu Mundo / Significado) ═══ */}
+        {(() => {
+          const insight = generateElementInsight(
+            data.dayMaster.element,
+            data.dayMaster.solLuna || "yang",
+            data.fiveElements,
+            data.strength.score,
+            data.yongShin.element,
+            data.dayMaster.stem,
+          );
+          return (
+            <section className="px-5 py-6">
+              <div className="space-y-4">
+                <div className="bg-bg-card rounded-2xl p-5 border border-gold/10">
+                  <h3 className="font-serif text-lg font-bold mb-2 flex items-center gap-2">
+                    <span>☀️</span> {insight.essence.title}
+                  </h3>
+                  <p className="text-text-secondary text-sm leading-relaxed">{insight.essence.body}</p>
+                </div>
+                <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
+                  <h3 className="font-serif text-lg font-bold mb-2 flex items-center gap-2">
+                    <span>🌍</span> {insight.world.title}
+                  </h3>
+                  <p className="text-text-secondary text-sm leading-relaxed">{insight.world.body}</p>
+                </div>
+                <div className="bg-bg-card rounded-2xl p-5 border border-gold/10">
+                  <h3 className="font-serif text-lg font-bold mb-2 flex items-center gap-2">
+                    <span>⚡</span> {insight.meaning.title}
+                  </h3>
+                  <p className="text-text-secondary text-sm leading-relaxed">{insight.meaning.body}</p>
+                </div>
+              </div>
+            </section>
+          );
+        })()}
 
         {/* ═══ 오행 궁합 (Compatible/Conflicto) ═══ */}
         {(() => {

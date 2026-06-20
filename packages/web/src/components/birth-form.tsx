@@ -371,7 +371,7 @@ export function BirthForm() {
             Calculando tu Saju...
           </span>
         ) : (
-          "✦ REVELAR MI SAJU — GRATIS ✦"
+          "✦ CONOCE TU DESTINO GRATIS ✦"
         )}
       </button>
 

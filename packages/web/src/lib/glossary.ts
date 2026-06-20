@@ -115,7 +115,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     korean: "천간",
     hanja: "天干",
     short: "Los 10 caracteres que representan las energías del cielo",
-    long: "Son 10 caracteres (甲乙丙丁戊己庚辛壬癸) que combinan los 5 elementos con yin y yang. Representan la energía visible, tu personalidad exterior y tus acciones conscientes.",
+    long: "Son 10 caracteres (甲乙丙丁戊己庚辛壬癸) que combinan los 5 elementos con Sol (양/Yang) y Luna (음/Yin). Representan la energía visible, tu personalidad exterior y tus acciones conscientes.",
   },
   branches: {
     term: "Ramas Terrenales",
