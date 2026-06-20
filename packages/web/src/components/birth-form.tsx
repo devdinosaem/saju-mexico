@@ -24,6 +24,7 @@ export function BirthForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [unknownTime, setUnknownTime] = useState(false);
+  const [error, setError] = useState("");
 
   // 도시 검색
   const [cityQuery, setCityQuery] = useState("");
@@ -98,12 +99,13 @@ export function BirthForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     if (!selectedCity) {
-      alert("Selecciona tu ciudad de nacimiento");
+      setError("Selecciona tu ciudad de nacimiento");
       return;
     }
     if (!form.gender) {
-      alert("Selecciona tu género");
+      setError("Selecciona tu género");
       return;
     }
     setLoading(true);
@@ -146,7 +148,7 @@ export function BirthForm() {
         router.push(`/resultado/${data.id}`);
       }
     } catch {
-      alert("Error al calcular tu Saju. Intenta de nuevo.");
+      setError("Error al calcular tu Saju. Intenta de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -181,13 +183,16 @@ export function BirthForm() {
         <label className="text-xs text-text-secondary mb-1 block">Fecha de nacimiento</label>
         <div className="grid grid-cols-3 gap-2">
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             required
-            min="1940"
-            max="2010"
             value={form.year}
-            onChange={(e) => update("year", e.target.value)}
-            placeholder="Año (1990)"
+            onChange={(e) => {
+              const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+              update("year", v);
+            }}
+            placeholder="Año"
             className="bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-gold/40 focus:outline-none"
           />
           <select
@@ -202,13 +207,16 @@ export function BirthForm() {
             ))}
           </select>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             required
-            min="1"
-            max="31"
             value={form.day}
-            onChange={(e) => update("day", e.target.value)}
-            placeholder="Día (15)"
+            onChange={(e) => {
+              const v = e.target.value.replace(/\D/g, "").slice(0, 2);
+              update("day", v);
+            }}
+            placeholder="Día"
             className="bg-bg-card border border-white/10 rounded-xl px-3 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-gold/40 focus:outline-none"
           />
         </div>
@@ -289,7 +297,7 @@ export function BirthForm() {
               setCityOpen(true);
               searchCities(e.target.value);
             }}
-            onFocus={() => { setCityOpen(true); if (!cityQuery) searchCities(""); }}
+            onFocus={() => { if (cityQuery.length >= 1) { setCityOpen(true); searchCities(cityQuery); } }}
             placeholder="Buscar cualquier ciudad del mundo..."
             className="w-full bg-bg-card border border-white/10 rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-gold/40 focus:outline-none transition-colors"
           />
@@ -345,6 +353,11 @@ export function BirthForm() {
           >♂ Hombre</button>
         </div>
       </div>
+
+      {/* Error */}
+      {error && (
+        <p className="text-red-400 text-sm text-center bg-red-400/10 border border-red-400/20 rounded-xl py-2.5 px-4">{error}</p>
+      )}
 
       {/* Submit */}
       <button
