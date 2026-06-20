@@ -325,7 +325,7 @@ export default function LandingPage() {
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {targetBirthYears.map((by) => (
-                      <span key={by} className="bg-red-500/10 text-red-300 text-xs px-2.5 py-1 rounded-full font-mono font-semibold">
+                      <span key={by} className="bg-white/5 text-text-primary text-xs px-2.5 py-1 rounded-full font-mono font-semibold">
                         {by}
                       </span>
                     ))}
@@ -345,7 +345,7 @@ export default function LandingPage() {
 
                 <button
                   onClick={() => setShowForm(true)}
-                  className="text-red-400 text-sm font-semibold hover:underline"
+                  className="text-gold text-sm font-semibold hover:underline"
                 >
                   🔮 ¿Cuándo llegan tus Tres Calamidades? Descúbrelo →
                 </button>
