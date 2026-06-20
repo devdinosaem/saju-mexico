@@ -59,37 +59,36 @@ export const SPIRIT_STAR_ES: Record<string, string> = {
   "월살": "Alerta Mensual",            // 월간 경고
   "망신살": "Alerta de Reputación",    // 명예의 경고
   "육해살": "Alerta de Conflicto",     // 갈등의 경고
-  // 기운 (Energía) — 중립/긍정
-  "장성살": "Energía de Comando",      // 지휘의 기운
-  "반안살": "Energía de Estabilidad",  // 안정의 기운
-  "역마살": "Energía de Vagabundeo",   // 방랑의 기운
-  "화개살": "Energía Espiritual",      // 영성의 기운
+  // 영향력 (Influencia) — 중립/긍정
+  "장성살": "Influencia de [Comando]",           // [지휘]의 영향력
+  "반안살": "Influencia de [Estabilidad]",       // [안정]의 영향력
+  "역마살": "Influencia de [Vagabundeo]",        // [방랑]의 영향력
+  "화개살": "Influencia de [Espiritualidad]",    // [영성]의 영향력
 };
 
 // ── 특수 신살 (特殊神殺) ──
 export const SPECIAL_STAR_ES: Record<string, string> = {
-  // 귀인 (천사/수호)
-  "천덕귀인": "Ángel de Virtud Celestial",     // 하늘 덕의 천사
-  "월덕귀인": "Ángel de Virtud Lunar",         // 달 덕의 천사
-  "문창귀인": "Ángel de las Letras",            // 문학의 천사
-  "학당귀인": "Ángel del Conocimiento",         // 지식의 천사
-  "천을귀인": "Ángel Guardián Celestial",       // 하늘의 수호천사
-  "태극귀인": "Ángel del Origen",               // 근원의 천사
-  "천복귀인": "Ángel de Bendición",             // 축복의 천사
-  // 번영/성취
-  "암록": "Prosperidad Oculta",                 // 숨겨진 번영
-  "정록": "Prosperidad Directa",                // 정당한 번영
-  "관귀학관": "Puerta del Éxito Académico",     // 학문적 성공의 문
-  "금여성": "Estrella de la Pareja Noble",      // 고귀한 배우자의 별
-  // 경고/살
-  "괴강살": "Alerta de Fuerza Extrema",         // 극강의 경고
-  "홍염살": "Energía de Pasión",                // 정열의 기운
-  "백호대살": "Alerta del Tigre Blanco",        // 백호의 경고 (사고/수술 주의)
-  "도화살": "Energía de Seducción",             // 매력의 기운
-  "비인살": "Alerta de Traición",               // 배신의 경고
-  // 지혜/영성
-  "천문성": "Estrella de la Sabiduría",         // 지혜의 별
-  "현침살": "Energía de Mente Aguda",           // 예리한 정신의 기운
+  // Energía — 긍정
+  "천덕귀인": "Energía de [Protector contra Desastres]",     // [재앙의 수호자]의 기운
+  "월덕귀인": "Energía de [Virtud Natural]",                 // [타고난 덕망]의 기운
+  "문창귀인": "Energía de [Talento Literario]",              // [글재주]의 기운
+  "학당귀인": "Energía de [Éxito en Estudios]",              // [학업 성취]의 기운
+  "천을귀인": "Energía de [Protector Supremo]",              // [최고의 수호자]의 기운
+  "태극귀인": "Energía de [Intuición Protectora]",           // [직감의 보호]의 기운
+  "천복귀인": "Energía de [Bendición Celestial]",            // [하늘의 축복]의 기운
+  "암록": "Energía de [Fortuna Oculta]",                     // [숨겨진 재물]의 기운
+  "정록": "Energía de [Ingreso Estable]",                    // [안정적 수입]의 기운
+  "관귀학관": "Energía de [Éxito por Mérito]",               // [실력으로 성공]의 기운
+  "금여성": "Energía de [Pareja Afortunada]",                // [배우자 행운]의 기운
+  "천문성": "Energía de [Sabiduría Profunda]",               // [깊은 지혜]의 기운
+  "현침살": "Energía de [Análisis Agudo]",                   // [예민한 분석력]의 기운
+  // Energía — 양면
+  "괴강살": "Energía de [Liderazgo Extremo]",                // [극강의 리더십]의 기운
+  "홍염살": "Energía de [Magnetismo Romántico]",             // [연애 자석]의 기운
+  "도화살": "Energía de [Atractivo Irresistible]",           // [거부할 수 없는 매력]의 기운
+  // Riesgo — 부정
+  "백호대살": "Riesgo de [Accidente]",                       // [사고]의 위험
+  "비인살": "Riesgo de [Conflicto Súbito]",                  // [급작스러운 다툼]의 위험
 };
 
 // ── 합충형파해 (合沖刑破害) ──
