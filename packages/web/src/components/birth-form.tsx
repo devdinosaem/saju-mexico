@@ -41,7 +41,7 @@ export function BirthForm() {
     hour: "",
     minute: "",
     ampm: "AM" as "AM" | "PM",
-    gender: "female" as "male" | "female",
+    gender: "" as "" | "male" | "female",
   });
 
   const update = (field: string, value: string) =>
@@ -86,6 +86,10 @@ export function BirthForm() {
     e.preventDefault();
     if (!selectedCity) {
       alert("Selecciona tu ciudad de nacimiento");
+      return;
+    }
+    if (!form.gender) {
+      alert("Selecciona tu género");
       return;
     }
     setLoading(true);
@@ -312,12 +316,12 @@ export function BirthForm() {
           <button
             type="button"
             onClick={() => update("gender", "female")}
-            className={`py-3 rounded-xl text-sm font-medium transition-all ${form.gender === "female" ? "bg-gold/20 border-gold/40 text-gold border" : "bg-bg-card border border-white/10 text-text-secondary"}`}
+            className={`py-3 rounded-xl text-sm font-medium transition-all ${form.gender === "female" ? "bg-gold/20 border-gold/40 text-gold border" : "bg-bg-card border border-white/10 text-text-muted"}`}
           >♀ Mujer</button>
           <button
             type="button"
             onClick={() => update("gender", "male")}
-            className={`py-3 rounded-xl text-sm font-medium transition-all ${form.gender === "male" ? "bg-gold/20 border-gold/40 text-gold border" : "bg-bg-card border border-white/10 text-text-secondary"}`}
+            className={`py-3 rounded-xl text-sm font-medium transition-all ${form.gender === "male" ? "bg-gold/20 border-gold/40 text-gold border" : "bg-bg-card border border-white/10 text-text-muted"}`}
           >♂ Hombre</button>
         </div>
       </div>
