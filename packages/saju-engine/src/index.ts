@@ -1,6 +1,6 @@
 export { determineTenGod, analyzeTenGods } from './ten-gods.js';
 export { getPhase, analyzeTwelvePhases, TWELVE_PHASES, PHASE_KOREAN, PHASE_HANJA, PHASE_SPANISH } from './twelve-phases.js';
-export { getTwelveSpiritStar, analyzeSpiritStars, analyzeSpecialStars, getSpecialStars, SPIRIT_STAR_KOREAN } from './spirit-stars.js';
+export { getTwelveSpiritStar, analyzeSpiritStars, analyzeSpecialStars, getSpecialStars, SPIRIT_STAR_KOREAN, SPIRIT_STAR_SPANISH } from './spirit-stars.js';
 export { calculateMajorFortunes, calculateYearlyFortunes, calculateMonthlyFortunes } from './fortune.js';
 export { analyzeYongShin, STRENGTH_KOREAN, STRENGTH_SPANISH, ELEMENT_KOREAN } from './yongshin.js';
 export { analyzeRelations } from './relations.js';

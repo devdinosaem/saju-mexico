@@ -24,6 +24,15 @@ export const SPIRIT_STAR_KOREAN: Record<TwelveSpiritStar, string> = {
   banan: '반안살', yeokma: '역마살', yukhae: '육해살', hwagae: '화개살',
 };
 
+export const SPIRIT_STAR_SPANISH: Record<TwelveSpiritStar, string> = {
+  geobsal: 'Alerta de Asalto', jaesal: 'Alerta de Desastre',
+  cheonsal: 'Alerta Celestial', jisal: 'Alerta Terrenal',
+  nyeonsal: 'Alerta Anual', wolsal: 'Alerta Mensual',
+  mangsinsal: 'Alerta de Reputación', jangseong: 'Energía de Comando',
+  banan: 'Energía de Estabilidad', yeokma: 'Energía de Vagabundeo',
+  yukhae: 'Alerta de Conflicto', hwagae: 'Energía Espiritual',
+};
+
 const SPIRIT_STAR_ORDER: readonly TwelveSpiritStar[] = [
   'geobsal', 'jaesal', 'cheonsal', 'jisal', 'nyeonsal', 'wolsal',
   'mangsinsal', 'jangseong', 'banan', 'yeokma', 'yukhae', 'hwagae',
