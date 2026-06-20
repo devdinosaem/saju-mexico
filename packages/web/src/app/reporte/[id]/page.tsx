@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { ConceptCard, TermTooltip } from "@/components/term-tooltip";
-import { translateTenGod, translatePhase } from "@/lib/translations";
+import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement } from "@/lib/translations";
 
 interface ReportSection {
   title: string;
@@ -369,6 +369,46 @@ export default function ReportePage() {
                   </div>
                 </div>
               )}
+            </section>
+          );
+        })()}
+
+        {/* ═══ 오행 궁합 — 운명의 짝/악인 ═══ */}
+        {data.dayMaster && (() => {
+          const compat = getCompatibleElement(data.dayMaster.element);
+          const clash = getClashingElement(data.dayMaster.element);
+          return (
+            <section className="px-5 py-8 border-t border-white/5">
+              <h2 className="font-serif text-xl font-bold mb-4">💫 Compatibilidad de Elementos</h2>
+              <p className="text-text-secondary text-xs mb-4">
+                Tu elemento natal es <strong className="text-text-primary">{data.dayMaster.elementSpanish}</strong>.
+                Según la ley de los Cinco Elementos, estas son las energías que te complementan — y las que chocan contigo.
+              </p>
+
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <div className="bg-green-500/5 rounded-2xl p-4 border border-green-500/15">
+                  <p className="text-green-400 text-xs font-semibold uppercase tracking-wider mb-2">♥ Elemento afín</p>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-2xl">{compat.emoji}</span>
+                    <span className="font-serif text-lg font-bold">{compat.spanish}</span>
+                  </div>
+                  <p className="text-text-secondary text-xs leading-relaxed">{compat.reason}</p>
+                  <p className="text-text-muted text-xs mt-2 italic">
+                    Las personas con energía de {compat.spanish} tienden a ser tu mejor pareja, socio y amigo.
+                  </p>
+                </div>
+                <div className="bg-red-500/5 rounded-2xl p-4 border border-red-500/15">
+                  <p className="text-red-400 text-xs font-semibold uppercase tracking-wider mb-2">✕ Elemento de conflicto</p>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-2xl">{clash.emoji}</span>
+                    <span className="font-serif text-lg font-bold text-red-300">{clash.spanish}</span>
+                  </div>
+                  <p className="text-text-secondary text-xs leading-relaxed">{clash.reason}</p>
+                  <p className="text-text-muted text-xs mt-2 italic">
+                    Las personas con energía de {clash.spanish} pueden generar tensión, competencia o pérdidas.
+                  </p>
+                </div>
+              </div>
             </section>
           );
         })()}

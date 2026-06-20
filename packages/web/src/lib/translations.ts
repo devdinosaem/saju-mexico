@@ -62,6 +62,43 @@ export function translatePhase(korean: string): string {
   return PHASE_ES[korean] || korean;
 }
 
+const ELEMENT_EMOJI: Record<string, string> = {
+  wood: "🌳", fire: "🔥", earth: "⛰️", metal: "⚔️", water: "💧",
+  Madera: "🌳", Fuego: "🔥", Tierra: "⛰️", Metal: "⚔️", Agua: "💧",
+};
+
+const GENERATES_ME: Record<string, string> = {
+  wood: "water", fire: "wood", earth: "fire", metal: "earth", water: "metal",
+};
+
+const I_CONTROL: Record<string, string> = {
+  wood: "earth", fire: "metal", earth: "water", metal: "wood", water: "fire",
+};
+
+export function getCompatibleElement(element: string): { element: string; spanish: string; emoji: string; reason: string } {
+  const el = element.toLowerCase();
+  const compat = GENERATES_ME[el] || "water";
+  const es = ELEMENT_ES[compat] || compat;
+  return {
+    element: compat,
+    spanish: es,
+    emoji: ELEMENT_EMOJI[compat] || "✦",
+    reason: `${es} nutre tu energía de ${ELEMENT_ES[el] || el}`,
+  };
+}
+
+export function getClashingElement(element: string): { element: string; spanish: string; emoji: string; reason: string } {
+  const el = element.toLowerCase();
+  const clash = I_CONTROL[el] || "fire";
+  const es = ELEMENT_ES[clash] || clash;
+  return {
+    element: clash,
+    spanish: es,
+    emoji: ELEMENT_EMOJI[clash] || "✦",
+    reason: `${ELEMENT_ES[el] || el} domina a ${es} — genera tensión`,
+  };
+}
+
 export function translateKorean(text: string): string {
   let result = text;
   for (const [kr, es] of Object.entries(TEN_GOD_ES)) {

@@ -360,18 +360,43 @@ export default function LandingPage() {
             ¿Quién es tu <span className="text-gradient-gold">pareja destinada</span>?
           </h2>
           <p className="text-text-secondary text-sm text-center mb-8">
-            Tu Saju revela el perfil exacto de la persona que el destino te tiene preparada
+            Según los Cinco Elementos, cada persona tiene un elemento ideal de pareja — y uno que genera conflicto
           </p>
+
+          {/* 오행 궁합 표 */}
+          <div className="bg-bg-card rounded-2xl p-5 border border-white/5 mb-4">
+            <p className="text-gold text-xs font-semibold uppercase tracking-wider mb-3">Compatibilidad de los Cinco Elementos</p>
+            <div className="space-y-2 text-xs">
+              {[
+                { me: "🌳 Madera", good: "💧 Agua", bad: "⚔️ Metal", reason: "Agua nutre Madera · Metal la corta" },
+                { me: "🔥 Fuego", good: "🌳 Madera", bad: "💧 Agua", reason: "Madera alimenta Fuego · Agua lo apaga" },
+                { me: "⛰️ Tierra", good: "🔥 Fuego", bad: "🌳 Madera", reason: "Fuego fortalece Tierra · Madera la penetra" },
+                { me: "⚔️ Metal", good: "⛰️ Tierra", bad: "🔥 Fuego", reason: "Tierra genera Metal · Fuego lo funde" },
+                { me: "💧 Agua", good: "⚔️ Metal", bad: "⛰️ Tierra", reason: "Metal enriquece Agua · Tierra la absorbe" },
+              ].map((row) => (
+                <div key={row.me} className="flex items-center gap-2 bg-bg-surface/30 rounded-lg p-2">
+                  <span className="w-24 font-semibold">{row.me}</span>
+                  <span className="text-green-400">♥ {row.good}</span>
+                  <span className="text-text-muted mx-1">·</span>
+                  <span className="text-red-400">✕ {row.bad}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-text-muted text-xs mt-3 italic">
+              ¿Cuál es tu elemento? Tu reporte te dice con quién eres compatible — y de quién debes cuidarte.
+            </p>
+          </div>
+
           <div className="bg-bg-card rounded-2xl p-5 border border-gold/20 relative overflow-hidden">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-xl">💫</span>
               <span className="text-gold font-semibold text-sm uppercase tracking-wider">Tu Pareja Destinada</span>
             </div>
             <div className="space-y-3 text-sm">
+              <div className="flex justify-between"><span className="text-text-secondary">Elemento compatible:</span><span className="blur-content">Agua (💧)</span></div>
               <div className="flex justify-between"><span className="text-text-secondary">Personalidad:</span><span className="blur-content">Amable, responsable</span></div>
               <div className="flex justify-between"><span className="text-text-secondary">Profesión:</span><span className="blur-content">Ingeniero de sistemas</span></div>
               <div className="flex justify-between"><span className="text-text-secondary">Cuándo:</span><span className="blur-content">Noviembre 2027</span></div>
-              <div className="flex justify-between"><span className="text-text-secondary">Primer encuentro:</span><span className="blur-content">En un café cerca del trabajo</span></div>
             </div>
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-bg-card to-transparent" />
             <div className="relative text-center mt-6">

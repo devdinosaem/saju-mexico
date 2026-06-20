@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { PurchaseToast } from "@/components/purchase-toast";
 import { ConceptCard } from "@/components/term-tooltip";
-import { translateTenGod, translatePhase } from "@/lib/translations";
+import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement } from "@/lib/translations";
 
 interface SajuData {
   id: string;
@@ -506,51 +506,77 @@ export default function ResultadoPage() {
         )}
 
         {/* ═══ 운명의 짝 프로필 카드 ═══ */}
-        <section className="px-5 py-6">
-          <h2 className="font-serif text-xl font-bold text-center mb-6">
-            💫 <span className="text-gradient-gold">Tu Pareja Destinada</span>
-          </h2>
-          <div className="bg-bg-card rounded-2xl p-5 border border-gold/20 relative overflow-hidden">
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-text-secondary">Personalidad</span>
-                <span className="blur-content">Amable, introvertido</span>
+        {(() => {
+          const compat = getCompatibleElement(data.dayMaster.element);
+          const clash = getClashingElement(data.dayMaster.element);
+          return (
+            <section className="px-5 py-6">
+              <h2 className="font-serif text-xl font-bold text-center mb-6">
+                💫 <span className="text-gradient-gold">Tu Pareja Destinada</span>
+              </h2>
+              <div className="bg-bg-card rounded-2xl p-5 border border-gold/20 relative overflow-hidden">
+                <div className="bg-gold/5 rounded-xl p-3 mb-4 border border-gold/10">
+                  <p className="text-xs text-gold mb-1">Tu elemento: {data.dayMaster.elementSpanish} · Compatibilidad ideal:</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{compat.emoji}</span>
+                    <div>
+                      <p className="text-sm font-semibold">{compat.spanish}</p>
+                      <p className="text-text-muted text-xs">{compat.reason}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between py-2 border-b border-white/5">
+                    <span className="text-text-secondary">Personalidad</span>
+                    <span className="blur-content">Amable, introvertido</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-white/5">
+                    <span className="text-text-secondary">Profesión</span>
+                    <span className="blur-content">Ingeniero / Creativo</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-white/5">
+                    <span className="text-text-secondary">Cuándo lo conocerás</span>
+                    <span className="blur-content">Noviembre 2027</span>
+                  </div>
+                  <div className="flex justify-between py-2">
+                    <span className="text-text-secondary">Primer encuentro</span>
+                    <span className="blur-content">En un evento social</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-text-secondary">Profesión</span>
-                <span className="blur-content">Ingeniero / Creativo</span>
-              </div>
-              <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-text-secondary">Cuándo lo conocerás</span>
-                <span className="blur-content">Noviembre 2027</span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span className="text-text-secondary">Primer encuentro</span>
-                <span className="blur-content">En un evento social</span>
-              </div>
-            </div>
-          </div>
 
-          <h2 className="font-serif text-xl font-bold text-center mt-8 mb-6">
-            ⚠️ <span className="text-red-400">La persona que más daño te hará</span>
-          </h2>
-          <div className="bg-bg-card rounded-2xl p-5 border border-red-500/20 relative overflow-hidden">
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-text-secondary">Personalidad</span>
-                <span className="blur-content">Manipulador, controlador</span>
+              <h2 className="font-serif text-xl font-bold text-center mt-8 mb-6">
+                ⚠️ <span className="text-red-400">La persona que más daño te hará</span>
+              </h2>
+              <div className="bg-bg-card rounded-2xl p-5 border border-red-500/20 relative overflow-hidden">
+                <div className="bg-red-500/5 rounded-xl p-3 mb-4 border border-red-500/10">
+                  <p className="text-xs text-red-400 mb-1">Elemento de conflicto para ti:</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{clash.emoji}</span>
+                    <div>
+                      <p className="text-sm font-semibold text-red-300">{clash.spanish}</p>
+                      <p className="text-text-muted text-xs">{clash.reason}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between py-2 border-b border-white/5">
+                    <span className="text-text-secondary">Personalidad</span>
+                    <span className="blur-content">Manipulador, controlador</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-white/5">
+                    <span className="text-text-secondary">Tipo de daño</span>
+                    <span className="blur-content">Pérdida financiera</span>
+                  </div>
+                  <div className="flex justify-between py-2">
+                    <span className="text-text-secondary">Cuándo aparece</span>
+                    <span className="blur-content">20██</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-text-secondary">Tipo de daño</span>
-                <span className="blur-content">Pérdida financiera</span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span className="text-text-secondary">Cuándo aparece</span>
-                <span className="blur-content">20██</span>
-              </div>
-            </div>
-          </div>
-        </section>
+            </section>
+          );
+        })()}
 
         {/* ═══ 리포트 목차 ═══ */}
         <section className="px-5 py-6">
