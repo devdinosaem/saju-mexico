@@ -350,39 +350,88 @@ function ReportePage() {
         })()}
 
         {/* ═══ 3대 사건 예고 (풀 버전) ═══ */}
-        <section className="px-5 py-8 border-t border-white/5">
-          <div className="gradient-mystic rounded-2xl p-6 border border-gold/10">
-            <h2 className="font-serif text-xl font-bold text-center mb-2">
-              🔮 3 eventos que cambiarán la vida de {data.name}
-            </h2>
-            <p className="text-text-secondary text-xs text-center mb-6">
-              Calculados a partir de tu carta natal y tus Grandes Estaciones
-            </p>
+        {data.majorFortunes && (() => {
+          const currentYear = new Date().getFullYear();
+          const birthYear = data.birth.year;
+          const fortunes = data.majorFortunes.fortunes;
 
-            <div className="space-y-4">
-              {data.majorFortunes?.fortunes.slice(0, 3).map((f, i) => {
-                const yearStart = data.birth.year + f.age;
-                const icons = ["⚡", "💰", "🔄"];
-                const titles = [
-                  "Un encuentro o evento que transformará tu perspectiva",
-                  "Un cambio financiero significativo",
-                  "Una transición importante en tu vida personal",
-                ];
-                return (
-                  <div key={i} className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span>{icons[i]}</span>
-                      <span className="text-gold font-mono text-sm">{yearStart}-{yearStart + 9}</span>
-                      <span className="text-text-muted text-xs">({translateTenGod(f.stemTenGod)})</span>
+          const pastFortune = [...fortunes]
+            .filter(f => birthYear + f.age + 10 <= currentYear)
+            .pop();
+
+          const loveTenGods = ["정재", "편재", "정관", "편관"];
+          const loveFortune = fortunes.find(f =>
+            birthYear + f.age > currentYear && loveTenGods.includes(f.stemTenGod)
+          );
+
+          const wealthTenGods = ["편재", "정재", "식신"];
+          const wealthFortune = fortunes.find(f =>
+            birthYear + f.age > currentYear &&
+            wealthTenGods.includes(f.stemTenGod) &&
+            f !== loveFortune
+          );
+
+          const futureFortunes = fortunes.filter(f => birthYear + f.age > currentYear);
+          const fallbackLove = loveFortune || futureFortunes[0];
+          const fallbackWealth = wealthFortune || futureFortunes[1] || futureFortunes[0];
+
+          return (
+            <section className="px-5 py-8 border-t border-white/5">
+              <div className="gradient-mystic rounded-2xl p-6 border border-gold/10">
+                <h2 className="font-serif text-xl font-bold text-center mb-2">
+                  🔮 3 eventos que cambiarán la vida de {data.name}
+                </h2>
+                <p className="text-text-secondary text-xs text-center mb-6">
+                  Calculados a partir de tu carta natal y tus Grandes Estaciones
+                </p>
+
+                <div className="space-y-4">
+                  {pastFortune && (
+                    <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span>⏪</span>
+                        <span className="text-gold font-mono text-sm">{birthYear + pastFortune.age}-{birthYear + pastFortune.age + 9}</span>
+                        <span className="text-text-muted text-xs">(ya ocurrió)</span>
+                      </div>
+                      <p className="text-sm">
+                        Un periodo de <strong className="text-text-primary">{translateTenGod(pastFortune.stemTenGod)}</strong> marcó esta etapa de tu vida.
+                      </p>
+                      <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(pastFortune.stemTenGod)}</p>
                     </div>
-                    <p className="text-sm leading-relaxed">{titles[i]}</p>
-                    <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(f.stemTenGod)}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+                  )}
+
+                  {fallbackLove && (
+                    <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span>💕</span>
+                        <span className="text-gold font-mono text-sm">{birthYear + fallbackLove.age}-{birthYear + fallbackLove.age + 9}</span>
+                        <span className="text-text-muted text-xs">({translateTenGod(fallbackLove.stemTenGod)})</span>
+                      </div>
+                      <p className="text-sm">
+                        Un encuentro que cambiará tu perspectiva del amor. La persona llegará cuando menos lo esperes, en un contexto que jamás imaginaste.
+                      </p>
+                      <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(fallbackLove.stemTenGod)}</p>
+                    </div>
+                  )}
+
+                  {fallbackWealth && (
+                    <div className="bg-bg-primary/40 rounded-xl p-4 border border-white/5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span>💰</span>
+                        <span className="text-gold font-mono text-sm">{birthYear + fallbackWealth.age}-{birthYear + fallbackWealth.age + 9}</span>
+                        <span className="text-text-muted text-xs">({translateTenGod(fallbackWealth.stemTenGod)})</span>
+                      </div>
+                      <p className="text-sm">
+                        Tu ciclo de mayor prosperidad financiera. Una oportunidad que podría cambiar tu nivel de vida por completo.
+                      </p>
+                      <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(fallbackWealth.stemTenGod)}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          );
+        })()}
 
         {/* ═══ 운명의 짝/악인 프로필 카드 ═══ */}
         {data.dayMaster && (() => {
