@@ -27,7 +27,7 @@ export async function createPreference(sajuId: string, name: string) {
           description:
             "8 capítulos · +15,000 palabras · Predicciones hasta 2034",
           quantity: 1,
-          unit_price: 299,
+          unit_price: 99,
           currency_id: "MXN",
         },
       ],

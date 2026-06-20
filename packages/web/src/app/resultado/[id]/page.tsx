@@ -649,8 +649,8 @@ export default function ResultadoPage() {
         <div className="max-w-[448px] mx-auto bg-bg-primary/95 backdrop-blur-lg border-t border-gold/10 px-5 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <span className="text-text-muted text-xs line-through mr-2">$499 MXN</span>
-              <span className="text-gold font-serif text-xl font-bold">$299 MXN</span>
+              <span className="text-text-muted text-xs line-through mr-2">$199 MXN</span>
+              <span className="text-gold font-serif text-xl font-bold">$99 MXN</span>
             </div>
             <CountdownTimer />
           </div>
