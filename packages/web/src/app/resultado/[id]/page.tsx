@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { PurchaseToast } from "@/components/purchase-toast";
+import { ConceptCard } from "@/components/term-tooltip";
 
 interface SajuData {
   id: string;
@@ -88,6 +89,7 @@ export default function ResultadoPage() {
 
         {/* ═══ 4기둥 차트 ═══ */}
         <section className="px-5 py-6">
+          <ConceptCard termKey="saju" compact />
           <div className="bg-bg-card rounded-2xl p-5 border border-gold/10">
             <div className="grid grid-cols-4 gap-3 text-center">
               {(["hour", "day", "month", "year"] as const).map((pos) => {
@@ -117,6 +119,7 @@ export default function ResultadoPage() {
         <section className="px-5 py-6">
           <h2 className="font-serif text-xl font-bold mb-1">Distribución de los Cinco Elementos</h2>
           <p className="text-text-secondary text-xs mb-4">오행 분포 — El balance energético de tu carta</p>
+          <ConceptCard termKey="fiveElements" compact />
 
           <div className="space-y-3">
             {[
@@ -162,6 +165,7 @@ export default function ResultadoPage() {
 
         {/* ═══ 일간 요약 (무료, 짧은 버전) ═══ */}
         <section className="px-5 py-6">
+          <ConceptCard termKey="dayMaster" compact />
           <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
             <h2 className="font-serif text-xl font-bold mb-3">
               Tu Pilar del Día: <span className="text-gradient-gold">{data.dayMaster.elementSpanish}</span>

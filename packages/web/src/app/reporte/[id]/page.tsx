@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
+import { ConceptCard, TermTooltip } from "@/components/term-tooltip";
 
 interface ReportSection {
   title: string;
@@ -128,6 +129,7 @@ export default function ReportePage() {
 
         {/* ═══ 4기둥 풀 차트 ═══ */}
         <section className="px-5 py-6">
+          <ConceptCard termKey="saju" />
           <div className="bg-bg-card rounded-2xl p-5 border border-gold/10">
             <h2 className="text-center font-serif text-lg font-bold mb-4">Tu Carta Saju (사주)</h2>
             <div className="grid grid-cols-4 gap-3 text-center">
@@ -163,6 +165,7 @@ export default function ReportePage() {
         {/* ═══ 오행 분포 차트 ═══ */}
         <section className="px-5 py-4">
           <h3 className="font-serif text-lg font-bold mb-3">Cinco Elementos (오행)</h3>
+          <ConceptCard termKey="fiveElements" compact />
           <div className="space-y-2">
             {[
               { key: "wood", label: "Madera (木)", emoji: "🌳" },
@@ -192,27 +195,32 @@ export default function ReportePage() {
         </section>
 
         {/* ═══ 리포트 섹션들 ═══ */}
-        {report.sections.map((section, i) => (
-          <section
-            key={i}
-            ref={(el) => { sectionRefs.current[i] = el; }}
-            className="px-5 py-8 border-t border-white/5"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-gold font-mono text-xs">{String(i + 1).padStart(2, "0")}</span>
-              <h2 className="font-serif text-xl font-bold">{section.title}</h2>
-            </div>
-            <div className="text-text-secondary text-sm leading-relaxed whitespace-pre-line">
-              {section.content}
-            </div>
-          </section>
-        ))}
+        {report.sections.map((section, i) => {
+          const conceptKey = getSectionConcept(section.title);
+          return (
+            <section
+              key={i}
+              ref={(el) => { sectionRefs.current[i] = el; }}
+              className="px-5 py-8 border-t border-white/5"
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-gold font-mono text-xs">{String(i + 1).padStart(2, "0")}</span>
+                <h2 className="font-serif text-xl font-bold">{section.title}</h2>
+              </div>
+              {conceptKey && <ConceptCard termKey={conceptKey} compact />}
+              <div className="text-text-secondary text-sm leading-relaxed whitespace-pre-line">
+                {section.content}
+              </div>
+            </section>
+          );
+        })}
 
         {/* ═══ 용신 가이드 (실용 정보) ═══ */}
         <section className="px-5 py-8 border-t border-white/5">
           <h2 className="font-serif text-xl font-bold mb-4">
-            🧭 Tu Guía Práctica de {data.yongShin?.elementSpanish}
+            🧭 Tu Guía Práctica de <TermTooltip termKey="yongShin">{data.yongShin?.elementSpanish}</TermTooltip>
           </h2>
+          <ConceptCard termKey="yongShin" compact />
           <div className="grid grid-cols-2 gap-3">
             {[
               { icon: "🎨", label: "Colores de suerte", value: guide.colors },
@@ -242,7 +250,8 @@ export default function ReportePage() {
         {/* ═══ 대운 타임라인 ═══ */}
         {data.majorFortunes && (
           <section className="px-5 py-8 border-t border-white/5">
-            <h2 className="font-serif text-xl font-bold mb-4">📊 Línea de Tiempo de tu Vida</h2>
+            <h2 className="font-serif text-xl font-bold mb-2">📊 Línea de Tiempo de tu Vida</h2>
+            <ConceptCard termKey="majorFortune" compact />
             <p className="text-text-secondary text-xs mb-4">
               Dirección: {data.majorFortunes.direction === "forward" ? "Progresiva (순행)" : "Regresiva (역행)"} · Inicio: {data.majorFortunes.startAge} años
             </p>
@@ -284,4 +293,19 @@ export default function ReportePage() {
       </div>
     </main>
   );
+}
+
+function getSectionConcept(title: string): import("@/lib/glossary").GlossaryKey | null {
+  const t = title.toLowerCase();
+  if (t.includes("esencia") || t.includes("pilar del día")) return "dayMaster";
+  if (t.includes("cinco elementos") || t.includes("distribución")) return "fiveElements";
+  if (t.includes("fuerza interior")) return "strength";
+  if (t.includes("diez dioses") || t.includes("십신")) return "tenGods";
+  if (t.includes("doce fases") || t.includes("운성")) return "twelvePhases";
+  if (t.includes("estaciones") || t.includes("대운")) return "majorFortune";
+  if (t.includes("año actual") || t.includes("세운")) return "yearlyFortune";
+  if (t.includes("relaciones") || t.includes("합충")) return "relations";
+  if (t.includes("elemento de poder") || t.includes("용신")) return "yongShin";
+  if (t.includes("estrellas") || t.includes("신살")) return "spiritStars";
+  return null;
 }
