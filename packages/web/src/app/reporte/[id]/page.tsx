@@ -528,7 +528,15 @@ function ReportePage() {
                   </div>
                   <div className="flex justify-between py-2 border-b border-white/5">
                     <span className="text-text-secondary">Cuándo lo conocerás</span>
-                    <span>Durante tu Gran Estación de {translateTenGod(data.majorFortunes?.fortunes[1]?.stemTenGod || "정재")}</span>
+                    <span>{(() => {
+                      const loveTG = ["정재", "편재", "정관", "편관"];
+                      const yearlyAll = (data as unknown as Record<string, unknown>).yearlyFortunes as { year: number; stemTenGod: string }[] || [];
+                      const loveY = yearlyAll.find(y => y.year > new Date().getFullYear() && loveTG.includes(y.stemTenGod));
+                      if (loveY) return `Alrededor de ${loveY.year}`;
+                      const loveM = data.majorFortunes?.fortunes.find(f => data.birth.year + f.age > new Date().getFullYear() && loveTG.includes(f.stemTenGod));
+                      if (loveM) return `Entre ${data.birth.year + loveM.age}-${data.birth.year + loveM.age + 9}`;
+                      return "En tu próxima Gran Estación";
+                    })()}</span>
                   </div>
                   <div className="flex justify-between py-2">
                     <span className="text-text-secondary">Señal</span>

@@ -17,6 +17,13 @@ const DICT: Record<string, string> = {
   "천간합": "Unión Celestial", "천간충": "Choque Celestial",
   "육합": "Armonía Dual", "삼합": "Triple Armonía", "방합": "Armonía Direccional",
   "삼형살": "Triple Tensión", "상충": "Choque",
+  // 음양
+  "Yang": "Sol", "Yin": "Luna", "yang": "Sol", "yin": "Luna",
+  "Madera Yang": "Madera Sol", "Madera Yin": "Madera Luna",
+  "Fuego Yang": "Fuego Sol", "Fuego Yin": "Fuego Luna",
+  "Tierra Yang": "Tierra Sol", "Tierra Yin": "Tierra Luna",
+  "Metal Yang": "Metal Sol", "Metal Yin": "Metal Luna",
+  "Agua Yang": "Agua Sol", "Agua Yin": "Agua Luna",
   // 한자 (의미가 명확한 것만)
   "用神": "Elemento de Poder", "忌神": "Elemento Adverso",
   "日柱": "Pilar del Día", "四柱": "Cuatro Pilares",
