@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSaju, updateSaju } from "@/lib/store";
-import { buildReportInput, ReportGenerator } from "saju-report";
+import { buildReportInput, ReportGenerator, DeepSeekReportGenerator } from "saju-report";
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, cached: false });
     }
 
-    // Claude API로 실제 리포트 생성
+    // 리포트 생성: DeepSeek 우선, Claude 폴백
     const birth = saju.birth as { year: number; month: number; day: number; hour: number; minute: number; city: string };
     const input = buildReportInput({
       userName: saju.name as string,
@@ -55,11 +55,15 @@ export async function POST(req: NextRequest) {
       timezone: "America/Mexico_City",
     });
 
-    const generator = new ReportGenerator();
-    const report = await generator.generate(input);
+    const useDeepSeek = !!process.env.DEEPSEEK_API_KEY;
+    const provider = useDeepSeek ? "deepseek" : "claude";
+
+    const report = useDeepSeek
+      ? await new DeepSeekReportGenerator().generate(input)
+      : await new ReportGenerator().generate(input);
 
     await updateSaju(id, {
-      report: { ...report, generatedAt: new Date().toISOString() },
+      report: { ...report, provider, generatedAt: new Date().toISOString() },
       paid: true,
     });
 
