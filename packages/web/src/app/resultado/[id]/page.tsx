@@ -362,13 +362,26 @@ export default function ResultadoPage() {
             disabled={purchasing}
             onClick={async () => {
               setPurchasing(true);
-              // MVP: 결제 없이 바로 리포트 생성 (MercadoPago 연동 예정)
-              await fetch("/api/saju/report", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id }),
-              });
-              router.push(`/reporte/${id}`);
+              try {
+                const res = await fetch("/api/payment/create", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ sajuId: id }),
+                });
+                const data = await res.json();
+                if (data.mode === "payment" && data.initPoint) {
+                  window.location.href = data.initPoint;
+                } else {
+                  await fetch("/api/saju/report", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id }),
+                  });
+                  router.push(`/reporte/${id}`);
+                }
+              } catch {
+                router.push(`/reporte/${id}`);
+              }
             }}
             className="w-full gradient-gold text-bg-primary font-bold text-base py-4 rounded-xl animate-pulse-gold transition-transform active:scale-[0.98] disabled:opacity-50"
           >

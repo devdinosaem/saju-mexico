@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const { id } = await req.json();
     if (!id) return NextResponse.json({ error: "ID requerido" }, { status: 400 });
 
-    const saju = getSaju(id) as Record<string, unknown> | null;
+    const saju = (await getSaju(id)) as Record<string, unknown> | null;
     if (!saju) return NextResponse.json({ error: "No encontrado" }, { status: 404 });
 
     if ((saju as { report?: unknown }).report) {
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
         generatedAt: new Date().toISOString(),
       };
 
-      updateSaju(id, { report: dummyReport, paid: true });
+      await updateSaju(id, { report: dummyReport, paid: true });
       return NextResponse.json({ success: true, cached: false });
     }
 
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     const generator = new ReportGenerator();
     const report = await generator.generate(input);
 
-    updateSaju(id, {
+    await updateSaju(id, {
       report: { ...report, generatedAt: new Date().toISOString() },
       paid: true,
     });

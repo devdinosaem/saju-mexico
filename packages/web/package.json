@@ -9,13 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.105.0",
+    "@supabase/supabase-js": "^2.108.2",
+    "manseryeok": "workspace:*",
+    "mercadopago": "^3.1.0",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "manseryeok": "workspace:*",
     "saju-engine": "workspace:*",
-    "saju-report": "workspace:*",
-    "@anthropic-ai/sdk": "^0.105.0"
+    "saju-report": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    saveSaju(id, sajuData);
+    await saveSaju(id, sajuData);
     return NextResponse.json({ id, success: true });
   } catch (err) {
     console.error("Saju calculation error:", err);
@@ -164,7 +164,7 @@ export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "ID requerido" }, { status: 400 });
 
-  const data = getSaju(id);
+  const data = await getSaju(id);
   if (!data) return NextResponse.json({ error: "No encontrado" }, { status: 404 });
 
   return NextResponse.json(data);
