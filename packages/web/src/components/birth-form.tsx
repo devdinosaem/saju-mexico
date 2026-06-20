@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const MEXICAN_CITIES = [
@@ -24,12 +24,26 @@ const MEXICAN_CITIES = [
   "Acapulco",
   "Playa del Carmen",
   "Cuernavaca",
+  "Saltillo",
+  "Villahermosa",
+  "Tuxtla Gutiérrez",
+  "Mazatlán",
+  "Durango",
+  "Tampico",
+  "Culiacán",
+  "Pachuca",
+  "Tepic",
+  "Campeche",
 ];
 
 export function BirthForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [unknownTime, setUnknownTime] = useState(false);
+  const [cityQuery, setCityQuery] = useState("");
+  const [cityOpen, setCityOpen] = useState(false);
+  const cityRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
     name: "",
     year: "",
@@ -38,15 +52,44 @@ export function BirthForm() {
     hour: "",
     minute: "",
     ampm: "AM" as "AM" | "PM",
-    city: MEXICAN_CITIES[0],
+    city: "",
     gender: "female" as "male" | "female",
   });
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
+  // 도시 검색 자동완성
+  const filteredCities = cityQuery
+    ? MEXICAN_CITIES.filter((c) =>
+        c.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+          .includes(cityQuery.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""))
+      )
+    : MEXICAN_CITIES;
+
+  // 바깥 클릭 시 드롭다운 닫기
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (cityRef.current && !cityRef.current.contains(e.target as Node)) {
+        setCityOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const selectCity = (city: string) => {
+    update("city", city);
+    setCityQuery(city);
+    setCityOpen(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.city) {
+      alert("Selecciona tu ciudad de nacimiento");
+      return;
+    }
     setLoading(true);
 
     let hour24: number;
@@ -94,7 +137,7 @@ export function BirthForm() {
           Ingresa tus datos
         </h2>
         <p className="text-text-secondary text-xs">
-          Necesitamos tu hora exacta para calcular los 4 pilares
+          Necesitamos tu fecha y hora de nacimiento
         </p>
       </div>
 
@@ -137,8 +180,8 @@ export function BirthForm() {
           >
             <option value="">Mes</option>
             {[
-              "Enero","Febrero","Marzo","Abril","Mayo","Junio",
-              "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre",
+              "Ene","Feb","Mar","Abr","May","Jun",
+              "Jul","Ago","Sep","Oct","Nov","Dic",
             ].map((m, i) => (
               <option key={m} value={i + 1}>{m}</option>
             ))}
@@ -156,35 +199,15 @@ export function BirthForm() {
         </div>
       </div>
 
-      {/* Hora de nacimiento */}
+      {/* Hora de nacimiento — 시간 입력 먼저, 모름 버튼 아래 */}
       <div>
         <label className="text-xs text-text-secondary mb-1 block">
           Hora de nacimiento
         </label>
 
-        {/* 시간 모름 토글 */}
-        <button
-          type="button"
-          onClick={() => setUnknownTime(!unknownTime)}
-          className={`w-full mb-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-            unknownTime
-              ? "bg-amber/15 border-amber/40 text-amber border"
-              : "bg-bg-card border border-white/10 text-text-muted"
-          }`}
-        >
-          {unknownTime ? "⏰ No sé mi hora exacta (seleccionado)" : "🤔 No sé mi hora de nacimiento"}
-        </button>
-
-        {unknownTime ? (
-          <div className="bg-bg-card rounded-xl p-3 border border-amber/10">
-            <p className="text-text-secondary text-xs leading-relaxed">
-              💡 Sin la hora exacta, el reporte se genera con los <strong className="text-text-primary">3 pilares disponibles</strong> (año, mes, día).
-              El pilar de la hora se omite, pero el análisis sigue siendo muy detallado y preciso para tu personalidad, fortuna y relaciones.
-            </p>
-          </div>
-        ) : (
+        {!unknownTime && (
           <>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2 mb-2">
               <select
                 required={!unknownTime}
                 value={form.hour}
@@ -232,28 +255,85 @@ export function BirthForm() {
                 </button>
               </div>
             </div>
-            <p className="text-text-muted text-xs mt-1">
+            <p className="text-text-muted text-xs mb-2">
               💡 Revisa tu acta de nacimiento o pregúntale a tu mamá
             </p>
           </>
         )}
+
+        {/* 시간 모름 토글 — 항상 아래 */}
+        <button
+          type="button"
+          onClick={() => setUnknownTime(!unknownTime)}
+          className={`w-full py-2.5 rounded-xl text-sm font-medium transition-all ${
+            unknownTime
+              ? "bg-amber/15 border-amber/40 text-amber border"
+              : "bg-bg-card border border-white/10 text-text-muted"
+          }`}
+        >
+          {unknownTime ? "⏰ No sé mi hora — usando 3 pilares" : "🤔 No sé mi hora de nacimiento"}
+        </button>
+
+        {unknownTime && (
+          <div className="bg-bg-card rounded-xl p-3 border border-amber/10 mt-2">
+            <p className="text-text-secondary text-xs leading-relaxed">
+              Sin la hora, el reporte usa <strong className="text-text-primary">3 pilares</strong> (año, mes, día).
+              Sigue siendo muy preciso para personalidad, fortuna y relaciones.
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Ciudad */}
-      <div>
+      {/* Ciudad — 검색 자동완성 */}
+      <div ref={cityRef}>
         <label className="text-xs text-text-secondary mb-1 block">
           Ciudad de nacimiento
         </label>
-        <select
-          required
-          value={form.city}
-          onChange={(e) => update("city", e.target.value)}
-          className="w-full bg-bg-card border border-white/10 rounded-xl px-4 py-3 text-sm text-text-primary focus:border-gold/40 focus:outline-none appearance-none"
-        >
-          {MEXICAN_CITIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+        <div className="relative">
+          <input
+            ref={inputRef}
+            type="text"
+            value={cityQuery}
+            onChange={(e) => {
+              setCityQuery(e.target.value);
+              setCityOpen(true);
+              if (!e.target.value) update("city", "");
+            }}
+            onFocus={() => setCityOpen(true)}
+            placeholder="Buscar ciudad..."
+            className="w-full bg-bg-card border border-white/10 rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-gold/40 focus:outline-none transition-colors"
+          />
+          {form.city && !cityOpen && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gold text-xs">✓</span>
+          )}
+        </div>
+
+        {cityOpen && (
+          <div className="mt-1 bg-bg-card border border-white/10 rounded-xl max-h-48 overflow-y-auto shadow-lg">
+            {filteredCities.length === 0 ? (
+              <div className="px-4 py-3 text-text-muted text-xs">
+                No se encontró &quot;{cityQuery}&quot;
+              </div>
+            ) : (
+              filteredCities.map((city) => (
+                <button
+                  key={city}
+                  type="button"
+                  onClick={() => selectCity(city)}
+                  className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-bg-surface ${
+                    form.city === city ? "text-gold bg-bg-surface/50" : "text-text-primary"
+                  }`}
+                >
+                  {cityQuery ? (
+                    highlightMatch(city, cityQuery)
+                  ) : (
+                    city
+                  )}
+                </button>
+              ))
+            )}
+          </div>
+        )}
       </div>
 
       {/* Género */}
@@ -307,5 +387,21 @@ export function BirthForm() {
         🔒 Tu información es privada y no se comparte con terceros
       </p>
     </form>
+  );
+}
+
+function highlightMatch(text: string, query: string): React.ReactNode {
+  const normalize = (s: string) =>
+    s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const nText = normalize(text);
+  const nQuery = normalize(query);
+  const idx = nText.indexOf(nQuery);
+  if (idx === -1) return text;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <span className="text-gold font-semibold">{text.slice(idx, idx + query.length)}</span>
+      {text.slice(idx + query.length)}
+    </>
   );
 }
