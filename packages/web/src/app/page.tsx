@@ -451,7 +451,7 @@ export default function LandingPage() {
           <div className="space-y-6">
             {[
               { step: "1", title: "Ingresa tu fecha y hora de nacimiento", desc: "Necesitamos tu hora exacta — pregúntale a tu mamá o revisa tu acta de nacimiento" },
-              { step: "2", title: "Nuestra IA analiza tu carta Saju", desc: "Calculamos 518,400 combinaciones posibles y generamos tu perfil único en menos de 2 minutos" },
+              { step: "2", title: "Un experto en Saju analiza tu carta", desc: "Con fórmulas acumuladas durante siglos por maestros coreanos, calculamos las 518,400 combinaciones posibles y generamos tu perfil único" },
               { step: "3", title: "Recibe tu reporte personalizado", desc: "+15,000 palabras de análisis profundo sobre amor, dinero, salud, carrera y más" },
             ].map((item) => (
               <div key={item.step} className="flex gap-4">
@@ -516,7 +516,7 @@ export default function LandingPage() {
               { q: "¿Es lo mismo que el horóscopo?", a: "No. El horóscopo usa solo tu mes. El Saju usa tu año, mes, día y hora exacta, creando 518,400 combinaciones únicas. Es incomparablemente más preciso y personalizado." },
               { q: "¿Necesito saber mi hora exacta de nacimiento?", a: "Sí, es fundamental. La hora determina uno de los 4 pilares de tu carta. Puedes encontrarla en tu acta de nacimiento o preguntarle a tu mamá." },
               { q: "¿Es una religión o secta?", a: "Para nada. El Saju es un sistema filosófico basado en ciclos naturales (los Cinco Elementos). Es comparable a la medicina tradicional china — una herramienta ancestral, no una creencia religiosa." },
-              { q: "¿Cómo genera el reporte una IA?", a: "Primero, nuestro algoritmo calcula tu carta Saju usando las mismas fórmulas que los maestros coreanos han usado por siglos. Luego, una IA especializada interpreta los resultados en un reporte detallado en español." },
+              { q: "¿Cómo se genera el reporte?", a: "Utilizamos las mismas fórmulas que los maestros coreanos de Saju han perfeccionado durante más de 500 años, respaldadas por siglos de datos acumulados. Tu carta se calcula con precisión matemática y luego un especialista interpreta los resultados en un reporte detallado en español." },
             ].map((faq) => (
               <details key={faq.q} className="bg-bg-card rounded-xl border border-white/5 group">
                 <summary className="p-4 cursor-pointer text-sm font-semibold flex items-center justify-between">
