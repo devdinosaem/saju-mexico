@@ -183,56 +183,29 @@ function ReportePage() {
           <ConceptCard termKey="fiveElements" compact />
           <div className="space-y-2">
             {[
-              { key: "wood", label: "Madera (木)", emoji: "🌳" },
-              { key: "fire", label: "Fuego (火)", emoji: "🔥" },
-              { key: "earth", label: "Tierra (土)", emoji: "⛰️" },
-              { key: "metal", label: "Metal (金)", emoji: "⚔️" },
-              { key: "water", label: "Agua (水)", emoji: "💧" },
+              { key: "wood", label: "Madera", hanja: "木", emoji: "🌳" },
+              { key: "fire", label: "Fuego", hanja: "火", emoji: "🔥" },
+              { key: "earth", label: "Tierra", hanja: "土", emoji: "⛰️" },
+              { key: "metal", label: "Metal", hanja: "金", emoji: "⚔️" },
+              { key: "water", label: "Agua", hanja: "水", emoji: "💧" },
             ].map((el) => {
               const count = data.fiveElements[el.key] || 0;
               const pct = Math.round((count / total) * 100);
               return (
                 <div key={el.key} className="flex items-center gap-2">
-                  <span className="text-sm w-5 text-center">{el.emoji}</span>
+                  <span className="text-sm w-6 shrink-0 text-center">{el.emoji}</span>
+                  <span className="text-xs text-text-secondary w-20 shrink-0">{el.label} ({el.hanja})</span>
                   <div className="flex-1">
-                    <div className="flex justify-between text-xs mb-0.5">
-                      <span className="text-text-secondary">{el.label}</span>
-                      <span className="font-mono">{count} ({pct}%)</span>
-                    </div>
-                    <div className="h-1.5 bg-bg-surface rounded-full overflow-hidden">
+                    <div className="h-2 bg-bg-surface rounded-full overflow-hidden">
                       <div className="h-full rounded-full" style={{ width: `${Math.max(pct, 2)}%`, backgroundColor: ELEMENT_COLORS[el.key] }} />
                     </div>
                   </div>
+                  <span className="font-mono text-xs w-16 shrink-0 text-right">{count} ({pct}%)</span>
                 </div>
               );
             })}
           </div>
         </section>
-
-        {/* ═══ 리포트 섹션들 ═══ */}
-        {report.sections.map((section, i) => {
-          const conceptKey = getSectionConcept(section.title);
-          const icon = getSectionIcon(i);
-          return (
-            <section
-              key={i}
-              ref={(el) => { sectionRefs.current[i] = el; }}
-              className="px-5 py-8 border-t border-white/5"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-2xl">{icon}</span>
-                <div>
-                  <span className="text-gold font-mono text-xs">Cap.{String(i + 1).padStart(2, "0")}</span>
-                  <h2 className="font-serif text-xl font-bold">{section.title}</h2>
-                </div>
-              </div>
-              {conceptKey && <ConceptCard termKey={conceptKey} compact />}
-              <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
-                <MarkdownContent content={section.content} sectionIndex={i} />
-              </div>
-            </section>
-          );
-        })}
 
         {/* ═══ 신강/신약 (Fuerza Interior) ═══ */}
         <section className="px-5 py-8 border-t border-white/5">
@@ -535,6 +508,31 @@ function ReportePage() {
             </section>
           );
         })()}
+
+        {/* ═══ 리포트 섹션들 (1~14장) ═══ */}
+        {report.sections.map((section, i) => {
+          const conceptKey = getSectionConcept(section.title);
+          const icon = getSectionIcon(i);
+          return (
+            <section
+              key={i}
+              ref={(el) => { sectionRefs.current[i] = el; }}
+              className="px-5 py-8 border-t border-white/5"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">{icon}</span>
+                <div>
+                  <span className="text-gold font-mono text-xs">Cap.{String(i + 1).padStart(2, "0")}</span>
+                  <h2 className="font-serif text-xl font-bold">{section.title}</h2>
+                </div>
+              </div>
+              {conceptKey && <ConceptCard termKey={conceptKey} compact />}
+              <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
+                <MarkdownContent content={section.content} sectionIndex={i} />
+              </div>
+            </section>
+          );
+        })}
 
         {/* ═══ 삼재 (三災) ═══ */}
         {data.samjae && (
