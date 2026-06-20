@@ -22,3 +22,5 @@ content-output/
 # IDE
 .vscode/
 .idea/
+
+.vercel

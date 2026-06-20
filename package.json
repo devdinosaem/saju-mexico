@@ -11,6 +11,7 @@
     "build": "pnpm -r build"
   },
   "devDependencies": {
+    "next": "^16.2.0",
     "typescript": "^5.5.0",
     "vitest": "^2.0.0"
   },
