@@ -218,6 +218,55 @@ export default function ReportePage() {
           );
         })}
 
+        {/* ═══ 신강/신약 (Fuerza Interior) ═══ */}
+        <section className="px-5 py-8 border-t border-white/5">
+          <h2 className="font-serif text-xl font-bold mb-2">⚖️ Tu Fuerza Interior</h2>
+          <ConceptCard termKey="strength" />
+
+          <div className="bg-bg-card rounded-2xl p-5 border border-gold/10 mb-4">
+            <div className="text-center mb-4">
+              <p className="text-gold font-serif text-3xl font-bold">{data.strength?.levelSpanish}</p>
+              <p className="text-text-muted text-xs">{data.strength?.levelKorean} · Puntuación: {data.strength?.score?.toFixed(1)}</p>
+            </div>
+            <div className="mb-4">
+              <div className="flex justify-between text-xs mb-1">
+                <span className="text-blue-400">Muy Débil</span>
+                <span className="text-green-400">Equilibrado</span>
+                <span className="text-red-400">Muy Fuerte</span>
+              </div>
+              <div className="h-4 bg-bg-surface rounded-full overflow-hidden relative">
+                <div className="h-full w-full bg-gradient-to-r from-blue-500 via-green-400 to-red-500 opacity-30" />
+                <div
+                  className="absolute top-0 h-full w-1 bg-gold rounded-full shadow-lg shadow-gold/50"
+                  style={{ left: `${Math.min(98, Math.max(2, (data.strength?.score + 5) * 10))}%` }}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="bg-bg-surface/30 rounded-lg p-3">
+                <p className="text-xs text-text-muted mb-1">Energías aliadas</p>
+                <p className="text-text-primary font-semibold">Las que te apoyan</p>
+                <p className="text-xs text-text-secondary mt-1">
+                  {data.strength?.score >= 0
+                    ? "Tienes suficiente apoyo — no necesitas buscar más aliados"
+                    : "Necesitas rodearte de personas y elementos que te fortalezcan"
+                  }
+                </p>
+              </div>
+              <div className="bg-bg-surface/30 rounded-lg p-3">
+                <p className="text-xs text-text-muted mb-1">Energías retadoras</p>
+                <p className="text-text-primary font-semibold">Las que te empujan</p>
+                <p className="text-xs text-text-secondary mt-1">
+                  {data.strength?.score >= 0
+                    ? "Puedes manejar la presión externa con facilidad"
+                    : "La presión externa puede sentirse abrumadora a veces"
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ═══ 용신 가이드 (실용 정보) ═══ */}
         <section className="px-5 py-8 border-t border-white/5">
           <h2 className="font-serif text-xl font-bold mb-4">

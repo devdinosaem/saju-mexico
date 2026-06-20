@@ -212,6 +212,67 @@ export default function ResultadoPage() {
           </div>
         </section>
 
+        {/* ═══ 신강/신약 (Fuerza Interior) ═══ */}
+        <section className="px-5 py-6">
+          <ConceptCard termKey="strength" compact />
+          <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
+            <h2 className="font-serif text-xl font-bold mb-3">
+              Tu Fuerza Interior: <span className="text-gradient-gold">{data.strength.levelSpanish}</span>
+            </h2>
+            <div className="flex items-center gap-4 mb-3">
+              <div className="flex-1">
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-text-secondary">Débil</span>
+                  <span className="text-text-secondary">Fuerte</span>
+                </div>
+                <div className="h-3 bg-bg-surface rounded-full overflow-hidden relative">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-blue-500 via-green-400 to-red-500"
+                    style={{ width: `${Math.min(100, Math.max(5, (data.strength.score + 5) * 10))}%` }}
+                  />
+                </div>
+              </div>
+              <span className="font-mono text-gold text-sm font-bold">{data.strength.score.toFixed(1)}</span>
+            </div>
+            <p className="text-text-secondary text-xs leading-relaxed">
+              {data.strength.score >= 1
+                ? "Tu energía personal es fuerte — eres alguien que lidera naturalmente y toma decisiones con confianza. Pero cuidado con la rigidez."
+                : data.strength.score >= -1
+                ? "Tu energía está equilibrada — tienes la rara capacidad de adaptarte sin perder tu esencia."
+                : "Tu energía personal es receptiva — eres adaptable y empático, pero necesitas rodearte de las personas y elementos correctos para brillar."
+              }
+            </p>
+          </div>
+        </section>
+
+        {/* ═══ 용신 (Elemento de Poder) ═══ */}
+        <section className="px-5 py-6">
+          <ConceptCard termKey="yongShin" compact />
+          <div className="bg-bg-card rounded-2xl p-5 border border-gold/20">
+            <h2 className="font-serif text-xl font-bold mb-3">
+              Tu Elemento de Poder: <span className="text-gradient-gold">{data.yongShin.elementSpanish}</span>
+            </h2>
+            <p className="text-text-secondary text-sm leading-relaxed mb-4">
+              El elemento <strong className="text-text-primary">{data.yongShin.elementSpanish}</strong> es
+              lo que más necesitas en tu vida para alcanzar el equilibrio. Incorporarlo en tu día a día
+              puede mejorar tu suerte, salud y relaciones.
+            </p>
+            <div className="relative">
+              <div className="grid grid-cols-2 gap-2 blur-content">
+                <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">🎨 Colores de suerte</div>
+                <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">🧭 Dirección favorable</div>
+                <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">💎 Cristales ideales</div>
+                <div className="bg-bg-surface/50 rounded-lg p-2 text-center text-xs">🍽️ Alimentos favorables</div>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="bg-bg-card/80 text-gold text-xs font-semibold px-4 py-2 rounded-full border border-gold/20">
+                  🔒 Guía completa en el reporte
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ═══ 대운 시기 분석 + 현시점 사주 ═══ */}
         {data.majorFortunes && data.yearlyFortune && (() => {
           const birthYear = data.birth.year;
