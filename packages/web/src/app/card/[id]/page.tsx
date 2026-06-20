@@ -81,7 +81,7 @@ export default function CardPage() {
         await navigator.share({
           files: [file],
           title: `Saju de ${data?.name}`,
-          text: "Descubre tu tipo en @sajudecorea",
+          text: "Descubre tu tipo en @sajuastral",
         });
       } else if (blob) {
         // Fallback: download
@@ -196,7 +196,7 @@ export default function CardPage() {
 
           <div className="flex-1" />
 
-          <p className="text-center text-xs" style={{ color: "#5C5775" }}>@sajudecorea</p>
+          <p className="text-center text-xs" style={{ color: "#5C5775" }}>@sajuastral</p>
         </div>
       </div>
 

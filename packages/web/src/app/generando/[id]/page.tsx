@@ -129,7 +129,7 @@ export default function GenerandoPage() {
     <main className="flex flex-col items-center justify-center min-h-screen px-5">
       <div className="w-full max-w-[400px] text-center">
         {/* 로고 */}
-        <p className="text-gold text-sm tracking-[0.3em] uppercase mb-8">✦ Saju México ✦</p>
+        <p className="text-gold text-sm tracking-[0.3em] uppercase mb-8">✦ Saju Astral ✦</p>
 
         {/* 메인 아이콘 애니메이션 */}
         <div className="relative w-28 h-28 mx-auto mb-8">

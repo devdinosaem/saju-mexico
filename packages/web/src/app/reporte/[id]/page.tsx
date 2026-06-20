@@ -684,7 +684,7 @@ function ReportePage() {
             El destino te dio las cartas —<br />
             tú decides cómo jugarlas.&quot;
           </div>
-          <p className="text-gold text-sm">✦ Saju México ✦</p>
+          <p className="text-gold text-sm">✦ Saju Astral ✦</p>
           <p className="text-text-muted text-xs mt-4">
             Generado el {new Date(report.generatedAt).toLocaleDateString("es-MX")}
           </p>

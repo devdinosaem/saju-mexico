@@ -15,7 +15,7 @@ export default function LandingPage() {
         <section className="relative px-5 pt-12 pb-16 text-center overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,168,83,0.08),transparent_60%)]" />
           <p className="text-gold text-sm tracking-[0.3em] uppercase mb-4 relative">
-            ✦ Saju México ✦
+            ✦ Saju Astral ✦
           </p>
           <h1 className="font-serif text-4xl font-bold leading-tight mb-6 relative">
             Tu destino está escrito
