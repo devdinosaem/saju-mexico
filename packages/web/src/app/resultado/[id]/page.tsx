@@ -580,6 +580,21 @@ export default function ResultadoPage() {
           );
         })()}
 
+        {/* ═══ 사주 유형 카드 ═══ */}
+        <section className="px-5 py-6">
+          <div className="bg-bg-card rounded-2xl p-5 border border-gold/10 text-center">
+            <p className="text-3xl mb-2">🎴</p>
+            <h2 className="font-serif text-lg font-bold mb-1">Tu Tarjeta Saju</h2>
+            <p className="text-text-secondary text-xs mb-3">Descarga tu tipo y compártelo en Instagram</p>
+            <a
+              href={`/card/${id}`}
+              className="inline-block gradient-gold text-bg-primary text-sm font-bold py-2.5 px-6 rounded-xl"
+            >
+              📲 Ver mi tarjeta →
+            </a>
+          </div>
+        </section>
+
         {/* ═══ 리포트 목차 ═══ */}
         <section className="px-5 py-6">
           <h2 className="font-serif text-xl font-bold text-center mb-2">
