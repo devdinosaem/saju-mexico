@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { PurchaseToast } from "@/components/purchase-toast";
 
@@ -37,13 +37,18 @@ const ELEMENT_COLORS: Record<string, string> = {
 
 export default function ResultadoPage() {
   const { id } = useParams();
+  const router = useRouter();
   const [data, setData] = useState<SajuData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [purchasing, setPurchasing] = useState(false);
 
   useEffect(() => {
     fetch(`/api/saju/calculate?id=${id}`)
       .then((r) => r.json())
-      .then((d) => { setData(d); setLoading(false); })
+      .then((d) => {
+        if (d && d.fiveElements) setData(d);
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, [id]);
 
@@ -353,8 +358,28 @@ export default function ResultadoPage() {
             </div>
             <CountdownTimer />
           </div>
-          <button className="w-full gradient-gold text-bg-primary font-bold text-base py-4 rounded-xl animate-pulse-gold transition-transform active:scale-[0.98]">
-            ✦ VER MI REPORTE COMPLETO ✦
+          <button
+            disabled={purchasing}
+            onClick={async () => {
+              setPurchasing(true);
+              // MVP: 결제 없이 바로 리포트 생성 (MercadoPago 연동 예정)
+              await fetch("/api/saju/report", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id }),
+              });
+              router.push(`/reporte/${id}`);
+            }}
+            className="w-full gradient-gold text-bg-primary font-bold text-base py-4 rounded-xl animate-pulse-gold transition-transform active:scale-[0.98] disabled:opacity-50"
+          >
+            {purchasing ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-bg-primary/30 border-t-bg-primary rounded-full animate-spin" />
+                Generando reporte...
+              </span>
+            ) : (
+              "✦ VER MI REPORTE COMPLETO ✦"
+            )}
           </button>
           <div className="flex items-center justify-center gap-3 mt-2 text-text-muted text-xs">
             <span>💳 Tarjeta</span>

@@ -10,8 +10,7 @@ import {
   analyzeRelations,
 } from "saju-engine";
 
-// MVP: 인메모리 스토어 (Supabase로 교체 예정)
-const store = new Map<string, object>();
+import { saveSaju, getSaju } from "@/lib/store";
 
 export async function POST(req: NextRequest) {
   try {
@@ -149,7 +148,7 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    store.set(id, sajuData);
+    saveSaju(id, sajuData);
     return NextResponse.json({ id, success: true });
   } catch (err) {
     console.error("Saju calculation error:", err);
@@ -161,7 +160,7 @@ export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "ID requerido" }, { status: 400 });
 
-  const data = store.get(id);
+  const data = getSaju(id);
   if (!data) return NextResponse.json({ error: "No encontrado" }, { status: 404 });
 
   return NextResponse.json(data);
