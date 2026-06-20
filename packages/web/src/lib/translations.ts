@@ -182,8 +182,6 @@ export function translateKorean(text: string): string {
   return result;
 }
 
-// ── 오행 상생/상극 ──
-
 const GENERATES_ME: Record<string, string> = {
   wood: "water", fire: "wood", earth: "fire", metal: "earth", water: "metal",
 };
