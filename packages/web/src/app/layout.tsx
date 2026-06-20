@@ -21,14 +21,31 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Saju México — Descubre tu destino con la astrología coreana",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://saju-mexico.vercel.app"),
+  title: {
+    default: "Saju Astral — Desde Corea, más allá de tu horóscopo",
+    template: "%s | Saju Astral",
+  },
   description:
-    "El arte milenario coreano de los Cuatro Pilares del Destino. Más de 500 años de tradición, ahora con IA. Recibe tu reporte personalizado de +15,000 palabras.",
+    "El oráculo coreano de los 4 pilares del destino. 500 años de sabiduría ancestral + IA. Descubre lo que tu horóscopo nunca te dijo. Reporte de +15,000 palabras.",
+  keywords: [
+    "saju", "saju astral", "astrología coreana", "cuatro pilares del destino",
+    "carta astral coreana", "horóscopo coreano", "destino", "oráculo coreano",
+    "four pillars of destiny", "사주", "México",
+  ],
   openGraph: {
-    title: "Saju México — Tu destino escrito en las estrellas coreanas",
+    type: "website",
+    siteName: "Saju Astral",
+    title: "Saju Astral — Desde Corea, más allá de tu horóscopo",
     description:
-      "Descubre qué dice tu fecha de nacimiento según la tradición coreana de 500 años. Amor, dinero, salud y más.",
+      "El oráculo coreano de los 4 pilares del destino. Descubre lo que tu horóscopo nunca te dijo.",
     locale: "es_MX",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Saju Astral — Desde Corea, más allá de tu horóscopo",
+    description:
+      "El oráculo coreano de los 4 pilares del destino. Descubre lo que tu horóscopo nunca te dijo.",
   },
 };
 
