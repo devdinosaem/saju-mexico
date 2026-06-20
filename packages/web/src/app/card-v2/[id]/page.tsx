@@ -161,9 +161,9 @@ export default function CardV2Page() {
             </div>
           </div>
 
-          {/* 스토리 라인 */}
+          {/* 태그라인 (30유형별) */}
           <p className="text-center mb-3 px-4" style={{ fontFamily: "Playfair Display, Georgia, serif", fontSize: "13px", fontStyle: "italic", color: "#F0ECE3", lineHeight: "1.5" }}>
-            &quot;{storyLine}&quot;
+            &quot;{sajuType.tagline}&quot;
           </p>
 
           {/* 성격 문구 */}
