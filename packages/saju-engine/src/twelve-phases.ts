@@ -41,7 +41,7 @@ export const PHASE_HANJA: Record<TwelvePhase, string> = {
 export const PHASE_SPANISH: Record<TwelvePhase, string> = {
   jangsaeng: 'Nacimiento', mogyok: 'Baño', gwandae: 'Corona',
   geonrok: 'Prosperidad', jewang: 'Emperador', soe: 'Declive',
-  byeong: 'Enfermedad', sa: 'Muerte', myo: 'Tumba',
+  byeong: 'Enfermedad', sa: 'Amenaza', myo: 'Amenaza',
   jeol: 'Extinción', tae: 'Concepción', yang: 'Crianza',
 };
 
