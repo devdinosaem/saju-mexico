@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { PurchaseToast } from "@/components/purchase-toast";
 import { ConceptCard } from "@/components/term-tooltip";
+import { translateTenGod, translatePhase } from "@/lib/translations";
 
 interface SajuData {
   id: string;
@@ -190,7 +191,7 @@ export default function ResultadoPage() {
           <ConceptCard termKey="dayMaster" compact />
           <div className="bg-bg-card rounded-2xl p-5 border border-white/5">
             <h2 className="font-serif text-xl font-bold mb-3">
-              Tu Pilar del Día: <span className="text-gradient-gold">{data.dayMaster.elementSpanish}</span>
+              Tu Elemento Natal: <span className="text-gradient-gold">{data.dayMaster.elementSpanish}</span>
             </h2>
             <p className="text-text-secondary text-sm leading-relaxed mb-4">
               Tu elemento dominante es <strong className="text-text-primary">{data.dayMaster.elementSpanish}</strong>.
@@ -308,17 +309,21 @@ export default function ResultadoPage() {
                   <div className="flex items-center gap-4 mb-3">
                     <div className="text-center">
                       <p className="font-serif text-2xl text-gold">{currentFortune.ganZhi.split("(")[0]}</p>
-                      <p className="text-xs text-text-muted">{currentFortune.stemTenGod}</p>
+                      <p className="text-xs text-text-muted">{translateTenGod(currentFortune.stemTenGod)}</p>
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-semibold mb-1">Tienes {currentAge} años — estás en la estación de {currentFortune.stemTenGod}</p>
-                      <p className="text-text-secondary text-xs leading-relaxed">
-                        {getFortuneDescription(currentFortune.stemTenGod)}
-                      </p>
+                      <p className="text-sm font-semibold mb-1">Tienes {currentAge} años — estás en la estación de {translateTenGod(currentFortune.stemTenGod)}</p>
+                      <div className="relative mt-1">
+                        <p className="text-text-secondary text-xs leading-relaxed blur-content">
+                          {getFortuneDescription(currentFortune.stemTenGod)}
+                        </p>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
+                            🔓 Desbloquear análisis →
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-xs text-text-muted">
-                    Fase energética: <span className="text-gold">{currentFortune.phase}</span>
                   </div>
                 </div>
               )}
@@ -331,7 +336,7 @@ export default function ResultadoPage() {
                   </div>
                   <p className="text-sm">
                     A los <strong className="text-text-primary">{nextFortune.age} años</strong> ({birthYear + nextFortune.age}), entrarás en una nueva Gran Estación:
-                    <span className="text-gold font-semibold"> {nextFortune.ganZhi.split("(")[0]}</span> — {nextFortune.stemTenGod}
+                    <span className="text-gold font-semibold"> {nextFortune.ganZhi.split("(")[0]}</span> — {translateTenGod(nextFortune.stemTenGod)}
                   </p>
                   <p className="text-text-secondary text-xs mt-1 leading-relaxed">
                     {getFortuneDescription(nextFortune.stemTenGod)}
@@ -351,10 +356,10 @@ export default function ResultadoPage() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm">
-                      Energía dominante: <span className="text-gold">{data.yearlyFortune.stemTenGod}/{data.yearlyFortune.branchTenGod}</span>
+                      Energía dominante: <span className="text-gold">{translateTenGod(data.yearlyFortune.stemTenGod)}/{translateTenGod(data.yearlyFortune.branchTenGod)}</span>
                     </p>
                     <p className="text-text-secondary text-xs">
-                      Fase: <span className="text-gold">{data.yearlyFortune.phase}</span>
+                      Fase: <span className="text-gold">{translatePhase(data.yearlyFortune.phase)}</span>
                     </p>
                   </div>
                 </div>
@@ -471,19 +476,29 @@ export default function ResultadoPage() {
               ) : (
                 <div>
                   <p className="text-text-secondary text-xs leading-relaxed mb-2">
-                    Tu próximo periodo de Tres Calamidades será en <strong className="text-text-primary">{data.samjae.startYear}-{data.samjae.endYear}</strong>. Conocer estas fechas de antemano te da años de ventaja para prepararte.
+                    Tus Tres Calamidades no están activas ahora. Pero, ¿sabes exactamente cuándo llega tu próximo ciclo?
                   </p>
-                  {data.samjaeYears && data.samjaeYears.length > 0 && (
-                    <div className="flex gap-1 flex-wrap mt-2">
-                      {data.samjaeYears.map((sy) => (
-                        <span key={sy.year} className={`text-xs px-2 py-0.5 rounded-full ${
-                          sy.phase === "peak" ? "bg-red-500/15 text-red-400" : "bg-bg-surface text-text-muted"
-                        }`}>
-                          {sy.year}
-                        </span>
-                      ))}
+                  <div className="relative mt-2">
+                    <div className="blur-content">
+                      <p className="text-text-secondary text-xs mb-2">
+                        Tu próximo periodo: {data.samjae.startYear}-{data.samjae.endYear}
+                      </p>
+                      {data.samjaeYears && data.samjaeYears.length > 0 && (
+                        <div className="flex gap-1 flex-wrap">
+                          {data.samjaeYears.map((sy) => (
+                            <span key={sy.year} className="text-xs px-2 py-0.5 rounded-full bg-bg-surface text-text-muted">
+                              {sy.year}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="bg-bg-card/80 text-gold text-xs font-semibold px-3 py-1.5 rounded-full border border-gold/20">
+                        🔓 Descubrir cuándo llegan →
+                      </span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

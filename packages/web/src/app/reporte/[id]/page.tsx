@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { ConceptCard, TermTooltip } from "@/components/term-tooltip";
+import { translateTenGod, translatePhase } from "@/lib/translations";
 
 interface ReportSection {
   title: string;
@@ -157,7 +158,7 @@ export default function ReportePage() {
             </div>
             <div className="mt-4 pt-4 border-t border-white/5 text-center">
               <p className="text-xs text-text-secondary">
-                Pilar del Día (일주): <span className="text-gold font-semibold">{data.dayMaster?.korean} — {data.dayMaster?.elementSpanish}</span>
+                Elemento Natal (일주): <span className="text-gold font-semibold">{data.dayMaster?.korean} — {data.dayMaster?.elementSpanish}</span>
                 {" · "}Fuerza: <span className="text-gold">{data.strength?.levelSpanish}</span>
                 {" · "}Poder: <span className="text-gold">{data.yongShin?.elementSpanish}</span>
               </p>
@@ -337,7 +338,7 @@ export default function ReportePage() {
                           <p className={`text-sm font-semibold ${isCurrent ? "text-gold" : ""}`}>{f.ganZhi}</p>
                           {isCurrent && <span className="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded-full">← AHORA</span>}
                         </div>
-                        <p className="text-xs text-text-secondary">{f.stemTenGod} · {f.phase}</p>
+                        <p className="text-xs text-text-secondary">{translateTenGod(f.stemTenGod)} · {translatePhase(f.phase)}</p>
                         <p className="text-xs text-text-muted mt-1 leading-relaxed">
                           {getFortuneDescription(f.stemTenGod)}
                         </p>
@@ -358,9 +359,9 @@ export default function ReportePage() {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm">
-                        Energía: <span className="text-gold font-semibold">{data.yearlyFortune.stemTenGod} / {data.yearlyFortune.branchTenGod}</span>
+                        Energía: <span className="text-gold font-semibold">{translateTenGod(data.yearlyFortune.stemTenGod)} / {translateTenGod(data.yearlyFortune.branchTenGod)}</span>
                       </p>
-                      <p className="text-xs text-text-secondary">Fase: {data.yearlyFortune.phase}</p>
+                      <p className="text-xs text-text-secondary">Fase: {translatePhase(data.yearlyFortune.phase)}</p>
                       <p className="text-xs text-text-muted mt-1 leading-relaxed">
                         {getFortuneDescription(data.yearlyFortune.stemTenGod)}
                       </p>
