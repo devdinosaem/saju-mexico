@@ -136,4 +136,5 @@ export interface ReportGeneratorOptions {
   apiKey?: string;
   model?: string;
   maxRetries?: number;
+  locale?: 'kr' | 'mx';
 }

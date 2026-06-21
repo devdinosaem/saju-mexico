@@ -2,6 +2,7 @@ import {
   calculateSaju, STEM_KOREAN, BRANCH_KOREAN, STEM_ELEMENT,
   BRANCH_ELEMENT, ELEMENT_SPANISH, BRANCH_SPANISH, STEM_YINYANG,
 } from 'manseryeok';
+import type { FiveElement } from 'manseryeok';
 import {
   analyzeTenGods, TEN_GOD_KOREAN, TEN_GOD_SPANISH,
   analyzeTwelvePhases, PHASE_KOREAN, PHASE_SPANISH,
@@ -10,7 +11,9 @@ import {
   analyzeYongShin, STRENGTH_KOREAN, STRENGTH_SPANISH, ELEMENT_KOREAN,
   analyzeRelations,
 } from 'saju-engine';
+import type { StrengthLevel } from 'saju-engine';
 import type { Gender, ReportInput } from './types.js';
+import type { Locale } from './locales/index.js';
 
 export interface BuildInputParams {
   userName: string;
@@ -22,10 +25,16 @@ export interface BuildInputParams {
   minute: number;
   city: string;
   timezone: string;
+  locale?: Locale;
 }
 
+const DIRECTION_LABELS: Record<Locale, { forward: string; reverse: string }> = {
+  mx: { forward: 'Progresiva (순행)', reverse: 'Regresiva (역행)' },
+  kr: { forward: '순행(順行)', reverse: '역행(逆行)' },
+};
+
 export function buildReportInput(params: BuildInputParams): ReportInput {
-  const { userName, gender, year, month, day, hour, minute, city, timezone } = params;
+  const { userName, gender, year, month, day, hour, minute, city, timezone, locale = 'mx' } = params;
 
   const saju = calculateSaju({ year, month, day, hour, minute, city });
   const p = saju.fourPillars;
@@ -42,17 +51,24 @@ export function buildReportInput(params: BuildInputParams): ReportInput {
   const yongShin = analyzeYongShin(saju.dayMaster.stem, p, saju.fiveElements, tenGods.count);
   const relations = analyzeRelations(p);
 
+  const getElementDisplay = (element: FiveElement) =>
+    locale === 'kr' ? ELEMENT_KOREAN[element] : ELEMENT_SPANISH[element];
+  const getStrengthDisplay = (level: StrengthLevel) =>
+    locale === 'kr' ? STRENGTH_KOREAN[level] : STRENGTH_SPANISH[level];
+
   const makePillar = (pillar: typeof p.year, position: 'year' | 'month' | 'day' | 'hour') => {
     const stemEntry = tenGods.entries.find(e => e.position === `${position}_stem`);
     return {
       stem: pillar.stem,
       branch: pillar.branch,
       korean: `${STEM_KOREAN[pillar.stem]}${BRANCH_KOREAN[pillar.branch]}`,
-      stemElement: ELEMENT_SPANISH[STEM_ELEMENT[pillar.stem]],
-      branchElement: ELEMENT_SPANISH[BRANCH_ELEMENT[pillar.branch]],
+      stemElement: getElementDisplay(STEM_ELEMENT[pillar.stem]),
+      branchElement: getElementDisplay(BRANCH_ELEMENT[pillar.branch]),
       tenGod: stemEntry ? TEN_GOD_KOREAN[stemEntry.tenGod] : '',
     };
   };
+
+  const dirLabels = DIRECTION_LABELS[locale];
 
   return {
     userName,
@@ -73,7 +89,7 @@ export function buildReportInput(params: BuildInputParams): ReportInput {
     dayMaster: {
       stem: saju.dayMaster.stem,
       element: saju.dayMaster.element,
-      elementSpanish: ELEMENT_SPANISH[saju.dayMaster.element],
+      elementSpanish: getElementDisplay(saju.dayMaster.element),
       yinYang: saju.dayMaster.yinYang,
       korean: STEM_KOREAN[saju.dayMaster.stem],
     },
@@ -83,15 +99,15 @@ export function buildReportInput(params: BuildInputParams): ReportInput {
         char: e.char,
         tenGod: e.tenGod,
         korean: TEN_GOD_KOREAN[e.tenGod],
-        spanish: TEN_GOD_SPANISH[e.tenGod],
+        spanish: locale === 'kr' ? TEN_GOD_KOREAN[e.tenGod] : TEN_GOD_SPANISH[e.tenGod],
       })),
       percentages: tenGods.percentages,
     },
     twelvePhases: {
-      year: { phase: phases.year, korean: PHASE_KOREAN[phases.year], spanish: PHASE_SPANISH[phases.year] },
-      month: { phase: phases.month, korean: PHASE_KOREAN[phases.month], spanish: PHASE_SPANISH[phases.month] },
-      day: { phase: phases.day, korean: PHASE_KOREAN[phases.day], spanish: PHASE_SPANISH[phases.day] },
-      hour: { phase: phases.hour, korean: PHASE_KOREAN[phases.hour], spanish: PHASE_SPANISH[phases.hour] },
+      year: { phase: phases.year, korean: PHASE_KOREAN[phases.year], spanish: locale === 'kr' ? PHASE_KOREAN[phases.year] : PHASE_SPANISH[phases.year] },
+      month: { phase: phases.month, korean: PHASE_KOREAN[phases.month], spanish: locale === 'kr' ? PHASE_KOREAN[phases.month] : PHASE_SPANISH[phases.month] },
+      day: { phase: phases.day, korean: PHASE_KOREAN[phases.day], spanish: locale === 'kr' ? PHASE_KOREAN[phases.day] : PHASE_SPANISH[phases.day] },
+      hour: { phase: phases.hour, korean: PHASE_KOREAN[phases.hour], spanish: locale === 'kr' ? PHASE_KOREAN[phases.hour] : PHASE_SPANISH[phases.hour] },
     },
     spiritStars: {
       year: SPIRIT_STAR_KOREAN[spirits.year],
@@ -103,7 +119,7 @@ export function buildReportInput(params: BuildInputParams): ReportInput {
     strength: {
       level: yongShin.strength.level,
       levelKorean: STRENGTH_KOREAN[yongShin.strength.level],
-      levelSpanish: STRENGTH_SPANISH[yongShin.strength.level],
+      levelSpanish: getStrengthDisplay(yongShin.strength.level),
       score: yongShin.strength.score,
       deukryeong: yongShin.strength.deukryeong,
       friendCount: yongShin.strength.friendCount,
@@ -112,7 +128,7 @@ export function buildReportInput(params: BuildInputParams): ReportInput {
     yongShin: {
       element: yongShin.yongShin,
       elementKorean: ELEMENT_KOREAN[yongShin.yongShin],
-      elementSpanish: ELEMENT_SPANISH[yongShin.yongShin],
+      elementSpanish: getElementDisplay(yongShin.yongShin),
       category: yongShin.yongShinCategory,
     },
     giShin: {
@@ -120,7 +136,7 @@ export function buildReportInput(params: BuildInputParams): ReportInput {
       elementKorean: ELEMENT_KOREAN[yongShin.giShin],
     },
     majorFortunes: {
-      direction: fortunes.direction === 'forward' ? 'Progresiva (순행)' : 'Regresiva (역행)',
+      direction: fortunes.direction === 'forward' ? dirLabels.forward : dirLabels.reverse,
       startAge: fortunes.startAge,
       fortunes: fortunes.fortunes.map(f => ({
         age: f.startAge,

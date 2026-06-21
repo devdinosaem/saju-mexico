@@ -1,11 +1,11 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { ReportInput, SajuReport, ReportSection, ReportGeneratorOptions } from './types.js';
-import { SYSTEM_PROMPT, CALL1_PROMPT, CALL2_PROMPT, CALL3_PROMPT, CALL4_PROMPT } from './prompts.js';
+import { type Locale, getLocaleConfig } from './locales/index.js';
 
 const DEFAULT_MODEL = 'claude-sonnet-4-6';
 
-function buildUserMessage(input: ReportInput, sectionPrompt: string): string {
-  return `## Datos del consultante
+function buildUserMessage(input: ReportInput, sectionPrompt: string, header: string): string {
+  return `${header}
 
 ${JSON.stringify(input, null, 2)}
 
@@ -34,6 +34,7 @@ function parseSections(text: string): ReportSection[] {
 export class ReportGenerator {
   private client: Anthropic;
   private model: string;
+  private locale: Locale;
 
   constructor(options: ReportGeneratorOptions = {}) {
     this.client = new Anthropic({
@@ -41,32 +42,34 @@ export class ReportGenerator {
       maxRetries: options.maxRetries ?? 3,
     });
     this.model = options.model ?? DEFAULT_MODEL;
+    this.locale = options.locale ?? 'mx';
   }
 
   private async callApi(input: ReportInput, sectionPrompt: string) {
+    const config = getLocaleConfig(this.locale);
     return this.client.messages.create({
       model: this.model,
       max_tokens: 4096,
       system: [
         {
           type: 'text',
-          text: SYSTEM_PROMPT,
+          text: config.SYSTEM_PROMPT,
           cache_control: { type: 'ephemeral' },
         },
       ],
       messages: [
         {
           role: 'user',
-          content: buildUserMessage(input, sectionPrompt),
+          content: buildUserMessage(input, sectionPrompt, config.USER_DATA_HEADER),
         },
       ],
     });
   }
 
   async generate(input: ReportInput): Promise<SajuReport> {
-    const callPrompts = [CALL1_PROMPT, CALL2_PROMPT, CALL3_PROMPT, CALL4_PROMPT];
+    const config = getLocaleConfig(this.locale);
+    const callPrompts = [config.CALL1_PROMPT, config.CALL2_PROMPT, config.CALL3_PROMPT, config.CALL4_PROMPT];
 
-    // 4개 동시 호출
     const responses = await Promise.all(
       callPrompts.map((prompt) => this.callApi(input, prompt))
     );
@@ -100,7 +103,8 @@ export class ReportGenerator {
     input: ReportInput,
     onSection: (section: ReportSection) => void,
   ): Promise<SajuReport> {
-    const callPrompts = [CALL1_PROMPT, CALL2_PROMPT, CALL3_PROMPT, CALL4_PROMPT];
+    const config = getLocaleConfig(this.locale);
+    const callPrompts = [config.CALL1_PROMPT, config.CALL2_PROMPT, config.CALL3_PROMPT, config.CALL4_PROMPT];
     const allSections: ReportSection[] = [];
     const usage = {
       inputTokens: 0,
@@ -116,14 +120,14 @@ export class ReportGenerator {
         system: [
           {
             type: 'text',
-            text: SYSTEM_PROMPT,
+            text: config.SYSTEM_PROMPT,
             cache_control: { type: 'ephemeral' },
           },
         ],
         messages: [
           {
             role: 'user',
-            content: buildUserMessage(input, sectionPrompt),
+            content: buildUserMessage(input, sectionPrompt, config.USER_DATA_HEADER),
           },
         ],
       });
