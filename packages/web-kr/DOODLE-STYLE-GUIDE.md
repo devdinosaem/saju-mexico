@@ -119,6 +119,27 @@ strokeLinecap: "round" (곡선에만)
 | DoodleLeaf | 나뭇잎 | #4ADE80 | ✗ |
 | DoodleSmiley | 스마일리 | #FACC15 | ✓ |
 
+| DoodleTravelGirl | 여행 여자 캐릭터 | 다색 | ✓ (선글라스) |
+| DoodlePlane | 비행기 | #FFFFFF | ✗ |
+| DoodleMusicNote | 음표 | #2D2D2D | ✗ |
+| DoodleQuestionMark | 물음표 | #2D2D2D | ✗ |
+| DoodleSpeechBubble | 말풍선 | #E84B6A | ✗ |
+| DoodleSuitcase | 캐리어 | #E84B6A | ✗ (스티커 얼굴) |
+
+## 캐릭터 두들 추가 규칙
+
+일반 오브젝트보다 복잡하지만 동일한 스타일 원칙을 따른다:
+
+```
+- viewBox: 60~100 범위 (일반 두들보다 큼)
+- 피부색: #FDE68A (크림옐로)
+- 머리카락: #2D2D2D (차콜)
+- 옷: 팔레트 내 색상 (흰 티=#FFF, 검은 바지=#2D2D2D 등)
+- 아웃라인: 동일하게 #2D2D2D, strokeWidth 1~1.5
+- 소품: 별도 컴포넌트로도 분리 가능 (캐리어, 비행기 등)
+- 복잡도: path 노드 20개 이하 (일반 두들의 2배까지 허용)
+```
+
 ## 생성 요청 예시
 
 유저: "커피" → DoodleCoffee (컵: #FDE68A, 김: path 웨이브, 얼굴: 선택)

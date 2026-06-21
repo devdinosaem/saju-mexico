@@ -152,6 +152,116 @@ export function DoodleSmiley({ className = "" }: { className?: string }) {
   );
 }
 
+export function DoodleTravelGirl({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 80 100" className={`w-20 h-24 ${className}`} fill="none">
+      {/* 번헤어 */}
+      <circle cx="40" cy="18" r="8" fill="#2D2D2D" stroke="#2D2D2D" strokeWidth="1.5" />
+      <ellipse cx="40" cy="12" rx="5" ry="4" fill="#2D2D2D" />
+
+      {/* 얼굴 */}
+      <circle cx="40" cy="22" r="10" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.5" />
+
+      {/* 선글라스 */}
+      <rect x="32" y="19" width="7" height="5" rx="2" fill="#2D2D2D" />
+      <rect x="41" y="19" width="7" height="5" rx="2" fill="#2D2D2D" />
+      <path d="M39 21.5 L41 21.5" stroke="#2D2D2D" strokeWidth="1" />
+      <path d="M31 21 L29 19" stroke="#2D2D2D" strokeWidth="1" />
+      <path d="M49 21 L51 19" stroke="#2D2D2D" strokeWidth="1" />
+
+      {/* 미소 */}
+      <path d="M37 26 Q40 29 43 26" stroke="#2D2D2D" strokeWidth="1" fill="none" strokeLinecap="round" />
+
+      {/* 귀걸이 */}
+      <circle cx="30" cy="25" r="2" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.8" />
+      <circle cx="50" cy="25" r="2" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.8" />
+
+      {/* 몸통 (흰 티셔츠) */}
+      <path d="M32 32 L28 34 L26 44 L34 46 L34 52 L46 52 L46 46 L54 44 L52 34 L48 32" fill="#FFFFFF" stroke="#2D2D2D" strokeWidth="1.5" />
+
+      {/* 왼팔 (위로 들기 — 검지 포인트) */}
+      <path d="M26 44 L18 36 L16 28" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <circle cx="16" cy="27" r="1.5" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1" />
+
+      {/* 오른팔 (캐리어 잡기) */}
+      <path d="M54 44 L58 50 L58 56" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+
+      {/* 검은 바지 */}
+      <path d="M34 52 L32 72 L38 72 L40 58 L42 72 L48 72 L46 52 Z" fill="#2D2D2D" stroke="#2D2D2D" strokeWidth="1" />
+
+      {/* 스니커즈 */}
+      <ellipse cx="35" cy="74" rx="5" ry="3" fill="#FFFFFF" stroke="#2D2D2D" strokeWidth="1.2" />
+      <ellipse cx="45" cy="74" rx="5" ry="3" fill="#FFFFFF" stroke="#2D2D2D" strokeWidth="1.2" />
+      <path d="M32 73 L30 73" stroke="#2D2D2D" strokeWidth="1" />
+      <path d="M42 73 L40 73" stroke="#2D2D2D" strokeWidth="1" />
+
+      {/* 캐리어 */}
+      <rect x="56" y="56" width="16" height="22" rx="3" fill="#E84B6A" stroke="#2D2D2D" strokeWidth="1.5" />
+      <path d="M62 56 L62 52 L66 52 L66 56" stroke="#2D2D2D" strokeWidth="1.2" fill="none" />
+      <circle cx="60" cy="80" r="2" fill="#2D2D2D" />
+      <circle cx="68" cy="80" r="2" fill="#2D2D2D" />
+      {/* 캐리어 스티커 */}
+      <circle cx="62" cy="64" r="2" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.5" />
+      <circle cx="67" cy="68" r="1.5" fill="#4ADE80" stroke="#2D2D2D" strokeWidth="0.5" />
+    </svg>
+  );
+}
+
+export function DoodlePlane({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 24" className={`w-8 h-5 ${className}`} fill="none">
+      <path d="M4 14 L16 12 L26 4 L34 6 L22 14 L28 20 L24 20 L18 16 L8 18 Z" fill="#FFFFFF" stroke="#2D2D2D" strokeWidth="1.5" />
+      <path d="M10 16 L6 20 L10 18" fill="#FFFFFF" stroke="#2D2D2D" strokeWidth="1" />
+      {/* 창문 */}
+      <circle cx="20" cy="11" r="1" fill="#60A5FA" stroke="#2D2D2D" strokeWidth="0.5" />
+      <circle cx="24" cy="9.5" r="1" fill="#60A5FA" stroke="#2D2D2D" strokeWidth="0.5" />
+    </svg>
+  );
+}
+
+export function DoodleMusicNote({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 28" className={`w-4 h-5 ${className}`} fill="none">
+      <path d="M6 22 L6 6 L16 4 L16 18" stroke="#2D2D2D" strokeWidth="1.5" fill="none" />
+      <circle cx="4" cy="23" r="3" fill="#2D2D2D" />
+      <circle cx="14" cy="19" r="3" fill="#2D2D2D" />
+    </svg>
+  );
+}
+
+export function DoodleQuestionMark({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 28" className={`w-4 h-5 ${className}`} fill="none">
+      <path d="M6 8 Q6 2 10 2 Q14 2 14 6 Q14 10 10 12 L10 16" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
+      <circle cx="10" cy="22" r="2" fill="#2D2D2D" />
+    </svg>
+  );
+}
+
+export function DoodleSpeechBubble({ className = "", children }: { className?: string; children?: React.ReactNode }) {
+  return (
+    <svg viewBox="0 0 60 36" className={`w-14 h-8 ${className}`} fill="none">
+      <rect x="2" y="2" width="56" height="26" rx="12" fill="#E84B6A" stroke="#2D2D2D" strokeWidth="1.5" />
+      <path d="M16 28 L12 34 L22 28" fill="#E84B6A" stroke="#2D2D2D" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+export function DoodleSuitcase({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 36" className={`w-7 h-8 ${className}`} fill="none">
+      <rect x="3" y="10" width="26" height="18" rx="3" fill="#E84B6A" stroke="#2D2D2D" strokeWidth="1.5" />
+      <path d="M11 10 L11 6 L21 6 L21 10" stroke="#2D2D2D" strokeWidth="1.5" fill="none" />
+      <circle cx="10" cy="30" r="2" fill="#2D2D2D" />
+      <circle cx="22" cy="30" r="2" fill="#2D2D2D" />
+      {/* 스티커들 */}
+      <circle cx="12" cy="18" r="2.5" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.5" />
+      <path d="M11 17.5 Q12 19 13 17.5" stroke="#2D2D2D" strokeWidth="0.5" fill="none" />
+      <rect x="18" y="15" width="6" height="4" rx="1" fill="#4ADE80" stroke="#2D2D2D" strokeWidth="0.5" />
+    </svg>
+  );
+}
+
 export function ScatteredDoodles() {
   return (
     <div className="pointer-events-none select-none" aria-hidden>
