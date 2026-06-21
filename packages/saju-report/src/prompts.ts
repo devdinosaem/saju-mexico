@@ -31,6 +31,8 @@ Si un dato no aparece en el JSON, NO lo menciones. Basa CADA afirmación en un d
 - Cada sección debe sentirse personalizada, no como un horóscopo genérico
 - Usa emojis con moderación para acentos visuales
 - Escribe en párrafos fluidos, no en listas
+- NUNCA uses bloques de código (\`\`\`), barras ASCII, tablas ASCII ni gráficos de texto
+- Los datos numéricos (porcentajes, puntuaciones) menciónalos en el texto, no en tablas
 
 ## Formato de Salida
 Responde SOLO con el contenido de las secciones solicitadas, sin preámbulos ni conclusiones fuera de lo pedido. Usa encabezados con formato: "## TÍTULO DE LA SECCIÓN"`;

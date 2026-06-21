@@ -6,7 +6,8 @@ import { trackEvent, EVENTS } from "@/components/analytics";
 import { generateElementInsight } from "@/lib/saju-types";
 import { ConceptCard, TermTooltip } from "@/components/term-tooltip";
 import { MarkdownContent, getSectionIcon } from "@/components/markdown-content";
-import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement, ganZhiToElements } from "@/lib/translations";
+import { getCompatibleElement, getClashingElement } from "@/lib/translations";
+import { displayTenGod, displayPhase, displayGanZhi, getFortuneDescription, findLoveEvent, findWealthEvent, findLoveYear, ELEMENT_LABELS } from "@/lib/display";
 
 interface ReportSection {
   title: string;
@@ -142,7 +143,7 @@ function ReportePage() {
         <section className="px-5 py-6">
           <ConceptCard termKey="saju" />
           <div className="bg-bg-card rounded-2xl p-5 border border-gold/10">
-            <h2 className="text-center font-serif text-lg font-bold mb-4">Tu Carta Saju (사주)</h2>
+            <h2 className="text-center font-serif text-lg font-bold mb-4">Tu Carta Saju</h2>
             <div className="grid grid-cols-4 gap-3 text-center">
               {(["hour", "day", "month", "year"] as const).map((pos) => {
                 const pillar = data.pillars[pos];
@@ -166,7 +167,7 @@ function ReportePage() {
             </div>
             <div className="mt-4 pt-4 border-t border-white/5 text-center">
               <p className="text-xs text-text-secondary">
-                Elemento Natal (일주): <span className="text-gold font-semibold">{data.dayMaster?.korean} — {data.dayMaster?.elementSpanish}</span>
+                Elemento Natal: <span className="text-gold font-semibold">{data.dayMaster?.elementSpanish}</span>
                 {" · "}Fuerza: <span className="text-gold">{data.strength?.levelSpanish}</span>
                 {" · "}Poder: <span className="text-gold">{data.yongShin?.elementSpanish}</span>
               </p>
@@ -177,7 +178,6 @@ function ReportePage() {
         {/* ═══ 오행 분포 차트 ═══ */}
         <section className="px-5 py-4">
           <h3 className="font-serif text-lg font-bold mb-3">Cinco Elementos</h3>
-          <ConceptCard termKey="fiveElements" compact />
           <div className="space-y-2">
             {[
               { key: "wood", label: "Madera", hanja: "木", emoji: "🌳" },
@@ -243,12 +243,10 @@ function ReportePage() {
         {/* ═══ 신강/신약 (Fuerza Interior) ═══ */}
         <section className="px-5 py-8 border-t border-white/5">
           <h2 className="font-serif text-xl font-bold mb-2">⚖️ Tu Fuerza Interior</h2>
-          <ConceptCard termKey="strength" />
 
           <div className="bg-bg-card rounded-2xl p-5 border border-gold/10 mb-4">
             <div className="text-center mb-4">
               <p className="text-gold font-serif text-3xl font-bold">{data.strength?.levelSpanish}</p>
-              <p className="text-text-muted text-xs">{data.strength?.levelKorean} · Puntuación: {data.strength?.score?.toFixed(1)}</p>
             </div>
             <div className="mb-4">
               <div className="flex justify-between text-xs mb-1">
@@ -294,7 +292,6 @@ function ReportePage() {
           <h2 className="font-serif text-xl font-bold mb-4">
             🧭 Tu Guía Práctica de <TermTooltip termKey="yongShin">{data.yongShin?.elementSpanish}</TermTooltip>
           </h2>
-          <ConceptCard termKey="yongShin" compact />
           <div className="grid grid-cols-2 gap-3">
             {[
               { icon: "🎨", label: "Colores de suerte", value: guide.colors },
@@ -329,9 +326,8 @@ function ReportePage() {
           return (
             <section className="px-5 py-8 border-t border-white/5">
               <h2 className="font-serif text-xl font-bold mb-2">📊 Línea de Tiempo de tu Vida</h2>
-              <ConceptCard termKey="majorFortune" compact />
               <p className="text-text-secondary text-xs mb-4">
-                Dirección: {data.majorFortunes.direction === "forward" ? "Progresiva (순행)" : "Regresiva (역행)"} · Inicio: {data.majorFortunes.startAge} años
+                Dirección: {data.majorFortunes.direction === "forward" || data.majorFortunes.direction.includes("순행") || data.majorFortunes.direction.includes("Progresiva") ? "Progresiva" : "Regresiva"} · Inicio: {data.majorFortunes.startAge} años
               </p>
 
               <div className="space-y-3">
@@ -356,10 +352,10 @@ function ReportePage() {
                       <div className={`w-px self-stretch ${isCurrent ? "bg-gold" : "bg-gold/20"}`} />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <p className={`text-sm font-semibold ${isCurrent ? "text-gold" : ""}`}>{ganZhiToElements(f.ganZhi)}</p>
+                          <p className={`text-sm font-semibold ${isCurrent ? "text-gold" : ""}`}>{displayGanZhi(f.ganZhi)}</p>
                           {isCurrent && <span className="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded-full">← AHORA</span>}
                         </div>
-                        <p className="text-xs text-text-secondary">{translateTenGod(f.stemTenGod)} · {translatePhase(f.phase)}</p>
+                        <p className="text-xs text-text-secondary">{displayTenGod(f.stemTenGod)} · {displayPhase(f.phase)}</p>
                         <p className="text-xs text-text-muted mt-1 leading-relaxed">
                           {getFortuneDescription(f.stemTenGod)}
                         </p>
@@ -373,9 +369,9 @@ function ReportePage() {
               {data.yearlyFortune && (
                 <div className="mt-6 bg-bg-card rounded-2xl p-5 border border-gold/10">
                   <h3 className="font-serif text-lg font-bold mb-3">📅 Tu año {data.yearlyFortune.year}</h3>
-                  <p className="font-serif text-base text-gold mb-2">{ganZhiToElements(data.yearlyFortune.ganZhi)}</p>
-                  <p className="text-sm">Energía: <span className="text-gold font-semibold">{translateTenGod(data.yearlyFortune.stemTenGod)} / {translateTenGod(data.yearlyFortune.branchTenGod)}</span></p>
-                  <p className="text-text-secondary text-xs mt-1">{translatePhase(data.yearlyFortune.phase)}</p>
+                  <p className="font-serif text-base text-gold mb-2">{displayGanZhi(data.yearlyFortune.ganZhi)}</p>
+                  <p className="text-sm">Energía: <span className="text-gold font-semibold">{displayTenGod(data.yearlyFortune.stemTenGod)} / {displayTenGod(data.yearlyFortune.branchTenGod)}</span></p>
+                  <p className="text-text-secondary text-xs mt-1">{displayPhase(data.yearlyFortune.phase)}</p>
                   <p className="text-text-muted text-xs mt-2 leading-relaxed">
                     {getFortuneDescription(data.yearlyFortune.stemTenGod)}
                   </p>
@@ -397,8 +393,8 @@ function ReportePage() {
                       <span className="text-amber text-sm">⏭️ PRÓXIMO CAMBIO</span>
                       <span className="text-text-muted text-xs">A los {nextFortune.age} años ({birthYear + nextFortune.age})</span>
                     </div>
-                    <p className="font-serif text-base text-gold mb-1">{ganZhiToElements(nextFortune.ganZhi)}</p>
-                    <p className="text-sm">Nueva estación: <span className="text-gold font-semibold">{translateTenGod(nextFortune.stemTenGod)}</span></p>
+                    <p className="font-serif text-base text-gold mb-1">{displayGanZhi(nextFortune.ganZhi)}</p>
+                    <p className="text-sm">Nueva estación: <span className="text-gold font-semibold">{displayTenGod(nextFortune.stemTenGod)}</span></p>
                     <p className="text-text-secondary text-xs mt-2 leading-relaxed">
                       {getFortuneDescription(nextFortune.stemTenGod)}
                     </p>
@@ -420,24 +416,8 @@ function ReportePage() {
             .filter(f => birthYear + f.age + 10 <= currentYear)
             .pop();
 
-          const loveTenGods = ["정재", "편재", "정관", "편관"];
-          const loveYearly = yearlyAll.find(y => y.year > currentYear && loveTenGods.includes(y.stemTenGod));
-          const loveMajor = fortunes.find(f => birthYear + f.age > currentYear && loveTenGods.includes(f.stemTenGod));
-
-          const wealthTenGods = ["편재", "정재", "식신"];
-          const wealthYearly = yearlyAll.find(y => y.year > currentYear && wealthTenGods.includes(y.stemTenGod) && y !== loveYearly);
-          const wealthMajor = fortunes.find(f => birthYear + f.age > currentYear && wealthTenGods.includes(f.stemTenGod) && f !== loveMajor);
-
-          const loveEvent = loveYearly
-            ? { label: String(loveYearly.year), tenGod: loveYearly.stemTenGod }
-            : loveMajor
-            ? { label: `${birthYear + loveMajor.age}-${birthYear + loveMajor.age + 9}`, tenGod: loveMajor.stemTenGod }
-            : null;
-          const wealthEvent = wealthYearly
-            ? { label: String(wealthYearly.year), tenGod: wealthYearly.stemTenGod }
-            : wealthMajor
-            ? { label: `${birthYear + wealthMajor.age}-${birthYear + wealthMajor.age + 9}`, tenGod: wealthMajor.stemTenGod }
-            : null;
+          const loveEvent = findLoveEvent(yearlyAll, fortunes, birthYear, currentYear);
+          const wealthEvent = findWealthEvent(yearlyAll, fortunes, birthYear, currentYear, loveEvent);
 
           return (
             <section className="px-5 py-8 border-t border-white/5">
@@ -458,7 +438,7 @@ function ReportePage() {
                         <span className="text-text-muted text-xs">(ya ocurrió)</span>
                       </div>
                       <p className="text-sm">
-                        Un periodo de <strong className="text-text-primary">{translateTenGod(pastFortune.stemTenGod)}</strong> marcó esta etapa de tu vida.
+                        Un periodo de <strong className="text-text-primary">{displayTenGod(pastFortune.stemTenGod)}</strong> marcó esta etapa de tu vida.
                       </p>
                       <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(pastFortune.stemTenGod)}</p>
                     </div>
@@ -469,7 +449,7 @@ function ReportePage() {
                       <div className="flex items-center gap-2 mb-2">
                         <span>💕</span>
                         <span className="text-gold font-mono text-sm">{loveEvent.label}</span>
-                        <span className="text-text-muted text-xs">({translateTenGod(loveEvent.tenGod)})</span>
+                        <span className="text-text-muted text-xs">({displayTenGod(loveEvent.tenGod)})</span>
                       </div>
                       <p className="text-sm">
                         Un encuentro que cambiará tu perspectiva del amor. La persona llegará cuando menos lo esperes, en un contexto que jamás imaginaste.
@@ -483,7 +463,7 @@ function ReportePage() {
                       <div className="flex items-center gap-2 mb-2">
                         <span>💰</span>
                         <span className="text-gold font-mono text-sm">{wealthEvent.label}</span>
-                        <span className="text-text-muted text-xs">({translateTenGod(wealthEvent.tenGod)})</span>
+                        <span className="text-text-muted text-xs">({displayTenGod(wealthEvent.tenGod)})</span>
                       </div>
                       <p className="text-sm">
                         Tu ciclo de mayor prosperidad financiera. Una oportunidad que podría cambiar tu nivel de vida por completo.
@@ -528,15 +508,12 @@ function ReportePage() {
                   </div>
                   <div className="flex justify-between py-2 border-b border-white/5">
                     <span className="text-text-secondary">Cuándo lo conocerás</span>
-                    <span>{(() => {
-                      const loveTG = ["정재", "편재", "정관", "편관"];
-                      const yearlyAll = (data as unknown as Record<string, unknown>).yearlyFortunes as { year: number; stemTenGod: string }[] || [];
-                      const loveY = yearlyAll.find(y => y.year > new Date().getFullYear() && loveTG.includes(y.stemTenGod));
-                      if (loveY) return `Alrededor de ${loveY.year}`;
-                      const loveM = data.majorFortunes?.fortunes.find(f => data.birth.year + f.age > new Date().getFullYear() && loveTG.includes(f.stemTenGod));
-                      if (loveM) return `Entre ${data.birth.year + loveM.age}-${data.birth.year + loveM.age + 9}`;
-                      return "En tu próxima Gran Estación";
-                    })()}</span>
+                    <span>{findLoveYear(
+                      (data as unknown as Record<string, unknown>).yearlyFortunes as { year: number; stemTenGod: string }[] || [],
+                      data.majorFortunes?.fortunes || [],
+                      data.birth.year,
+                      new Date().getFullYear(),
+                    )}</span>
                   </div>
                   <div className="flex justify-between py-2">
                     <span className="text-text-secondary">Señal</span>
@@ -804,18 +781,3 @@ function getSectionConcept(title: string): import("@/lib/glossary").GlossaryKey 
   return null;
 }
 
-function getFortuneDescription(tenGod: string): string {
-  const descriptions: Record<string, string> = {
-    "비견": "Periodo de independencia y competencia. Buen momento para emprender por tu cuenta, pero cuidado con los conflictos por ego.",
-    "겁재": "Energía intensa de acción. Grandes oportunidades, pero también riesgo de pérdidas impulsivas. Controla tus gastos.",
-    "식신": "Época de creatividad y disfrute. Tu expresión artística florece. Buen momento para crear, cocinar, escribir.",
-    "상관": "Periodo de rebeldía productiva. Cuestionas todo y encuentras caminos nuevos. Cuidado con los conflictos laborales.",
-    "편재": "¡Ciclo de oportunidades financieras! Dinero puede llegar de fuentes inesperadas. Buen momento para inversiones.",
-    "정재": "Estabilidad financiera. Ahorro y crecimiento constante. Buen momento para comprar casa o invertir a largo plazo.",
-    "편관": "Periodo de desafíos y presión externa. Puede haber cambios bruscos, pero te fortalecen. Cuidado con la salud.",
-    "정관": "Época de reconocimiento y autoridad. Ascensos, títulos, responsabilidades. Tu esfuerzo finalmente se nota.",
-    "편인": "Periodo de búsqueda espiritual y aprendizaje alternativo. Intuición aguda. Buen momento para estudiar algo nuevo.",
-    "정인": "Época de protección y sabiduría. Mentores aparecen en tu vida. Buen momento para estudiar y crecer internamente.",
-  };
-  return descriptions[tenGod] || "Un periodo de transformación que merece análisis detallado.";
-}

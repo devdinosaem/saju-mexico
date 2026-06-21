@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSaju, updateSaju } from "@/lib/store";
 import { ReportGenerator, DeepSeekReportGenerator } from "saju-report";
 import type { ReportInput } from "saju-report";
+import {
+  TEN_GOD_ES, PHASE_ES, STRENGTH_ES, ELEMENT_ES,
+  SPIRIT_STAR_ES, SPECIAL_STAR_ES,
+} from "@/lib/translations";
+import { ganZhiToElements } from "@/lib/translations";
 
 type AnyReportInput = {
   [K in keyof ReportInput]: unknown;
@@ -25,14 +30,21 @@ function dbToReportInput(saju: Record<string, unknown>): AnyReportInput {
   const specialStars = saju.specialStars as string[] | undefined;
   const relations = saju.relations as string[] | undefined;
 
-  const makePillar = (p: typeof pillars.year) => ({
-    stem: p.stem,
-    branch: p.branch,
-    korean: p.korean || "",
-    stemElement: p.element,
-    branchElement: p.branchElement || p.element,
-    tenGod: tenGods?.entries?.find(e => e.char === p.stem)?.korean || "",
-  });
+  const toEs = (kr: string): string => {
+    return TEN_GOD_ES[kr] || PHASE_ES[kr] || STRENGTH_ES[kr] || SPIRIT_STAR_ES[kr] || SPECIAL_STAR_ES[kr] || ELEMENT_ES[kr] || kr;
+  };
+
+  const makePillar = (p: typeof pillars.year) => {
+    const entry = tenGods?.entries?.find(e => e.char === p.stem);
+    return {
+      stem: p.stem,
+      branch: p.branch,
+      korean: p.korean || "",
+      stemElement: p.element,
+      branchElement: p.branchElement || p.element,
+      tenGod: entry?.spanish || toEs(entry?.korean || ""),
+    };
+  };
 
   return {
     userName: saju.name as string,
@@ -54,23 +66,54 @@ function dbToReportInput(saju: Record<string, unknown>): AnyReportInput {
       stem: dayMaster.stem,
       element: dayMaster.element,
       elementSpanish: dayMaster.elementSpanish,
-      yinYang: dayMaster.solLuna || dayMaster.yinYang || "yang",
-      korean: dayMaster.korean,
+      yinYang: (dayMaster.solLuna || dayMaster.yinYang || "yang") === "yang" ? "Sol" : "Luna",
+      korean: dayMaster.elementSpanish,
     },
     tenGods: {
-      entries: tenGods.entries,
+      entries: tenGods.entries.map(e => ({
+        ...e,
+        korean: toEs(e.korean),
+      })),
       percentages: tenGods.percentages,
     },
-    twelvePhases,
-    spiritStars: spiritStars || {},
-    specialStars: specialStars || [],
-    strength: { ...strength, deukryeong: 0, friendCount: 0, foeCount: 0 },
-    yongShin: { ...yongShin, category: "" },
-    giShin: giShin || { element: "", elementKorean: "" },
-    majorFortunes,
-    yearlyFortune,
-    monthlyFortunes: monthlyFortunes || [],
-    relations: relations || [],
+    twelvePhases: Object.fromEntries(
+      Object.entries(twelvePhases).map(([pos, p]) => [pos, { ...p, korean: toEs(p.korean), spanish: toEs(p.korean) }])
+    ),
+    spiritStars: Object.fromEntries(
+      Object.entries(spiritStars || {}).map(([pos, kr]) => [pos, toEs(kr as string)])
+    ),
+    specialStars: (specialStars || []).map(s => toEs(s)),
+    strength: { ...strength, levelKorean: toEs(strength.levelKorean), deukryeong: 0, friendCount: 0, foeCount: 0 },
+    yongShin: { ...yongShin, elementKorean: yongShin.elementSpanish, category: "" },
+    giShin: giShin ? { element: giShin.element, elementKorean: toEs(giShin.elementKorean) } : { element: "", elementKorean: "" },
+    majorFortunes: {
+      ...majorFortunes,
+      fortunes: majorFortunes.fortunes.map(f => ({
+        ...f,
+        ganZhi: ganZhiToElements(f.ganZhi),
+        stemTenGod: toEs(f.stemTenGod),
+        branchTenGod: toEs(f.branchTenGod),
+        phase: toEs(f.phase),
+      })),
+    },
+    yearlyFortune: yearlyFortune ? {
+      ...yearlyFortune,
+      ganZhi: ganZhiToElements(yearlyFortune.ganZhi),
+      stemTenGod: toEs(yearlyFortune.stemTenGod),
+      branchTenGod: toEs(yearlyFortune.branchTenGod),
+      phase: toEs(yearlyFortune.phase),
+    } : yearlyFortune,
+    monthlyFortunes: (monthlyFortunes || []).map(m => ({
+      ...m,
+      ganZhi: ganZhiToElements(m.ganZhi),
+      stemTenGod: toEs(m.stemTenGod),
+      phase: toEs(m.phase),
+    })),
+    relations: (relations || []).map(r => {
+      let result = r;
+      for (const [kr, es] of Object.entries(TEN_GOD_ES)) result = result.replace(new RegExp(kr, 'g'), es);
+      return result;
+    }),
   };
 }
 

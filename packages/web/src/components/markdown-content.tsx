@@ -1,11 +1,48 @@
 "use client";
 
+import {
+  TEN_GOD_ES, PHASE_ES, STRENGTH_ES,
+  SPIRIT_STAR_ES, SPECIAL_STAR_ES,
+  YINYANG_ES,
+} from "@/lib/translations";
+
+const RENDER_DICT: Record<string, string> = {
+  ...TEN_GOD_ES,
+  ...PHASE_ES,
+  ...STRENGTH_ES,
+  ...SPIRIT_STAR_ES,
+  ...SPECIAL_STAR_ES,
+  ...YINYANG_ES,
+  "Yang": "Sol", "Yin": "Luna",
+  "Madera Yang": "Madera Sol", "Madera Yin": "Madera Luna",
+  "Fuego Yang": "Fuego Sol", "Fuego Yin": "Fuego Luna",
+  "Tierra Yang": "Tierra Sol", "Tierra Yin": "Tierra Luna",
+  "Metal Yang": "Metal Sol", "Metal Yin": "Metal Luna",
+  "Agua Yang": "Agua Sol", "Agua Yin": "Agua Luna",
+  "用神": "Elemento de Poder", "忌神": "Elemento Adverso",
+  "日柱": "Pilar del Día", "四柱": "Cuatro Pilares",
+  "木": "Madera", "火": "Fuego", "土": "Tierra", "金": "Metal", "水": "Agua",
+};
+
+function sanitizeForRender(text: string): string {
+  let result = text;
+  const sorted = Object.entries(RENDER_DICT).sort((a, b) => b[0].length - a[0].length);
+  for (const [original, translated] of sorted) {
+    result = result.replace(new RegExp(original, 'g'), translated);
+  }
+  result = result.replace(/```[^\n]*\n?/g, '');
+  return result;
+}
+
 function parseMarkdown(text: string): React.ReactNode[] {
   const lines = text.split("\n");
   const result: React.ReactNode[] = [];
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+
+    if (line.trim().startsWith("```")) continue;
+    if (line.trim() === "---") continue;
 
     // ### 소제목
     if (line.startsWith("### ")) {
@@ -120,10 +157,10 @@ interface MarkdownContentProps {
   sectionIndex: number;
 }
 
-export function MarkdownContent({ content, sectionIndex }: MarkdownContentProps) {
+export function MarkdownContent({ content }: MarkdownContentProps) {
   return (
     <div className="text-text-secondary text-sm leading-relaxed">
-      {parseMarkdown(content)}
+      {parseMarkdown(sanitizeForRender(content))}
     </div>
   );
 }

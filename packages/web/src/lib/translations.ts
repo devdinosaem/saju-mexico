@@ -49,7 +49,7 @@ export const STRENGTH_ES: Record<string, string> = {
   "신강": "Alma Poderosa",    // 강인한 영혼
   "중화": "Alma Armónica",    // 조화로운 영혼
   "신약": "Alma Receptiva",   // 수용적인 영혼
-  "태약": "Alma Sensible",    // 감수성의 영혼
+  "태약": "Alma Receptiva",   // 수용적인 영혼
 };
 
 // ── 오행 (五行) ──

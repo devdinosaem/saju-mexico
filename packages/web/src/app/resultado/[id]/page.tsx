@@ -5,7 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { PurchaseToast } from "@/components/purchase-toast";
 import { ConceptCard } from "@/components/term-tooltip";
-import { translateTenGod, translatePhase, getCompatibleElement, getClashingElement, ganZhiToElements } from "@/lib/translations";
+import { getCompatibleElement, getClashingElement } from "@/lib/translations";
+import { displayTenGod, displayPhase, displayGanZhi, getFortuneDescription, findLoveEvent, findWealthEvent, ELEMENT_LABELS } from "@/lib/display";
 import { trackEvent, EVENTS } from "@/components/analytics";
 import { generateElementInsight } from "@/lib/saju-types";
 
@@ -165,11 +166,7 @@ export default function ResultadoPage() {
 
           <div className="space-y-3">
             {[
-              { key: "wood", label: "Madera (木)", emoji: "🌳" },
-              { key: "fire", label: "Fuego (火)", emoji: "🔥" },
-              { key: "earth", label: "Tierra (土)", emoji: "⛰️" },
-              { key: "metal", label: "Metal (金)", emoji: "💎" },
-              { key: "water", label: "Agua (水)", emoji: "💧" },
+              ...ELEMENT_LABELS.map(el => ({ ...el, label: el.label })),
             ].map((el) => {
               const count = data.fiveElements[el.key] || 0;
               const pct = Math.round((count / total) * 100);
@@ -317,14 +314,13 @@ export default function ResultadoPage() {
                   />
                 </div>
               </div>
-              <span className="font-mono text-gold text-sm font-bold">{data.strength.score.toFixed(1)}</span>
             </div>
             <p className="text-text-secondary text-xs leading-relaxed blur-content">
               {data.strength.score >= 1
                 ? "Alma Poderosa — lideras con decisión natural y tu confianza inspira a quienes te rodean."
                 : data.strength.score >= -1
                 ? "Alma Armónica — tienes el raro don del equilibrio, adaptándote sin perder tu esencia."
-                : "Alma Sensible — tu capacidad de percibir y sentir es extraordinaria, un talento que pocos tienen."
+                : "Alma Receptiva — tu capacidad de percibir y sentir es extraordinaria, un talento que pocos tienen."
               }
             </p>
             <p className="text-text-muted text-xs mt-2 italic">Interpretación detallada en tu reporte</p>
@@ -382,8 +378,8 @@ export default function ResultadoPage() {
                       Gran Estación ({currentFortune.age}-{currentFortune.age + 9} años)
                     </span>
                   </div>
-                  <p className="font-serif text-base text-gold mb-1">{ganZhiToElements(currentFortune.ganZhi)}</p>
-                  <p className="text-sm">Tienes {currentAge} años — estás en la estación de <span className="text-gold font-semibold">{translateTenGod(currentFortune.stemTenGod)}</span></p>
+                  <p className="font-serif text-base text-gold mb-1">{displayGanZhi(currentFortune.ganZhi)}</p>
+                  <p className="text-sm">Tienes {currentAge} años — estás en la estación de <span className="text-gold font-semibold">{displayTenGod(currentFortune.stemTenGod)}</span></p>
                 </div>
               )}
 
@@ -393,9 +389,9 @@ export default function ResultadoPage() {
                   <span className="text-amber text-sm">📅 {data.yearlyFortune.year}</span>
                   <span className="text-text-muted text-xs">Tu año</span>
                 </div>
-                <p className="font-serif text-base text-gold mb-1">{ganZhiToElements(data.yearlyFortune.ganZhi)}</p>
-                <p className="text-sm">Energía: <span className="text-gold font-semibold">{translateTenGod(data.yearlyFortune.stemTenGod)} / {translateTenGod(data.yearlyFortune.branchTenGod)}</span></p>
-                <p className="text-text-secondary text-xs mt-1">{translatePhase(data.yearlyFortune.phase)}</p>
+                <p className="font-serif text-base text-gold mb-1">{displayGanZhi(data.yearlyFortune.ganZhi)}</p>
+                <p className="text-sm">Energía: <span className="text-gold font-semibold">{displayTenGod(data.yearlyFortune.stemTenGod)} / {displayTenGod(data.yearlyFortune.branchTenGod)}</span></p>
+                <p className="text-text-secondary text-xs mt-1">{displayPhase(data.yearlyFortune.phase)}</p>
               </div>
 
               {/* 3. PRÓXIMO CAMBIO — 다음 대운 */}
@@ -405,8 +401,8 @@ export default function ResultadoPage() {
                     <span className="text-amber text-sm">⏭️ PRÓXIMO CAMBIO</span>
                     <span className="text-text-muted text-xs">A los {nextFortune.age} años ({birthYear + nextFortune.age})</span>
                   </div>
-                  <p className="font-serif text-base text-gold mb-1">{ganZhiToElements(nextFortune.ganZhi)}</p>
-                  <p className="text-sm">Nueva estación: <span className="text-gold font-semibold">{translateTenGod(nextFortune.stemTenGod)}</span></p>
+                  <p className="font-serif text-base text-gold mb-1">{displayGanZhi(nextFortune.ganZhi)}</p>
+                  <p className="text-sm">Nueva estación: <span className="text-gold font-semibold">{displayTenGod(nextFortune.stemTenGod)}</span></p>
                 </div>
               )}
             </section>
@@ -420,40 +416,12 @@ export default function ResultadoPage() {
           const fortunes = data.majorFortunes.fortunes;
           const yearlyAll = data.yearlyFortunes || [];
 
-          // 과거 대운 중 가장 최근
           const pastFortune = [...fortunes]
             .filter(f => birthYear + f.age + 10 <= currentYear)
             .pop();
 
-          // 연애: 세운 8년 먼저 → 없으면 대운
-          const loveTenGods = ["정재", "편재", "정관", "편관"];
-          const loveYearly = yearlyAll.find(y =>
-            y.year > currentYear && loveTenGods.includes(y.stemTenGod)
-          );
-          const loveMajor = fortunes.find(f =>
-            birthYear + f.age > currentYear && loveTenGods.includes(f.stemTenGod)
-          );
-
-          // 재물: 세운 8년 먼저 → 없으면 대운
-          const wealthTenGods = ["편재", "정재", "식신"];
-          const wealthYearly = yearlyAll.find(y =>
-            y.year > currentYear && wealthTenGods.includes(y.stemTenGod) && y !== loveYearly
-          );
-          const wealthMajor = fortunes.find(f =>
-            birthYear + f.age > currentYear && wealthTenGods.includes(f.stemTenGod) && f !== loveMajor
-          );
-
-          const loveEvent = loveYearly
-            ? { year: loveYearly.year, label: String(loveYearly.year), tenGod: loveYearly.stemTenGod, isYearly: true }
-            : loveMajor
-            ? { year: birthYear + loveMajor.age, label: `${birthYear + loveMajor.age}-${birthYear + loveMajor.age + 9}`, tenGod: loveMajor.stemTenGod, isYearly: false }
-            : null;
-
-          const wealthEvent = wealthYearly
-            ? { year: wealthYearly.year, label: String(wealthYearly.year), tenGod: wealthYearly.stemTenGod, isYearly: true }
-            : wealthMajor
-            ? { year: birthYear + wealthMajor.age, label: `${birthYear + wealthMajor.age}-${birthYear + wealthMajor.age + 9}`, tenGod: wealthMajor.stemTenGod, isYearly: false }
-            : null;
+          const loveEvent = findLoveEvent(yearlyAll, fortunes, birthYear, currentYear);
+          const wealthEvent = findWealthEvent(yearlyAll, fortunes, birthYear, currentYear, loveEvent);
 
           return (
             <section className="px-5 py-6">
@@ -474,7 +442,7 @@ export default function ResultadoPage() {
                         <span className="text-text-muted text-xs">(ya ocurrió)</span>
                       </div>
                       <p className="text-sm">
-                        Un periodo de <strong className="text-text-primary">{translateTenGod(pastFortune.stemTenGod)}</strong> marcó esta etapa de tu vida.
+                        Un periodo de <strong className="text-text-primary">{displayTenGod(pastFortune.stemTenGod)}</strong> marcó esta etapa de tu vida.
                       </p>
                       <p className="text-text-secondary text-xs mt-1">{getFortuneDescription(pastFortune.stemTenGod)}</p>
                     </div>
@@ -755,18 +723,3 @@ export default function ResultadoPage() {
   );
 }
 
-function getFortuneDescription(tenGod: string): string {
-  const descriptions: Record<string, string> = {
-    "비견": "Periodo de independencia y competencia. Buen momento para emprender por tu cuenta, pero cuidado con los conflictos por ego.",
-    "겁재": "Energía intensa de acción. Grandes oportunidades, pero también riesgo de pérdidas impulsivas. Controla tus gastos.",
-    "식신": "Época de creatividad y disfrute. Tu expresión artística florece. Buen momento para crear, cocinar, escribir.",
-    "상관": "Periodo de rebeldía productiva. Cuestionas todo y encuentras caminos nuevos. Cuidado con los conflictos laborales.",
-    "편재": "¡Ciclo de oportunidades financieras! Dinero puede llegar de fuentes inesperadas. Buen momento para inversiones.",
-    "정재": "Estabilidad financiera. Ahorro y crecimiento constante. Buen momento para comprar casa o invertir a largo plazo.",
-    "편관": "Periodo de desafíos y presión externa. Puede haber cambios bruscos, pero te fortalecen. Cuidado con la salud.",
-    "정관": "Época de reconocimiento y autoridad. Ascensos, títulos, responsabilidades. Tu esfuerzo finalmente se nota.",
-    "편인": "Periodo de búsqueda espiritual y aprendizaje alternativo. Intuición aguda. Buen momento para estudiar algo nuevo.",
-    "정인": "Época de protección y sabiduría. Mentores aparecen en tu vida. Buen momento para estudiar y crecer internamente.",
-  };
-  return descriptions[tenGod] || "Un periodo de transformación importante que merece análisis detallado en tu reporte completo.";
-}
