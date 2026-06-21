@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+:root {
+  --bg-cream: #FDF6EE;
+  --bg-white: #FFFFFF;
+  --pink: #E84B6A;
+  --pink-light: #FFE4EA;
+  --black: #2D2D2D;
+  --yellow: #FACC15;
+  --green: #4ADE80;
+  --lavender: #A78BFA;
+  --orange: #FB923C;
+  --text-main: #2D2D2D;
+  --text-sub: #6B6B6B;
+  --text-muted: #A0A0A0;
+}
+
+@theme inline {
+  --color-cream: var(--bg-cream);
+  --color-card: var(--bg-white);
+  --color-pink: var(--pink);
+  --color-pink-light: var(--pink-light);
+  --color-charcoal: var(--black);
+  --color-mustard: var(--yellow);
+  --color-neon-green: var(--green);
+  --color-lavender: var(--lavender);
+  --color-pop-orange: var(--orange);
+  --color-text-main: var(--text-main);
+  --color-text-sub: var(--text-sub);
+  --color-text-muted: var(--text-muted);
+  --font-sans: var(--font-pretendard);
+  --font-display: var(--font-black-han-sans);
+}
+
+body {
+  background: var(--bg-cream);
+  color: var(--text-main);
+}
+
+/* 형광펜 밑줄 */
+.highlight-pink {
+  background-image: linear-gradient(transparent 55%, var(--pink-light) 55%, var(--pink-light) 90%, transparent 90%);
+}
+.highlight-yellow {
+  background-image: linear-gradient(transparent 55%, #FEF3C7 55%, #FEF3C7 90%, transparent 90%);
+}
+.highlight-green {
+  background-image: linear-gradient(transparent 55%, #D1FAE5 55%, #D1FAE5 90%, transparent 90%);
+}
+
+/* 블러 잠금 */
+.blur-lock {
+  filter: blur(6px);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* 삐뚤 배치 */
+.tilt-left { transform: rotate(-2deg); }
+.tilt-right { transform: rotate(2deg); }
+.tilt-slight { transform: rotate(1deg); }
+
+/* 두들 물결 테두리 */
+.doodle-border {
+  border: 2px dashed var(--pink);
+  border-radius: 12px;
+}
+
+/* 스티커 느낌 그림자 */
+.sticker-shadow {
+  filter: drop-shadow(2px 3px 0px rgba(0,0,0,0.08));
+}
+
+/* 애니메이션 */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-wiggle { animation: wiggle 2s ease-in-out infinite; }
+.animate-pop-in { animation: pop-in 0.4s ease-out forwards; }
+.animate-fade-up { animation: fade-up 0.5s ease-out forwards; }
+
+/* 말풍선 */
+.speech-bubble {
+  position: relative;
+  background: white;
+  border: 2px solid var(--black);
+  border-radius: 16px;
+  padding: 10px 14px;
+}
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 24px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid var(--black);
+}
