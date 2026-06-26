@@ -549,7 +549,7 @@ export default function ConsultPage() {
                 {msg.text
                   ? <div className="flex flex-col gap-2">
                       {msg.text.split("\n\n").map((para, pi) =>
-                        para.trim() ? <p key={pi} className="text-[13px] text-charcoal leading-relaxed">{renderInline(para.trim())}</p> : null
+                        para.trim() ? <p key={pi} className="text-[13px] text-charcoal leading-relaxed whitespace-pre-line">{renderInline(para.trim())}</p> : null
                       )}
                     </div>
                   : <span className="flex gap-1 items-center h-5"><span className="w-1.5 h-1.5 rounded-full bg-charcoal/30 animate-bounce [animation-delay:0ms]" /><span className="w-1.5 h-1.5 rounded-full bg-charcoal/30 animate-bounce [animation-delay:150ms]" /><span className="w-1.5 h-1.5 rounded-full bg-charcoal/30 animate-bounce [animation-delay:300ms]" /></span>

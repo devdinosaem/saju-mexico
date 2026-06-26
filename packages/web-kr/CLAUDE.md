@@ -35,6 +35,22 @@ style={{ background: "#F7F3EE" }}   // 중간 베이지 — 사용 금지
 
 컴포넌트 내부의 카드·입력창·구분선 배경(`bg-white`, `#FFFBF2` 등)은 유지해도 된다. 페이지·오버레이 전체 배경만 통일.
 
+### 한자 노출 정책 — 전역 제거 작업 대기 중
+
+사용자는 web-kr 화면에서 **한자가 안 보이길** 원함(괄호 안 한자는 괄호째 삭제). 전역 적용은 **아직 안 했고 대기 상태**. 착수 요청("한자 제거하자") 시 아래대로 진행.
+
+**재사용 로직 (검증 완료, consult에 적용됨):** `app/v3/consult/page.tsx`의 `stripHanjaSafe()` + `HANJA_MAP` + `isHanjaCp()`.
+- ⚠️ **정규식에 리터럴 한자(`[㐀-鿿…]`) 절대 쓰지 말 것.** 소스 인코딩 불일치로 Edit 매칭이 깨지고 런타임도 불안정함(이번에 실제로 겪음). 반드시 `codePointAt` 숫자 범위(0x3400-0x9fff, 0xf900-0xfaff, 0x3005)로 판정.
+- 동작: `한글(漢字)` → 괄호째 제거 / 단독 간지·오행 → 한글 독음 변환 / 매핑 없는 한자 → 제거.
+
+**착수 1단계:** 위 로직을 `src/lib/hanja.ts`로 추출 → 공유 유틸화 → consult도 거기서 import.
+
+**한자 렌더 지점 (`.hanja` 필드, 7개 파일):**
+- 괄호형(괄호째 제거로 끝): `preview-ilju/page.tsx:165`, `result/[id]/page.tsx:241`, `v3/consult/page.tsx:104`(처리됨)
+- 단독 라벨(★처리 방식 미결): `page.tsx:156`, `preview-ilju/page.tsx:44`, `purchase/[id]/page.tsx:56`, `report/[id]/page.tsx:131`, `result/[id]/page.tsx:72`, `components/ilju-type-card.tsx:179`. 데이터 할당은 `page.tsx:27`.
+
+**착수 전 물을 것:** 단독 한자 라벨을 ①한글 독음 변환 ②아예 제거 ③파일별 맥락 판단 중 무엇으로 할지(괄호형은 어느 쪽이든 제거 동일).
+
 ### ⚠️ 가로 레이아웃 이탈 절대 금지 — globals.css 전역 설정
 
 `globals.css`의 아래 두 줄은 **절대 수정·제거하지 말 것**. 이 설정이 없으면 페이지 이동 시 `max-w-[430px] mx-auto` 레이아웃이 오른쪽으로 밀리는 현상이 발생한다.
