@@ -284,6 +284,7 @@ export default function ConsultPage() {
   const [modalDraft, setModalDraft]   = useState("")
   const [kbHeight, setKbHeight]       = useState(0)
   const [headerH, setHeaderH]         = useState(0)
+  const [navH, setNavH]               = useState(64)
   const [isLoading, setIsLoading]     = useState(false)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
@@ -315,6 +316,16 @@ export default function ConsultPage() {
     const ro = new ResizeObserver(() => setHeaderH(headerRef.current?.offsetHeight ?? 0))
     ro.observe(headerRef.current)
     setHeaderH(headerRef.current.offsetHeight)
+    return () => ro.disconnect()
+  }, [hasIlju])
+
+  // 입력바를 하단 내비게이터에 정확히 붙이기 위해 내비 높이 측정
+  React.useEffect(() => {
+    const nav = document.querySelector("nav")
+    if (!nav) return
+    const ro = new ResizeObserver(() => setNavH(nav.offsetHeight))
+    ro.observe(nav)
+    setNavH(nav.offsetHeight)
     return () => ro.disconnect()
   }, [])
 
@@ -510,8 +521,8 @@ export default function ConsultPage() {
         )}
       </div>
 
-      {/* 입력바 */}
-      <div className="fixed bottom-20 left-0 right-0 z-40 bg-cream border-t border-charcoal/10">
+      {/* 입력바 — 하단 내비게이터 바로 위에 붙임 */}
+      <div className="fixed left-0 right-0 z-40 bg-cream border-t border-charcoal/10" style={{ bottom: navH }}>
         <div className="max-w-[480px] mx-auto px-4 py-2.5 flex items-center gap-2">
           <div className="relative flex-1">
             <textarea
