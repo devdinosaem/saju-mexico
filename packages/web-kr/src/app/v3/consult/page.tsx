@@ -244,8 +244,46 @@ function generateGreeting(firstName: string, ilju: IljuType, day: string, timeLa
   return `${part1}\n\n\n${part2}`
 }
 
+// 한자 → 한글 독음 (사주 도메인은 독음이 고정)
+const HANJA_MAP: Record<string, string> = {
+  // 천간
+  甲: "갑", 乙: "을", 丙: "병", 丁: "정", 戊: "무", 己: "기", 庚: "경", 辛: "신", 壬: "임", 癸: "계",
+  // 지지
+  子: "자", 丑: "축", 寅: "인", 卯: "묘", 辰: "진", 巳: "사", 午: "오", 未: "미", 申: "신", 酉: "유", 戌: "술", 亥: "해",
+  // 오행·음양
+  木: "목", 火: "화", 土: "토", 金: "금", 水: "수", 陰: "음", 陽: "양",
+  // 자주 새는 사주 용어
+  大: "대", 運: "운", 歲: "세", 合: "합", 沖: "충", 刑: "형", 破: "파", 害: "해",
+  用: "용", 忌: "기", 神: "신", 財: "재", 官: "관", 印: "인", 食: "식", 傷: "상", 比: "비", 劫: "겁", 殺: "살",
+}
+
+
+// 정규식 리터럴 한자는 소스 인코딩에 따라 불안정 → codePoint 숫자로만 판정 (인코딩 무관)
+function isHanjaCp(cp: number): boolean {
+  return (cp >= 0x3400 && cp <= 0x9fff) || (cp >= 0xf900 && cp <= 0xfaff) || cp === 0x3005
+}
+
+// AI 출력의 한자를 한글로 강제 변환 — 프롬프트 금지로도 새는 한자를 출력단에서 확실히 차단
+function stripHanjaSafe(text: string): string {
+  const chars = [...text]
+  let out = ""
+  for (let i = 0; i < chars.length; i++) {
+    const ch = chars[i]
+    // "(漢字…)" 괄호 안이 한자뿐이면 통째 제거: 경진(庚辰) → 경진
+    if (ch === "(") {
+      let j = i + 1
+      while (j < chars.length && isHanjaCp(chars[j].codePointAt(0)!)) j++
+      if (j > i + 1 && chars[j] === ")") { i = j; continue }
+    }
+    const cp = ch.codePointAt(0)!
+    if (isHanjaCp(cp)) { out += HANJA_MAP[ch] ?? ""; continue } // 독음 변환, 없으면 제거
+    out += ch
+  }
+  return out
+}
+
 function renderInline(text: string): React.ReactNode[] {
-  return text.split(/(\*\*[^*]+\*\*)/).map((part, i) =>
+  return stripHanjaSafe(text).split(/(\*\*[^*]+\*\*)/).map((part, i) =>
     part.startsWith("**") && part.endsWith("**")
       ? <strong key={i} className="font-semibold">{part.slice(2, -2)}</strong>
       : <React.Fragment key={i}>{part}</React.Fragment>
