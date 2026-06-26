@@ -35,7 +35,12 @@ function buildSajuContext(user: MockUser, ilju: IljuType): string {
   if (!bd) return ""
 
   const year = parseInt(bd.year), month = parseInt(bd.month), day = parseInt(bd.day)
-  const hour = to24h(bd.hour, bd.ampm), minute = parseInt(bd.minute)
+  // 출생 시간 미상/이상이면 hour가 NaN이 되어 시주가 undefined → analyzeTenGods 크래시.
+  // 정오(12시)로 추정 계산해 크래시를 막고, 컨텍스트에 "시주 추정" 경고를 남긴다.
+  let hour = to24h(bd.hour, bd.ampm), minute = parseInt(bd.minute)
+  const hasTime = Number.isFinite(hour)
+  if (!hasTime) hour = 12
+  if (!Number.isFinite(minute)) minute = 0
   const gender = bd.gender === "M" ? "male" as const : "female" as const
   const currentYear = new Date().getFullYear()
   const currentAge = currentYear - year + 1
@@ -59,6 +64,7 @@ function buildSajuContext(user: MockUser, ilju: IljuType): string {
     `# ${bd.name}님 사주`,
     `생년월일: ${year}년 ${month}월 ${day}일 ${bd.ampm === "AM" ? "오전" : "오후"} ${bd.hour}시 ${bd.minute}분`,
     `성별: ${bd.gender === "M" ? "남성" : "여성"} / 현재 나이: ${currentAge}세`,
+    ...(hasTime ? [] : [`⚠️ 출생 시간 미상 — 시주(時)는 정오 기준 추정값이야. 시간·시주 기반 해석은 단정하지 말 것.`]),
     ``,
     `## 사주 원국`,
     `년주: ${gzStr(fp.year)} / 월주: ${gzStr(fp.month)} / 일주: ${gzStr(fp.day)} / 시주: ${gzStr(fp.hour)}`,
@@ -399,7 +405,8 @@ export default function ConsultPage() {
           } catch {}
         }
       }
-    } catch {
+    } catch (err) {
+      console.error("[consult] send 실패:", err)
       setMsgs(prev => {
         const updated = [...prev]
         updated[updated.length - 1] = { role: "char", text: "연결이 안 됐어. 잠깐 후에 다시 물어봐." }
