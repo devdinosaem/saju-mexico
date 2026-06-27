@@ -2,40 +2,57 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
-import { DoodleHeart, DoodleSparkle, DoodleCrown } from "@/components/doodles"
+import {
+  DoodleSprout, DoodleFire, DoodleEarth, DoodleDiamond, DoodleWave,
+  DoodleHeart, DoodleSparkle, DoodleCrown, DoodleStar,
+  DoodleSpeechBubble, DoodlePencil, DoodlePolaroid,
+  DoodleSuitcase, DoodleGoldBar, DoodleSmiley,
+  DoodleMirror, DoodleLightning, DoodleTaegeuk, DoodleCompass, DoodleMedal,
+} from "@/components/doodles"
 
 /* ────────────────────────────────────────────────────────────
    그룹 궁합 펀널 — 목업 UI (INVITE-COMPAT-PLAN.md)
    랜딩 → 카카오 1초 입장(mock) → 사주 입력 → 대기 → 결과(고도화)
-   ※ 백엔드/실제 궁합 계산 미연동. 모든 풀이는 오행 기반 mock 로직.
+   ※ 백엔드/실제 궁합 계산 미연동. 모든 풀이는 오행 기반 mock.
+   ※ 아이콘은 전부 두들 스티커 — <Ico> 고정 컨테이너로 일관 크기(줄 안 넘침).
 ──────────────────────────────────────────────────────────── */
 
+type DoodleC = React.FC<{ className?: string }>
 const BINGGRAE: React.CSSProperties = { fontFamily: "'BinggraeTaom', sans-serif", fontWeight: 700 }
 const GAEGU: React.CSSProperties = { fontFamily: "'Cafe24Dongdong', cursive" }
+
+/** 두들 아이콘 — 고정 컨테이너(shrink-0, inline-flex)로 줄 높이/넘침 방지 */
+function Ico({ as: D, size = 18 }: { as: DoodleC; size?: number }) {
+  return (
+    <span className="inline-flex items-center justify-center shrink-0 align-middle" style={{ width: size, height: size }}>
+      <D className="w-full h-full" />
+    </span>
+  )
+}
 
 const ELEMS = ["목", "화", "토", "금", "수"] as const
 type Elem = (typeof ELEMS)[number]
 
 const ELEM_BG: Record<string, string> = { 목: "#D1FAE5", 화: "#FEE2E2", 토: "#FEF3C7", 금: "#F1F5F9", 수: "#DBEAFE" }
 const ELEM_COLOR: Record<string, string> = { 목: "#4ADE80", 화: "#F87171", 토: "#FBBF24", 금: "#94A3B8", 수: "#60A5FA" }
-const ELEM_LABEL: Record<string, string> = { 목: "목 기운 🌱", 화: "화 기운 🔥", 토: "토 기운 🌍", 금: "금 기운 💎", 수: "수 기운 🌊" }
+const ELEM_DOODLE: Record<Elem, DoodleC> = { 목: DoodleSprout, 화: DoodleFire, 토: DoodleEarth, 금: DoodleDiamond, 수: DoodleWave }
 const STEM_TO_ELEM: Record<string, Elem> = { 갑: "목", 을: "목", 병: "화", 정: "화", 무: "토", 기: "토", 경: "금", 신: "금", 임: "수", 계: "수" }
 const elemOf = (key: string): Elem => STEM_TO_ELEM[key[0]] ?? "토"
 
-const ROLE: Record<Elem, { label: string; emoji: string }> = {
-  목: { label: "기획자", emoji: "🌱" },
-  화: { label: "분위기메이커", emoji: "🔥" },
-  토: { label: "든든한 중재자", emoji: "🏔️" },
-  금: { label: "팩폭 담당", emoji: "💎" },
-  수: { label: "감성 케어", emoji: "🌊" },
+const ROLE: Record<Elem, { label: string; D: DoodleC }> = {
+  목: { label: "기획자", D: DoodleSprout },
+  화: { label: "분위기메이커", D: DoodleFire },
+  토: { label: "든든한 중재자", D: DoodleEarth },
+  금: { label: "팩폭 담당", D: DoodleDiamond },
+  수: { label: "감성 케어", D: DoodleWave },
 }
-const ARCHETYPE: Record<Elem, string> = {
-  목: "아이디어 뱅크 모임 🌱", 화: "추진력 만렙 불도저 모임 🔥", 토: "든든한 베이스캠프 모임 🏕️",
-  금: "칼같은 팩폭 모임 💎", 수: "물 흐르듯 평화로운 모임 🌊",
+const ARCHETYPE_NAME: Record<Elem, string> = {
+  목: "아이디어 뱅크 모임", 화: "추진력 만렙 불도저 모임", 토: "든든한 베이스캠프 모임",
+  금: "칼같은 팩폭 모임", 수: "물 흐르듯 평화로운 모임",
 }
 const STEMS_OF: Record<Elem, string> = { 목: "갑·을", 화: "병·정", 토: "무·기", 금: "경·신", 수: "임·계" }
-const SHENG: Record<Elem, Elem> = { 목: "화", 화: "토", 토: "금", 금: "수", 수: "목" } // 상생
-const KE: Record<Elem, Elem> = { 목: "토", 토: "수", 수: "화", 화: "금", 금: "목" }     // 상극
+const SHENG: Record<Elem, Elem> = { 목: "화", 화: "토", 토: "금", 금: "수", 수: "목" }
+const KE: Record<Elem, Elem> = { 목: "토", 토: "수", 수: "화", 화: "금", 금: "목" }
 
 type Participant = { name: string; iljuKey: string; me?: boolean }
 
@@ -56,15 +73,16 @@ function distOf(ps: Participant[]): Record<Elem, number> {
 function dominantElem(d: Record<Elem, number>): Elem {
   return ELEMS.reduce((a, b) => (d[b] > d[a] ? b : a), "목")
 }
-function archetype(ps: Participant[], d: Record<Elem, number>): string {
+function archetype(d: Record<Elem, number>): { name: string; D: DoodleC } {
   const present = ELEMS.filter(e => d[e] > 0).length
-  if (present >= 4) return "오행 풀세트 밸런스 모임 ✨"
-  return ARCHETYPE[dominantElem(d)]
+  if (present >= 4) return { name: "오행 풀세트 밸런스 모임", D: DoodleTaegeuk }
+  const dom = dominantElem(d)
+  return { name: ARCHETYPE_NAME[dom], D: ELEM_DOODLE[dom] }
 }
 function balanceLine(d: Record<Elem, number>): string {
   const over = dominantElem(d)
   const miss = ELEMS.filter(e => d[e] === 0)
-  if (miss.length === 0) return "오행이 골고루 섞여 균형 잡힌 모임이에요. 서로 빈 곳을 채워줘요 💞"
+  if (miss.length === 0) return "오행이 골고루 섞여 균형 잡힌 모임이에요. 서로 빈 곳을 채워줘요"
   return `${over}(${over}) 기운이 강하고 ${miss.map(m => `${m}(${m})`).join("·")} 기운이 비어요 → 추진력은 좋은데 ${miss.includes("수") ? "차분함" : miss.includes("금") ? "결단력" : "균형"}이 아쉬워요`
 }
 function pairScore(a: Participant, b: Participant): number {
@@ -74,14 +92,35 @@ function pairScore(a: Participant, b: Participant): number {
   if (KE[ea] === eb || KE[eb] === ea) return 56
   return 80
 }
-function bestWorstPair(ps: Participant[]) {
-  let best = { a: ps[0], b: ps[1], s: -1 }, worst = { a: ps[0], b: ps[1], s: 101 }
-  for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) {
-    const s = pairScore(ps[i], ps[j])
-    if (s > best.s) best = { a: ps[i], b: ps[j], s }
-    if (s < worst.s) worst = { a: ps[i], b: ps[j], s }
-  }
-  return { best, worst }
+function pairLabel(a: Participant, b: Participant): { text: string; D: DoodleC } {
+  const ea = elemOf(a.iljuKey), eb = elemOf(b.iljuKey)
+  if (ea === eb) return { text: "닮은꼴", D: DoodleMirror }
+  if (SHENG[ea] === eb || SHENG[eb] === ea) return { text: "찰떡 케미", D: DoodleFire }
+  if (KE[ea] === eb || KE[eb] === ea) return { text: "애증 물·기름", D: DoodleLightning }
+  return { text: "무난한 사이", D: DoodleSmiley }
+}
+function allPairs(ps: Participant[]) {
+  const out: { a: Participant; b: Participant; s: number; label: { text: string; D: DoodleC } }[] = []
+  for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++)
+    out.push({ a: ps[i], b: ps[j], s: pairScore(ps[i], ps[j]), label: pairLabel(ps[i], ps[j]) })
+  return out.sort((x, y) => y.s - x.s)
+}
+const PERSONAL: Record<Elem, string> = {
+  목: "아이디어는 네가 다 내. 근데 벌려놓고 마무리는 남 시킴 ㅋㅋ",
+  화: "네가 빠지면 모임이 조용해져. 텐션 과할 땐 누가 좀 말려줘",
+  토: "싸움 나면 네가 다 중재함. 정작 네 얘긴 안 하더라",
+  금: "할 말은 하는 사이다. 가끔 너무 팩트라 따끔해",
+  수: "분위기 다 읽고 챙김. 혼자 삭이다 골병 들지 마",
+}
+const clamp = (n: number) => Math.max(30, Math.min(98, Math.round(n)))
+function situational(ps: Participant[], base: number): { key: string; D: DoodleC; score: number; line: string }[] {
+  const d = distOf(ps)
+  return [
+    { key: "우정", D: DoodleSmiley, score: clamp(base + 8), line: "같이 노는 덴 최고. 단톡 평생 갈 듯" },
+    { key: "연애", D: DoodleHeart, score: clamp(base - 10), line: "썸은 짜릿, 장기전은 노력 필요" },
+    { key: "같이 일", D: DoodleSuitcase, score: clamp(base - 4 + (d.금 + d.토) * 3 - d.화 * 2), line: "추진은 빠른데 역할 분담이 관건" },
+    { key: "같이 돈", D: DoodleGoldBar, score: clamp(base - 15 - d.화 * 2), line: "돈 얘긴 미리 정하고 시작해 ㅋㅋ" },
+  ]
 }
 function overallScore(ps: Participant[]): number {
   if (ps.length < 2) return 0
@@ -89,49 +128,17 @@ function overallScore(ps: Participant[]): number {
   for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) { sum += pairScore(ps[i], ps[j]); n++ }
   return Math.round(sum / n)
 }
-function vibeOf(score: number): string {
-  if (score >= 88) return "찰떡궁합 ✨"
-  if (score >= 80) return "꽤 잘 맞아요 💛"
-  if (score >= 70) return "티격태격 케미 ⚡"
-  return "노력하면 됨 🌱"
-}
-const clamp = (n: number) => Math.max(30, Math.min(98, Math.round(n)))
-function pairLabel(a: Participant, b: Participant): string {
-  const ea = elemOf(a.iljuKey), eb = elemOf(b.iljuKey)
-  if (ea === eb) return "🪞 닮은꼴"
-  if (SHENG[ea] === eb || SHENG[eb] === ea) return "🔥 찰떡 케미"
-  if (KE[ea] === eb || KE[eb] === ea) return "⚡ 애증 물·기름"
-  return "🙂 무난한 사이"
-}
-function allPairs(ps: Participant[]) {
-  const out: { a: Participant; b: Participant; s: number; label: string }[] = []
-  for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++)
-    out.push({ a: ps[i], b: ps[j], s: pairScore(ps[i], ps[j]), label: pairLabel(ps[i], ps[j]) })
-  return out.sort((x, y) => y.s - x.s)
-}
-const PERSONAL: Record<Elem, string> = {
-  목: "아이디어는 네가 다 내. 근데 벌려놓고 마무리는 남 시킴 ㅋㅋ",
-  화: "네가 빠지면 모임이 조용해져. 텐션 과할 땐 누가 좀 말려줘 🔥",
-  토: "싸움 나면 네가 다 중재함. 정작 네 얘긴 안 하더라 🏔️",
-  금: "할 말은 하는 사이다. 가끔 너무 팩트라 따끔해 💎",
-  수: "분위기 다 읽고 챙김. 혼자 삭이다 골병 들지 마 🌊",
-}
-function situational(ps: Participant[], base: number) {
-  const d = distOf(ps)
-  return [
-    { key: "우정", emoji: "🤝", score: clamp(base + 8), line: "같이 노는 덴 최고. 단톡 평생 갈 듯" },
-    { key: "연애", emoji: "💘", score: clamp(base - 10), line: "썸은 짜릿, 장기전은 노력 필요" },
-    { key: "같이 일", emoji: "💼", score: clamp(base - 4 + (d.금 + d.토) * 3 - d.화 * 2), line: "추진은 빠른데 역할 분담이 관건" },
-    { key: "같이 돈", emoji: "💰", score: clamp(base - 15 - d.화 * 2), line: "돈 얘긴 미리 정하고 시작해 ㅋㅋ" },
-  ]
+function vibeOf(score: number): { text: string; D: DoodleC } {
+  if (score >= 88) return { text: "찰떡궁합", D: DoodleSparkle }
+  if (score >= 80) return { text: "꽤 잘 맞아요", D: DoodleHeart }
+  if (score >= 70) return { text: "티격태격 케미", D: DoodleLightning }
+  return { text: "노력하면 됨", D: DoodleSprout }
 }
 
 function Avatar({ p, size = 56 }: { p: Participant; size?: number }) {
   return (
-    <div
-      className="rounded-full overflow-hidden border-2 border-charcoal/15 shrink-0 flex items-center justify-center"
-      style={{ width: size, height: size, background: ELEM_BG[elemOf(p.iljuKey)] }}
-    >
+    <div className="rounded-full overflow-hidden border-2 border-charcoal/15 shrink-0 flex items-center justify-center"
+      style={{ width: size, height: size, background: ELEM_BG[elemOf(p.iljuKey)] }}>
       {ILJU_SVG_ICONS[p.iljuKey]?.(getIljuProfileViewBox(p.iljuKey))}
     </div>
   )
@@ -172,17 +179,17 @@ export default function CompatFunnelPage() {
   if (step === "landing") {
     return (
       <div className="flex flex-col items-center gap-5 pt-6 text-center">
-        <p className="text-[20px] text-charcoal" style={BINGGRAE}>
-          <span className="highlight-pink">{HOST.name}</span>님이 궁합 보자고 초대했어요 ✦
+        <p className="text-[20px] text-charcoal flex items-center justify-center gap-1.5 flex-wrap" style={BINGGRAE}>
+          <span className="highlight-pink">{HOST.name}</span>님이 궁합 보자고 초대했어요 <Ico as={DoodleSparkle} size={20} />
         </p>
         <div className="flex flex-col items-center gap-2">
           <div className="p-[3px] rounded-full" style={{ background: "linear-gradient(135deg, #E84B6A, #FBBF24)" }}>
             <Avatar p={HOST} size={84} />
           </div>
-          <p className="text-[13px] text-text-muted">{ELEM_LABEL[elemOf(HOST.iljuKey)]}</p>
+          <p className="text-[13px] text-text-muted flex items-center gap-1">{`${elemOf(HOST.iljuKey)} 기운`} <Ico as={ELEM_DOODLE[elemOf(HOST.iljuKey)]} size={14} /></p>
         </div>
         <div className="w-full rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col items-center gap-3">
-          <p className="text-[14px] text-charcoal" style={GAEGU}>4명이 모이면 우리 궁합이 나와요 💞</p>
+          <p className="text-[14px] text-charcoal flex items-center gap-1.5" style={GAEGU}>4명이 모이면 우리 궁합이 나와요 <Ico as={DoodleHeart} size={16} /></p>
           <div className="flex gap-2.5">
             {slots.map((p, i) => (p ? <Avatar key={i} p={p} size={44} /> : <EmptySlot key={i} size={44} />))}
           </div>
@@ -191,7 +198,7 @@ export default function CompatFunnelPage() {
         <button onClick={() => setStep("input")}
           className="w-full h-[54px] rounded-2xl flex items-center justify-center gap-2 active:opacity-85 transition-opacity border-2 border-charcoal text-[15px]"
           style={{ background: "#FEE500", color: "#3C1E1E", ...BINGGRAE }}>
-          💬 카카오로 1초 입장
+          <Ico as={DoodleSpeechBubble} size={20} /> 카카오로 1초 입장
         </button>
         <p className="text-[11px] text-text-muted">로그인하면 내 결과 저장 + 친구 맺기 가능</p>
       </div>
@@ -203,7 +210,7 @@ export default function CompatFunnelPage() {
     const valid = name.trim() && birth.y.length === 4 && birth.m && birth.d
     return (
       <div className="flex flex-col gap-5 pt-4">
-        <p className="text-[20px] text-charcoal" style={BINGGRAE}>내 사주 입력 ✏️</p>
+        <p className="text-[20px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodlePencil} size={20} /> 내 사주 입력</p>
         <div className="flex flex-col gap-3">
           <div>
             <label className="text-[12px] text-text-muted font-bold mb-1.5 block">이름</label>
@@ -236,7 +243,7 @@ export default function CompatFunnelPage() {
   if (step === "waiting") {
     return (
       <div className="flex flex-col items-center gap-5 pt-6 text-center">
-        <DoodleSparkle className="w-8 h-8" />
+        <Ico as={DoodleSparkle} size={32} />
         <p className="text-[20px] text-charcoal" style={BINGGRAE}>친구를 기다리는 중...</p>
         <p className="text-[14px] text-text-muted">{filled} / {CAPACITY} 명 입력 완료</p>
         <div className="w-full rounded-2xl bg-white border border-charcoal/10 px-4 py-5 flex flex-col gap-3">
@@ -248,8 +255,8 @@ export default function CompatFunnelPage() {
           ))}
         </div>
         <button onClick={demoFillRest}
-          className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-charcoal/5 text-charcoal active:opacity-70" style={GAEGU}>
-          🎬 데모: 나머지 친구 자동 입력
+          className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-charcoal/5 text-charcoal active:opacity-70 flex items-center justify-center gap-1.5" style={GAEGU}>
+          <Ico as={DoodleStar} size={16} /> 데모: 나머지 친구 자동 입력
         </button>
       </div>
     )
@@ -258,29 +265,27 @@ export default function CompatFunnelPage() {
   // ── 결과 (고도화) ──
   const d = distOf(parts)
   const score = overallScore(parts)
-  const arch = archetype(parts, d)
+  const arch = archetype(d)
+  const vibe = vibeOf(score)
   const miss = ELEMS.filter(e => d[e] === 0)
   const maxCount = Math.max(...ELEMS.map(e => d[e]), 1)
   const others = parts.filter(p => !p.me)
 
   return (
     <div className="flex flex-col gap-6 pt-4 pb-10">
-      {/* [1] 종합 % + 아키타입 — 무료, 스샷 핵심 */}
+      {/* [1] 종합 % + 아키타입 */}
       <div className="flex flex-col items-center gap-2 text-center">
-        <div className="flex items-center gap-1.5">
-          <DoodleHeart className="w-5 h-5" />
-          <p className="text-[15px] text-text-muted" style={GAEGU}>우리 {parts.length}명의 궁합은</p>
-        </div>
+        <p className="text-[15px] text-text-muted flex items-center gap-1.5" style={GAEGU}><Ico as={DoodleHeart} size={18} /> 우리 {parts.length}명의 궁합은</p>
         <p className="text-[64px] leading-none text-pink" style={BINGGRAE}>{score}%</p>
-        <p className="text-[15px] text-charcoal" style={BINGGRAE}>{vibeOf(score)}</p>
-        <div className="mt-1 px-4 py-1.5 rounded-full" style={{ background: "#FFF4E0", border: "1.5px dashed #F0C060" }}>
-          <p className="text-[14px] text-[#9A7050]" style={BINGGRAE}>{arch}</p>
+        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}>{vibe.text} <Ico as={vibe.D} size={18} /></p>
+        <div className="mt-1 px-4 py-1.5 rounded-full flex items-center gap-1.5" style={{ background: "#FFF4E0", border: "1.5px dashed #F0C060" }}>
+          <Ico as={arch.D} size={16} /> <p className="text-[14px] text-[#9A7050]" style={BINGGRAE}>{arch.name}</p>
         </div>
       </div>
 
-      {/* [2] 그룹 롤 배정 — 무료, 태그 유발 */}
+      {/* [2] 그룹 롤 배정 */}
       <div className="flex flex-col gap-2.5">
-        <p className="text-[15px] text-charcoal" style={BINGGRAE}>🎭 우리 모임 역할</p>
+        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleMedal} size={18} /> 우리 모임 역할</p>
         <div className="grid grid-cols-2 gap-2">
           {parts.map((p, i) => {
             const r = ROLE[elemOf(p.iljuKey)]
@@ -289,7 +294,7 @@ export default function CompatFunnelPage() {
                 <Avatar p={p} size={40} />
                 <div className="min-w-0">
                   <p className="text-[11px] text-text-muted truncate">{p.me ? "나" : p.name}</p>
-                  <p className="text-[13px] font-bold text-charcoal leading-tight">{r.emoji} {r.label}</p>
+                  <p className="text-[13px] font-bold text-charcoal leading-tight flex items-center gap-1"><Ico as={r.D} size={15} /> {r.label}</p>
                 </div>
               </div>
             )
@@ -297,13 +302,14 @@ export default function CompatFunnelPage() {
         </div>
       </div>
 
-      {/* [3] 오행 밸런스 — 무료, 사주 차별 */}
+      {/* [3] 오행 밸런스 */}
       <div className="flex flex-col gap-2.5">
-        <p className="text-[15px] text-charcoal" style={BINGGRAE}>⚖️ 우리 모임 오행 밸런스</p>
+        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleTaegeuk} size={18} /> 우리 모임 오행 밸런스</p>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
           {ELEMS.map(e => (
             <div key={e} className="flex items-center gap-2.5">
-              <span className="w-6 text-[12px] font-bold text-charcoal shrink-0">{e}</span>
+              <Ico as={ELEM_DOODLE[e]} size={16} />
+              <span className="w-4 text-[12px] font-bold text-charcoal shrink-0">{e}</span>
               <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
                 <div className="h-full rounded-full transition-all" style={{ width: `${(d[e] / maxCount) * 100}%`, background: ELEM_COLOR[e] }} />
               </div>
@@ -314,18 +320,15 @@ export default function CompatFunnelPage() {
         </div>
       </div>
 
-      {/* [4] 페어별 궁합 — 전체 */}
+      {/* [4] 페어별 궁합 */}
       <div className="flex flex-col gap-2.5">
-        <p className="text-[15px] text-charcoal" style={BINGGRAE}>💘 페어별 궁합</p>
+        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleHeart} size={18} /> 페어별 궁합</p>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3 flex flex-col">
           {allPairs(parts).map((pr, i, arr) => (
             <div key={i} className={`flex items-center gap-2.5 py-2 ${i < arr.length - 1 ? "border-b border-charcoal/5" : ""}`}>
-              <div className="flex -space-x-1.5 shrink-0">
-                <Avatar p={pr.a} size={30} />
-                <Avatar p={pr.b} size={30} />
-              </div>
-              <span className="text-[12px] text-charcoal/80 flex-1 min-w-0 truncate">
-                {pr.a.me ? "나" : pr.a.name} · {pr.b.me ? "나" : pr.b.name} <span className="text-text-muted">{pr.label}</span>
+              <div className="flex -space-x-1.5 shrink-0"><Avatar p={pr.a} size={30} /><Avatar p={pr.b} size={30} /></div>
+              <span className="text-[12px] text-charcoal/80 flex-1 min-w-0 truncate flex items-center gap-1">
+                {pr.a.me ? "나" : pr.a.name} · {pr.b.me ? "나" : pr.b.name} <Ico as={pr.label.D} size={13} /> <span className="text-text-muted">{pr.label.text}</span>
               </span>
               <span className="text-[14px] font-bold shrink-0" style={{ color: pr.s >= 85 ? "#E84B6A" : pr.s >= 70 ? "#2D2D2D" : "#94A3B8" }}>{pr.s}%</span>
             </div>
@@ -333,9 +336,9 @@ export default function CompatFunnelPage() {
         </div>
       </div>
 
-      {/* [5] 개인별 심층 한마디 */}
+      {/* [5] 개인별 한마디 */}
       <div className="flex flex-col gap-2.5">
-        <p className="text-[15px] text-charcoal" style={BINGGRAE}>🧑‍🤝‍🧑 각자에게 한마디</p>
+        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleSpeechBubble} size={18} /> 각자에게 한마디</p>
         <div className="flex flex-col gap-2">
           {parts.map((p, i) => (
             <div key={i} className="flex gap-2.5 rounded-2xl bg-white border border-charcoal/10 px-3 py-2.5">
@@ -351,12 +354,12 @@ export default function CompatFunnelPage() {
 
       {/* [6] 상황별 궁합 */}
       <div className="flex flex-col gap-2.5">
-        <p className="text-[15px] text-charcoal" style={BINGGRAE}>🎯 상황별 궁합</p>
+        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleCompass} size={18} /> 상황별 궁합</p>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
           {situational(parts, score).map(s => (
             <div key={s.key} className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
-                <span className="text-[13px] font-bold text-charcoal">{s.emoji} {s.key}</span>
+                <span className="text-[13px] font-bold text-charcoal flex items-center gap-1.5"><Ico as={s.D} size={16} /> {s.key}</span>
                 <span className="text-[13px] font-bold" style={{ color: s.score >= 80 ? "#E84B6A" : "#2D2D2D" }}>{s.score}%</span>
               </div>
               <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
@@ -371,10 +374,10 @@ export default function CompatFunnelPage() {
       {/* 성장 훅 — 부족 오행 친구 초대 */}
       {miss.length > 0 && (
         <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[miss[0]], border: `1.5px solid ${ELEM_COLOR[miss[0]]}` }}>
-          <span className="text-2xl">{miss[0] === "수" ? "💧" : miss[0] === "금" ? "💎" : miss[0] === "목" ? "🌱" : miss[0] === "화" ? "🔥" : "🌍"}</span>
+          <Ico as={ELEM_DOODLE[miss[0]]} size={28} />
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-bold text-charcoal leading-tight">이 모임엔 {miss[0]}({miss[0]}) 기운이 없어요</p>
-            <p className="text-[11px] text-charcoal/60">{STEMS_OF[miss[0]]} 일주 친구를 초대하면 밸런스 완성 ✨</p>
+            <p className="text-[11px] text-charcoal/60 flex items-center gap-1">{STEMS_OF[miss[0]]} 일주 친구를 초대하면 밸런스 완성 <Ico as={DoodleSparkle} size={12} /></p>
           </div>
           <button className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-bold border-2 border-charcoal active:opacity-70" style={{ background: "white", color: "#2D2D2D" }}>
             친구 초대
@@ -397,10 +400,10 @@ export default function CompatFunnelPage() {
 
       {/* 모임 길일 + 공유 */}
       <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex items-center gap-3">
-        <DoodleCrown className="w-6 h-6 shrink-0" />
+        <Ico as={DoodleCrown} size={24} />
         <div className="flex-1">
           <p className="text-[12px] text-text-muted">이 모임 다음 만나기 좋은 날</p>
-          <p className="text-[14px] font-bold text-charcoal">7월 12일 (토) · 화기운 충전 ⚡</p>
+          <p className="text-[14px] font-bold text-charcoal flex items-center gap-1">7월 12일 (토) · 화기운 충전 <Ico as={DoodleFire} size={14} /></p>
         </div>
       </div>
 
@@ -410,8 +413,8 @@ export default function CompatFunnelPage() {
           style={{ background: "#E84B6A", color: "#FFF9F0", boxShadow: "2px 2px 0px #2D2D2D", ...BINGGRAE }}>
           {addAll ? "친구 추가하고 내 미니홈피로 →" : "내 미니홈피로 →"}
         </button>
-        <button className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-white text-charcoal active:opacity-70" style={GAEGU}>
-          📷 결과 카드 단톡에 공유
+        <button className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-white text-charcoal active:opacity-70 flex items-center justify-center gap-1.5" style={GAEGU}>
+          <Ico as={DoodlePolaroid} size={18} /> 결과 카드 단톡에 공유
         </button>
       </div>
     </div>
