@@ -512,35 +512,33 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      {/* [유료] 페이월 게이트 */}
-      <div className="relative">
-        <div className={unlocked ? "" : "blur-[6px] pointer-events-none select-none"} aria-hidden={!unlocked}>
-          {PaidBody}
-        </div>
-        {!unlocked && (
-          <div className="absolute inset-0 flex items-start justify-center pt-10"
-            style={{ background: "linear-gradient(to bottom, rgba(255,254,242,0.35), var(--bg-cream, #FFFEF2) 26%)" }}>
-            <div className="w-[88%] rounded-2xl bg-white border-2 border-charcoal px-5 py-5 flex flex-col items-center gap-2.5 text-center"
-              style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.10)" }}>
-              <Ico as={DoodleKey} size={36} />
-              <p className="text-[16px] text-charcoal" style={BINGGRAE}>정밀 풀이 잠금 해제</p>
-              <div className="flex flex-col gap-1.5 w-full py-1">
-                {["둘 사주를 깊이 읽은 정밀 풀이", `${them.name || "그 사람"} 마음 여는 법 · 다가가는 전략`, "진전·고백 타이밍과 밀당 가이드"].map((t, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[13px] text-charcoal/70">
-                    <Ico as={DoodleHeart} size={13} /> {t}
-                  </div>
-                ))}
-              </div>
-              <button onClick={() => setUnlocked(true)}
-                className="w-full h-[52px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal mt-0.5"
-                style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
-                {config.price} 결제하고 전체 보기
-              </button>
-              <p className="text-[13px] text-text-muted">같은 상대는 다시 무료로 볼 수 있어요</p>
-            </div>
+      {/* [유료] 페이월 게이트 — 짧은 미리보기 + 잠금 카드 */}
+      {unlocked ? PaidBody : (
+        <div className="flex flex-col">
+          <div className="relative overflow-hidden" style={{ maxHeight: 150 }}>
+            <div className="blur-[5px] pointer-events-none select-none">{PaidBody}</div>
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(255,254,242,0.15), var(--bg-cream,#FFFEF2) 88%)" }} />
           </div>
-        )}
-      </div>
+          <div className="-mt-7 rounded-2xl bg-white border-2 border-charcoal px-5 py-5 flex flex-col items-center gap-2.5 text-center"
+            style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.10)" }}>
+            <Ico as={DoodleKey} size={36} />
+            <p className="text-[16px] text-charcoal" style={BINGGRAE}>정밀 풀이 잠금 해제</p>
+            <div className="flex flex-col gap-1.5 w-full py-1">
+              {["둘 사주를 깊이 읽은 정밀 풀이", `${them.name || "그 사람"} 마음 여는 법 · 다가가는 전략`, "진전·고백 타이밍과 밀당 가이드"].map((t, i) => (
+                <div key={i} className="flex items-center gap-2 text-[13px] text-charcoal/70">
+                  <Ico as={DoodleHeart} size={13} /> {t}
+                </div>
+              ))}
+            </div>
+            <button onClick={() => setUnlocked(true)}
+              className="w-full h-[52px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal mt-0.5"
+              style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
+              {config.price} 내고 전체 보기
+            </button>
+            <p className="text-[13px] text-text-muted">같은 상대는 다시 무료로 볼 수 있어요</p>
+          </div>
+        </div>
+      )}
 
       {/* CTA */}
       <div className="flex flex-col gap-2 pt-1">

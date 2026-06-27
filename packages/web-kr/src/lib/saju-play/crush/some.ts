@@ -94,5 +94,5 @@ export const SOME_CONFIG: CrushConfig = {
     금: { day: "목요일", place: "전시·미술관", color: "화이트", colorHex: "#E2E8F0" },
     수: { day: "수요일", place: "바다·강가", color: "파랑", colorHex: "#60A5FA" },
   },
-  price: "₩2,900",
+  price: "1명태",
 }
