@@ -67,7 +67,7 @@ function buildSajuContext(user: MockUser, ilju: IljuType): string {
   const tenGods = analyzeTenGods(fp, dayMaster.stem)
   const yongShin = analyzeYongShin(dayMaster.stem, fp, fiveElements, tenGods.count)
   const relations = analyzeRelations(fp)
-  const samjae = calculateSamjae(fp, currentYear)
+  const samjae = calculateSamjae(fp.year.branch, currentYear)
 
   return [
     `# ${bd.name}님 사주`,
@@ -102,7 +102,7 @@ function buildSajuContext(user: MockUser, ilju: IljuType): string {
       : "없음",
     ``,
     `## 삼재`,
-    samjae.isSamjae ? `현재 삼재 중 (${samjae.type})` : "삼재 없음",
+    samjae.isActive ? `현재 삼재 중 (${samjae.phaseKorean ?? ""})` : "삼재 없음",
     ``,
     `## 대운 (${majorResult.direction === "forward" ? "순행" : "역행"}, ${majorResult.startAge}세 시작)`,
     ...majorResult.fortunes.slice(0, 7).map((f, i) =>
