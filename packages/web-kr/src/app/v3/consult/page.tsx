@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { PRICES, WON_PER_MYONGTAE } from "@/lib/prices"
 import { useBalance, spend, refund, CONSULT_COST } from "@/lib/balance"
+import { loadHistory, saveHistory } from "@/lib/consult-history"
 import { DoodleBox, DoodleSparkle, DoodleHeart, DoodleSuitcase, DoodleCrystal, DoodleMagicWand, DoodleStar, DoodleMoon } from "@/components/doodles"
 import { useUser, DEFAULT_PROFILE_IMG } from "@/lib/UserContext"
 import type { IljuType } from "@/lib/ilju-types"
@@ -124,6 +125,10 @@ const ELEM_BG: Record<string, string> = {
 }
 
 type Msg = { role: "user" | "char" | "system"; text: string }
+
+const ERROR_TEXT = "연결이 안 됐어. 잠깐 후에 다시 물어봐."
+const INITIAL_VISIBLE = 12 // 약 6턴
+const LOAD_BATCH = 12      // 최상단 도달 시 추가로 불러올 메시지 수
 
 const TOPICS = [
   { label: "직접 입력", Icon: DoodleMagicWand },
@@ -357,8 +362,11 @@ export default function ConsultPage() {
   const [headerH, setHeaderH]         = useState(0)
   const [navH, setNavH]               = useState(64)
   const [isLoading, setIsLoading]     = useState(false)
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
+  const pendingScrollAnchor = useRef<number | null>(null) // 위로 더 불러올 때 스크롤 보정용
+  const wantScrollBottom = useRef(false)                  // 복원/전송 시 하단으로
 
   const elemKey = ilju?.stemElement.charAt(0) ?? "목"
   const iljuKey = ilju?.id ?? ""
@@ -369,6 +377,11 @@ export default function ConsultPage() {
       : <img src={DEFAULT_PROFILE_IMG} alt="" className="w-full h-full object-cover" />
   // 아바타 배경: 일주 있으면 오행색, 없으면 서비스 연분홍(--pink-light)
   const avatarBg = ilju ? ELEM_BG[elemKey] : "#FFE4EA"
+
+  // 표시는 최근 visibleCount개만(나머지는 위로 스크롤 시 로드). key는 절대 인덱스로 안정화
+  const visibleStart = Math.max(0, msgs.length - visibleCount)
+  const visibleMsgs = msgs.slice(visibleStart)
+  const hasMore = visibleStart > 0
   const headerName = ilju ? `${ilju.ilju}(${ilju.hanja}) · 나` : "사주 친구"
   const headerLabel = ilju ? (ilju.name ?? "") : "사주카드를 뽑으면 시작돼"
 
@@ -418,6 +431,14 @@ export default function ConsultPage() {
       if (!hasIlju) setMsgs([{ role: "char", text: GUIDE_TEXT_NO_ILJU }])
       return
     }
+    setVisibleCount(INITIAL_VISIBLE)
+    // 저장된 이력 있으면 복원(하단으로), 없으면 그리팅
+    const saved = loadHistory(iljuKey)
+    if (saved?.length) {
+      setMsgs(saved as Msg[])
+      wantScrollBottom.current = true
+      return
+    }
     const name = user.birthDate.name
     const firstName = name.length >= 3 ? name.slice(1) : name
     const now = new Date()
@@ -428,7 +449,42 @@ export default function ConsultPage() {
       h < 14 ? "점심" : h < 18 ? "오후" :
       h < 22 ? "저녁" : "밤"
     setMsgs([{ role: "char", text: generateGreeting(firstName, ilju, day, timeLabel) }])
-  }, [hasIlju])
+  }, [hasIlju, iljuKey])
+
+  // 대화 저장 — 스트리밍 중·그리팅만일 때 제외, 빈 char·에러버블 제외
+  React.useEffect(() => {
+    if (!iljuKey || isLoading) return
+    if (!msgs.some(m => m.role === "user")) return
+    saveHistory(iljuKey, msgs.filter(m => !(m.role === "char" && (m.text === "" || m.text === ERROR_TEXT))))
+  }, [msgs, isLoading, iljuKey])
+
+  // 페이지네이션 — 최상단 도달 시 이전 배치 로드
+  React.useEffect(() => {
+    const onScroll = () => {
+      if (window.scrollY < headerH + 60 && visibleCount < msgs.length) {
+        pendingScrollAnchor.current = document.documentElement.scrollHeight
+        setVisibleCount(c => Math.min(msgs.length, c + LOAD_BATCH))
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [headerH, visibleCount, msgs.length])
+
+  // 이전 배치 로드 후 스크롤 위치 보정(점프 방지)
+  React.useLayoutEffect(() => {
+    if (pendingScrollAnchor.current != null) {
+      window.scrollBy(0, document.documentElement.scrollHeight - pendingScrollAnchor.current)
+      pendingScrollAnchor.current = null
+    }
+  }, [visibleCount])
+
+  // 복원·전송 시 하단으로
+  React.useLayoutEffect(() => {
+    if (wantScrollBottom.current) {
+      window.scrollTo(0, document.documentElement.scrollHeight)
+      wantScrollBottom.current = false
+    }
+  }, [msgs])
 
   async function send() {
     if (!input.trim() || isLoading || !ilju) return
@@ -439,6 +495,7 @@ export default function ConsultPage() {
 
     const nextMsgs: Msg[] = [...msgs, { role: "user", text: userText }]
     setMsgs([...nextMsgs, { role: "char", text: "" }])
+    wantScrollBottom.current = true // 보낸 직후 하단으로
     setIsLoading(true)
 
     try {
@@ -490,7 +547,7 @@ export default function ConsultPage() {
       refund(CONSULT_COST) // 응답 실패 → 차감분 환불
       setMsgs(prev => {
         const updated = [...prev]
-        updated[updated.length - 1] = { role: "char", text: "연결이 안 됐어. 잠깐 후에 다시 물어봐." }
+        updated[updated.length - 1] = { role: "char", text: ERROR_TEXT }
         return updated
       })
     } finally {
@@ -578,15 +635,18 @@ export default function ConsultPage() {
 
       {/* 메시지 목록 — 고정 헤더/입력바 높이만큼 패딩 */}
       <div className="flex flex-col gap-3 pb-32" style={{ paddingTop: headerH + 16 }}>
-        {msgs.map((msg, i) =>
+        {hasMore && (
+          <div className="flex justify-center py-1 text-[11px] text-text-muted/60">⋯ 위로 올리면 이전 대화</div>
+        )}
+        {visibleMsgs.map((msg, i) =>
           msg.role === "system" ? (
-            <div key={i} className="flex items-center gap-3 py-1">
+            <div key={visibleStart + i} className="flex items-center gap-3 py-1">
               <div className="flex-1 h-px bg-charcoal/10" />
               <span className="text-[11px] text-text-muted shrink-0">{msg.text}</span>
               <div className="flex-1 h-px bg-charcoal/10" />
             </div>
           ) : msg.role === "char" ? (
-            <div key={i} className="flex items-end gap-2">
+            <div key={visibleStart + i} className="flex items-end gap-2">
               <div
                 className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-charcoal/10"
                 style={{ background: avatarBg }}
@@ -605,7 +665,7 @@ export default function ConsultPage() {
               </div>
             </div>
           ) : (
-            <div key={i} className="flex justify-end">
+            <div key={visibleStart + i} className="flex justify-end">
               <div className="max-w-[75%] rounded-2xl rounded-br-sm bg-pink/15 border border-pink/20 px-3.5 py-2.5">
                 <p className="text-[13px] text-charcoal leading-relaxed">{msg.text}</p>
               </div>
