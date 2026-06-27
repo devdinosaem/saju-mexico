@@ -20,7 +20,7 @@ const CELEBS = [
 export default function ShopPage() {
   const nextMonth = (new Date().getMonth() + 2) % 12 || 12
   return (
-    <div className="flex flex-col gap-10 py-4">
+    <div className="flex flex-col gap-10">
       {/* 일주 디스커버리 — 첫 방문자용 호기심 촉발 */}
       <div className="relative">
         <div className="absolute top-0 right-0 flex items-center gap-1.5 opacity-60 pointer-events-none">

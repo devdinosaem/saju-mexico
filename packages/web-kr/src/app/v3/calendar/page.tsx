@@ -15,7 +15,7 @@ const BALANCE = [
 
 export default function CalendarPage() {
   return (
-    <div className="flex flex-col gap-4 py-4">
+    <div className="flex flex-col gap-4">
       {/* 인삿말 */}
       <div className="flex items-center gap-1.5 flex-wrap">
         <span className="text-sm font-medium text-text-sub">6월은</span>

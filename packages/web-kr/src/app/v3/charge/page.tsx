@@ -62,7 +62,7 @@ export default function ChargePage() {
   }, [])
 
   return (
-    <div className="flex flex-col gap-4 py-4">
+    <div className="flex flex-col gap-4">
       {/* 뒤로 */}
       <div className="flex items-center gap-2">
         <Link href="/v3/shop" className="text-text-muted text-[13px] active:opacity-60">← 돌아가기</Link>

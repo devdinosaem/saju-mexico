@@ -61,7 +61,7 @@ export default function MyPage() {
   const filtered = PURCHASED.filter(p => activeCat === "전체" || p.cat === activeCat)
 
   return (
-    <div className="flex flex-col gap-4 py-4">
+    <div className="flex flex-col gap-4">
       {/* 프로필 히어로 (공유 시 카드 시트 오픈) */}
       <MyHero />
 

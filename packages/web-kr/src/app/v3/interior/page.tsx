@@ -131,7 +131,7 @@ export default function InteriorPage() {
   const visibleDummyFriends = FRIEND_ROOMS.filter(f => !hiddenFriends.includes(f.name))
 
   return (
-    <div className="flex flex-col gap-4 py-4">
+    <div className="flex flex-col gap-4">
       <StoryRow onAdd={() => setShowAddFriend(true)} />
 
       {/* 내 미니홈피 */}

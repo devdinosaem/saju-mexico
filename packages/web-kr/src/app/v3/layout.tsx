@@ -15,8 +15,10 @@ export default function V3Layout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* Content */}
-      <main className="pt-12 pb-20 max-w-[480px] mx-auto px-4 overflow-x-hidden">
+      {/* Content — 패딩 단일 정책: 실효 여백 사방 16px
+          (pt-16 = 헤더 48px + 숨 16px / pb-24 = 탭바 80px + 숨 16px / px-4 = 좌우 16px)
+          페이지는 px/py/pt/pb를 추가하지 말 것. 세로 간격은 gap으로. */}
+      <main className="pt-16 pb-24 max-w-[480px] mx-auto px-4 overflow-x-hidden">
         {children}
       </main>
 

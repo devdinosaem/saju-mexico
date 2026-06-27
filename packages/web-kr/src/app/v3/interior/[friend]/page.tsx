@@ -121,8 +121,8 @@ export default function FriendRoomPage() {
       </div>
 
       <div
-        className="px-4 flex flex-col pb-24"
-        style={{ paddingTop: "calc(52px + 1rem)", background: "var(--bg-minihompi)", minHeight: "calc(100dvh - 48px)" }}
+        className="flex flex-col pb-24"
+        style={{ paddingTop: "52px", background: "var(--bg-minihompi)", minHeight: "calc(100dvh - 48px)" }}
       >
         {/* ── 방 캔버스 ── */}
         <div
