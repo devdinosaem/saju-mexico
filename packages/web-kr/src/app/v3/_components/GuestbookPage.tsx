@@ -1,10 +1,10 @@
 "use client"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { RoomCanvas, SKINS, STORAGE_KEY, MY_GUESTBOOK_KEY } from "../my/_components/MiniRoom"
+import { RoomCanvas, SKINS, STORAGE_KEY, myGuestbookKey } from "../my/_components/MiniRoom"
 import type { RoomData } from "../my/_components/MiniRoom"
 import { FRIEND_ROOMS } from "../interior/_data/friendRooms"
-import { ILJU_SVG_ICONS } from "@/lib/ilju-svg-icons"
+import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { ELEMENT_THEME } from "@/lib/ilju-calc"
 import { useUser } from "@/lib/UserContext"
 const withTime = (date: string) => /오전|오후/.test(date) ? date : date + " 오후 12:00"
@@ -31,10 +31,10 @@ export default function GuestbookPage() {
   const meIljuKey = hasIlju && ilju ? ilju.id : ""
   const meBg = hasIlju && ilju ? (ELEMENT_THEME[ilju.stemElement]?.bg ?? "#F1F5F9") : "#F1F5F9"
   const meSvgFn = meIljuKey ? ILJU_SVG_ICONS[meIljuKey] : null
+  const gbKey = myGuestbookKey(meName)
 
   const [room, setRoom] = useState<RoomData>(DEFAULT_ROOM)
   const [entries, setEntries] = useState<GuestEntry[]>([])
-  const [draft, setDraft] = useState("")
   const [editing, setEditing] = useState(false)
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function GuestbookPage() {
       if (saved) setRoom(JSON.parse(saved))
     } catch {}
     try {
-      const gb = localStorage.getItem(MY_GUESTBOOK_KEY)
+      const gb = localStorage.getItem(gbKey)
       if (gb) setEntries(JSON.parse(gb))
     } catch {}
   }, [])
@@ -51,47 +51,37 @@ export default function GuestbookPage() {
   const deleteEntry = (id: string) => {
     const next = entries.filter(e => e.id !== id)
     setEntries(next)
-    try { localStorage.setItem(MY_GUESTBOOK_KEY, JSON.stringify(next)) } catch {}
+    try { localStorage.setItem(gbKey, JSON.stringify(next)) } catch {}
   }
 
-  const submit = () => {
-    if (!draft.trim()) return
-    const entry: GuestEntry = {
-      id: Date.now().toString(),
-      author: meName,
-      message: draft.trim(),
-      date: new Date().toLocaleString("ko-KR", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }),
-    }
-    const next = [entry, ...entries]
-    setEntries(next)
-    try { localStorage.setItem(MY_GUESTBOOK_KEY, JSON.stringify(next)) } catch {}
-    setDraft("")
-  }
 
   const skin = SKINS.find(s => s.id === room.skinId)
 
   return (
     <>
-      {/* 방 캔버스 */}
       <div
-        className="fixed top-12 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-10 px-4 pt-4 pb-2"
+        className="pt-4 px-4 flex flex-col pb-24"
         style={{ background: "var(--bg-minihompi)" }}
       >
+        {/* 방 캔버스 */}
         <div
           className="relative w-full rounded-2xl overflow-hidden border border-charcoal/10"
           style={{ height: 220 }}
         >
-          <RoomCanvas stickers={room.stickers} charPos={room.charPos} skin={skin} />
+          <RoomCanvas stickers={room.stickers} charPos={room.charPos} chars={room.chars} skin={skin} />
+          <button
+            className="absolute bottom-3 right-3 z-20 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm active:opacity-70 transition-opacity"
+            style={{ border: "1.5px solid rgba(45,45,45,0.15)" }}
+            onClick={() => router.push("/v3/my/room")}
+          >
+            <svg viewBox="0 0 20 20" fill="none" width={16} height={16}>
+              <path d="M13.5 3.5L16.5 6.5L7 16H4V13L13.5 3.5Z" fill="#2D2D2D" stroke="#2D2D2D" strokeWidth="1.2" strokeLinejoin="round"/>
+              <path d="M11.5 5.5L14.5 8.5" stroke="white" strokeWidth="1" strokeLinecap="round"/>
+            </svg>
+          </button>
         </div>
-      </div>
 
-      {/* 스크롤 콘텐츠 */}
-      <div
-        className="fixed left-1/2 -translate-x-1/2 w-full max-w-[430px] overflow-y-auto scrollbar-hide"
-        style={{ top: "calc(3rem + 244px)", bottom: 0, background: "var(--bg-minihompi)" }}
-      >
-        <div className="px-4 pb-40 flex flex-col">
-          <div style={{ fontFamily: "'BinggraeTaom', sans-serif" }}>
+        <div style={{ fontFamily: "'BinggraeTaom', sans-serif" }}>
             <div
               className="pt-3 pb-2.5 flex items-center justify-between"
               style={{ borderTop: "1.5px dashed #E0C99A", borderBottom: "1px dashed #EDD9B0" }}
@@ -114,7 +104,7 @@ export default function GuestbookPage() {
                   className="text-[11px] px-2.5 py-0.5 rounded-full text-[#9A7050]"
                   style={{ border: "1px dashed #C4A070", background: "#FFF4E0" }}
                 >
-                  {entries.length > 0 ? `${entries.length}명 방문` : "아직 0명"}
+                  TODAY {entries.length}
                 </span>
               </div>
             </div>
@@ -140,7 +130,7 @@ export default function GuestbookPage() {
                         }}
                       >
                         {(() => {
-                          if (entry.author === meName) return <div className="w-full h-full">{meSvgFn?.()}</div>
+                          if (entry.author === meName) return <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meIljuKey))}</div>
                           const friend = FRIEND_ROOMS.find(f => f.name === entry.author)
                           return friend
                             ? <friend.Face s={32} />
@@ -148,14 +138,14 @@ export default function GuestbookPage() {
                         })()}
                       </div>
                       <div
-                        className="flex-1 rounded-xl rounded-tl-sm px-3 py-2.5 relative"
+                        className="flex-1 rounded-xl rounded-tl-sm px-3 py-1.5 relative"
                         style={{ background: color.bg, border: `1.5px solid ${color.border}`, boxShadow: "2px 2px 0px rgba(0,0,0,0.06)" }}
                       >
-                        <div className="flex items-baseline gap-2 mb-1">
+                        <div className="flex items-baseline gap-2 mb-0.5">
                           <span className="text-[12px] font-bold text-charcoal">{entry.author === meName ? "나" : entry.author}</span>
                           <span className="text-[10px] text-text-muted">{withTime(entry.date)}</span>
                         </div>
-                        <p className="text-[13px] text-charcoal/80 leading-relaxed">{entry.message}</p>
+                        <p className="text-[13px] font-normal text-charcoal/80 leading-snug break-all">{entry.message}</p>
                         {editing && (
                           <button
                             className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center active:opacity-60 transition-opacity"
@@ -171,33 +161,20 @@ export default function GuestbookPage() {
                 })
               )}
             </div>
-          </div>
         </div>
       </div>
 
-      {/* 입력창 */}
+      {/* 친구 초대 안내 */}
       <div
         className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-40 px-4 pt-3 pb-[68px]"
         style={{ background: "var(--bg-minihompi)", borderTop: "1.5px dashed #D8C4A0", fontFamily: "'BinggraeTaom', sans-serif" }}
       >
-        <div className="flex gap-2 items-center">
-          <textarea
-            className="flex-1 text-[13px] text-charcoal rounded-xl px-3 py-2.5 resize-none focus:outline-none leading-relaxed"
-            style={{ background: "#FFFDE8", border: "1.5px dashed #D4B870", fontFamily: "'BinggraeTaom', sans-serif" }}
-            placeholder="내 방명록에 한마디... ✏️"
-            rows={1}
-            value={draft}
-            onChange={e => setDraft(e.target.value)}
-            onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit() } }}
-          />
-          <button
-            className="shrink-0 px-4 py-2.5 rounded-xl text-[13px] font-bold active:opacity-70 transition-opacity disabled:opacity-30"
-            style={{ background: "#2D2D2D", color: "#FFF9F0", fontFamily: "'BinggraeTaom', sans-serif", border: "2px solid #2D2D2D", boxShadow: "2px 2px 0px #A08060" }}
-            disabled={!draft.trim()}
-            onClick={submit}
-          >
-            남기기
-          </button>
+        <div
+          className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
+          style={{ background: "#FFF7E8", border: "1.5px dashed #D4B870" }}
+        >
+          <span className="text-base">💌</span>
+          <p className="text-[12px] text-[#B09070] leading-snug">친구가 방문하면 방명록이 쌓여요</p>
         </div>
       </div>
     </>
