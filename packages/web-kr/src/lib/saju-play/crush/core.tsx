@@ -3,8 +3,9 @@
 // 썸/짝사랑 분석기 공용 코어 — 혼자서 둘 다 입력하는 유료 단품.
 // 같은 셸(입력→연출→페이월→결과)을 config(some.ts / crush.ts)로 갈아끼운다.
 // 친구·커플과 다른 전제: 아직 안 가까운 사이 → "진단"이 아니라 "예측+전략+타이밍".
-// 무료: 성사 가능성 % + 온도계 / 유료: AI 정밀 풀이 + 마음·전략·타이밍 (페이월 목업)
-// 폰트 정책: 본문=Pretendard(가독성), 손글씨(GAEGU)=감성 한 줄 액센트만, 제목=BINGGRAE.
+// 무료: 성사 가능성 % + 온도계 / 유료: 정밀 풀이 + 마음·전략·타이밍 (페이월 목업)
+// 폰트 정책(친구·커플 동일): 제목=BINGGRAE, 따뜻한 설명줄=GAEGU(손글씨), 줄글 본문=고딕.
+// 연출(스켈레톤) 단계에서 풀이를 미리 돌려 결과 진입 시 바로 보이게.
 // ════════════════════════════════════════════════════════════════
 import { useState } from "react"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
@@ -54,16 +55,29 @@ export type CrushConfig = {
   price: string
 }
 
-// ── mock 일주: 입력(이름·생일·성별)에서 결정적으로 파생 → 입력 달라지면 결과 달라짐 ──
-const STEMS = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"]
-const BRANCHES = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"]
+// ── mock 일주: 등록된 캐릭터 키 풀에서 입력 기반으로 결정적 선택(빈 아바타 방지) ──
+const ICON_KEYS = Object.keys(ILJU_SVG_ICONS)
+const KEYS_M = ICON_KEYS.filter(k => k.endsWith("-m"))
+const KEYS_F = ICON_KEYS.filter(k => k.endsWith("-f"))
 type Person = { name: string; birth: { y: string; m: string; d: string }; gender: "M" | "F" }
 function mockIlju(p: Person): string {
+  const pool = (p.gender === "M" ? KEYS_M : KEYS_F)
+  const base = pool.length ? pool : ICON_KEYS
   const seed = (parseInt(p.birth.y || "0") || 0) + (parseInt(p.birth.m || "0") || 0) * 31 +
     (parseInt(p.birth.d || "0") || 0) * 3 + [...p.name].reduce((a, c) => a + c.charCodeAt(0), 0)
-  const stem = STEMS[seed % 10]
-  const branch = BRANCHES[(seed * 7) % 12]
-  return `${stem}${branch}-${p.gender === "M" ? "m" : "f"}`
+  return base[seed % base.length]
+}
+
+// 입력 두 명에서 결과 파생(렌더·연출 양쪽에서 동일 결과 보장)
+function derive(me: Person, them: Person, config: CrushConfig) {
+  const meK = mockIlju(me), themK = mockIlju(them)
+  const eMe = elemOf(meK), eThem = elemOf(themK)
+  const rel = relType(eMe, eThem)
+  const arch = eMe === eThem ? config.sameArch : (config.archetype[pairKey(eMe, eThem)] ?? config.sameArch)
+  const seed = [...(me.name + them.name)].reduce((a, c) => a + c.charCodeAt(0), 0)
+  const score = clamp(config.scoreOpt[rel] + (seed % 7) - 3, 35, 97)
+  const stage = [...config.temp].reverse().find(t => score >= t.min) ?? config.temp[0]
+  return { meK, themK, eMe, eThem, rel, arch, score, stage }
 }
 
 function Avatar({ iljuKey, size = 72 }: { iljuKey: string; size?: number }) {
@@ -121,7 +135,7 @@ const SectionTitle = ({ icon, children }: { icon: DoodleC; children: React.React
   <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={icon} size={18} /> {children}</p>
 )
 
-// **굵게** 인라인 파싱 (DeepSeek 줄글용)
+// **굵게** 인라인 파싱 (줄글용)
 function renderBold(s: string) {
   return s.split(/(\*\*[^*]+\*\*)/g).map((seg, i) =>
     seg.startsWith("**") && seg.endsWith("**")
@@ -150,35 +164,47 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   const [unlocked, setUnlocked] = useState(false)
   const [ai, setAi] = useState<Ai>({ status: "idle", text: "" })
 
+  // 연출 단계에서 미리 풀이를 돌린다 → 결과 진입 시 보통 이미 완성
   const start = () => {
     setStep("loading")
+    const d = derive(me, them, config)
+    setAi({ status: "loading", text: "" })
+    fetch("/api/some", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        me: { name: me.name, elem: d.eMe }, them: { name: them.name, elem: d.eThem },
+        archetype: d.arch.name, vibe: d.arch.vibe, score: d.score, rel: d.rel, stage: d.stage.label,
+      }),
+    })
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then((x: { text?: string }) => x.text ? setAi({ status: "done", text: x.text }) : Promise.reject())
+      .catch(() => setAi({ status: "error", text: "" }))
     setTimeout(() => setStep("result"), 1800)
   }
   const reset = () => {
     setMe(emptyP()); setThem({ ...emptyP(), gender: "F" }); setUnlocked(false); setAi({ status: "idle", text: "" }); setStep("input")
   }
 
-  // ── 랜딩 ──
+  // ── 랜딩 (커플과 동일 레이아웃) ──
   if (step === "landing") {
     return (
       <div className="flex flex-col items-center gap-5 pt-6 text-center">
         <p className="text-[20px] text-charcoal flex items-center justify-center gap-1.5 flex-wrap" style={BINGGRAE}>
-          {config.landing.line} <Ico as={config.landing.hi} size={22} />
+          {config.landing.line} <Ico as={config.landing.hi} size={20} />
         </p>
-        {/* 나 / 그 사람 마주보기 — 둘 다 미입력, 빨간 실로 연결 */}
         <div className="flex items-center gap-3">
-          <div className="rounded-full flex items-center justify-center" style={{ width: 82, height: 82, background: "#F1F5F9", border: "2px dashed #CBD5E1" }}>
-            <span className="text-[22px] text-charcoal/30" style={BINGGRAE}>나</span>
+          <div className="p-[3px] rounded-full" style={{ background: "linear-gradient(135deg, #E84B6A, #FBBF24)" }}>
+            <div className="rounded-full bg-white flex items-center justify-center" style={{ width: 76, height: 76 }}>
+              <span className="text-[20px] text-charcoal/40" style={BINGGRAE}>나</span>
+            </div>
           </div>
-          <Ico as={DoodleRedString} size={28} />
+          <Ico as={DoodleHeart} size={26} />
           <div className="rounded-full flex items-center justify-center" style={{ width: 82, height: 82, background: "#F1F5F9", border: "2px dashed #CBD5E1" }}>
             <span className="text-[26px] text-charcoal/25">?</span>
           </div>
         </div>
-        {/* 안내 카드 — 핑크 틴트 + 아이콘 */}
-        <div className="w-full rounded-2xl px-4 py-4 flex items-start gap-2.5 text-left" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
-          <Ico as={DoodleTaegeuk} size={20} />
-          <p className="text-[14px] text-charcoal/75 leading-relaxed">{config.landing.sub}</p>
+        <div className="w-full rounded-2xl bg-white border border-charcoal/10 px-4 py-4">
+          <p className="text-[14px] text-charcoal flex items-center justify-center gap-1.5 leading-relaxed" style={GAEGU}>{config.landing.sub} <Ico as={DoodleSparkle} size={16} /></p>
         </div>
         <div className="flex items-center gap-1.5 text-[13px] text-text-muted">
           <Ico as={DoodleKey} size={15} /> 혼자만 보는 분석이에요. 상대는 몰라요.
@@ -221,13 +247,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   }
 
   // ── 결과 계산 ──
-  const meK = mockIlju(me), themK = mockIlju(them)
-  const eMe = elemOf(meK), eThem = elemOf(themK)
-  const rel = relType(eMe, eThem)
-  const arch = eMe === eThem ? config.sameArch : (config.archetype[pairKey(eMe, eThem)] ?? config.sameArch)
-  const seed = [...(me.name + them.name)].reduce((a, c) => a + c.charCodeAt(0), 0)
-  const score = clamp(config.scoreOpt[rel] + (seed % 7) - 3, 35, 97)
-  const stage = [...config.temp].reverse().find(t => score >= t.min) ?? config.temp[0]
+  const { meK, themK, eMe, eThem, rel, arch, score, stage } = derive(me, them, config)
   const md = mockDist(meK), td = mockDist(themK)
   const open = config.openHeart[eThem]
   const lucky = config.lucky[eThem]
@@ -236,36 +256,20 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
     `${them.name || "그 사람"}은 ${config.persona[eThem].line}이에요. ${open.title} — ${open.line}\n\n` +
     `${config.strategy[rel][0]} 지금 가능성은 ${score}%, 흐름은 충분히 만들 수 있어요.`
 
-  const unlock = () => {
-    setUnlocked(true)
-    if (ai.status !== "idle") return
-    setAi({ status: "loading", text: "" })
-    fetch("/api/some", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        me: { name: me.name, elem: eMe }, them: { name: them.name, elem: eThem },
-        archetype: arch.name, vibe: arch.vibe, score, rel, stage: stage.label,
-      }),
-    })
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then((d: { text?: string }) => d.text ? setAi({ status: "done", text: d.text }) : Promise.reject())
-      .catch(() => setAi({ status: "error", text: "" }))
-  }
-
-  const people: { p: Person; k: string; e: Elem; label: string }[] = [
-    { p: me, k: meK, e: eMe, label: me.name || "나" },
-    { p: them, k: themK, e: eThem, label: them.name || "그 사람" },
+  const people: { k: string; e: Elem; label: string }[] = [
+    { k: meK, e: eMe, label: me.name || "나" },
+    { k: themK, e: eThem, label: them.name || "그 사람" },
   ]
 
   // ── 유료 본문 ──
   const PaidBody = (
     <div className="flex flex-col gap-6">
-      {/* AI 정밀 풀이 — 유료 히어로 */}
+      {/* 정밀 풀이 — 유료 히어로 (줄글) */}
       <div className="rounded-2xl px-4 py-4 flex flex-col gap-3 border-2 border-charcoal"
         style={{ background: "linear-gradient(160deg,#FFF6FA,#FFFDF5)", boxShadow: "0 4px 16px rgba(232,75,106,0.08)" }}>
         <div className="flex items-center gap-2">
           <Ico as={DoodleSparkles} size={20} />
-          <span className="text-[15px] text-charcoal" style={BINGGRAE}>AI 정밀 풀이</span>
+          <span className="text-[15px] text-charcoal" style={BINGGRAE}>사주 정밀 풀이</span>
           <span className="ml-auto flex -space-x-2">
             <Avatar iljuKey={meK} size={26} /><Avatar iljuKey={themK} size={26} />
           </span>
@@ -279,10 +283,10 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
           </div>
         )}
         {ai.status === "done" && <Prose text={ai.text} />}
-        {ai.status === "error" && <Prose text={fallbackProse} />}
+        {(ai.status === "error" || ai.status === "idle") && <Prose text={fallbackProse} />}
       </div>
 
-      {/* 두 사람 프로필 — 생동감 */}
+      {/* 두 사람 프로필 — 일주 캐릭터 */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleHeart}>두 사람 프로필</SectionTitle>
         <div className="grid grid-cols-2 gap-2">
@@ -290,11 +294,11 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
             const per = config.persona[x.e]
             return (
               <div key={i} className="rounded-2xl bg-white border border-charcoal/10 px-3 py-3.5 flex flex-col items-center gap-1.5 text-center">
-                <Avatar iljuKey={x.k} size={56} />
+                <Avatar iljuKey={x.k} size={60} />
                 <span className="text-[14px] font-bold text-charcoal">{x.label}</span>
                 <ElemBadge elem={x.e} />
                 <span className="text-[14px] font-bold" style={{ color: PINK }}>{per.tag}</span>
-                <span className="text-[13px] text-charcoal/60 leading-snug">{per.line}</span>
+                <span className="text-[13px] text-charcoal/60 leading-snug" style={GAEGU}>{per.line}</span>
               </div>
             )
           })}
@@ -308,7 +312,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
           <Avatar iljuKey={themK} size={48} />
           <div className="min-w-0">
             <p className="text-[14px] font-bold text-charcoal">{open.title}</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug">{open.line}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{open.line}</p>
           </div>
         </div>
       </div>
@@ -318,12 +322,12 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#F0FFF4", border: "1.5px solid #86EFAC" }}>
           <Ico as={DoodleHeart} size={18} />
           <div><p className="text-[14px] font-bold text-charcoal">끌리는 포인트</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug">{config.chemi[rel].good}</p></div>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.chemi[rel].good}</p></div>
         </div>
         <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
           <Ico as={DoodleLightning} size={18} />
           <div><p className="text-[14px] font-bold text-charcoal">어긋나기 쉬운 포인트</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug">{config.chemi[rel].care}</p></div>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.chemi[rel].care}</p></div>
         </div>
       </div>
 
@@ -368,7 +372,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
                 <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
                   <div className="h-full rounded-full" style={{ width: `${v}%`, background: v >= 80 ? PINK : v >= 65 ? "#FBBF24" : "#94A3B8" }} />
                 </div>
-                <p className="text-[13px] text-text-muted leading-snug">{s.line}</p>
+                <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>{s.line}</p>
               </div>
             )
           })}
@@ -382,7 +386,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
           {config.strategy[rel].map((s, i) => (
             <div key={i} className="flex items-start gap-2.5">
               <span className="w-5 h-5 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: PINK }}>{i + 1}</span>
-              <p className="text-[14px] text-charcoal/80 leading-snug">{s}</p>
+              <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{s}</p>
             </div>
           ))}
         </div>
@@ -395,8 +399,8 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
           <Ico as={DoodleCalendar} size={20} />
           <div>
             <p className="text-[14px] font-bold text-charcoal">{config.timing.when}</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug">{config.timing.line}</p>
-            <p className="text-[13px] text-charcoal/50 leading-snug mt-1">피할 때 · {config.timing.avoid}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.timing.line}</p>
+            <p className="text-[13px] text-charcoal/50 leading-snug mt-1" style={GAEGU}>피할 때 · {config.timing.avoid}</p>
           </div>
         </div>
       </div>
@@ -405,7 +409,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
       <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#FEF2F2", border: "1.5px solid #FCA5A5" }}>
         <Ico as={DoodleQuestionMark} size={18} />
         <div><p className="text-[14px] font-bold text-charcoal">이건 역효과예요</p>
-          <p className="text-[14px] text-charcoal/70 leading-snug">{config.anti[eThem]}</p></div>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.anti[eThem]}</p></div>
       </div>
 
       {/* 모드 전용 (썸=밀당 / 짝사랑=현실·위로) */}
@@ -415,7 +419,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
           {config.extra.a.map((row, i) => (
             <div key={i} className="flex items-start gap-3 py-2.5 border-b border-charcoal/5 last:border-0">
               <span className="text-[14px] font-bold text-charcoal shrink-0 w-14">{row.k}</span>
-              <span className="text-[14px] text-charcoal/70 leading-snug">{row.v}</span>
+              <span className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{row.v}</span>
             </div>
           ))}
         </div>
@@ -482,7 +486,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
           </div>
           <div className="flex flex-col gap-1.5">
             <span className="self-start px-2.5 py-1 rounded-full text-[13px] font-bold text-white" style={{ background: PINK }}>{stage.label}</span>
-            <p className="text-[14px] text-charcoal/70 leading-snug">{stage.line}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{stage.line}</p>
           </div>
         </div>
       </div>
@@ -498,15 +502,15 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
             <div className="w-[88%] rounded-2xl bg-white border-2 border-charcoal px-5 py-5 flex flex-col items-center gap-2.5 text-center"
               style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.10)" }}>
               <Ico as={DoodleKey} size={36} />
-              <p className="text-[16px] text-charcoal" style={BINGGRAE}>AI 정밀 풀이 잠금 해제</p>
+              <p className="text-[16px] text-charcoal" style={BINGGRAE}>정밀 풀이 잠금 해제</p>
               <div className="flex flex-col gap-1.5 w-full py-1">
-                {["AI가 둘 사주를 읽은 정밀 풀이", `${them.name || "그 사람"} 마음 여는 법 · 다가가는 전략`, "진전·고백 타이밍과 밀당 가이드"].map((t, i) => (
+                {["둘 사주를 깊이 읽은 정밀 풀이", `${them.name || "그 사람"} 마음 여는 법 · 다가가는 전략`, "진전·고백 타이밍과 밀당 가이드"].map((t, i) => (
                   <div key={i} className="flex items-center gap-2 text-[13px] text-charcoal/70">
                     <Ico as={DoodleHeart} size={13} /> {t}
                   </div>
                 ))}
               </div>
-              <button onClick={unlock}
+              <button onClick={() => setUnlocked(true)}
                 className="w-full h-[52px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal mt-0.5"
                 style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
                 {config.price} 결제하고 전체 보기
