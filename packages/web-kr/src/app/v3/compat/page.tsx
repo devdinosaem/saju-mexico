@@ -320,6 +320,11 @@ export default function CompatFunnelPage() {
   const miss = ELEMS.filter(e => d[e] === 0)
   const maxCount = Math.max(...ELEMS.map(e => d[e]), 1)
   const others = parts.filter(p => !p.me)
+  // 공주(여)/왕자(남) 팔자 — 일주 접미사로 성별, 귀티 점수 최고 1명씩
+  const royalty = (k: string) => k.charCodeAt(0) * 3 + (k.charCodeAt(1) || 0) + (elemOf(k) === "금" || elemOf(k) === "수" ? 12 : 0)
+  const topOf = (arr: Participant[]) => (arr.length ? arr.reduce((a, b) => (royalty(b.iljuKey) > royalty(a.iljuKey) ? b : a)) : null)
+  const princess = topOf(parts.filter(p => p.iljuKey.endsWith("-f")))
+  const prince = topOf(parts.filter(p => !p.iljuKey.endsWith("-f")))
 
   return (
     <div className="flex flex-col gap-6 pt-4 pb-10">
@@ -351,6 +356,37 @@ export default function CompatFunnelPage() {
           })}
         </div>
       </div>
+
+      {/* 공주·왕자 팔자 — 성별별 1명 (여만→공주만, 남만→왕자만, 혼합→각 1) */}
+      {(princess || prince) && (
+        <div className="flex flex-col gap-2.5">
+          <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleCrown} size={18} /> 공주·왕자 팔자</p>
+          <div className={`grid ${princess && prince ? "grid-cols-2" : "grid-cols-1"} gap-2`}>
+            {princess && (
+              <div className="rounded-2xl px-3 py-3 flex flex-col items-center gap-1 text-center" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
+                <div className="relative">
+                  <Avatar p={princess} size={48} />
+                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2"><Ico as={DoodleCrown} size={18} /></span>
+                </div>
+                <p className="text-[14px] font-bold text-charcoal mt-0.5">{princess.me ? "나" : princess.name}</p>
+                <p className="text-[14px] font-bold" style={{ color: "#E84B6A" }}>공주 팔자</p>
+                <p className="text-[14px] text-charcoal/60 leading-snug" style={GAEGU}>타고난 귀티, 분위기 담당</p>
+              </div>
+            )}
+            {prince && (
+              <div className="rounded-2xl px-3 py-3 flex flex-col items-center gap-1 text-center" style={{ background: "#EFF6FF", border: "1.5px solid #93C5FD" }}>
+                <div className="relative">
+                  <Avatar p={prince} size={48} />
+                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2"><Ico as={DoodleCrown} size={18} /></span>
+                </div>
+                <p className="text-[14px] font-bold text-charcoal mt-0.5">{prince.me ? "나" : prince.name}</p>
+                <p className="text-[14px] font-bold" style={{ color: "#60A5FA" }}>왕자 팔자</p>
+                <p className="text-[14px] text-charcoal/60 leading-snug" style={GAEGU}>은근한 카리스마, 든든함</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* [3] 오행 밸런스 */}
       <div className="flex flex-col gap-2.5">
