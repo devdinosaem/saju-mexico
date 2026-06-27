@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import SectionCard from "./SectionCard"
-import { BALANCE_MOCK_KEY } from "@/app/v3/charge/page"
+import { BALANCE_MOCK_KEY } from "@/lib/balance"
 
 const QUICK = [0, 0.1, 1, 5, 10, 50, 999]
 

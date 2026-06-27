@@ -3,7 +3,7 @@ import SectionCard from "./SectionCard"
 import { INVENTORY_KEY, DEFAULT_INVENTORY, type UserInventory } from "@/lib/inventory"
 import { WISHLIST_KEY } from "@/lib/wishlist"
 import { STORAGE_KEY as ROOM_KEY } from "@/app/v3/my/_components/MiniRoom"
-import { BALANCE_MOCK_KEY } from "@/app/v3/charge/page"
+import { BALANCE_MOCK_KEY } from "@/lib/balance"
 import { FRIENDS_KEY } from "@/lib/friends"
 
 const AUTH_KEY = "saju-mock-user"

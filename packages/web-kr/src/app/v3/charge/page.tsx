@@ -4,8 +4,7 @@ import Link from "next/link"
 import { PRICES, priceLabel } from "@/lib/prices"
 import { DoodleSparkle, DoodleHeart, DoodleCrown } from "@/components/doodles"
 import { DoodleMyeongtae, DoodleMyeongtaePink } from "@/components/doodle-myeongtae"
-
-export const BALANCE_MOCK_KEY = "saju-balance-mock"
+import { BALANCE_MOCK_KEY } from "@/lib/balance"
 
 const GAEGU: React.CSSProperties = {
   fontFamily: "'Cafe24Dongdong', var(--font-gaegu), cursive",

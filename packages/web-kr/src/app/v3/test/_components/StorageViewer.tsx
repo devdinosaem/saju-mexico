@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import SectionCard from "./SectionCard"
-import { BALANCE_MOCK_KEY } from "@/app/v3/charge/page"
+import { BALANCE_MOCK_KEY } from "@/lib/balance"
 import { FRIENDS_KEY } from "@/lib/friends"
 
 const KEYS = [

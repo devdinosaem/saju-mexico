@@ -4,7 +4,7 @@ import SectionCard from "./SectionCard"
 import { getMockUser, loginMockUser, logoutMockUser, MOCK_AUTH_EVENT, type MockUser } from "@/lib/mockAuth"
 
 export default function AuthSection() {
-  const [user, setUser] = useState<MockUser>({ loggedIn: false, provider: null, birthDate: null })
+  const [user, setUser] = useState<MockUser>({ loggedIn: false, provider: null, birthDate: null, iljuId: null })
 
   useEffect(() => {
     setUser(getMockUser())

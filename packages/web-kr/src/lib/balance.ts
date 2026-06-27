@@ -3,7 +3,8 @@ import { useEffect, useState } from "react"
 import { PRICES } from "./prices"
 
 // 명태 잔액 — charge 페이지/BalanceSection과 동일한 localStorage 키·이벤트 공유
-const KEY = "saju-balance-mock"
+export const BALANCE_MOCK_KEY = "saju-balance-mock"
+const KEY = BALANCE_MOCK_KEY
 const EVENT = "saju-balance-change"
 
 export const CONSULT_COST = PRICES.aiConsultPerTurn // 상담 1턴 비용(0.1명태)

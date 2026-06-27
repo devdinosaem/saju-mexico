@@ -248,7 +248,7 @@ function CardItem({ c, idx }: { c: typeof ALL_ITEMS[number]; idx: number }) {
 
   const name = getIljuType(c.id)?.name ?? c.id
   const ilju = c.id.split("-")[0]
-  const lines = c.label ?? [name]
+  const lines: string[] = (c as { label?: string[] }).label ?? [name]
 
   return (
     <div
@@ -306,7 +306,7 @@ export default function IljuDiscovery() {
   const [sheetOpen, setSheetOpen] = useState(false)
   const [loadingOpen, setLoadingOpen] = useState(false)
   const [revealOpen, setRevealOpen] = useState(false)
-  const [user, setUser] = useState<MockUser>({ loggedIn: false, provider: null, birthDate: null })
+  const [user, setUser] = useState<MockUser>({ loggedIn: false, provider: null, birthDate: null, iljuId: null })
   const loopItems = [...ALL_ITEMS, ...ALL_ITEMS]
 
   useLayoutEffect(() => {
