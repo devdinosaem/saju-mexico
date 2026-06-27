@@ -260,6 +260,12 @@ const GAEGU: React.CSSProperties = {
 
 ## 인증 (Auth) — 목업 → 실제 구현 전환 가이드
 
+> **현재 상태 (2026-06): Supabase + 카카오 OAuth 스캐폴딩 완료.** 자세한 셋업·진행은 `SUPABASE-SETUP.md` 참고.
+> - 인프라: `@supabase/supabase-js`+`@supabase/ssr`, `lib/supabase/{client,server,middleware,auth}`, 스키마/RLS `supabase/migrations/0001_init.sql`(profiles/friendships/rooms/guestbook_entries).
+> - 로그인: `LoginSheet` 카카오 버튼 → `signInWithKakao`, `/auth/callback` 라우트, `UserContext`가 세션 기반 로그인 상태(설정 시) + mock 폴백.
+> - 남은 것: 카카오 동의항목(닉네임 등) 설정 후 첫 로그인 → `profiles` 생성, 방/친구/방명록을 DB로 이전(Phase 3~4). 그 전까지 데이터는 여전히 localStorage 목업.
+> - env: `NEXT_PUBLIC_SUPABASE_URL/ANON_KEY`(+`SAMPLE_FRIENDS`)는 `.env.local`(git 무시). `env.example` 참고.
+
 ### 현재 목업 구현 (`src/lib/mockAuth.ts`)
 
 로그인/로그아웃 상태를 `localStorage`로 관리. 실제 Supabase 연동 전까지만 사용.
@@ -369,20 +375,23 @@ src/
     v3/                  — 미니홈피 소셜 허브 (리텐션 피처)
       layout.tsx         — BottomNav 포함 레이아웃 (z-50)
       interior/
-        page.tsx         — 메인 피드 (스토리→내 방→방명록 미리보기→상점→친구 방)
-        _data/friendRooms.tsx — 친구 방 공유 데이터 (FRIEND_ROOMS, FaceComponent 타입)
-        [friend]/page.tsx — 친구 방 + 방명록 작성 (z-[100] 오버레이)
+        page.tsx         — 메인 피드 (스토리→내 방→방명록 미리보기→상점→친구 미니홈피)
+        [friend]/page.tsx — 친구 방 + 방명록 작성 (id 라우트)
       my/
         _components/
-          MiniRoom.tsx   — RoomCanvas, RoomChar, SKINS, RoomSkin 타입, MY_GUESTBOOK_KEY
-          StoryRow.tsx   — 스토리 + Face 컴포넌트 (FaceJisu 등 export)
+          MiniRoom.tsx   — RoomCanvas, RoomChar, SKINS, RoomSkin 타입, myGuestbookKey()
+          StoryRow.tsx   — 스토리 (useFriends 기반)
+          DisplayCharacterSheet.tsx — 대표 캐릭터 변경 시트
         room/
-          page.tsx       — 내 방 편집기 (소품/스킨 탭, 드래그 배치)
+          page.tsx       — 내 방 편집기 (소품/캐릭터/스킨 탭, 드래그 배치)
           guestbook/
-            page.tsx     — 내 방명록 전체 보기 (z-[100] 오버레이)
+            page.tsx     — 내 방명록 전체 보기
   components/
     doodles.tsx          — SVG 두들 스티커 19종+
+  hooks/                 — useFriends, useInventory, useMyDisplayCharacter
   lib/
+    friends.ts           — 친구 단일 모델/저장소/샘플 시드
+    supabase/            — client·server·middleware·auth·types (백엔드)
     ilju-types.ts        — 일주 120유형 데이터 (이름/강점/약점/대사/캐치포인트)
     ilju-svg-icons.tsx   — 일주별 SVG 아이콘 레지스트리 (ILJU_SVG_ICONS)
 ```
@@ -665,16 +674,31 @@ import CompatibilityCards from "./_components/CompatibilityCards"
 
 ## v3 미니홈피 개발 규칙
 
+### ⚠️ 친구·일주·캐릭터 데이터 모델 (2026-06 리팩토링 — 필독)
+
+**친구는 단일 모델/단일 소스다.** 더미 `FRIEND_ROOMS`/`friendRooms.tsx`는 **삭제됨.**
+- 모든 화면은 `useFriends()` 훅(`@/hooks/useFriends`)으로만 친구 접근. 모델 `Friend { id, name, iljuKey, room? }`(`@/lib/friends`).
+- 저장소 `saju-custom-friends`, 변경 이벤트 `saju-custom-friends-change`. **매칭·라우트·방명록 키는 id 기준**(`/v3/interior/[id]`, `saju-guestbook-{id}`). 이름으로 키 만들지 말 것.
+- 친구 정렬은 `useFriends()`가 **최근 활동순**(방명록 최신 글/추가 시각)으로 처리 → 스토리 왼쪽=최신, 미니홈피 목록 위=최신.
+- 샘플 친구(지수 등)는 `NEXT_PUBLIC_SAMPLE_FRIENDS=1`(테스트)에서만 시드. 운영엔 안 뜸.
+
+**일주(정체성) vs 대표 캐릭터(외형) 분리 — 전역 룰:**
+- 일주는 1개(`user.iljuId`/`profiles.ilju_key`), 불변, 사주 로직 전부. 방 캐릭터는 N개(`RoomData.chars`).
+- 대표 캐릭터 = 소셜 아바타용(`inventory.displayCharacterKey`, 기본=일주). 변경: `useMyDisplayCharacter()` 훅 / `DisplayCharacterSheet`.
+- **아바타 해석 순서:** ①일주 없음→`DEFAULT_PROFILE_IMG` ②소셜 맥락(프로필·방명록 작성자)→대표 캐릭터 ③사주 정체성 맥락(일주 라벨·운세·상담)→태생 일주.
+
 ### 방명록 작성자 아바타 — 고정 규칙
 
-방명록 엔트리의 작성자 아바타는 **반드시 일주 캐릭터 Face 컴포넌트를 사용**한다. 이모지(🙂 등) 절대 금지.
+작성자 아바타는 **일주 캐릭터 SVG**(`ILJU_SVG_ICONS`)를 쓴다. 이모지 절대 금지.
 
 ```tsx
-const friend = FRIEND_ROOMS.find(f => f.name === entry.author)
-// ✅ Face 컴포넌트 사용
-{friend ? <friend.Face s={28} /> : <span>{entry.author[0]}</span>}
-// ❌ 이모지 사용 금지
-{entry.author[0] === "지수" ? "🙂" : "..."}
+// 친구 글: useFriends()에서 찾아 iljuKey로 렌더
+const friend = friends.find(f => f.name === entry.author)
+const fn = friend ? ILJU_SVG_ICONS[friend.iljuKey] : null
+{fn ? <div className="w-full h-full">{fn(getIljuProfileViewBox(friend!.iljuKey))}</div> : <span>{entry.author[0]}</span>}
+
+// 내 글: 대표 캐릭터(소셜) 사용 — useMyDisplayCharacter()
+const meDisplayKey = useMyDisplayCharacter() ?? ""
 ```
 
 ### DoodleBox 정렬 규칙
@@ -733,10 +757,14 @@ RoomCanvas는 `touchAction: "none"` + 포인터 캡처를 사용하므로 트레
 
 | 키 | 내용 |
 |---|---|
-| `saju-miniroom-v1` | 내 방 데이터 (stickers, charPos, skinId) |
-| `saju-guestbook-경진` | 내 방명록 (MY_GUESTBOOK_KEY) |
-| `saju-guestbook-경진-seen` | 읽은 방명록 수 (빨콩 계산용) |
-| `saju-guestbook-{친구이름}` | 친구 방 방명록 |
+| `saju-miniroom-v1` | 내 방 데이터 (stickers, chars[], charPos, skinId) |
+| `saju-inventory-v1` | 인벤토리 (소유 소품/스킨/캐릭터, `displayCharacterKey`) |
+| `saju-custom-friends` | 친구 단일 저장소 (`useFriends`, id 기준) |
+| `saju-guestbook-{내이름}` | 내 방명록 (`myGuestbookKey(name)`) |
+| `saju-guestbook-{내이름}-seen` | 읽은 방명록 수 (빨콩 계산용) |
+| `saju-guestbook-{친구id}` | 친구 방 방명록 (**이름 아닌 id**) |
+
+> ⚠️ 일주 식별은 단일 소스(`user.iljuId`)로 통일됨. `inv.iljuKey`는 `useInventory()`가 `user.ilju`에서 주입(하드코딩 아님).
 
 ### 스킨 시스템
 
