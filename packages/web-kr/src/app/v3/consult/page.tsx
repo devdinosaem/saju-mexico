@@ -1,6 +1,5 @@
 "use client"
 import React, { useState, useRef } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { PRICES, WON_PER_MYONGTAE } from "@/lib/prices"
@@ -136,6 +135,13 @@ const TOPICS = [
 ]
 
 const DAYS_KO = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"]
+
+// 일주 카드가 없을 때 보여줄 디폴트 캐릭터·안내
+const DEFAULT_AVATAR_KEY = "갑오-m"
+const GUIDE_TEXT_NO_ILJU =
+  "안녕! 나는 네 사주 속에 살게 될 캐릭터야.\n\n" +
+  "근데 아직 네가 누군지 몰라서, 지금은 제대로 된 얘기를 못 해주겠어. 아래에서 사주카드를 뽑으면 나는 너만의 캐릭터로 바뀌고, 그때부터 네 사주를 보면서 진짜 네 얘기를 들려줄게.\n\n" +
+  "먼저 카드부터 뽑고 올래?"
 
 function generateGreeting(firstName: string, ilju: IljuType, day: string, timeLabel: string): string {
   const lastCode = firstName.charCodeAt(firstName.length - 1)
@@ -337,33 +343,6 @@ function renderInline(text: string): React.ReactNode[] {
   )
 }
 
-// ── 잠금 화면 ──────────────────────────────────────────────────────
-function LockedScreen() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center py-8">
-      <div className="opacity-20 blur-[3px] pointer-events-none">
-        <div
-          className="w-[80px] h-[80px] rounded-full overflow-hidden mx-auto border-2 border-charcoal/15"
-          style={{ background: ELEM_BG["목"] }}
-        >
-          {ILJU_SVG_ICONS["갑오-m"]?.(getIljuProfileViewBox("갑오-m"))}
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <p className="text-[22px] font-bold text-charcoal" style={{ fontFamily: "'BinggraeTaom', sans-serif" }}>
-          아직 나를 모르잖아
-        </p>
-        <p className="text-[13px] text-text-muted leading-relaxed">
-          사주카드를 먼저 뽑아야<br />대화할 수 있어
-        </p>
-      </div>
-      <Link href="/v3/shop" className="px-6 py-3 rounded-xl bg-pink text-cream text-sm font-bold active:opacity-80 border-2 border-charcoal">
-        내 사주카드 뽑기 →
-      </Link>
-    </div>
-  )
-}
-
 // ── 채팅 화면 ───────────────────────────────────────────────────────
 export default function ConsultPage() {
   const router = useRouter()
@@ -384,12 +363,14 @@ export default function ConsultPage() {
 
   const elemKey = ilju?.stemElement.charAt(0) ?? "목"
   const iljuKey = ilju?.id ?? ""
-  const iljuName = ilju ? `${ilju.ilju}(${ilju.hanja})` : ""
-  const iljuLabel = ilju?.name ?? ""
+  const avatarKey = iljuKey || DEFAULT_AVATAR_KEY   // 일주 없으면 디폴트 캐릭터
+  const headerName = ilju ? `${ilju.ilju}(${ilju.hanja}) · 나` : "사주 친구"
+  const headerLabel = ilju ? (ilju.name ?? "") : "사주카드를 뽑으면 시작돼"
 
-  // 잔액 게이팅: 0.1명태 미만이면 입력 비활성 + 충전 플로팅
-  const canChat = balance >= CONSULT_COST - 1e-9
-  const hasStarted = msgs.some(m => m.role === "user") // 대화 시작 여부(플로팅 문구 분기)
+  // 게이팅: 일주 카드 없음(card) > 잔액 부족(charge) > 정상(null)
+  const gate: "card" | "charge" | null =
+    !hasIlju ? "card" : (balance < CONSULT_COST - 1e-9 ? "charge" : null)
+  const hasStarted = msgs.some(m => m.role === "user") // 대화 시작 여부(충전 플로팅 문구 분기)
 
   function handleInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setInput(e.target.value)
@@ -427,7 +408,11 @@ export default function ConsultPage() {
   }, [])
 
   React.useEffect(() => {
-    if (!hasIlju || !ilju || !user.birthDate) return
+    if (!hasIlju || !ilju || !user.birthDate) {
+      // 일주 카드 없음 → 디폴트 캐릭터 안내 (잠금화면 대신)
+      if (!hasIlju) setMsgs([{ role: "char", text: GUIDE_TEXT_NO_ILJU }])
+      return
+    }
     const name = user.birthDate.name
     const firstName = name.length >= 3 ? name.slice(1) : name
     const now = new Date()
@@ -439,8 +424,6 @@ export default function ConsultPage() {
       h < 22 ? "저녁" : "밤"
     setMsgs([{ role: "char", text: generateGreeting(firstName, ilju, day, timeLabel) }])
   }, [hasIlju])
-
-  if (!hasIlju) return <LockedScreen />
 
   async function send() {
     if (!input.trim() || isLoading || !ilju) return
@@ -549,19 +532,21 @@ export default function ConsultPage() {
               className="w-[56px] h-[56px] rounded-full overflow-hidden border-2 border-charcoal/15 shrink-0"
               style={{ background: ELEM_BG[elemKey] }}
             >
-              {ILJU_SVG_ICONS[iljuKey]?.(getIljuProfileViewBox(iljuKey))}
+              {ILJU_SVG_ICONS[avatarKey]?.(getIljuProfileViewBox(avatarKey))}
             </div>
             <div>
-              <p className="text-[15px] font-bold text-charcoal">{iljuName} · 나</p>
-              <p className="text-[11px] text-text-muted">{iljuLabel}</p>
+              <p className="text-[15px] font-bold text-charcoal">{headerName}</p>
+              <p className="text-[11px] text-text-muted">{headerLabel}</p>
             </div>
-            <button
-              onClick={() => router.push("/v3/charge")}
-              className="ml-auto flex flex-col items-end gap-0.5 bg-charcoal/5 rounded-xl px-2.5 py-1 shrink-0 active:opacity-70 transition-opacity"
-            >
-              <span className="text-[11px] font-bold text-charcoal">잔액 {balance}명태</span>
-              <span className="text-[9px] text-text-muted">1회 {PRICES.aiConsultPerTurn}명태({Math.round(PRICES.aiConsultPerTurn * WON_PER_MYONGTAE)}원)</span>
-            </button>
+            {hasIlju && (
+              <button
+                onClick={() => router.push("/v3/charge")}
+                className="ml-auto flex flex-col items-end gap-0.5 bg-charcoal/5 rounded-xl px-2.5 py-1 shrink-0 active:opacity-70 transition-opacity"
+              >
+                <span className="text-[11px] font-bold text-charcoal">잔액 {balance}명태</span>
+                <span className="text-[9px] text-text-muted">1회 {PRICES.aiConsultPerTurn}명태({Math.round(PRICES.aiConsultPerTurn * WON_PER_MYONGTAE)}원)</span>
+              </button>
+            )}
           </div>
           {/* 주제 칩 */}
           <div className="flex gap-2 overflow-x-auto pb-3 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: "none" }}>
@@ -601,7 +586,7 @@ export default function ConsultPage() {
                 className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-charcoal/10"
                 style={{ background: ELEM_BG[elemKey] }}
               >
-                {ILJU_SVG_ICONS[iljuKey]?.(getIljuProfileViewBox(iljuKey))}
+                {ILJU_SVG_ICONS[avatarKey]?.(getIljuProfileViewBox(avatarKey))}
               </div>
               <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-white border border-charcoal/10 px-3.5 py-2.5">
                 {msg.text
@@ -626,14 +611,16 @@ export default function ConsultPage() {
 
       {/* 입력바 — 하단 내비게이터 바로 위에 붙임 */}
       <div className="fixed left-0 right-0 z-40 bg-cream border-t border-charcoal/10" style={{ bottom: navH }}>
-        {/* 잔액 부족 시: 입력창 위에 충전 플로팅 */}
-        {!canChat && (
+        {/* 게이팅 플로팅: 카드 없음 → 카드 뽑기 / 잔액 부족 → 충전 */}
+        {gate && (
           <div className="absolute bottom-full left-0 right-0 flex justify-center pb-3 px-4 pointer-events-none">
             <button
-              onClick={() => router.push("/v3/charge")}
+              onClick={() => router.push(gate === "card" ? "/v3/shop" : "/v3/charge")}
               className="pointer-events-auto max-w-[480px] px-5 py-3 rounded-full bg-pink text-cream text-[13px] font-bold border-2 border-charcoal shadow-lg active:scale-95 transition-transform"
             >
-              명태 충전하고 {hasStarted ? "이어가기" : "대화 시작하기"} →
+              {gate === "card"
+                ? "내 사주카드 뽑기 →"
+                : `명태 충전하고 ${hasStarted ? "이어가기" : "대화 시작하기"} →`}
             </button>
           </div>
         )}
@@ -644,12 +631,12 @@ export default function ConsultPage() {
               value={input}
               onChange={handleInputChange}
               onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send() } }}
-              placeholder={canChat ? "고민을 털어놔봐..." : "명태를 충전하면 대화할 수 있어"}
+              placeholder={!gate ? "고민을 털어놔봐..." : gate === "card" ? "사주카드를 뽑으면 대화할 수 있어" : "명태를 충전하면 대화할 수 있어"}
               rows={1}
               maxLength={500}
-              disabled={!canChat}
+              disabled={!!gate}
               style={{ maxHeight: "104px", resize: "none" }}
-              className={`w-full bg-white border border-charcoal/15 rounded-xl pl-3.5 pr-14 py-2.5 text-[13px] text-charcoal placeholder:text-charcoal/30 outline-none focus:border-pink/50 transition-all overflow-y-auto leading-relaxed ${!canChat ? "opacity-40 pointer-events-none" : ""}`}
+              className={`w-full bg-white border border-charcoal/15 rounded-xl pl-3.5 pr-14 py-2.5 text-[13px] text-charcoal placeholder:text-charcoal/30 outline-none focus:border-pink/50 transition-all overflow-y-auto leading-relaxed ${gate ? "opacity-40 pointer-events-none" : ""}`}
             />
             <span className={`absolute top-1/2 -translate-y-1/2 right-3 text-[10px] pointer-events-none ${input.length >= 450 ? "text-pink font-bold" : "text-charcoal/30"}`}>
               {input.length}/500
@@ -657,7 +644,7 @@ export default function ConsultPage() {
           </div>
           <button
             onClick={send}
-            disabled={!input.trim() || isLoading || !canChat}
+            disabled={!input.trim() || isLoading || !!gate}
             className="w-10 h-10 rounded-xl bg-pink flex items-center justify-center shrink-0 active:opacity-80 disabled:opacity-30 transition-opacity"
           >
             <span className="text-cream text-[16px] leading-none">→</span>
