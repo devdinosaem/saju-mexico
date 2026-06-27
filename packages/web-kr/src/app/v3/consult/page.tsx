@@ -5,7 +5,7 @@ import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { PRICES, WON_PER_MYONGTAE } from "@/lib/prices"
 import { useBalance, spend, refund, CONSULT_COST } from "@/lib/balance"
 import { DoodleBox, DoodleSparkle, DoodleHeart, DoodleSuitcase, DoodleCrystal, DoodleMagicWand, DoodleStar, DoodleMoon } from "@/components/doodles"
-import { useUser } from "@/lib/UserContext"
+import { useUser, DEFAULT_PROFILE_IMG } from "@/lib/UserContext"
 import type { IljuType } from "@/lib/ilju-types"
 import type { MockUser } from "@/lib/mockAuth"
 import { calculateSaju, STEM_KOREAN, BRANCH_KOREAN } from "manseryeok"
@@ -136,8 +136,7 @@ const TOPICS = [
 
 const DAYS_KO = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"]
 
-// 일주 카드가 없을 때 보여줄 디폴트 캐릭터·안내
-const DEFAULT_AVATAR_KEY = "갑오-m"
+// 일주 카드가 없을 때 보여줄 안내 (캐릭터는 DEFAULT_PROFILE_IMG 사용)
 const GUIDE_TEXT_NO_ILJU =
   "안녕! 나는 네 사주 속에 살게 될 캐릭터야.\n\n" +
   "근데 아직 네가 누군지 몰라서, 지금은 제대로 된 얘기를 못 해주겠어. 아래에서 사주카드를 뽑으면 나는 너만의 캐릭터로 바뀌고, 그때부터 네 사주를 보면서 진짜 네 얘기를 들려줄게.\n\n" +
@@ -363,7 +362,11 @@ export default function ConsultPage() {
 
   const elemKey = ilju?.stemElement.charAt(0) ?? "목"
   const iljuKey = ilju?.id ?? ""
-  const avatarKey = iljuKey || DEFAULT_AVATAR_KEY   // 일주 없으면 디폴트 캐릭터
+  // 일주 있으면 해당 캐릭터, 없으면 회색 기본 캐릭터 이미지
+  const renderAvatar = () =>
+    ilju
+      ? ILJU_SVG_ICONS[iljuKey]?.(getIljuProfileViewBox(iljuKey))
+      : <img src={DEFAULT_PROFILE_IMG} alt="" className="w-full h-full object-cover" />
   const headerName = ilju ? `${ilju.ilju}(${ilju.hanja}) · 나` : "사주 친구"
   const headerLabel = ilju ? (ilju.name ?? "") : "사주카드를 뽑으면 시작돼"
 
@@ -532,7 +535,7 @@ export default function ConsultPage() {
               className="w-[56px] h-[56px] rounded-full overflow-hidden border-2 border-charcoal/15 shrink-0"
               style={{ background: ELEM_BG[elemKey] }}
             >
-              {ILJU_SVG_ICONS[avatarKey]?.(getIljuProfileViewBox(avatarKey))}
+              {renderAvatar()}
             </div>
             <div>
               <p className="text-[15px] font-bold text-charcoal">{headerName}</p>
@@ -586,7 +589,7 @@ export default function ConsultPage() {
                 className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-charcoal/10"
                 style={{ background: ELEM_BG[elemKey] }}
               >
-                {ILJU_SVG_ICONS[avatarKey]?.(getIljuProfileViewBox(avatarKey))}
+                {renderAvatar()}
               </div>
               <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-white border border-charcoal/10 px-3.5 py-2.5">
                 {msg.text
