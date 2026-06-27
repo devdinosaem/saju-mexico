@@ -159,10 +159,23 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   // ── 랜딩 ──
   if (step === "landing") {
     return (
-      <div className="flex flex-col items-center gap-5 pt-4 text-center">
-        <Ico as={config.landing.hi} size={56} />
-        <p className="text-[21px] text-charcoal leading-snug" style={BINGGRAE}>{config.landing.line}</p>
-        <div className="w-full rounded-2xl bg-white border border-charcoal/10 px-4 py-4">
+      <div className="flex flex-col items-center gap-5 pt-6 text-center">
+        <p className="text-[20px] text-charcoal flex items-center justify-center gap-1.5 flex-wrap" style={BINGGRAE}>
+          {config.landing.line} <Ico as={config.landing.hi} size={22} />
+        </p>
+        {/* 나 / 그 사람 마주보기 — 둘 다 미입력, 빨간 실로 연결 */}
+        <div className="flex items-center gap-3">
+          <div className="rounded-full flex items-center justify-center" style={{ width: 82, height: 82, background: "#F1F5F9", border: "2px dashed #CBD5E1" }}>
+            <span className="text-[22px] text-charcoal/30" style={BINGGRAE}>나</span>
+          </div>
+          <Ico as={DoodleRedString} size={28} />
+          <div className="rounded-full flex items-center justify-center" style={{ width: 82, height: 82, background: "#F1F5F9", border: "2px dashed #CBD5E1" }}>
+            <span className="text-[26px] text-charcoal/25">?</span>
+          </div>
+        </div>
+        {/* 안내 카드 — 핑크 틴트 + 아이콘 */}
+        <div className="w-full rounded-2xl px-4 py-4 flex items-start gap-2.5 text-left" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
+          <Ico as={DoodleTaegeuk} size={20} />
           <p className="text-[14px] text-charcoal/75 leading-relaxed">{config.landing.sub}</p>
         </div>
         <div className="flex items-center gap-1.5 text-[13px] text-text-muted">
