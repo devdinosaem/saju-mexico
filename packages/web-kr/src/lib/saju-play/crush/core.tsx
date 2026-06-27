@@ -12,6 +12,7 @@ import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf, relType, ELEMS, pairKey, mockDist, clamp, type Elem, type Rel } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
 import { useUser } from "@/lib/UserContext"
+import { buildRealCompat, to24h, type Birth, type Gender } from "./saju-adapter"
 import {
   DoodleHeart, DoodleSparkle, DoodleSparkles, DoodleSpeechBubble, DoodlePencil, DoodlePolaroid,
   DoodleLightning, DoodleKey, DoodleHourglass, DoodleCalendar, DoodleTaegeuk,
@@ -82,16 +83,29 @@ function mockIlju(p: Person): string {
   return base[seed % base.length]
 }
 
-// 결과 파생 — 나는 계정 일주(myKey), 그 사람만 입력(렌더·연출 동일 결과 보장)
-function derive(myKey: string, them: Person, config: CrushConfig) {
-  const meK = myKey, themK = mockIlju(them)
-  const eMe = elemOf(meK), eThem = elemOf(themK)
+// 결과 파생 — 나=계정 일주/생일, 그 사람만 입력. 둘 생일 다 있으면 진짜 사주(compat-engine),
+// 아니면 오행 fallback. 렌더·연출 동일 결과 보장(결정적).
+function derive(myKey: string, myBirth: Birth | null, myGender: Gender, them: Person, config: CrushConfig) {
+  const meK = myKey
+  const eMe = elemOf(meK)
+  const crushReady = them.birth.y.length === 4 && !!them.birth.m && !!them.birth.d
+  const real = (myBirth && crushReady)
+    ? buildRealCompat(myBirth, myGender,
+        { year: +them.birth.y, month: +them.birth.m, day: +them.birth.d, hour: 12, minute: 0 }, them.gender)
+    : null
+  const themK = real ? resolveCharKey(real.themKey) : mockIlju(them)
+  const eThem = elemOf(themK)
   const rel = relType(eMe, eThem)
+  let score: number, compatBlock: string | null
+  if (real) { score = real.score; compatBlock = real.compatBlock }
+  else {
+    const seed = [...(myKey + them.name)].reduce((a, c) => a + c.charCodeAt(0), 0)
+    score = clamp(config.scoreOpt[rel] + (seed % 7) - 3, 35, 97)
+    compatBlock = null
+  }
   const arch = eMe === eThem ? config.sameArch : (config.archetype[pairKey(eMe, eThem)] ?? config.sameArch)
-  const seed = [...(myKey + them.name)].reduce((a, c) => a + c.charCodeAt(0), 0)
-  const score = clamp(config.scoreOpt[rel] + (seed % 7) - 3, 35, 97)
   const stage = [...config.temp].reverse().find(t => score >= t.min) ?? config.temp[0]
-  return { meK, themK, eMe, eThem, rel, arch, score, stage }
+  return { meK, themK, eMe, eThem, rel, arch, score, stage, compatBlock }
 }
 
 function Avatar({ iljuKey, size = 72 }: { iljuKey: string; size?: number }) {
@@ -172,8 +186,13 @@ const emptyP = (): Person => ({ name: "", birth: { y: "", m: "", d: "" }, gender
 const validP = (p: Person) => p.name.trim() !== "" && p.birth.y.length === 4 && !!p.birth.m && !!p.birth.d
 
 export default function CrushFunnel({ config }: { config: CrushConfig }) {
-  const { ilju } = useUser()
+  const { user, ilju } = useUser()
   const myKey = resolveCharKey(ilju?.id)
+  const bd = user.birthDate
+  const myBirth: Birth | null = bd
+    ? { year: +bd.year, month: +bd.month, day: +bd.day, hour: to24h(bd.hour, bd.ampm), minute: parseInt(bd.minute) || 0 }
+    : null
+  const myGender: Gender = bd?.gender === "F" ? "F" : "M"
   const [step, setStep] = useState<Step>("landing")
   const [them, setThem] = useState<Person>(() => ({ ...emptyP(), gender: "F" }))
   const [unlocked, setUnlocked] = useState(false)
@@ -182,13 +201,14 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   // 연출 단계에서 미리 풀이를 돌린다 → 결과 진입 시 보통 이미 완성
   const start = () => {
     setStep("loading")
-    const d = derive(myKey, them, config)
+    const d = derive(myKey, myBirth, myGender, them, config)
     setAi({ status: "loading", text: "" })
     fetch("/api/some", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         me: { name: "나", elem: d.eMe }, them: { name: them.name, elem: d.eThem },
         archetype: d.arch.name, vibe: d.arch.vibe, score: d.score, rel: d.rel, stage: d.stage.label,
+        compatBlock: d.compatBlock ?? undefined,
       }),
     })
       .then(r => r.ok ? r.json() : Promise.reject())
@@ -268,7 +288,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   }
 
   // ── 결과 계산 ──
-  const { meK, themK, eMe, eThem, rel, arch, score, stage } = derive(myKey, them, config)
+  const { meK, themK, eMe, eThem, rel, arch, score, stage } = derive(myKey, myBirth, myGender, them, config)
   const md = mockDist(meK), td = mockDist(themK)
   const open = config.openHeart[eThem]
   const lucky = config.lucky[eThem]
