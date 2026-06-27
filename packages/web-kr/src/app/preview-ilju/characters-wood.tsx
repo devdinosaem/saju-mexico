@@ -191,7 +191,9 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
               <path d="M9.5 30 C9.5 30 1 18 4 8 C6 2 9.5 4 9.5 4 C9.5 2 11 0 13 6 C17 14 15 6 14 14 C18 10 17 20 13 24 C15 18 12 26 9.5 30Z" fill="#F97316" stroke="#2D2D2D" strokeWidth="1" />
               <path d="M9.5 30 C9.5 30 5 20 7 12 A4 4 0 0 1 12 12 C14 20 9.5 30 9.5 30Z" fill="#FACC15" opacity="0.9" />
               <circle cx="9.5" cy="6" r="2.5" fill="#FDE68A" opacity="0.8" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <path d="M24 28 Q25 33 28 32 Q34 34 40 32 Q46 34 52 32 Q55 33 56 28 Q57 21 40 20 Q24 21 24 28 Z" fill="#2D2D2D" />
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("을축-m")!.emoji} {getIljuType("을축-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("을축-m")!.id} · {getIljuType("을축-m")!.stemElement}</p>
@@ -573,7 +575,9 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
               {/* 왼팔 → 알통 (이겨낸다 포즈) */}
               <path d="M26 58 Q20 56 18 50 Q17 46 21 46" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
               <circle cx="22" cy="49" r="3.5" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.2" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <path d="M23 27 Q25 33 28 29 Q30 34 33 29 Q36 34 39 29 Q42 34 45 29 Q48 34 51 29 Q54 33 57 27 Q58 20 40 19 Q22 20 23 27 Z" fill="#4ADE80" />
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("갑신-m")!.emoji} {getIljuType("갑신-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("갑신-m")!.id} · {getIljuType("갑신-m")!.stemElement}</p>

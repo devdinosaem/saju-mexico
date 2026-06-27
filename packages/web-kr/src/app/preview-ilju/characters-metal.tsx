@@ -67,7 +67,9 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               {/* 파이팅 이펙트 */}
               <path d="M3 44 L1 48 L5 47 L2 52" stroke="#FACC15" strokeWidth="1.2" fill="none" strokeLinejoin="round" opacity="0.6" />
               <path d="M77 44 L79 48 L75 47 L78 52" stroke="#FACC15" strokeWidth="1.2" fill="none" strokeLinejoin="round" opacity="0.5" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <path d="M23 29 Q25 34 28 31 Q30 35 33 31 Q36 35 39 31 Q42 35 45 31 Q48 35 51 31 Q54 34 57 29 Q58 22 40 21 Q22 22 23 29 Z" fill="#1F2937" />
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("경인-m")!.emoji} {getIljuType("경인-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("경인-m")!.id} · {getIljuType("경인-m")!.stemElement}</p>
@@ -181,7 +183,12 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <path d="M63 44 L73 24" stroke="#F8FAFC" strokeWidth="1" strokeLinecap="round" opacity="0.8" />
               <path d="M58 49 L67 44" stroke="#FACC15" strokeWidth="2.5" strokeLinecap="round" />
               <circle cx="61" cy="48" r="1.5" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.6" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <>
+        <path d="M24 27 Q26 31 31 29 Q38 32 46 29 Q52 31 56 26 Q57 20 40 19 Q25 20 24 27 Z" fill="#D1D5DB" />
+        <path d="M47 22 Q42 27 36 30" stroke="#94A3B8" strokeWidth="0.9" fill="none" opacity="0.6" />
+      </>
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("신묘-m")!.emoji} {getIljuType("신묘-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("신묘-m")!.id} · {getIljuType("신묘-m")!.stemElement}</p>
@@ -294,7 +301,9 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <path d="M63 58 L63 63 M63 58 L66 58 M63 60.5 L65 60.5" stroke="#2D2D2D" strokeWidth="0.9" strokeLinecap="round" />
               <path d="M69 58 L69 63 M67.5 58 L70.5 58" stroke="#2D2D2D" strokeWidth="0.9" strokeLinecap="round" />
               <path d="M73 58 L75 63 M77 58 L75 63" stroke="#2D2D2D" strokeWidth="0.9" strokeLinecap="round" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <path d="M24 27 Q25 32 28 31 Q34 33 40 31 Q46 33 52 31 Q55 32 56 27 Q57 20 40 19 Q24 20 24 27 Z" fill="#1F2937" />
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("경자-m")!.emoji} {getIljuType("경자-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("경자-m")!.id} · {getIljuType("경자-m")!.stemElement}</p>
@@ -517,7 +526,9 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <path d="M66 56 L66 67" stroke="#94A3B8" strokeWidth="1" />
               <path d="M62 60 L70 60" stroke="#94A3B8" strokeWidth="1" />
               <circle cx="66" cy="60" r="1.5" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.6" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <path d="M24 29 Q26 34 33 32 Q44 35 51 29 Q55 26 54 31 Q52 35 56 31 Q58 22 40 21 Q25 22 24 29 Z" fill="#1F2937" />
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("경술-m")!.emoji} {getIljuType("경술-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("경술-m")!.id} · {getIljuType("경술-m")!.stemElement}</p>
@@ -641,7 +652,12 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="73" cy="24" r="1.8" fill="#0F766E" opacity="0.4" />
               <path d="M8 28 L8 20" stroke="#0F766E" strokeWidth="1" opacity="0.4" />
               <circle cx="6" cy="29" r="2" fill="#0F766E" opacity="0.3" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <>
+        <path d="M24 30 Q26 34 31 32 Q38 35 46 32 Q52 34 56 29 Q57 24 40 23 Q25 24 24 30 Z" fill="#4338CA" />
+        <path d="M47 25 Q42 30 36 33" stroke="#312E81" strokeWidth="0.9" fill="none" opacity="0.6" />
+      </>
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("신해-m")!.emoji} {getIljuType("신해-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("신해-m")!.id} · {getIljuType("신해-m")!.stemElement}</p>
@@ -782,7 +798,9 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <path d="M4 58 L16 58" stroke="#F87171" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
               <path d="M2 63 L14 63" stroke="#F87171" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
               <path d="M4 68 L12 68" stroke="#F87171" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <path d="M23 29 Q25 34 28 31 Q30 35 33 31 Q36 35 39 31 Q42 35 45 31 Q48 35 51 31 Q54 34 57 29 Q58 22 40 21 Q22 22 23 29 Z" fill="#374151" />
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("경신-m")!.emoji} {getIljuType("경신-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("경신-m")!.id} · {getIljuType("경신-m")!.stemElement}</p>
@@ -902,7 +920,12 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <line x1="62" y1="60" x2="71" y2="60" stroke="#7C3AED" strokeWidth="1.2" />
               <line x1="62" y1="65" x2="69" y2="65" stroke="#7C3AED" strokeWidth="1.2" />
               <path d="M62 70 L64 68 L66 70" stroke="#EF4444" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <>
+        <path d="M24 28 Q26 32 31 30 Q38 33 46 30 Q52 32 56 27 Q57 21 40 20 Q25 21 24 28 Z" fill="#C4B5FD" />
+        <path d="M47 23 Q42 28 36 31" stroke="#8B5CF6" strokeWidth="0.9" fill="none" opacity="0.6" />
+      </>
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("신유-m")!.emoji} {getIljuType("신유-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("신유-m")!.id} · {getIljuType("신유-m")!.stemElement}</p>
@@ -1020,7 +1043,9 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <line x1="5" y1="59" x2="15" y2="59" stroke="#2D2D2D" strokeWidth="0.9" />
               <line x1="5" y1="63" x2="13" y2="63" stroke="#2D2D2D" strokeWidth="0.9" />
               <path d="M4 58 L6 60 L9 56" stroke="#EF4444" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <path d="M24 28 Q25 33 28 32 Q34 34 40 32 Q46 34 52 32 Q55 33 56 28 Q57 21 40 20 Q24 21 24 28 Z" fill="#92400E" />
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("경오-m")!.emoji} {getIljuType("경오-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("경오-m")!.id} · {getIljuType("경오-m")!.stemElement}</p>

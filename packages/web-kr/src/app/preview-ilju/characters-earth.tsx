@@ -194,7 +194,12 @@ const _EarthChars: Array<{id: string; node: React.ReactNode}> = [
               <path d="M54 62 Q62 60 66 56" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
               <ellipse cx="68" cy="54" rx="3" ry="3.5" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.2" />
               <path d="M66 52 L65 47 M69 52 L70 47" stroke="#2D2D2D" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <>
+        <path d="M24 31 Q26 35 31 33 Q38 36 46 33 Q52 35 56 30 Q57 24 40 23 Q25 24 24 31 Z" fill="#2D2D2D" />
+        <path d="M47 25 Q42 30 36 33" stroke="#4B5563" strokeWidth="0.9" fill="none" opacity="0.5" />
+      </>
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("기묘-m")!.emoji} {getIljuType("기묘-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("기묘-m")!.id} · {getIljuType("기묘-m")!.stemElement}</p>
@@ -761,7 +766,12 @@ const _EarthChars: Array<{id: string; node: React.ReactNode}> = [
               <rect x="5" y="54" width="13" height="16" rx="1.5" fill="white" stroke="#2D2D2D" strokeWidth="1.2" />
               <path d="M7 60 L9 63 L13 57" stroke="#4ADE80" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
               <line x1="7" y1="66" x2="15" y2="66" stroke="#94A3B8" strokeWidth="0.8" strokeLinecap="round" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <>
+        <path d="M24 27 Q25 32 28 31 Q34 33 40 31 Q46 33 52 31 Q55 32 56 27 Q57 20 40 19 Q24 20 24 27 Z" fill="#EAB308" />
+        <path d="M31 22 L30 30 M40 21 L40 30 M49 22 L50 30" stroke="#A16207" strokeWidth="0.7" opacity="0.5" />
+      </>
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("무신-m")!.emoji} {getIljuType("무신-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("무신-m")!.id} · {getIljuType("무신-m")!.stemElement}</p>
@@ -1010,7 +1020,9 @@ const _EarthChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="9" cy="50" r="3.5" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.2" />
               <path d="M8 47 L8 42" stroke="#FDDCB5" strokeWidth="2.5" strokeLinecap="round" />
               <path d="M8 47 L8 42" stroke="#2D2D2D" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.4" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <path d="M24 27 Q27 32 31 29 Q34 32 38 29 Q42 32 46 29 Q50 32 53 29 Q56 31 56 27 Q57 20 40 19 Q24 20 24 27 Z" fill="#1E3A5F" />
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("무오-m")!.emoji} {getIljuType("무오-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("무오-m")!.id} · {getIljuType("무오-m")!.stemElement}</p>
@@ -1276,7 +1288,12 @@ const _EarthChars: Array<{id: string; node: React.ReactNode}> = [
               {/* 흔들 모션 호 (오뚝이) */}
               <path d="M19 83 Q23 79 25 81" stroke="#FBBF24" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.55" />
               <path d="M61 83 Q57 79 55 81" stroke="#FBBF24" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.55" />
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <>
+        <path d="M24 28 Q26 32 31 30 Q38 33 46 30 Q52 32 56 27 Q57 21 40 20 Q25 21 24 28 Z" fill="#2D2D2D" />
+        <path d="M47 23 Q42 28 36 31" stroke="#52525B" strokeWidth="0.9" fill="none" opacity="0.5" />
+      </>
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("무진-m")!.emoji} {getIljuType("무진-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("무진-m")!.id} · {getIljuType("무진-m")!.stemElement}</p>

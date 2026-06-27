@@ -1389,7 +1389,9 @@ const _FireChars: Array<{id: string; node: React.ReactNode}> = [
               <path d="M11 51 Q13 48 11 45" stroke="#94A3B8" strokeWidth="0.9" fill="none" strokeLinecap="round" opacity="0.4"/>
               <path d="M2 38 L3 41 L6 38 L3 35 Z" fill="#FACC15" opacity="0.6"/>
               <path d="M74 36 L75 33 L76 36 L75 39 Z" fill="#FACC15" opacity="0.5"/>
-            </svg>
+                        {/* fringe(앞머리) 베이크 — 오버레이를 char-svg에 삽입 */}
+      <path d="M24 26 Q27 31 31 28 Q34 31 38 28 Q42 31 46 28 Q50 31 53 28 Q56 30 56 26 Q57 19 40 18 Q24 19 24 26 Z" fill="#4338CA" />
+          </svg>
           </div>
           <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("정사-m")!.emoji} {getIljuType("정사-m")!.name}</p>
           <p className="text-xs text-gray-500 text-center">{getIljuType("정사-m")!.id} · {getIljuType("정사-m")!.stemElement}</p>
