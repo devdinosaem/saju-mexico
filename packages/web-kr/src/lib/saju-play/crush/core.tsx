@@ -17,7 +17,7 @@ import type { CompatSignals } from "./compat-engine"
 import {
   DoodleHeart, DoodleSparkle, DoodleSparkles, DoodleSpeechBubble, DoodlePencil, DoodlePolaroid,
   DoodleLightning, DoodleKey, DoodleHourglass, DoodleCalendar, DoodleTaegeuk,
-  DoodleRedString, DoodleClover, DoodleQuestionMark,
+  DoodleRedString, DoodleClover, DoodleQuestionMark, DoodleBook,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -50,6 +50,8 @@ export type CrushConfig = {
   journey: { name: string; tip: string }[]                       // 썸 진행 4단계
   dateCourse: Record<Elem, { label: string; D: DoodleC }[]>       // 상대 오행 → 공략 데이트
   mines: Record<Elem, string[]>                                   // 상대 오행 → 지뢰(하지 말 것) TOP3
+  manual: Record<Elem, { care: string; charge: string; ban: string; as: string }> // 상대 오행 → 사용설명서
+  memes: { min: number; label: string }[]                         // 점수 → 한 단어 밈
   persona: Record<Elem, { tag: string; line: string }>        // 오행 → 연애 성향(프로필 카드)
   openHeart: Record<Elem, { title: string; line: string }>   // 상대(그 사람) 오행 → 마음 여는 법
   chemi: Record<Rel, { good: string; care: string }>          // 끌리는/어긋나는 포인트
@@ -109,6 +111,32 @@ const BALANCE: Record<CompatSignals["role"], { pos: number; line: string }> = {
   극해줌: { pos: 38, line: "네가 리드하게 되는 결" },
 }
 const YONG_LV = ["아직은 약하지만 천천히", "조금씩", "꽤 많이", "아주 많이"]
+const RADAR_TIP: Record<string, string> = {
+  호감: "서로 끌리는 기본기가 탄탄해",
+  긴장: "밀당의 짜릿함이 큰 사이",
+  안정: "오래 볼수록 편해지는 결",
+  설렘: "두근거림이 살아있는 케미",
+  주도권: "네가 흐름을 쥐고 있어",
+}
+
+// 연애 세포 5각 레이더
+function RadarChart({ data }: { data: { label: string; value: number }[] }) {
+  const size = 200, c = size / 2, R = 64, n = data.length
+  const pt = (i: number, r: number): [number, number] => {
+    const a = -Math.PI / 2 + (i * 2 * Math.PI) / n
+    return [c + r * Math.cos(a), c + r * Math.sin(a)]
+  }
+  const ring = (f: number) => data.map((_, i) => pt(i, R * f).join(",")).join(" ")
+  const poly = data.map((d, i) => pt(i, R * (Math.max(0, Math.min(100, d.value)) / 100)).join(",")).join(" ")
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} className="mx-auto" style={{ width: "100%", maxWidth: 224 }}>
+      {[0.25, 0.5, 0.75, 1].map((f, i) => <polygon key={i} points={ring(f)} fill="none" stroke="#E5E7EB" strokeWidth={1} />)}
+      {data.map((_, i) => { const [x, y] = pt(i, R); return <line key={i} x1={c} y1={c} x2={x} y2={y} stroke="#E5E7EB" strokeWidth={1} /> })}
+      <polygon points={poly} fill="rgba(232,75,106,0.18)" stroke={PINK} strokeWidth={2} strokeLinejoin="round" />
+      {data.map((d, i) => { const [x, y] = pt(i, R + 16); return <text key={i} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize={12} fontWeight={700} fill="#2D2D2D">{d.label}</text> })}
+    </svg>
+  )
+}
 
 // 사주 없을 때(목업/비로그인) 오행으로 유사 신호 생성 — 화면이 항상 채워지게
 function roleOf(eMe: Elem, eThem: Elem): CompatSignals["role"] {
@@ -341,6 +369,15 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   const bal = BALANCE[signals.role]
   const dohwaVal = signals.dohwa ? clamp(72 + (score % 14), 60, 95) : clamp(34 + (score % 16), 25, 55)
   const jIdx = score >= 80 ? 3 : score >= 66 ? 2 : score >= 52 ? 1 : 0
+  const radar = [
+    { label: "호감", value: clamp(score, 30, 95) },
+    { label: "긴장", value: clamp(rel === "ke" ? 80 : rel === "sheng" ? 45 : 62, 30, 95) },
+    { label: "안정", value: clamp(signals.spouse === "육합" ? 85 : signals.spouse === "삼합" ? 75 : signals.spouse === "충" ? 42 : 55, 30, 95) },
+    { label: "설렘", value: clamp((signals.dohwa ? 78 : 52) + (signals.core === "천간충" || signals.spouse === "충" ? 12 : 0), 30, 95) },
+    { label: "주도권", value: clamp(110 - bal.pos, 30, 95) },
+  ]
+  const topCell = radar.reduce((a, b) => (b.value > a.value ? b : a))
+  const meme = signals.core === "천간합" ? "운명 캐치" : ([...config.memes].reverse().find(m => score >= m.min)?.label ?? config.memes[0].label)
   const md = mockDist(meK), td = mockDist(themK)
   const open = config.openHeart[eThem]
   const lucky = config.lucky[eThem]
@@ -507,6 +544,17 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
+      {/* 연애 세포 레이더차트 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleSparkle}>연애 세포 활성도</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-1">
+          <RadarChart data={radar} />
+          <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>
+            가장 도드라지는 건 <span className="font-bold" style={{ color: PINK }}>{topCell.label}</span> ({topCell.value}) — {RADAR_TIP[topCell.label]}
+          </p>
+        </div>
+      </div>
+
       {/* 상대 마음 여는 법 */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleKey}>{them.name || "그 사람"} 마음 여는 법</SectionTitle>
@@ -516,6 +564,23 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
             <p className="text-[14px] font-bold text-charcoal">{open.title}</p>
             <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{open.line}</p>
           </div>
+        </div>
+      </div>
+
+      {/* 그 사람 사용설명서 — 오행 매뉴얼 패러디 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleBook}>{them.name || "그 사람"} 사용설명서</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 overflow-hidden">
+          <div className="px-4 py-2.5 flex items-center gap-2 border-b border-charcoal/10" style={{ background: "#F8FAFC" }}>
+            <Avatar iljuKey={themK} size={28} />
+            <span className="text-[13px] text-text-muted">제품명 · {config.persona[eThem].tag}형</span>
+          </div>
+          {([["취급주의", "care"], ["충전법", "charge"], ["금지사항", "ban"], ["A/S", "as"]] as const).map(([k, key]) => (
+            <div key={k} className="px-4 py-2.5 flex gap-3 border-b border-charcoal/5 last:border-0">
+              <span className="text-[13px] font-bold shrink-0 w-16" style={{ color: PINK }}>{k}</span>
+              <span className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{config.manual[eThem][key]}</span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -666,6 +731,13 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* 썸 밈 스티커 — 공유용 한 단어 */}
+      <div className="rounded-2xl px-4 py-5 flex flex-col items-center gap-2 text-center border-2 border-dashed border-charcoal/25" style={{ background: "#FFFDF5" }}>
+        <span className="text-[13px] text-text-muted">이 썸을 한 단어로</span>
+        <p className="text-[26px]" style={{ ...BINGGRAE, color: PINK }}>{meme}</p>
+        <div className="flex items-center gap-1.5 text-[13px] text-text-muted"><Ico as={DoodleSparkles} size={14} /> 캡처해서 공유하기 좋아요</div>
       </div>
     </div>
   )
