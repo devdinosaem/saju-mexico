@@ -95,6 +95,36 @@ function vibeOf(score: number): string {
   if (score >= 70) return "티격태격 케미 ⚡"
   return "노력하면 됨 🌱"
 }
+const clamp = (n: number) => Math.max(30, Math.min(98, Math.round(n)))
+function pairLabel(a: Participant, b: Participant): string {
+  const ea = elemOf(a.iljuKey), eb = elemOf(b.iljuKey)
+  if (ea === eb) return "🪞 닮은꼴"
+  if (SHENG[ea] === eb || SHENG[eb] === ea) return "🔥 찰떡 케미"
+  if (KE[ea] === eb || KE[eb] === ea) return "⚡ 애증 물·기름"
+  return "🙂 무난한 사이"
+}
+function allPairs(ps: Participant[]) {
+  const out: { a: Participant; b: Participant; s: number; label: string }[] = []
+  for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++)
+    out.push({ a: ps[i], b: ps[j], s: pairScore(ps[i], ps[j]), label: pairLabel(ps[i], ps[j]) })
+  return out.sort((x, y) => y.s - x.s)
+}
+const PERSONAL: Record<Elem, string> = {
+  목: "아이디어는 네가 다 내. 근데 벌려놓고 마무리는 남 시킴 ㅋㅋ",
+  화: "네가 빠지면 모임이 조용해져. 텐션 과할 땐 누가 좀 말려줘 🔥",
+  토: "싸움 나면 네가 다 중재함. 정작 네 얘긴 안 하더라 🏔️",
+  금: "할 말은 하는 사이다. 가끔 너무 팩트라 따끔해 💎",
+  수: "분위기 다 읽고 챙김. 혼자 삭이다 골병 들지 마 🌊",
+}
+function situational(ps: Participant[], base: number) {
+  const d = distOf(ps)
+  return [
+    { key: "우정", emoji: "🤝", score: clamp(base + 8), line: "같이 노는 덴 최고. 단톡 평생 갈 듯" },
+    { key: "연애", emoji: "💘", score: clamp(base - 10), line: "썸은 짜릿, 장기전은 노력 필요" },
+    { key: "같이 일", emoji: "💼", score: clamp(base - 4 + (d.금 + d.토) * 3 - d.화 * 2), line: "추진은 빠른데 역할 분담이 관건" },
+    { key: "같이 돈", emoji: "💰", score: clamp(base - 15 - d.화 * 2), line: "돈 얘긴 미리 정하고 시작해 ㅋㅋ" },
+  ]
+}
 
 function Avatar({ p, size = 56 }: { p: Participant; size?: number }) {
   return (
@@ -230,7 +260,6 @@ export default function CompatFunnelPage() {
   const score = overallScore(parts)
   const arch = archetype(parts, d)
   const miss = ELEMS.filter(e => d[e] === 0)
-  const { best, worst } = bestWorstPair(parts)
   const maxCount = Math.max(...ELEMS.map(e => d[e]), 1)
   const others = parts.filter(p => !p.me)
 
@@ -285,27 +314,57 @@ export default function CompatFunnelPage() {
         </div>
       </div>
 
-      {/* 유료 잠금 티저 — 페어/개인/상황별 */}
-      <div className="relative rounded-2xl overflow-hidden border border-charcoal/10">
-        <div className="px-4 py-4 flex flex-col gap-3" style={{ filter: "blur(4px)", pointerEvents: "none", userSelect: "none" }}>
-          <p className="text-[15px] text-charcoal" style={BINGGRAE}>💘 페어별 궁합</p>
-          <div className="flex items-center justify-between">
-            <span className="text-[13px] text-charcoal">최고 케미: {best.a.me ? "나" : best.a.name} ❤️ {best.b.me ? "나" : best.b.name}</span>
-            <span className="text-[15px] font-bold text-pink">{best.s}%</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[13px] text-charcoal">물·기름: {worst.a.me ? "나" : worst.a.name} ⚡ {worst.b.me ? "나" : worst.b.name}</span>
-            <span className="text-[15px] font-bold text-charcoal/50">{worst.s}%</span>
-          </div>
-          <p className="text-[15px] text-charcoal mt-1" style={BINGGRAE}>🧑‍🤝‍🧑 개인별 심층 · 상황별(연애/일/돈)</p>
+      {/* [4] 페어별 궁합 — 전체 */}
+      <div className="flex flex-col gap-2.5">
+        <p className="text-[15px] text-charcoal" style={BINGGRAE}>💘 페어별 궁합</p>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3 flex flex-col">
+          {allPairs(parts).map((pr, i, arr) => (
+            <div key={i} className={`flex items-center gap-2.5 py-2 ${i < arr.length - 1 ? "border-b border-charcoal/5" : ""}`}>
+              <div className="flex -space-x-1.5 shrink-0">
+                <Avatar p={pr.a} size={30} />
+                <Avatar p={pr.b} size={30} />
+              </div>
+              <span className="text-[12px] text-charcoal/80 flex-1 min-w-0 truncate">
+                {pr.a.me ? "나" : pr.a.name} · {pr.b.me ? "나" : pr.b.name} <span className="text-text-muted">{pr.label}</span>
+              </span>
+              <span className="text-[14px] font-bold shrink-0" style={{ color: pr.s >= 85 ? "#E84B6A" : pr.s >= 70 ? "#2D2D2D" : "#94A3B8" }}>{pr.s}%</span>
+            </div>
+          ))}
         </div>
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white/40 backdrop-blur-[1px]">
-          <span className="text-2xl">🔒</span>
-          <p className="text-[13px] font-bold text-charcoal" style={BINGGRAE}>페어별·개인별·상황별 전체 분석</p>
-          <button className="mt-1 px-4 py-2 rounded-full text-[12px] font-bold border-2 border-charcoal active:opacity-70"
-            style={{ background: "#FFF9F0", color: "#2D2D2D", boxShadow: "2px 2px 0px #2D2D2D" }}>
-            잠금 해제 (구독)
-          </button>
+      </div>
+
+      {/* [5] 개인별 심층 한마디 */}
+      <div className="flex flex-col gap-2.5">
+        <p className="text-[15px] text-charcoal" style={BINGGRAE}>🧑‍🤝‍🧑 각자에게 한마디</p>
+        <div className="flex flex-col gap-2">
+          {parts.map((p, i) => (
+            <div key={i} className="flex gap-2.5 rounded-2xl bg-white border border-charcoal/10 px-3 py-2.5">
+              <Avatar p={p} size={36} />
+              <div className="flex-1 min-w-0">
+                <p className="text-[12px] font-bold text-charcoal">{p.me ? "나" : p.name} <span className="text-text-muted font-normal">· {ROLE[elemOf(p.iljuKey)].label}</span></p>
+                <p className="text-[12px] text-charcoal/70 leading-snug" style={GAEGU}>{PERSONAL[elemOf(p.iljuKey)]}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* [6] 상황별 궁합 */}
+      <div className="flex flex-col gap-2.5">
+        <p className="text-[15px] text-charcoal" style={BINGGRAE}>🎯 상황별 궁합</p>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
+          {situational(parts, score).map(s => (
+            <div key={s.key} className="flex flex-col gap-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-bold text-charcoal">{s.emoji} {s.key}</span>
+                <span className="text-[13px] font-bold" style={{ color: s.score >= 80 ? "#E84B6A" : "#2D2D2D" }}>{s.score}%</span>
+              </div>
+              <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
+                <div className="h-full rounded-full" style={{ width: `${s.score}%`, background: s.score >= 80 ? "#E84B6A" : s.score >= 65 ? "#FBBF24" : "#94A3B8" }} />
+              </div>
+              <p className="text-[11px] text-text-muted" style={GAEGU}>{s.line}</p>
+            </div>
+          ))}
         </div>
       </div>
 
