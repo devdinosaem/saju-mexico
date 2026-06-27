@@ -14,7 +14,7 @@ export const SOME_CONFIG: CrushConfig = {
   landing: {
     hi: DoodleSparkles,
     line: "그 사람, 나한테 마음 있을까?",
-    sub: "두 사람 생년월일만 넣으면, 지금 우리 사이 온도와 다가가는 법을 사주로 풀어드려요.",
+    sub: "썸남·썸녀의 사주와 다가가는 법을 낱낱이 풀어줄게",
     cta: "썸 분석 시작하기",
   },
   gaugeName: "연애 가능성",

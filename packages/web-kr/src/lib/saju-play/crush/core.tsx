@@ -62,6 +62,17 @@ const KEYS_M = ICON_KEYS.filter(k => k.endsWith("-m"))
 const KEYS_F = ICON_KEYS.filter(k => k.endsWith("-f"))
 // 비로그인/일주 미설정(개발·목업) 폴백 — 운영은 로그인 우선이라 계정 일주 사용
 const FALLBACK_ME_KEY = ICON_KEYS.includes("병오-m") ? "병오-m" : (KEYS_M[0] ?? ICON_KEYS[0])
+// 계정 일주 → 그릴 수 있는 캐릭터 키로 해석. 미등록 일주는 같은 오행·성별 대표 캐릭터로 대체(빈 아바타 방지).
+function resolveCharKey(id?: string | null): string {
+  if (id && ILJU_SVG_ICONS[id]) return id
+  if (id) {
+    const g = id.endsWith("-f") ? "-f" : "-m"
+    const e = elemOf(id)
+    const pool = ICON_KEYS.filter(k => k.endsWith(g) && elemOf(k) === e)
+    if (pool.length) return pool[[...id].reduce((a, c) => a + c.charCodeAt(0), 0) % pool.length]
+  }
+  return FALLBACK_ME_KEY
+}
 type Person = { name: string; birth: { y: string; m: string; d: string }; gender: "M" | "F" }
 function mockIlju(p: Person): string {
   const pool = (p.gender === "M" ? KEYS_M : KEYS_F)
@@ -162,7 +173,7 @@ const validP = (p: Person) => p.name.trim() !== "" && p.birth.y.length === 4 && 
 
 export default function CrushFunnel({ config }: { config: CrushConfig }) {
   const { ilju } = useUser()
-  const myKey = ilju?.id ?? FALLBACK_ME_KEY
+  const myKey = resolveCharKey(ilju?.id)
   const [step, setStep] = useState<Step>("landing")
   const [them, setThem] = useState<Person>(() => ({ ...emptyP(), gender: "F" }))
   const [unlocked, setUnlocked] = useState(false)
