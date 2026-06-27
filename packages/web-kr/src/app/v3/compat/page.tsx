@@ -125,7 +125,7 @@ function pairLabel(a: Participant, b: Participant): { text: string; D: DoodleC }
   const ea = elemOf(a.iljuKey), eb = elemOf(b.iljuKey)
   if (ea === eb) return { text: "닮은꼴", D: DoodleMirror }
   if (SHENG[ea] === eb || SHENG[eb] === ea) return { text: "찰떡 케미", D: DoodleFire }
-  if (KE[ea] === eb || KE[eb] === ea) return { text: "애증 물·기름", D: DoodleLightning }
+  if (KE[ea] === eb || KE[eb] === ea) return { text: "티키타카", D: DoodleLightning }
   return { text: "무난한 사이", D: DoodleSmiley }
 }
 function allPairs(ps: Participant[]) {
