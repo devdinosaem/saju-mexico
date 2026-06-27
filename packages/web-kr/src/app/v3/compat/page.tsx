@@ -237,7 +237,6 @@ export default function CompatFunnelPage() {
           style={{ background: "#FEE500", color: "#3C1E1E", ...BINGGRAE }}>
           <Ico as={DoodleSpeechBubble} size={20} /> 카카오로 1초 입장
         </button>
-        <p className="text-[11px] text-text-muted">로그인하면 내 결과 저장 + 친구 맺기 가능</p>
       </div>
     )
   }
@@ -273,7 +272,7 @@ export default function CompatFunnelPage() {
                 <button key={g} onClick={() => setGender(g)}
                   className="flex-1 py-3 rounded-xl text-[14px] font-bold border-2 transition-colors"
                   style={gender === g
-                    ? { background: "#2D2D2D", color: "#FFF9F0", borderColor: "#2D2D2D" }
+                    ? { background: "#E84B6A", color: "#FFF9F0", borderColor: "#E84B6A" }
                     : { background: "white", color: "#94A3B8", borderColor: "#E0D4C0" }}>
                   {g === "M" ? "남" : "여"}
                 </button>
@@ -283,7 +282,7 @@ export default function CompatFunnelPage() {
         </div>
         <button onClick={submitMine} disabled={!valid}
           className="w-full h-[54px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal disabled:opacity-30"
-          style={{ background: "#2D2D2D", color: "#FFF9F0", ...BINGGRAE }}>
+          style={{ background: "#E84B6A", color: "#FFF9F0", ...BINGGRAE }}>
           입력 완료
         </button>
       </div>
