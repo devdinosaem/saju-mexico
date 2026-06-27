@@ -377,6 +377,7 @@ export default function ConsultPage() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
   const [showScrollDown, setShowScrollDown] = useState(false) // 맨 아래로 플로팅
   const [copyToast, setCopyToast]     = useState(false)       // 복사 완료 토스트
+  const [spendKey, setSpendKey]       = useState(0)           // 차감 −0.1 플로터(키 증가 시 리플레이)
   const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null) // 길게 눌러 복사
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
@@ -452,9 +453,14 @@ export default function ConsultPage() {
   }, [])
 
   React.useEffect(() => {
-    if (!hasIlju || !ilju || !user.birthDate) {
+    if (!hasIlju) {
       // 일주 카드 없음 → 디폴트 캐릭터 안내 (잠금화면 대신)
-      if (!hasIlju) setMsgs([{ role: "char", text: GUIDE_TEXT_NO_ILJU }])
+      setMsgs([{ role: "char", text: GUIDE_TEXT_NO_ILJU }])
+      return
+    }
+    if (!ilju || !user.birthDate) {
+      // 카드는 있는데 사주 정보 미로드 — 영구 타이핑 점 방지(폴백 메시지)
+      setMsgs([{ role: "char", text: "사주 정보를 불러오는 중이야. 잠깐만 기다려줘." }])
       return
     }
     setVisibleCount(INITIAL_VISIBLE)
@@ -519,6 +525,7 @@ export default function ConsultPage() {
   async function send() {
     if (!input.trim() || isLoading || !ilju) return
     if (!spend(CONSULT_COST)) { router.push("/v3/charge"); return } // 잔액 부족 → 충전(게이팅으로 도달 안 하지만 안전)
+    setSpendKey(k => k + 1) // 차감 −0.1 피드백
     const userText = input.trim()
     setInput("")
     if (inputRef.current) { inputRef.current.style.height = "auto" }
@@ -718,6 +725,7 @@ export default function ConsultPage() {
 
   return (
     <>
+      <style>{`@keyframes consultSpend{0%{opacity:0;transform:translateY(2px)}25%{opacity:1}100%{opacity:0;transform:translateY(-16px)}}`}</style>
       {/* 프로필 + 칩 — fixed (입력바와 동일 방식) */}
       <div ref={headerRef} className="fixed top-12 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
         <div className="max-w-[480px] mx-auto px-4 pt-4">
@@ -736,10 +744,15 @@ export default function ConsultPage() {
             {hasIlju && (
               <button
                 onClick={() => router.push("/v3/charge")}
-                className="ml-auto flex flex-col items-end gap-0.5 bg-charcoal/5 rounded-xl px-2.5 py-1 shrink-0 active:opacity-70 transition-opacity"
+                className="relative ml-auto flex flex-col items-end gap-0.5 bg-charcoal/5 rounded-xl px-2.5 py-1 shrink-0 active:opacity-70 transition-opacity"
               >
                 <span className="text-[11px] font-bold text-charcoal">잔액 {balance}명태</span>
                 <span className="text-[9px] text-text-muted">1회 {PRICES.aiConsultPerTurn}명태({Math.round(PRICES.aiConsultPerTurn * WON_PER_MYONGTAE)}원)</span>
+                {spendKey > 0 && (
+                  <span key={spendKey} className="absolute -bottom-2 right-1 text-[11px] font-bold text-pink pointer-events-none" style={{ animation: "consultSpend 0.9s ease-out forwards" }}>
+                    −{CONSULT_COST}
+                  </span>
+                )}
               </button>
             )}
           </div>
