@@ -4,7 +4,7 @@
 // ════════════════════════════════════════════════════════════════
 import {
   DoodleSparkles, DoodleFire, DoodleEarth, DoodleDiamond, DoodleWave,
-  DoodleSprout, DoodleLightning, DoodleMirror,
+  DoodleSprout, DoodleLightning, DoodleMirror, DoodleSpeechBubble, DoodleHeart,
 } from "@/components/doodles"
 import type { CrushConfig } from "./core"
 
@@ -36,6 +36,12 @@ export const SOME_CONFIG: CrushConfig = {
     { min: 0, label: "아직 탐색기", line: "서로 간 보는 중이에요. 작은 신호부터 차곡차곡 쌓을 때." },
     { min: 55, label: "그린라이트 깜빡", line: "호감 신호가 보여요. 한 발 더 다가가도 좋은 타이밍." },
     { min: 74, label: "거의 확실해요", line: "연애로 넘어가기 직전. 확신만 주면 되는 사이예요." },
+  ],
+  situational: [
+    { key: "첫인상", D: DoodleSparkles, delta: 5, line: "처음부터 눈길이 가는 케미예요" },
+    { key: "대화 케미", D: DoodleSpeechBubble, delta: 2, line: "말이 잘 통해서 시간 가는 줄 몰라요" },
+    { key: "밀당", D: DoodleLightning, delta: -8, line: "한 명이 더 달면 흔들리기 쉬운 구간" },
+    { key: "고백 성공률", D: DoodleHeart, delta: -2, line: "타이밍만 맞추면 충분히 승산 있어요" },
   ],
   persona: {
     목: { tag: "성장형", line: "같이 발전하고 미래를 그리는 타입" },

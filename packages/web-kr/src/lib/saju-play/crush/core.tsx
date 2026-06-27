@@ -41,6 +41,8 @@ export type CrushConfig = {
   sameArch: { name: string; vibe: string; D: DoodleC }
   /** 온도계 단계 — min 오름차순. score가 속한 마지막 단계 적용. */
   temp: { min: number; label: string; line: string }[]
+  /** 상황별 케미 — base 점수에 delta 가감, % 바로 표시(커플 상황별 패턴). */
+  situational: { key: string; D: DoodleC; delta: number; line: string }[]
   persona: Record<Elem, { tag: string; line: string }>        // 오행 → 연애 성향(프로필 카드)
   openHeart: Record<Elem, { title: string; line: string }>   // 상대(그 사람) 오행 → 마음 여는 법
   chemi: Record<Rel, { good: string; care: string }>          // 끌리는/어긋나는 포인트
@@ -351,6 +353,28 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
+      {/* 썸 상황별 케미 — % 바 (커플 상황별 패턴) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleSparkles}>썸 상황별 케미</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
+          {config.situational.map(s => {
+            const v = clamp(score + s.delta, 35, 98)
+            return (
+              <div key={s.key} className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[14px] font-bold text-charcoal flex items-center gap-1.5"><Ico as={s.D} size={16} /> {s.key}</span>
+                  <span className="text-[14px] font-bold" style={{ color: v >= 80 ? PINK : "#2D2D2D" }}>{v}%</span>
+                </div>
+                <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
+                  <div className="h-full rounded-full" style={{ width: `${v}%`, background: v >= 80 ? PINK : v >= 65 ? "#FBBF24" : "#94A3B8" }} />
+                </div>
+                <p className="text-[13px] text-text-muted leading-snug">{s.line}</p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
       {/* 다가가는 전략 (처방전) */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleSpeechBubble}>다가가는 전략</SectionTitle>
@@ -445,15 +469,21 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         <p className="text-[15px] text-charcoal/75 leading-relaxed" style={GAEGU}>{arch.vibe}</p>
       </div>
 
-      {/* [무료] 온도계 */}
+      {/* [무료] 온도계 — 양 끝에서 두 캐릭터가 끌어당기는 */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleSparkle}>우리 사이 온도</SectionTitle>
-        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
-          <div className="relative h-3.5 rounded-full overflow-hidden" style={{ background: "linear-gradient(90deg,#BFDBFE,#FBBF24,#E84B6A)" }}>
-            <span className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 shadow-sm" style={{ left: `${score}%`, borderColor: PINK }} />
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
+          <div className="flex items-center gap-2.5">
+            <Avatar iljuKey={meK} size={30} />
+            <div className="relative flex-1 h-3.5 rounded-full overflow-hidden" style={{ background: "linear-gradient(90deg,#BFDBFE,#FBBF24,#E84B6A)" }}>
+              <span className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 shadow-sm" style={{ left: `${score}%`, borderColor: PINK }} />
+            </div>
+            <Avatar iljuKey={themK} size={30} />
           </div>
-          <p className="text-[15px] font-bold text-charcoal" style={BINGGRAE}>{stage.label}</p>
-          <p className="text-[14px] text-charcoal/70 leading-snug">{stage.line}</p>
+          <div className="flex flex-col gap-1.5">
+            <span className="self-start px-2.5 py-1 rounded-full text-[13px] font-bold text-white" style={{ background: PINK }}>{stage.label}</span>
+            <p className="text-[14px] text-charcoal/70 leading-snug">{stage.line}</p>
+          </div>
         </div>
       </div>
 
