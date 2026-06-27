@@ -8,6 +8,8 @@ import {
   DoodleSpeechBubble, DoodlePencil, DoodlePolaroid,
   DoodleSuitcase, DoodleGoldBar, DoodleSmiley,
   DoodleMirror, DoodleLightning, DoodleTaegeuk, DoodleCompass, DoodleMedal,
+  DoodleBackpack, DoodleBamboo, DoodlePottedPlant, DoodleRamen, DoodleMusicNote,
+  DoodleColorPalette, DoodleOnggiJar, DoodlePictureFrame, DoodleCoffee, DoodleTicket,
 } from "@/components/doodles"
 
 /* ────────────────────────────────────────────────────────────
@@ -50,7 +52,34 @@ const ARCHETYPE_NAME: Record<Elem, string> = {
   목: "아이디어 뱅크 모임", 화: "추진력 만렙 불도저 모임", 토: "든든한 베이스캠프 모임",
   금: "칼같은 팩폭 모임", 수: "물 흐르듯 평화로운 모임",
 }
-const STEMS_OF: Record<Elem, string> = { 목: "갑·을", 화: "병·정", 토: "무·기", 금: "경·신", 수: "임·계" }
+// 부족 오행을 채우는 추천 활동 3가지
+const ELEM_FILL: Record<Elem, { label: string; D: DoodleC }[]> = {
+  목: [
+    { label: "다 같이 등산 가기", D: DoodleBackpack },
+    { label: "숲속 힐링 캠핑", D: DoodleBamboo },
+    { label: "화분·식물 선물 교환", D: DoodlePottedPlant },
+  ],
+  화: [
+    { label: "캠프파이어 불멍", D: DoodleFire },
+    { label: "매운 음식 먹방", D: DoodleRamen },
+    { label: "다 같이 노래방 직행", D: DoodleMusicNote },
+  ],
+  토: [
+    { label: "도자기·공방 체험", D: DoodleColorPalette },
+    { label: "집밥 한 상 모임", D: DoodleOnggiJar },
+    { label: "캠핑으로 땅 밟기", D: DoodleEarth },
+  ],
+  금: [
+    { label: "미술관·전시 관람", D: DoodlePictureFrame },
+    { label: "호캉스로 리셋", D: DoodleSparkle },
+    { label: "골프·사격 정밀 활동", D: DoodleDiamond },
+  ],
+  수: [
+    { label: "바다·온천 여행", D: DoodleWave },
+    { label: "카페에서 수다", D: DoodleCoffee },
+    { label: "영화관 가기", D: DoodleTicket },
+  ],
+}
 const SHENG: Record<Elem, Elem> = { 목: "화", 화: "토", 토: "금", 금: "수", 수: "목" }
 const KE: Record<Elem, Elem> = { 목: "토", 토: "수", 수: "화", 화: "금", 금: "목" }
 
@@ -160,6 +189,7 @@ export default function CompatFunnelPage() {
   const [parts, setParts] = useState<Participant[]>([HOST])
   const [name, setName] = useState("")
   const [birth, setBirth] = useState({ y: "", m: "", d: "" })
+  const [gender, setGender] = useState<"M" | "F" | null>(null)
   const [addAll, setAddAll] = useState(true)
 
   const filled = parts.length
@@ -207,7 +237,7 @@ export default function CompatFunnelPage() {
 
   // ── 사주 입력 ──
   if (step === "input") {
-    const valid = name.trim() && birth.y.length === 4 && birth.m && birth.d
+    const valid = name.trim() && birth.y.length === 4 && birth.m && birth.d && gender
     return (
       <div className="flex flex-col gap-5 pt-4">
         <p className="text-[20px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodlePencil} size={20} /> 내 사주 입력</p>
@@ -227,6 +257,20 @@ export default function CompatFunnelPage() {
                 className="w-16 text-[15px] text-charcoal rounded-xl px-3 py-3 focus:outline-none text-center" style={{ background: "white", border: "1.5px solid #E0D4C0" }} />
               <input value={birth.d} onChange={e => setBirth({ ...birth, d: e.target.value.replace(/\D/g, "").slice(0, 2) })} placeholder="일" inputMode="numeric"
                 className="w-16 text-[15px] text-charcoal rounded-xl px-3 py-3 focus:outline-none text-center" style={{ background: "white", border: "1.5px solid #E0D4C0" }} />
+            </div>
+          </div>
+          <div>
+            <label className="text-[12px] text-text-muted font-bold mb-1.5 block">성별</label>
+            <div className="flex gap-2">
+              {(["M", "F"] as const).map(g => (
+                <button key={g} onClick={() => setGender(g)}
+                  className="flex-1 py-3 rounded-xl text-[14px] font-bold border-2 transition-colors"
+                  style={gender === g
+                    ? { background: "#2D2D2D", color: "#FFF9F0", borderColor: "#2D2D2D" }
+                    : { background: "white", color: "#94A3B8", borderColor: "#E0D4C0" }}>
+                  {g === "M" ? "남" : "여"}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -344,8 +388,8 @@ export default function CompatFunnelPage() {
             <div key={i} className="flex gap-2.5 rounded-2xl bg-white border border-charcoal/10 px-3 py-2.5">
               <Avatar p={p} size={36} />
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-bold text-charcoal">{p.me ? "나" : p.name} <span className="text-text-muted font-normal">· {ROLE[elemOf(p.iljuKey)].label}</span></p>
-                <p className="text-[12px] text-charcoal/70 leading-snug" style={GAEGU}>{PERSONAL[elemOf(p.iljuKey)]}</p>
+                <p className="text-[13px] font-bold text-charcoal">{p.me ? "나" : p.name} <span className="text-text-muted font-normal">· {ROLE[elemOf(p.iljuKey)].label}</span></p>
+                <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{PERSONAL[elemOf(p.iljuKey)]}</p>
               </div>
             </div>
           ))}
@@ -371,17 +415,24 @@ export default function CompatFunnelPage() {
         </div>
       </div>
 
-      {/* 성장 훅 — 부족 오행 친구 초대 */}
+      {/* 부족 오행 → 채우는 활동 3가지 */}
       {miss.length > 0 && (
-        <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[miss[0]], border: `1.5px solid ${ELEM_COLOR[miss[0]]}` }}>
-          <Ico as={ELEM_DOODLE[miss[0]]} size={28} />
-          <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-bold text-charcoal leading-tight">이 모임엔 {miss[0]}({miss[0]}) 기운이 없어요</p>
-            <p className="text-[11px] text-charcoal/60 flex items-center gap-1">{STEMS_OF[miss[0]]} 일주 친구를 초대하면 밸런스 완성 <Ico as={DoodleSparkle} size={12} /></p>
+        <div className="rounded-2xl px-4 py-4 flex flex-col gap-3" style={{ background: ELEM_BG[miss[0]], border: `1.5px solid ${ELEM_COLOR[miss[0]]}` }}>
+          <div className="flex items-center gap-2">
+            <Ico as={ELEM_DOODLE[miss[0]]} size={22} />
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-charcoal leading-tight">이 모임엔 {miss[0]}({miss[0]}) 기운이 없어요</p>
+              <p className="text-[11px] text-charcoal/60">{miss[0]}({miss[0]}) 기운을 채우는 활동을 같이 해봐요</p>
+            </div>
           </div>
-          <button className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-bold border-2 border-charcoal active:opacity-70" style={{ background: "white", color: "#2D2D2D" }}>
-            친구 초대
-          </button>
+          <div className="flex flex-col gap-2">
+            {ELEM_FILL[miss[0]].map((a, i) => (
+              <div key={i} className="flex items-center gap-2.5 rounded-xl px-3 py-2" style={{ background: "rgba(255,255,255,0.7)" }}>
+                <Ico as={a.D} size={18} />
+                <span className="text-[13px] font-bold text-charcoal">{a.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
