@@ -1,7 +1,10 @@
 "use client"
 import { useEffect, useState } from "react"
 import SectionCard from "./SectionCard"
-import { STORAGE_KEY as ROOM_KEY, MY_GUESTBOOK_KEY, type RoomData } from "@/app/v3/my/_components/MiniRoom"
+import { STORAGE_KEY as ROOM_KEY, myGuestbookKey, type RoomData } from "@/app/v3/my/_components/MiniRoom"
+
+// 테스트 패널은 고정 테스트 유저(경진) 방명록 기준
+const MY_GUESTBOOK_KEY = myGuestbookKey("경진")
 
 const DEFAULT_ROOM: RoomData = {
   stickers: [],
