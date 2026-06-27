@@ -69,6 +69,14 @@ export default function FriendRoomPage() {
     } catch {}
   }, [friendId])
 
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editDraft, setEditDraft] = useState("")
+
+  const persist = (next: GuestEntry[]) => {
+    setEntries(next)
+    try { localStorage.setItem(guestbookKey(friendId), JSON.stringify(next)) } catch {}
+  }
+
   const submit = () => {
     if (!draft.trim()) return
     const entry: GuestEntry = {
@@ -77,10 +85,17 @@ export default function FriendRoomPage() {
       message: draft.trim(),
       date: new Date().toLocaleString("ko-KR", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }),
     }
-    const next = [entry, ...entries]
-    setEntries(next)
-    try { localStorage.setItem(guestbookKey(friendId), JSON.stringify(next)) } catch {}
+    persist([entry, ...entries])
     setDraft("")
+  }
+
+  const deleteEntry = (id: string) => persist(entries.filter(e => e.id !== id))
+  const startEdit = (e: GuestEntry) => { setEditingId(e.id); setEditDraft(e.message) }
+  const cancelEdit = () => { setEditingId(null); setEditDraft("") }
+  const saveEdit = () => {
+    if (!editDraft.trim()) return
+    persist(entries.map(e => e.id === editingId ? { ...e, message: editDraft.trim() } : e))
+    cancelEdit()
   }
 
   // 친구 목록 로딩 중이거나 존재하지 않는 id면 렌더 보류
@@ -169,10 +184,11 @@ export default function FriendRoomPage() {
               entries.map((entry, i) => {
                 const color = CARD_COLORS[i % CARD_COLORS.length]
                 const tilt = i % 2 === 0 ? "rotate(-0.4deg)" : "rotate(0.3deg)"
+                const isMe = entry.author === meName
+                const isEditing = editingId === entry.id
                 return (
                   <div key={entry.id} className="flex gap-2.5" style={{ transform: tilt }}>
                     {(() => {
-                      const isMe = entry.author === meName
                       const entryFriend = friends.find(f => f.name === entry.author)
                       const entrySvgFn = entryFriend ? ILJU_SVG_ICONS[entryFriend.iljuKey] : null
                       return (
@@ -194,10 +210,37 @@ export default function FriendRoomPage() {
                       style={{ background: color.bg, border: `1.5px solid ${color.border}`, boxShadow: "2px 2px 0px rgba(0,0,0,0.06)" }}
                     >
                       <div className="flex items-baseline gap-2 mb-0.5">
-                        <span className="text-[12px] font-bold text-charcoal">{entry.author === meName ? "나" : entry.author}</span>
+                        <span className="text-[12px] font-bold text-charcoal">{isMe ? "나" : entry.author}</span>
                         <span className="text-[10px] text-text-muted">{withTime(entry.date)}</span>
                       </div>
-                      <p className="text-[13px] font-normal text-charcoal/80 leading-snug break-all">{entry.message}</p>
+                      {isEditing ? (
+                        <div className="flex flex-col gap-1.5">
+                          <textarea
+                            className="w-full text-[13px] text-charcoal rounded-lg px-2 py-1.5 resize-none focus:outline-none leading-snug"
+                            style={{ background: "#FFFFFF", border: "1.5px dashed #D4B870" }}
+                            rows={2}
+                            maxLength={100}
+                            value={editDraft}
+                            onChange={e => setEditDraft(e.target.value)}
+                            autoFocus
+                          />
+                          <div className="flex gap-1.5 justify-end">
+                            <button className="text-[11px] font-bold text-text-muted px-2 py-0.5 rounded-full" style={{ border: "1px solid #D4B870" }} onClick={cancelEdit}>취소</button>
+                            <button className="text-[11px] font-bold px-2.5 py-0.5 rounded-full disabled:opacity-30" style={{ background: "#2D2D2D", color: "#FFF9F0" }} disabled={!editDraft.trim()} onClick={saveEdit}>저장</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-[13px] font-normal text-charcoal/80 leading-snug break-all">{entry.message}</p>
+                          {isMe && (
+                            <div className="flex gap-2 justify-end mt-1">
+                              <button className="text-[10px] font-bold text-text-muted active:opacity-60" onClick={() => startEdit(entry)}>수정</button>
+                              <span className="text-[10px] text-text-muted/40">·</span>
+                              <button className="text-[10px] font-bold text-red-400 active:opacity-60" onClick={() => deleteEntry(entry.id)}>삭제</button>
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
                 )
