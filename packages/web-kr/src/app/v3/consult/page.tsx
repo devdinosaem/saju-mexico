@@ -130,6 +130,7 @@ type Msg = { role: "user" | "char" | "system"; text: string; transient?: boolean
 const ERROR_TEXT = "잠시 후 다시 시도해줘."
 const INITIAL_VISIBLE = 12 // 약 6턴
 const LOAD_BATCH = 12      // 최상단 도달 시 추가로 불러올 메시지 수
+const SUMMARY_WINDOW = 40  // 재접속 요약 입력 상한(최근 N메시지) — 긴 대화 비용 폭증 방지
 
 const TOPICS = [
   { label: "직접 입력", Icon: DoodleMagicWand },
@@ -599,6 +600,7 @@ export default function ConsultPage() {
     if (resumedKeyRef.current === marker) return // 같은 상태로 이미 재접속 처리됨 → 중복 방지
     resumedKeyRef.current = marker
     const apiMsgs = saved
+      .slice(-SUMMARY_WINDOW) // 비용 상한: 최근 N메시지만 요약 입력으로
       .filter(m => m.role !== "system")
       .map(m => ({ role: m.role === "char" ? "assistant" as const : "user" as const, content: m.text }))
     if (!apiMsgs.length) return
