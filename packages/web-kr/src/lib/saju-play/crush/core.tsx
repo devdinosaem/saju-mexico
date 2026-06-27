@@ -11,6 +11,7 @@ import { useState } from "react"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf, relType, ELEMS, pairKey, mockDist, clamp, type Elem, type Rel } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
+import { useUser } from "@/lib/UserContext"
 import {
   DoodleHeart, DoodleSparkle, DoodleSparkles, DoodleSpeechBubble, DoodlePencil, DoodlePolaroid,
   DoodleLightning, DoodleKey, DoodleHourglass, DoodleCalendar, DoodleTaegeuk,
@@ -59,6 +60,8 @@ export type CrushConfig = {
 const ICON_KEYS = Object.keys(ILJU_SVG_ICONS)
 const KEYS_M = ICON_KEYS.filter(k => k.endsWith("-m"))
 const KEYS_F = ICON_KEYS.filter(k => k.endsWith("-f"))
+// 비로그인/일주 미설정(개발·목업) 폴백 — 운영은 로그인 우선이라 계정 일주 사용
+const FALLBACK_ME_KEY = ICON_KEYS.includes("병오-m") ? "병오-m" : (KEYS_M[0] ?? ICON_KEYS[0])
 type Person = { name: string; birth: { y: string; m: string; d: string }; gender: "M" | "F" }
 function mockIlju(p: Person): string {
   const pool = (p.gender === "M" ? KEYS_M : KEYS_F)
@@ -68,13 +71,13 @@ function mockIlju(p: Person): string {
   return base[seed % base.length]
 }
 
-// 입력 두 명에서 결과 파생(렌더·연출 양쪽에서 동일 결과 보장)
-function derive(me: Person, them: Person, config: CrushConfig) {
-  const meK = mockIlju(me), themK = mockIlju(them)
+// 결과 파생 — 나는 계정 일주(myKey), 그 사람만 입력(렌더·연출 동일 결과 보장)
+function derive(myKey: string, them: Person, config: CrushConfig) {
+  const meK = myKey, themK = mockIlju(them)
   const eMe = elemOf(meK), eThem = elemOf(themK)
   const rel = relType(eMe, eThem)
   const arch = eMe === eThem ? config.sameArch : (config.archetype[pairKey(eMe, eThem)] ?? config.sameArch)
-  const seed = [...(me.name + them.name)].reduce((a, c) => a + c.charCodeAt(0), 0)
+  const seed = [...(myKey + them.name)].reduce((a, c) => a + c.charCodeAt(0), 0)
   const score = clamp(config.scoreOpt[rel] + (seed % 7) - 3, 35, 97)
   const stage = [...config.temp].reverse().find(t => score >= t.min) ?? config.temp[0]
   return { meK, themK, eMe, eThem, rel, arch, score, stage }
@@ -158,8 +161,9 @@ const emptyP = (): Person => ({ name: "", birth: { y: "", m: "", d: "" }, gender
 const validP = (p: Person) => p.name.trim() !== "" && p.birth.y.length === 4 && !!p.birth.m && !!p.birth.d
 
 export default function CrushFunnel({ config }: { config: CrushConfig }) {
+  const { ilju } = useUser()
+  const myKey = ilju?.id ?? FALLBACK_ME_KEY
   const [step, setStep] = useState<Step>("landing")
-  const [me, setMe] = useState<Person>(emptyP)
   const [them, setThem] = useState<Person>(() => ({ ...emptyP(), gender: "F" }))
   const [unlocked, setUnlocked] = useState(false)
   const [ai, setAi] = useState<Ai>({ status: "idle", text: "" })
@@ -167,12 +171,12 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   // 연출 단계에서 미리 풀이를 돌린다 → 결과 진입 시 보통 이미 완성
   const start = () => {
     setStep("loading")
-    const d = derive(me, them, config)
+    const d = derive(myKey, them, config)
     setAi({ status: "loading", text: "" })
     fetch("/api/some", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        me: { name: me.name, elem: d.eMe }, them: { name: them.name, elem: d.eThem },
+        me: { name: "나", elem: d.eMe }, them: { name: them.name, elem: d.eThem },
         archetype: d.arch.name, vibe: d.arch.vibe, score: d.score, rel: d.rel, stage: d.stage.label,
       }),
     })
@@ -182,7 +186,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
     setTimeout(() => setStep("result"), 1800)
   }
   const reset = () => {
-    setMe(emptyP()); setThem({ ...emptyP(), gender: "F" }); setUnlocked(false); setAi({ status: "idle", text: "" }); setStep("input")
+    setThem({ ...emptyP(), gender: "F" }); setUnlocked(false); setAi({ status: "idle", text: "" }); setStep("input")
   }
 
   // ── 랜딩 (커플과 동일 레이아웃) ──
@@ -194,9 +198,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </p>
         <div className="flex items-center gap-3">
           <div className="p-[3px] rounded-full" style={{ background: "linear-gradient(135deg, #E84B6A, #FBBF24)" }}>
-            <div className="rounded-full bg-white flex items-center justify-center" style={{ width: 76, height: 76 }}>
-              <span className="text-[20px] text-charcoal/40" style={BINGGRAE}>나</span>
-            </div>
+            <Avatar iljuKey={myKey} size={76} />
           </div>
           <Ico as={DoodleHeart} size={26} />
           <div className="rounded-full flex items-center justify-center" style={{ width: 82, height: 82, background: "#F1F5F9", border: "2px dashed #CBD5E1" }}>
@@ -220,11 +222,19 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
   // ── 입력 (나 + 그 사람) ──
   if (step === "input") {
-    const valid = validP(me) && validP(them)
+    const valid = validP(them)
     return (
       <div className="flex flex-col gap-4 pt-2">
-        <p className="text-[20px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleRedString} size={22} /> 두 사람 정보</p>
-        <PersonForm label="나" hint="" p={me} set={setMe} />
+        <p className="text-[20px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleRedString} size={22} /> 그 사람 정보</p>
+        {/* 내 사주 — 계정 카드 자동 포함 */}
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3 flex items-center gap-3">
+          <Avatar iljuKey={myKey} size={44} />
+          <div className="flex flex-col gap-1">
+            <span className="text-[14px] font-bold text-charcoal">나 <span className="text-text-muted font-normal">· 내 사주</span></span>
+            <ElemBadge elem={elemOf(myKey)} />
+          </div>
+          <span className="ml-auto text-[12px] text-text-muted">자동 포함</span>
+        </div>
         <PersonForm label="그 사람" hint="· 아는 만큼만" p={them} set={setThem} />
         <button onClick={start} disabled={!valid}
           className="w-full h-[54px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal disabled:opacity-30"
@@ -241,23 +251,23 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
       <div className="flex flex-col items-center justify-center gap-4 pt-24 text-center">
         <span className="animate-pulse"><Ico as={DoodleRedString} size={64} /></span>
         <p className="text-[18px] text-charcoal" style={BINGGRAE}>두 사람 사주를 맞춰보는 중…</p>
-        <p className="text-[14px] text-text-muted flex items-center gap-1.5">{me.name || "나"} <Ico as={DoodleHeart} size={14} /> {them.name || "그 사람"}</p>
+        <p className="text-[14px] text-text-muted flex items-center gap-1.5">{"나"} <Ico as={DoodleHeart} size={14} /> {them.name || "그 사람"}</p>
       </div>
     )
   }
 
   // ── 결과 계산 ──
-  const { meK, themK, eMe, eThem, rel, arch, score, stage } = derive(me, them, config)
+  const { meK, themK, eMe, eThem, rel, arch, score, stage } = derive(myKey, them, config)
   const md = mockDist(meK), td = mockDist(themK)
   const open = config.openHeart[eThem]
   const lucky = config.lucky[eThem]
   const fallbackProse =
-    `${me.name || "나"}랑 ${them.name || "그 사람"}은 **${arch.name}**. ${arch.vibe}.\n\n` +
+    `${"나"}랑 ${them.name || "그 사람"}은 **${arch.name}**. ${arch.vibe}.\n\n` +
     `${them.name || "그 사람"}은 ${config.persona[eThem].line}이에요. ${open.title} — ${open.line}\n\n` +
     `${config.strategy[rel][0]} 지금 가능성은 ${score}%, 흐름은 충분히 만들 수 있어요.`
 
   const people: { k: string; e: Elem; label: string }[] = [
-    { k: meK, e: eMe, label: me.name || "나" },
+    { k: meK, e: eMe, label: "나" },
     { k: themK, e: eThem, label: them.name || "그 사람" },
   ]
 
@@ -336,7 +346,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         <SectionTitle icon={DoodleTaegeuk}>사주 오행 밸런스</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
           <div className="flex items-center justify-end gap-3">
-            <span className="flex items-center gap-1 text-[14px] text-charcoal/70"><span className="w-2.5 h-2.5 rounded-full" style={{ background: PINK }} />{me.name || "나"}</span>
+            <span className="flex items-center gap-1 text-[14px] text-charcoal/70"><span className="w-2.5 h-2.5 rounded-full" style={{ background: PINK }} />{"나"}</span>
             <span className="flex items-center gap-1 text-[14px] text-charcoal/70"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#60A5FA" }} />{them.name || "그 사람"}</span>
           </div>
           {ELEMS.map(e => {
@@ -453,7 +463,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         <div className="flex items-center justify-center gap-3">
           <div className="flex flex-col items-center gap-1">
             <Avatar iljuKey={meK} size={68} />
-            <span className="text-[14px] font-bold text-charcoal">{me.name || "나"}</span>
+            <span className="text-[14px] font-bold text-charcoal">{"나"}</span>
             <ElemBadge elem={eMe} />
           </div>
           <div className="flex flex-col items-center">
