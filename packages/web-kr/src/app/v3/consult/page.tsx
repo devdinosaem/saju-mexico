@@ -143,6 +143,15 @@ const TOPICS = [
 
 const DAYS_KO = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"]
 
+// 토픽 선택 시 캐릭터가 던지는 전환 멘트(엔진 — 무료)
+const TOPIC_OPENERS: Record<string, string> = {
+  "연애": "좋아, 연애 얘기 해보자. 요즘 마음에 걸리는 사람 있어?",
+  "직장": "직장 쪽이구나. 일에서 제일 신경 쓰이는 게 뭐야?",
+  "재물": "돈 얘기 좋지. 요즘 재물 쪽에서 고민되는 거 있어?",
+  "기일 잡기": "좋은 날 잡는 거구나. 어떤 일정을 잡고 싶어?",
+  "운세": "요즘 운이 궁금한 거구나. 어떤 게 제일 알고 싶어?",
+}
+
 // 일주 카드가 없을 때 보여줄 안내 (캐릭터는 DEFAULT_PROFILE_IMG 사용)
 const GUIDE_TEXT_NO_ILJU =
   "안녕! 나는 네 사주 속에 살게 될 캐릭터야.\n\n" +
@@ -367,6 +376,8 @@ export default function ConsultPage() {
   const [summary, setSummary]         = useState("") // 재접속 요약(전송 컨텍스트용)
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
   const [showScrollDown, setShowScrollDown] = useState(false) // 맨 아래로 플로팅
+  const [copyToast, setCopyToast]     = useState(false)       // 복사 완료 토스트
+  const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null) // 길게 눌러 복사
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
   const pendingScrollAnchor = useRef<number | null>(null) // 위로 더 불러올 때 스크롤 보정용
@@ -595,6 +606,21 @@ export default function ConsultPage() {
     abortRef.current?.abort()
   }
 
+  // 길게 눌러(또는 우클릭) 메시지 복사 — 화면에 보이는 정제된 텍스트 기준
+  function copyMessage(text: string) {
+    const clean = maskProfanity(stripHanjaSafe(text)).replace(/\*\*/g, "")
+    navigator.clipboard?.writeText(clean).then(() => {
+      setCopyToast(true)
+      setTimeout(() => setCopyToast(false), 1500)
+    }).catch(() => {})
+  }
+  function onPressStart(text: string) {
+    pressTimer.current = setTimeout(() => copyMessage(text), 500)
+  }
+  function onPressEnd() {
+    if (pressTimer.current) { clearTimeout(pressTimer.current); pressTimer.current = null }
+  }
+
   // 재접속: 지난 대화 요약 + 이어받는 그리팅 (캐시 유효하면 재사용, 아니면 생성)
   async function resumeWithSummary(id: string, saved: Msg[]) {
     const marker = `${id}:${saved.length}`
@@ -660,7 +686,12 @@ export default function ConsultPage() {
     }
     if (selectedTopic === label) return // 이미 선택된 칩 단일 탭 — 무시(더블탭 대기)
     setSelected(label)
-    setMsgs(m => [...m, { role: "system", text: `${label} 상담 모드` }])
+    setMsgs(m => [
+      ...m,
+      { role: "system", text: `${label} 상담 모드` },
+      ...(TOPIC_OPENERS[label] ? [{ role: "char" as const, text: TOPIC_OPENERS[label] }] : []),
+    ])
+    wantScrollBottom.current = true
   }
 
   function applyCustom() {
@@ -668,7 +699,12 @@ export default function ConsultPage() {
     if (trimmed) {
       setCustomMood(trimmed)
       setSelected("직접 입력")
-      setMsgs(m => [...m, { role: "system", text: `"${trimmed}" 상담 모드` }])
+      setMsgs(m => [
+        ...m,
+        { role: "system", text: `"${trimmed}" 상담 모드` },
+        { role: "char", text: `'${trimmed}' 얘기 해보자. 좀 더 구체적으로 들려줄래?` },
+      ])
+      wantScrollBottom.current = true
     }
     setShowModal(false)
   }
@@ -750,7 +786,13 @@ export default function ConsultPage() {
               >
                 {renderAvatar()}
               </div>
-              <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-white border border-charcoal/10 px-3.5 py-2.5">
+              <div
+                className="max-w-[75%] rounded-2xl rounded-bl-sm bg-white border border-charcoal/10 px-3.5 py-2.5 select-none"
+                onTouchStart={() => { if (msg.text) onPressStart(msg.text) }}
+                onTouchEnd={onPressEnd}
+                onTouchMove={onPressEnd}
+                onContextMenu={e => { if (msg.text) { e.preventDefault(); copyMessage(msg.text) } }}
+              >
                 {msg.text
                   ? <div className="flex flex-col gap-2">
                       {msg.text.split("\n\n").map((para, pi) =>
@@ -770,6 +812,13 @@ export default function ConsultPage() {
           )
         )}
       </div>
+
+      {/* 복사 완료 토스트 */}
+      {copyToast && (
+        <div className="fixed left-0 right-0 z-[60] flex justify-center pointer-events-none" style={{ bottom: (kbHeight > 0 ? kbHeight : navH) + 72 }}>
+          <span className="px-3.5 py-2 rounded-full bg-charcoal text-cream text-[12px] font-medium shadow-lg">복사됐어</span>
+        </div>
+      )}
 
       {/* 입력바 — 키보드 올라오면 그 위로, 아니면 내비 위 */}
       <div className="fixed left-0 right-0 z-40 bg-cream border-t border-charcoal/10" style={{ bottom: kbHeight > 0 ? kbHeight : navH }}>
