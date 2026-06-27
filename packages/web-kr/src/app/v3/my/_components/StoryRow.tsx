@@ -170,7 +170,7 @@ function StoryCircle({
     <button className="flex flex-col items-center gap-1.5 shrink-0 active:scale-95 transition-transform" onClick={onClick}>
       <div className="relative">
         <div className="p-[2.5px] rounded-full" style={{ background: ring }}>
-          <div className="w-[48px] h-[48px] rounded-full overflow-hidden flex items-center justify-center" style={{ background: bg }}>
+          <div className="w-[42px] h-[42px] rounded-full overflow-hidden flex items-center justify-center" style={{ background: bg }}>
             <Face />
           </div>
         </div>
@@ -207,7 +207,7 @@ export default function StoryRow({ onAdd }: { onAdd?: () => void }) {
           onClick={() => onAdd ? onAdd() : navigator.share?.({ title: "사주TI", text: "나랑 같이 사주TI 해봐!", url: window.location.origin })}
         >
           <div className="p-[2.5px] rounded-full" style={{ background: "#E2E8F0" }}>
-            <div className="w-[48px] h-[48px] rounded-full overflow-hidden flex items-center justify-center bg-[#F1F5F9]">
+            <div className="w-[42px] h-[42px] rounded-full overflow-hidden flex items-center justify-center bg-[#F1F5F9]">
               <span className="text-[24px] leading-none text-[#94A3B8]">+</span>
             </div>
           </div>

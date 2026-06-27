@@ -23,7 +23,7 @@
      이 한 줄만 바꾸면 해당 화면의 [상단 헤더 + 페이지 전체 배경 + 본문 + 서브헤더 + 하단바]가
      일괄로 바뀐다. (본문/바는 var(--bg-minihompi) 직접 참조, 헤더/루트는 useMinihompiTheme 훅이
      --v3-surface-bg = var(--bg-minihompi)로 연결) */
-  --bg-minihompi: #FFFDE8;
+  --bg-minihompi: #FFFEF2;
   --bg-white: #FFFFFF;
   --pink: #E84B6A;
   --pink-light: #FFE4EA;
