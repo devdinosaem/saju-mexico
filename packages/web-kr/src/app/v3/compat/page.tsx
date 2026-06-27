@@ -80,8 +80,19 @@ const ELEM_FILL: Record<Elem, { label: string; D: DoodleC }[]> = {
     { label: "영화관 가기", D: DoodleTicket },
   ],
 }
-const SHENG: Record<Elem, Elem> = { 목: "화", 화: "토", 토: "금", 금: "수", 수: "목" }
-const KE: Record<Elem, Elem> = { 목: "토", 토: "수", 수: "화", 화: "금", 금: "목" }
+// 오행 조합별 페어 라벨·점수 (상생 5 + 상극 5). 키 = 두 오행 정렬 결합. 같은 오행은 별도(닮은꼴)
+const PAIR_DATA: Record<string, { text: string; D: DoodleC; score: number }> = {
+  목화: { text: "불씨 케미", D: DoodleFire, score: 90 },     // 목생화
+  토화: { text: "든든 콤비", D: DoodleEarth, score: 88 },     // 화생토
+  금토: { text: "결과 메이커", D: DoodleDiamond, score: 86 }, // 토생금
+  금수: { text: "깔끔 밸런스", D: DoodleWave, score: 92 },    // 금생수
+  목수: { text: "성장 파트너", D: DoodleSprout, score: 89 },  // 수생목
+  목토: { text: "밀당 케미", D: DoodleLightning, score: 60 }, // 목극토
+  수토: { text: "은근 긴장", D: DoodleLightning, score: 58 }, // 토극수
+  수화: { text: "냉탕온탕", D: DoodleLightning, score: 54 },  // 수극화
+  금화: { text: "다듬는 사이", D: DoodleDiamond, score: 63 }, // 화극금
+  금목: { text: "자극 케미", D: DoodleLightning, score: 56 }, // 금극목
+}
 
 type Participant = { name: string; iljuKey: string; me?: boolean }
 
@@ -114,19 +125,15 @@ function balanceLine(d: Record<Elem, number>): string {
   if (miss.length === 0) return "오행이 골고루 섞여 균형 잡힌 모임이에요. 서로 빈 곳을 채워줘요"
   return `${over}(${over}) 기운이 강하고 ${miss.map(m => `${m}(${m})`).join("·")} 기운이 비어요 → 추진력은 좋은데 ${miss.includes("수") ? "차분함" : miss.includes("금") ? "결단력" : "균형"}이 아쉬워요`
 }
+const pairKey = (a: Participant, b: Participant) => [elemOf(a.iljuKey), elemOf(b.iljuKey)].sort().join("")
 function pairScore(a: Participant, b: Participant): number {
-  const ea = elemOf(a.iljuKey), eb = elemOf(b.iljuKey)
-  if (ea === eb) return 72
-  if (SHENG[ea] === eb || SHENG[eb] === ea) return 91
-  if (KE[ea] === eb || KE[eb] === ea) return 56
-  return 80
+  if (elemOf(a.iljuKey) === elemOf(b.iljuKey)) return 72
+  return PAIR_DATA[pairKey(a, b)]?.score ?? 75
 }
 function pairLabel(a: Participant, b: Participant): { text: string; D: DoodleC } {
-  const ea = elemOf(a.iljuKey), eb = elemOf(b.iljuKey)
-  if (ea === eb) return { text: "닮은꼴", D: DoodleMirror }
-  if (SHENG[ea] === eb || SHENG[eb] === ea) return { text: "찰떡 케미", D: DoodleFire }
-  if (KE[ea] === eb || KE[eb] === ea) return { text: "티키타카", D: DoodleLightning }
-  return { text: "무난한 사이", D: DoodleSmiley }
+  if (elemOf(a.iljuKey) === elemOf(b.iljuKey)) return { text: "닮은꼴", D: DoodleMirror }
+  const dd = PAIR_DATA[pairKey(a, b)]
+  return dd ? { text: dd.text, D: dd.D } : { text: "케미 탐색중", D: DoodleSparkle }
 }
 function allPairs(ps: Participant[]) {
   const out: { a: Participant; b: Participant; s: number; label: { text: string; D: DoodleC } }[] = []
