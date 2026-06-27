@@ -2,19 +2,25 @@
   "name": "web-kr",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --port 3001 --webpack",
     "build": "next build --webpack",
+    "postbuild": "node --experimental-strip-types scripts/generate-preview.ts",
+    "generate:preview": "node --experimental-strip-types scripts/generate-preview.ts",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.2",
+    "korean-lunar-calendar": "^0.4.0",
     "manseryeok": "workspace:*",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "saju-engine": "workspace:*",
-    "saju-report": "workspace:*"
+    "saju-report-kr": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
