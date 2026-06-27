@@ -41,7 +41,7 @@ export default function SajuRevealOverlay({ open, birthDate, onClose, onRetry }:
 
   return createPortal(
     <div className="fixed inset-0 z-[200] bg-cream flex flex-col">
-      <div className="w-full max-w-[430px] mx-auto flex flex-col h-full">
+      <div className="w-full max-w-[480px] mx-auto flex flex-col h-full">
 
         {/* 닫기 */}
         <div className="flex justify-end px-4 pt-3 pb-1 shrink-0">

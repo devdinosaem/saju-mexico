@@ -23,7 +23,7 @@ export default function WishlistPage() {
     <>
       {/* 서브 헤더 */}
       <div
-        className="fixed top-12 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-20 px-4 h-[52px] flex items-center justify-between"
+        className="fixed top-12 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-20 px-4 h-[52px] flex items-center justify-between"
         style={{ background: "var(--bg-main, #FFFBF2)", borderBottom: "1.5px dashed #D8C4A8" }}
       >
         <button className="text-sm text-text-muted" onClick={() => router.back()}>← 뒤로</button>
@@ -114,7 +114,7 @@ export default function WishlistPage() {
       {/* 하단 고정 — 합계 + 구매 CTA */}
       {count > 0 && (
         <div
-          className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-30 px-4 py-3"
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-30 px-4 py-3"
           style={{ background: "var(--bg-main, #FFFBF2)", borderTop: "1.5px dashed #D8C4A0" }}
         >
           <div className="flex items-center justify-between mb-2.5">

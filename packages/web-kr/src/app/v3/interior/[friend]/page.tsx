@@ -110,7 +110,7 @@ export default function FriendRoomPage() {
     <>
       {/* ── 헤더 — fixed: v3 헤더(48px) 바로 아래 */}
       <div
-        className="fixed top-12 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-20 px-4 h-[52px] flex items-center justify-between"
+        className="fixed top-12 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-30 px-4 h-[52px] flex items-center justify-between"
         style={{ background: "var(--bg-minihompi)", borderBottom: "1.5px dashed #D8C4A8" }}
       >
         <button className="text-sm text-text-muted" onClick={() => router.back()}>← 나가기</button>
@@ -121,8 +121,9 @@ export default function FriendRoomPage() {
       </div>
 
       <div
-        className="px-4 flex flex-col pb-24"
-        style={{ paddingTop: "52px", background: "var(--bg-minihompi)", minHeight: "calc(100dvh - 48px)" }}
+        data-minihompi
+        className="flex flex-col pb-24"
+        style={{ paddingTop: "64px", background: "var(--bg-minihompi)", minHeight: "calc(100dvh - 48px)" }}
       >
         {/* ── 방 캔버스 ── */}
         <div
@@ -158,7 +159,7 @@ export default function FriendRoomPage() {
         </div>
 
         {/* ── 방명록 ── */}
-        <div style={{ fontFamily: "'BinggraeTaom', sans-serif" }}>
+        <div className="mt-4" style={{ fontFamily: "'BinggraeTaom', sans-serif" }}>
           <div
             className="pt-3 pb-2.5 flex items-center justify-between"
             style={{ borderTop: "1.5px dashed #E0C99A", borderBottom: "1px dashed #EDD9B0" }}
@@ -222,7 +223,7 @@ export default function FriendRoomPage() {
 
       {/* ── 입력창 — BottomNav 바로 위 고정 ── */}
       <div
-        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-40 px-4 pt-3 pb-[68px]"
+        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 px-4 pt-3 pb-[68px]"
         style={{ background: "var(--bg-minihompi)", borderTop: "1.5px dashed #D8C4A0" }}
       >
           <div className="flex gap-2 items-end">

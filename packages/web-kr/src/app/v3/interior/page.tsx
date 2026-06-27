@@ -242,7 +242,7 @@ export default function InteriorPage() {
           onClick={() => setShowAddFriend(false)}
         >
           <div
-            className="w-full max-w-[430px] mx-auto rounded-t-3xl px-4 pt-4 pb-8"
+            className="w-full max-w-[480px] mx-auto rounded-t-3xl px-4 pt-4 pb-8"
             style={{ background: "#FFFBF2", fontFamily: "'BinggraeTaom', sans-serif" }}
             onClick={e => e.stopPropagation()}
           >

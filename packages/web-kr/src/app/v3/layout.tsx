@@ -6,9 +6,15 @@ import { UserProvider } from "@/lib/UserContext"
 export default function V3Layout({ children }: { children: React.ReactNode }) {
   return (
     <UserProvider>
-    <div className="min-h-dvh bg-cream">
+    <div className="min-h-dvh" style={{ background: "var(--v3-surface-bg, var(--bg-cream))" }}>
       {/* TopBar */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-cream">
+      <header
+        className="fixed top-0 left-0 right-0 z-50"
+        style={{
+          background: "var(--v3-surface-bg, var(--bg-cream))",
+          borderBottom: "1.5px dashed var(--v3-header-border, transparent)",
+        }}
+      >
         <div className="max-w-[480px] mx-auto flex items-center justify-between px-4 h-12">
           <SajuTILogo className="h-7 w-7" />
           <TopBarRight />

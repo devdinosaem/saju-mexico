@@ -1,7 +1,29 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Cafe24Dongdong';
+  src: url('/fonts/Cafe24DongdongRegular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BinggraeTaom';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BinggraeTaom-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --bg-cream: #FDF6EE;
+  /* ── 페이지 배경 — 모든 페이지는 이 색을 기준으로 통일 ── */
+  --bg-cream: #FDF6EE;        /* 표준 페이지 배경 */
+  /* ★ 미니홈피 상세창(내/친구 홈피·방명록) 단일 색상 노브 ★
+     이 한 줄만 바꾸면 해당 화면의 [상단 헤더 + 페이지 전체 배경 + 본문 + 서브헤더 + 하단바]가
+     일괄로 바뀐다. (본문/바는 var(--bg-minihompi) 직접 참조, 헤더/루트는 useMinihompiTheme 훅이
+     --v3-surface-bg = var(--bg-minihompi)로 연결) */
+  --bg-minihompi: #FFFDE8;
   --bg-white: #FFFFFF;
   --pink: #E84B6A;
   --pink-light: #FFE4EA;
@@ -32,9 +54,28 @@
   --font-display: var(--font-black-han-sans);
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
+  overflow-x: clip;
   background: var(--bg-cream);
   color: var(--text-main);
+}
+
+/* 미니홈피 상세창(내/친구 홈피·방명록) 테마.
+   페이지가 [data-minihompi] 마커를 렌더하면 첫 페인트부터 노란톤이 적용된다.
+   CSS :has()라 JS effect 타이밍에 의존하지 않음 → 분홍↔노랑 깜빡임(FOUC) 원천 차단.
+   layout 루트/헤더가 var(--v3-surface-bg)를, 헤더 점선이 var(--v3-header-border)를 읽음. */
+body:has([data-minihompi]) {
+  --v3-surface-bg: var(--bg-minihompi);
+  background: var(--bg-minihompi);
+}
+/* 헤더가 배경과 동색이라 경계가 사라져 보임 → 점선으로 구분.
+   layout 헤더의 inline border 위에 확실히 얹기 위해 !important (서버컴포넌트 reload 의존 제거) */
+body:has([data-minihompi]) header {
+  border-bottom: 1.5px dashed #D8C4A8 !important;
 }
 
 /* 형광펜 밑줄 */
@@ -57,8 +98,22 @@ body {
 
 /* 삐뚤 배치 */
 .tilt-left { transform: rotate(-2deg); }
+
+/* 일주 디스커버리 마퀴 */
+@keyframes ilju-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
 .tilt-right { transform: rotate(2deg); }
 .tilt-slight { transform: rotate(1deg); }
+
+/* 사주카드 결과 등장 */
+@keyframes card-reveal {
+  0%   { transform: translateY(-48px) scale(0.88); opacity: 0; }
+  65%  { transform: translateY(6px) scale(1.02); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.card-reveal { animation: card-reveal 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
 /* 두들 물결 테두리 */
 .doodle-border {
@@ -89,6 +144,25 @@ body {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* 스크롤바 완전 숨김 */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { scrollbar-width: none; }
+
+/* 무한 흐름 슬라이드 (카드 캐러셀) */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes rock {
+  0%, 100% { transform: rotate(-30deg); }
+  50%       { transform: rotate(30deg); }
+}
+.animate-rock { animation: rock 1.2s ease-in-out infinite; }
 
 .animate-float { animation: float 3s ease-in-out infinite; }
 .animate-wiggle { animation: wiggle 2s ease-in-out infinite; }

@@ -34,7 +34,7 @@ export default function LoadingOverlay({ open, name, onDone, children }: Props) 
 
   return createPortal(
     <div className="fixed inset-0 z-[200] flex justify-center bg-cream">
-      <div className="w-full max-w-[430px] flex flex-col items-center justify-center h-full gap-4">
+      <div className="w-full max-w-[480px] flex flex-col items-center justify-center h-full gap-4">
         {/* 마퀴 영역 */}
         <div
           className="w-full overflow-hidden"

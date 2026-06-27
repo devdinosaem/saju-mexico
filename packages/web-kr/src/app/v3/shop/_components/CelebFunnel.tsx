@@ -233,7 +233,7 @@ export default function CelebFunnel({ open, onClose }: { open: boolean; onClose:
       {/* ── Step 2+: 프리뷰 / 결과 ── */}
       {(step === "preview" || step === "result") && (
         <div className="fixed inset-0 z-[200] bg-cream overflow-y-auto">
-          <div className="w-full max-w-[430px] mx-auto flex flex-col pb-10">
+          <div className="w-full max-w-[480px] mx-auto flex flex-col pb-10">
 
             {/* 상단 네비 */}
             <div className="flex items-center justify-between px-4 pt-3 pb-1 sticky top-0 bg-cream/95 backdrop-blur-sm z-10">

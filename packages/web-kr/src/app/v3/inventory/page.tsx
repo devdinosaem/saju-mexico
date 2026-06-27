@@ -334,7 +334,7 @@ function InventoryPageInner() {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col" style={{ background: "#FFFBF2" }}>
-      <div className="w-full max-w-[430px] mx-auto flex flex-col h-full" style={{ background: "#FFFBF2" }}>
+      <div className="w-full max-w-[480px] mx-auto flex flex-col h-full" style={{ background: "#FFFBF2" }}>
 
         {/* 헤더 */}
         <div className="shrink-0 flex items-center justify-between px-4 py-3 border-b border-black/8" style={{ background: "#FFFBF2" }}>
@@ -563,7 +563,7 @@ function InventoryPageInner() {
       {/* CTA */}
       {cartItems.length > 0 && (
         <div
-          className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-40 px-4 pt-3 pb-[68px]"
+          className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 px-4 pt-3 pb-[68px]"
           style={{ background: "#FFFBF2", borderTop: "1.5px dashed #D8C4A0" }}
         >
           <div className="flex items-center justify-between mb-2">
