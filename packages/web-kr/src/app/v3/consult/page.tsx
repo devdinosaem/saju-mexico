@@ -262,8 +262,12 @@ const HANJA_MAP: Record<string, string> = {
 function isHanjaCp(cp: number): boolean {
   return (cp >= 0x3400 && cp <= 0x9fff) || (cp >= 0xf900 && cp <= 0xfaff) || cp === 0x3005
 }
+// 일본어 가나(히라가나 3040-309f, 가타카나 30a0-30ff, 반각가나 ff66-ff9d) — DeepSeek가 가끔 새 흘림(らしい 등)
+function isKanaCp(cp: number): boolean {
+  return (cp >= 0x3040 && cp <= 0x30ff) || (cp >= 0xff66 && cp <= 0xff9d)
+}
 
-// AI 출력의 한자를 한글로 강제 변환 — 프롬프트 금지로도 새는 한자를 출력단에서 확실히 차단
+// AI 출력의 외국 문자를 출력단에서 제거 — 프롬프트 금지로도 새는 한자/가나를 확실히 차단
 function stripHanjaSafe(text: string): string {
   const chars = [...text]
   let out = ""
@@ -276,7 +280,8 @@ function stripHanjaSafe(text: string): string {
       if (j > i + 1 && chars[j] === ")") { i = j; continue }
     }
     const cp = ch.codePointAt(0)!
-    if (isHanjaCp(cp)) { out += HANJA_MAP[ch] ?? ""; continue } // 독음 변환, 없으면 제거
+    if (isHanjaCp(cp)) { out += HANJA_MAP[ch] ?? ""; continue } // 한자: 독음 변환, 없으면 제거
+    if (isKanaCp(cp)) continue                                  // 일본어 가나: 제거
     out += ch
   }
   return out
