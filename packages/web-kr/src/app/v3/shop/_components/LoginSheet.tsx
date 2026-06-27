@@ -35,7 +35,7 @@ export default function LoginSheet({ open, onClose, onSuccess }: Props) {
     >
       <div className="absolute inset-0 bg-black/40" />
       <div
-        className="relative w-full max-w-[480px] bg-cream rounded-t-3xl border-t-2 border-x-2 border-charcoal"
+        className="relative w-full max-w-[480px] bg-white rounded-t-3xl overflow-hidden border-t-2 border-x-2 border-charcoal"
         onClick={e => e.stopPropagation()}
         style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
       >
