@@ -60,7 +60,7 @@ export default function GuestbookPage() {
   return (
     <>
       <div
-        className="flex flex-col pb-24"
+        className="px-4 flex flex-col pb-24"
         style={{ background: "var(--bg-minihompi)" }}
       >
         {/* 방 캔버스 */}
