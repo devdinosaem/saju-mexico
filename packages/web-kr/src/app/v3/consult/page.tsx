@@ -5,6 +5,7 @@ import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { PRICES, WON_PER_MYONGTAE } from "@/lib/prices"
 import { useBalance, spend, refund, CONSULT_COST } from "@/lib/balance"
 import { loadHistory, saveHistory } from "@/lib/consult-history"
+import { getSummaryCache, setSummaryCache, windowMessages } from "@/lib/consult-context"
 import { DoodleBox, DoodleSparkle, DoodleHeart, DoodleSuitcase, DoodleCrystal, DoodleMagicWand, DoodleStar, DoodleMoon } from "@/components/doodles"
 import { useUser, DEFAULT_PROFILE_IMG } from "@/lib/UserContext"
 import type { IljuType } from "@/lib/ilju-types"
@@ -124,7 +125,7 @@ const ELEM_BG: Record<string, string> = {
   목: "#D1FAE5", 화: "#FEE2E2", 토: "#FEF3C7", 금: "#F1F5F9", 수: "#DBEAFE",
 }
 
-type Msg = { role: "user" | "char" | "system"; text: string }
+type Msg = { role: "user" | "char" | "system"; text: string; transient?: boolean }
 
 const ERROR_TEXT = "연결이 안 됐어. 잠깐 후에 다시 물어봐."
 const INITIAL_VISIBLE = 12 // 약 6턴
@@ -362,11 +363,13 @@ export default function ConsultPage() {
   const [headerH, setHeaderH]         = useState(0)
   const [navH, setNavH]               = useState(64)
   const [isLoading, setIsLoading]     = useState(false)
+  const [summary, setSummary]         = useState("") // 재접속 요약(전송 컨텍스트용)
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
   const pendingScrollAnchor = useRef<number | null>(null) // 위로 더 불러올 때 스크롤 보정용
   const wantScrollBottom = useRef(false)                  // 복원/전송 시 하단으로
+  const resumedKeyRef = useRef("")                        // 재접속 요약 중복 생성 방지(StrictMode 등)
 
   const elemKey = ilju?.stemElement.charAt(0) ?? "목"
   const iljuKey = ilju?.id ?? ""
@@ -382,6 +385,12 @@ export default function ConsultPage() {
   const visibleStart = Math.max(0, msgs.length - visibleCount)
   const visibleMsgs = msgs.slice(visibleStart)
   const hasMore = visibleStart > 0
+
+  // 사주 컨텍스트는 고정 → 매 전송 재계산 방지(메모). DeepSeek prompt caching 활용
+  const sajuContext = React.useMemo(
+    () => (ilju && user.birthDate ? buildSajuContext(user, ilju) : ""),
+    [iljuKey, user.birthDate], // eslint-disable-line react-hooks/exhaustive-deps
+  )
   const headerName = ilju ? `${ilju.ilju}(${ilju.hanja}) · 나` : "사주 친구"
   const headerLabel = ilju ? (ilju.name ?? "") : "사주카드를 뽑으면 시작돼"
 
@@ -437,6 +446,7 @@ export default function ConsultPage() {
     if (saved?.length) {
       setMsgs(saved as Msg[])
       wantScrollBottom.current = true
+      void resumeWithSummary(iljuKey, saved as Msg[]) // 재접속 → 요약+이어받는 그리팅
       return
     }
     const name = user.birthDate.name
@@ -455,7 +465,7 @@ export default function ConsultPage() {
   React.useEffect(() => {
     if (!iljuKey || isLoading) return
     if (!msgs.some(m => m.role === "user")) return
-    saveHistory(iljuKey, msgs.filter(m => !(m.role === "char" && (m.text === "" || m.text === ERROR_TEXT))))
+    saveHistory(iljuKey, msgs.filter(m => !m.transient && !(m.role === "char" && (m.text === "" || m.text === ERROR_TEXT))))
   }, [msgs, isLoading, iljuKey])
 
   // 페이지네이션 — 최상단 도달 시 이전 배치 로드
@@ -499,17 +509,19 @@ export default function ConsultPage() {
     setIsLoading(true)
 
     try {
-      const apiMessages = nextMsgs
-        .filter(m => m.role !== "system")
-        .map(m => ({ role: m.role === "char" ? "assistant" : "user", content: m.text }))
+      // 전송 컨텍스트 = 요약 + 최근 N메시지(윈도우). 표시(전체 이력)와 독립
+      const apiMessages = windowMessages(
+        nextMsgs
+          .filter(m => m.role !== "system")
+          .map(m => ({ role: m.role === "char" ? "assistant" as const : "user" as const, content: m.text }))
+      )
 
-      const sajuContext = buildSajuContext(user, ilju!)
       const topic = selectedTopic === "직접 입력" ? customMood || null : selectedTopic
 
       const res = await fetch("/api/consult", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: apiMessages, sajuContext, topic }),
+        body: JSON.stringify({ messages: apiMessages, sajuContext, topic, summary }),
       })
       if (!res.ok || !res.body) throw new Error()
 
@@ -552,6 +564,51 @@ export default function ConsultPage() {
       })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  // 재접속: 지난 대화 요약 + 이어받는 그리팅 (캐시 유효하면 재사용, 아니면 생성)
+  async function resumeWithSummary(id: string, saved: Msg[]) {
+    const marker = `${id}:${saved.length}`
+    if (resumedKeyRef.current === marker) return // 같은 상태로 이미 재접속 처리됨 → 중복 방지
+    resumedKeyRef.current = marker
+    const apiMsgs = saved
+      .filter(m => m.role !== "system")
+      .map(m => ({ role: m.role === "char" ? "assistant" as const : "user" as const, content: m.text }))
+    if (!apiMsgs.length) return
+
+    const cache = getSummaryCache(id)
+    if (cache && cache.basedOnLen === saved.length && cache.greeting) {
+      setSummary(cache.summary)
+      setMsgs(m => [...m, { role: "char", text: cache.greeting, transient: true }])
+      wantScrollBottom.current = true
+      return
+    }
+    // 생성 — 타이핑 점부터
+    setMsgs(m => [...m, { role: "char", text: "", transient: true }])
+    wantScrollBottom.current = true
+    try {
+      const res = await fetch("/api/consult/summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sajuContext, messages: apiMsgs }),
+      })
+      if (!res.ok) throw new Error()
+      const { summary: sm, greeting } = await res.json() as { summary: string; greeting: string }
+      if (!greeting) throw new Error("empty")
+      setSummary(sm ?? "")
+      setSummaryCache(id, { summary: sm ?? "", greeting, basedOnLen: saved.length })
+      setMsgs(m => {
+        const u = [...m]
+        for (let i = u.length - 1; i >= 0; i--) {
+          if (u[i].transient) { u[i] = { role: "char", text: greeting, transient: true }; break }
+        }
+        return u
+      })
+      wantScrollBottom.current = true
+    } catch {
+      // 실패 → 이어받기 인사 생략(복원된 대화만 유지)
+      setMsgs(m => m.filter(x => !x.transient))
     }
   }
 

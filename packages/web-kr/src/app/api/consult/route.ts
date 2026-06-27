@@ -3,22 +3,25 @@ import { NextRequest } from "next/server"
 export const runtime = "edge"
 
 export async function POST(req: NextRequest) {
-  const { messages, sajuContext, topic } = await req.json() as {
+  const { messages, sajuContext, topic, summary } = await req.json() as {
     messages: { role: "user" | "assistant"; content: string }[]
     sajuContext: string
     topic?: string | null
+    summary?: string | null
   }
 
   const apiKey = process.env.DEEPSEEK_API_KEY
   if (!apiKey) return new Response("DEEPSEEK_API_KEY not set", { status: 500 })
 
   const topicLine = topic ? `\n# 현재 상담 주제\n사용자가 "${topic}"에 대해 얘기하고 싶어 하고 있어. 모든 답변을 이 주제와 연결해서 해줘.\n` : ""
+  // 재접속 시 지난 대화 요약(오래된 맥락은 윈도우에서 잘려나가므로 여기로 보존)
+  const summaryLine = summary ? `\n# 지난 대화 요약 (이전 맥락 — 자연스럽게 이어가되 굳이 "요약하면" 같은 말로 드러내지 마)\n${summary}\n` : ""
 
   const systemPrompt = `너는 이 사람의 사주 일주에 깃든 캐릭터야. 점쟁이가 아니라, 이 사람을 오래 봐온 가장 가까운 친구. 사주를 꿰뚫어 보지만 그걸로 진단하거나 가르치려 들지 않아 — 그냥 곁에 있어주는 쪽에 가까워.
 
 아래는 이 사람의 사주 전체 데이터야. 필요할 때 참고하되, 매번 꺼내 쓰진 마.
 
-${sajuContext}${topicLine}
+${sajuContext}${topicLine}${summaryLine}
 
 # 핵심 원칙 (이게 전부야. 아래 4개만 지키면 돼)
 
