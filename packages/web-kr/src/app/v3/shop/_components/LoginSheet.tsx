@@ -1,4 +1,6 @@
 "use client"
+import { signInWithKakao } from "@/lib/supabase/auth"
+import { isSupabaseConfigured } from "@/lib/supabase/client"
 
 type Props = {
   open: boolean
@@ -58,9 +60,9 @@ export default function LoginSheet({ open, onClose, onSuccess }: Props) {
           {/* 로그인 버튼들 */}
           <div className="flex flex-col gap-3">
 
-            {/* 카카오 */}
+            {/* 카카오 — Supabase 설정 시 실제 OAuth, 아니면 mock */}
             <button
-              onClick={() => onSuccess("kakao")}
+              onClick={() => isSupabaseConfigured ? signInWithKakao(window.location.pathname) : onSuccess("kakao")}
               className="w-full h-[54px] rounded-2xl flex items-center justify-center gap-2.5 active:opacity-85 transition-opacity border-2 border-charcoal font-bold text-[15px]"
               style={{ background: "#FEE500", color: "#3C1E1E" }}
             >

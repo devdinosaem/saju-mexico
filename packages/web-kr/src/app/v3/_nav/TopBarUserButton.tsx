@@ -1,24 +1,27 @@
 "use client"
-import { useLayoutEffect, useState } from "react"
-import { getMockUser, logoutMockUser, MOCK_AUTH_EVENT, type MockUser } from "@/lib/mockAuth"
+import { logoutMockUser } from "@/lib/mockAuth"
+import { useUser } from "@/lib/UserContext"
+import { isSupabaseConfigured } from "@/lib/supabase/client"
+import { signOut } from "@/lib/supabase/auth"
 
 export default function TopBarUserButton() {
-  const [user, setUser] = useState<MockUser>({ loggedIn: false, provider: null, birthDate: null })
+  const { isLoggedIn, user } = useUser()
 
-  useLayoutEffect(() => {
-    setUser(getMockUser())
-    const handler = () => setUser(getMockUser())
-    window.addEventListener(MOCK_AUTH_EVENT, handler)
-    return () => window.removeEventListener(MOCK_AUTH_EVENT, handler)
-  }, [])
+  if (!isLoggedIn) return null
 
-  if (!user.loggedIn) return null
+  const dotColor = user.provider === "naver" ? "#03C75A" : "#FEE500"
 
-  const dotColor = user.provider === "kakao" ? "#FEE500" : "#03C75A"
+  const handleLogout = async () => {
+    if (isSupabaseConfigured) {
+      await signOut()
+    } else {
+      logoutMockUser()
+    }
+  }
 
   return (
     <button
-      onClick={logoutMockUser}
+      onClick={handleLogout}
       className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 active:opacity-60 transition-opacity"
       style={{ background: "rgba(45,45,45,0.05)" }}
     >
