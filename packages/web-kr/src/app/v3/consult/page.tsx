@@ -127,7 +127,7 @@ const ELEM_BG: Record<string, string> = {
 
 type Msg = { role: "user" | "char" | "system"; text: string; transient?: boolean }
 
-const ERROR_TEXT = "연결이 안 됐어. 잠깐 후에 다시 물어봐."
+const ERROR_TEXT = "잠시 후 다시 시도해줘."
 const INITIAL_VISIBLE = 12 // 약 6턴
 const LOAD_BATCH = 12      // 최상단 도달 시 추가로 불러올 메시지 수
 
@@ -365,11 +365,14 @@ export default function ConsultPage() {
   const [isLoading, setIsLoading]     = useState(false)
   const [summary, setSummary]         = useState("") // 재접속 요약(전송 컨텍스트용)
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
+  const [showScrollDown, setShowScrollDown] = useState(false) // 맨 아래로 플로팅
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
   const pendingScrollAnchor = useRef<number | null>(null) // 위로 더 불러올 때 스크롤 보정용
   const wantScrollBottom = useRef(false)                  // 복원/전송 시 하단으로
   const resumedKeyRef = useRef("")                        // 재접속 요약 중복 생성 방지(StrictMode 등)
+  const abortRef = useRef<AbortController | null>(null)   // 생성 중단용
+  const lastChipTap = useRef<{ label: string; t: number }>({ label: "", t: 0 }) // 토픽 더블탭 해제
 
   const elemKey = ilju?.stemElement.charAt(0) ?? "목"
   const iljuKey = ilju?.id ?? ""
@@ -406,15 +409,16 @@ export default function ConsultPage() {
     el.style.height = Math.min(el.scrollHeight, 104) + "px"
   }
 
+  // 모바일 키보드 높이 추적(모달 + 메인 입력바 공용)
   React.useEffect(() => {
-    if (!showModal) { setKbHeight(0); return }
     const vv = window.visualViewport
     if (!vv) return
     const update = () => setKbHeight(Math.max(0, window.innerHeight - vv.offsetTop - vv.height))
     vv.addEventListener("resize", update)
     vv.addEventListener("scroll", update)
+    update()
     return () => { vv.removeEventListener("resize", update); vv.removeEventListener("scroll", update) }
-  }, [showModal])
+  }, [])
 
   React.useEffect(() => {
     if (!headerRef.current) return
@@ -468,15 +472,18 @@ export default function ConsultPage() {
     saveHistory(iljuKey, msgs.filter(m => !m.transient && !(m.role === "char" && (m.text === "" || m.text === ERROR_TEXT))))
   }, [msgs, isLoading, iljuKey])
 
-  // 페이지네이션 — 최상단 도달 시 이전 배치 로드
+  // 페이지네이션(최상단 로드) + 맨아래 플로팅 노출 판정
   React.useEffect(() => {
     const onScroll = () => {
       if (window.scrollY < headerH + 60 && visibleCount < msgs.length) {
         pendingScrollAnchor.current = document.documentElement.scrollHeight
         setVisibleCount(c => Math.min(msgs.length, c + LOAD_BATCH))
       }
+      const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 160
+      setShowScrollDown(!nearBottom)
     }
     window.addEventListener("scroll", onScroll, { passive: true })
+    onScroll()
     return () => window.removeEventListener("scroll", onScroll)
   }, [headerH, visibleCount, msgs.length])
 
@@ -508,6 +515,10 @@ export default function ConsultPage() {
     wantScrollBottom.current = true // 보낸 직후 하단으로
     setIsLoading(true)
 
+    const controller = new AbortController()
+    abortRef.current = controller
+    let acc = "" // 받은 답변 누적 — 중단 시 빈 답 여부 판정
+
     try {
       // 전송 컨텍스트 = 요약 + 최근 N메시지(윈도우). 표시(전체 이력)와 독립
       const apiMessages = windowMessages(
@@ -522,6 +533,7 @@ export default function ConsultPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: apiMessages, sajuContext, topic, summary }),
+        signal: controller.signal,
       })
       if (!res.ok || !res.body) throw new Error()
 
@@ -545,6 +557,7 @@ export default function ConsultPage() {
             const chunk = JSON.parse(data).choices?.[0]?.delta?.content ?? ""
             for (const char of chunk) {
               await new Promise(r => setTimeout(r, 15))
+              acc += char
               setMsgs(prev => {
                 const updated = [...prev]
                 updated[updated.length - 1] = { role: "char", text: updated[updated.length - 1].text + char }
@@ -555,16 +568,29 @@ export default function ConsultPage() {
         }
       }
     } catch (err) {
-      console.error("[consult] send 실패:", err)
-      refund(CONSULT_COST) // 응답 실패 → 차감분 환불
-      setMsgs(prev => {
-        const updated = [...prev]
-        updated[updated.length - 1] = { role: "char", text: ERROR_TEXT }
-        return updated
-      })
+      if (err instanceof DOMException && err.name === "AbortError") {
+        // 사용자가 중단 — 받은 부분은 유지. 빈 답이면 환불 + 빈 거품 제거
+        if (acc === "") {
+          refund(CONSULT_COST)
+          setMsgs(prev => prev.slice(0, -1))
+        }
+      } else {
+        console.error("[consult] send 실패:", err)
+        refund(CONSULT_COST) // 응답 실패 → 차감분 환불
+        setMsgs(prev => {
+          const updated = [...prev]
+          updated[updated.length - 1] = { role: "char", text: ERROR_TEXT }
+          return updated
+        })
+      }
     } finally {
+      abortRef.current = null
       setIsLoading(false)
     }
+  }
+
+  function stopGen() {
+    abortRef.current?.abort()
   }
 
   // 재접속: 지난 대화 요약 + 이어받는 그리팅 (캐시 유효하면 재사용, 아니면 생성)
@@ -613,14 +639,25 @@ export default function ConsultPage() {
   }
 
   function handleChip(label: string) {
+    const now = Date.now()
+    const isDouble = lastChipTap.current.label === label && now - lastChipTap.current.t < 400
+    lastChipTap.current = { label, t: now }
+
+    // 선택된 칩을 더블탭 → 해제(일반 모드 복귀)
+    if (selectedTopic === label && isDouble) {
+      setSelected(null)
+      if (label === "직접 입력") setCustomMood("")
+      setMsgs(m => [...m, { role: "system", text: "일반 상담 모드로 돌아왔어" }])
+      return
+    }
     if (label === "직접 입력") {
       setModalDraft(customMood)
       setShowModal(true)
-    } else {
-      if (selectedTopic === label) return
-      setSelected(label)
-      setMsgs(m => [...m, { role: "system", text: `${label} 상담 모드` }])
+      return
     }
+    if (selectedTopic === label) return // 이미 선택된 칩 단일 탭 — 무시(더블탭 대기)
+    setSelected(label)
+    setMsgs(m => [...m, { role: "system", text: `${label} 상담 모드` }])
   }
 
   function applyCustom() {
@@ -731,8 +768,8 @@ export default function ConsultPage() {
         )}
       </div>
 
-      {/* 입력바 — 하단 내비게이터 바로 위에 붙임 */}
-      <div className="fixed left-0 right-0 z-40 bg-cream border-t border-charcoal/10" style={{ bottom: navH }}>
+      {/* 입력바 — 키보드 올라오면 그 위로, 아니면 내비 위 */}
+      <div className="fixed left-0 right-0 z-40 bg-cream border-t border-charcoal/10" style={{ bottom: kbHeight > 0 ? kbHeight : navH }}>
         {/* 게이팅 플로팅: 카드 없음 → 카드 뽑기 / 잔액 부족 → 충전 */}
         {gate && (
           <div className="absolute bottom-full left-0 right-0 flex justify-center pb-3 px-4 pointer-events-none">
@@ -745,6 +782,16 @@ export default function ConsultPage() {
                 : `명태 충전하고 ${hasStarted ? "이어가기" : "대화 시작하기"} →`}
             </button>
           </div>
+        )}
+        {/* 맨 아래로 스크롤 플로팅 (위로 올려둔 상태에서만) */}
+        {showScrollDown && !gate && (
+          <button
+            onClick={() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" })}
+            aria-label="맨 아래로"
+            className="absolute bottom-full right-4 mb-3 w-9 h-9 rounded-full bg-white border-2 border-charcoal/15 shadow-md flex items-center justify-center active:scale-90 transition-transform"
+          >
+            <span className="text-[15px] leading-none text-charcoal">↓</span>
+          </button>
         )}
         <div className="max-w-[480px] mx-auto px-4 py-2.5 flex items-center gap-2">
           <div className="relative flex-1">
@@ -765,11 +812,14 @@ export default function ConsultPage() {
             </span>
           </div>
           <button
-            onClick={send}
-            disabled={!input.trim() || isLoading || !!gate}
+            onClick={isLoading ? stopGen : send}
+            disabled={isLoading ? false : (!input.trim() || !!gate)}
+            aria-label={isLoading ? "생성 중단" : "전송"}
             className="w-10 h-10 rounded-xl bg-pink flex items-center justify-center shrink-0 active:opacity-80 disabled:opacity-30 transition-opacity"
           >
-            <span className="text-cream text-[16px] leading-none">→</span>
+            {isLoading
+              ? <span className="block w-3 h-3 rounded-[2px] bg-cream" />
+              : <span className="text-cream text-[16px] leading-none">→</span>}
           </button>
         </div>
       </div>
