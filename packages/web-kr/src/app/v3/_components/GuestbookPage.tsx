@@ -3,11 +3,21 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { RoomCanvas, SKINS, STORAGE_KEY, myGuestbookKey } from "../my/_components/MiniRoom"
 import type { RoomData } from "../my/_components/MiniRoom"
-import { FRIEND_ROOMS } from "../interior/_data/friendRooms"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { ELEMENT_THEME } from "@/lib/ilju-calc"
 import { useUser } from "@/lib/UserContext"
+import { useFriends } from "@/hooks/useFriends"
 const withTime = (date: string) => /오전|오후/.test(date) ? date : date + " 오후 12:00"
+
+const STEM_TO_ELEM: Record<string, string> = {
+  갑: "목", 을: "목", 병: "화", 정: "화",
+  무: "토", 기: "토", 경: "금", 신: "금",
+  임: "수", 계: "수",
+}
+const ELEM_BG_MAP: Record<string, string> = {
+  목: "#D1FAE5", 화: "#FEE2E2", 토: "#FEF3C7", 금: "#E2E8F0", 수: "#DBEAFE",
+}
+const friendBg = (iljuKey: string) => ELEM_BG_MAP[STEM_TO_ELEM[iljuKey[0]] ?? "토"]
 
 type GuestEntry = { id: string; author: string; message: string; date: string }
 
@@ -33,6 +43,7 @@ export default function GuestbookPage() {
   const meSvgFn = meIljuKey ? ILJU_SVG_ICONS[meIljuKey] : null
   const gbKey = myGuestbookKey(meName)
 
+  const { friends } = useFriends()
   const [room, setRoom] = useState<RoomData>(DEFAULT_ROOM)
   const [entries, setEntries] = useState<GuestEntry[]>([])
   const [editing, setEditing] = useState(false)
@@ -138,15 +149,16 @@ export default function GuestbookPage() {
                       <div
                         className="shrink-0 w-9 h-9 rounded-full overflow-hidden flex items-center justify-center"
                         style={{
-                          background: entry.author === meName ? meBg : (FRIEND_ROOMS.find(f => f.name === entry.author)?.bg ?? "#F1F5F9"),
+                          background: entry.author === meName ? meBg : (() => { const f = friends.find(f => f.name === entry.author); return f ? friendBg(f.iljuKey) : "#F1F5F9" })(),
                           border: "1.5px dashed #D4B070",
                         }}
                       >
                         {(() => {
                           if (entry.author === meName) return <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meIljuKey))}</div>
-                          const friend = FRIEND_ROOMS.find(f => f.name === entry.author)
-                          return friend
-                            ? <friend.Face s={32} />
+                          const friend = friends.find(f => f.name === entry.author)
+                          const fn = friend ? ILJU_SVG_ICONS[friend.iljuKey] : null
+                          return fn
+                            ? <div className="w-full h-full">{fn(getIljuProfileViewBox(friend!.iljuKey))}</div>
                             : <span className="text-[12px] font-bold text-charcoal/50">{entry.author[0]}</span>
                         })()}
                       </div>

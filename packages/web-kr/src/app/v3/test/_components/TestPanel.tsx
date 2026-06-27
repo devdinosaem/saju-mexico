@@ -14,13 +14,14 @@ function resetAll() {
   const KEYS = [
     "saju-mock-user", "saju-inventory-v1", "saju-wishlist-v1",
     "saju-miniroom-v1", "saju-guestbook-경진", "saju-balance-mock",
+    "saju-custom-friends", "saju-sample-friends-seeded",
     "saju-test-hidden-friends", "saju-guestbook-경진-seen",
   ]
   KEYS.forEach(k => localStorage.removeItem(k))
   window.dispatchEvent(new Event("saju-auth-change"))
   window.dispatchEvent(new Event("saju-inventory-change"))
   window.dispatchEvent(new Event("saju-balance-change"))
-  window.dispatchEvent(new Event("saju-friends-change"))
+  window.dispatchEvent(new Event("saju-custom-friends-change"))
 }
 
 export default function TestPanel() {

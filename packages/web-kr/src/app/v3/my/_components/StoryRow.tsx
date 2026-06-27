@@ -1,7 +1,9 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ILJU_SVG_ICONS } from "@/lib/ilju-svg-icons"
+import { useFriends } from "@/hooks/useFriends"
+import type { Friend as FriendModel } from "@/lib/friends"
 
 const GAEGU: React.CSSProperties = {
   fontFamily: "'Cafe24Dongdong', var(--font-gaegu), cursive",
@@ -135,9 +137,7 @@ export const FaceAreum = ({ s = 50 }: { s?: number }) => (
 
 /* ── 데이터 ─────────────────────────────────────────────── */
 
-type Friend = { name: string; Face: ({ s }: { s?: number }) => React.ReactElement; bg: string; elem: Elem; daewun: boolean }
-
-type StoredFriend = { id: string; name: string; iljuKey: string }
+type Friend = { id: string; name: string; Face: ({ s }: { s?: number }) => React.ReactElement; bg: string; elem: Elem; daewun: boolean }
 
 const STEM_TO_ELEM: Record<string, Elem> = {
   갑: "목", 을: "목", 병: "화", 정: "화",
@@ -156,9 +156,9 @@ function makeIljuFace(iljuKey: string): ({ s }: { s?: number }) => React.ReactEl
   }
 }
 
-function toFriend(cf: StoredFriend): Friend {
+function toFriend(cf: FriendModel): Friend {
   const elem = STEM_TO_ELEM[cf.iljuKey[0]] ?? "토"
-  return { name: cf.name, Face: makeIljuFace(cf.iljuKey), bg: ELEM_BG_MAP[elem], elem, daewun: false }
+  return { id: cf.id, name: cf.name, Face: makeIljuFace(cf.iljuKey), bg: ELEM_BG_MAP[elem], elem, daewun: false }
 }
 
 /* ── 컴포넌트 ───────────────────────────────────────────── */
@@ -183,21 +183,9 @@ function StoryCircle({
 
 export default function StoryRow({ onAdd }: { onAdd?: () => void }) {
   const router = useRouter()
-  const [customFriends, setCustomFriends] = useState<Friend[]>([])
+  const { friends } = useFriends()
+  const customFriends = friends.map(toFriend)
   const [active, setActive] = useState<Friend | null>(null)
-
-  useEffect(() => {
-    const load = () => {
-      try {
-        const saved = localStorage.getItem("saju-custom-friends")
-        const parsed: StoredFriend[] = saved ? JSON.parse(saved) : []
-        setCustomFriends(parsed.map(toFriend))
-      } catch { setCustomFriends([]) }
-    }
-    load()
-    window.addEventListener("saju-custom-friends-change", load)
-    return () => window.removeEventListener("saju-custom-friends-change", load)
-  }, [])
 
   return (
     <>
@@ -215,7 +203,7 @@ export default function StoryRow({ onAdd }: { onAdd?: () => void }) {
         </button>
         {customFriends.map(f => (
           <StoryCircle
-            key={f.name}
+            key={f.id}
             name={f.name}
             Face={f.Face}
             bg={f.bg}
@@ -275,7 +263,7 @@ export default function StoryRow({ onAdd }: { onAdd?: () => void }) {
               <button
                 onClick={() => {
                   setActive(null)
-                  router.push(`/v3/interior/${encodeURIComponent(active.name)}`)
+                  router.push(`/v3/interior/${active.id}`)
                 }}
                 className="w-full py-3 rounded-2xl border-2 border-charcoal text-[14px] font-bold text-charcoal active:opacity-70 transition-opacity"
                 style={{ background: "#FFF9F0", boxShadow: "2px 2px 0px #2D2D2D" }}

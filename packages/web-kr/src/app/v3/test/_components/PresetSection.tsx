@@ -4,7 +4,7 @@ import { INVENTORY_KEY, DEFAULT_INVENTORY, type UserInventory } from "@/lib/inve
 import { WISHLIST_KEY } from "@/lib/wishlist"
 import { STORAGE_KEY as ROOM_KEY } from "@/app/v3/my/_components/MiniRoom"
 import { BALANCE_MOCK_KEY } from "@/app/v3/charge/page"
-import { HIDDEN_FRIENDS_KEY } from "@/app/v3/interior/page"
+import { FRIENDS_KEY } from "@/lib/friends"
 
 const AUTH_KEY = "saju-mock-user"
 const AUTH_EVENT = "saju-auth-change"
@@ -40,8 +40,11 @@ function clearWishlist() {
 }
 
 function clearHiddenFriends() {
-  localStorage.removeItem(HIDDEN_FRIENDS_KEY)
-  window.dispatchEvent(new Event("saju-friends-change"))
+  // 친구 단일 저장소 초기화 + 시드 마커 제거 → 다음 로드 시 샘플 재시드(테스트 환경 한정)
+  localStorage.removeItem(FRIENDS_KEY)
+  localStorage.removeItem("saju-sample-friends-seeded")
+  localStorage.removeItem("saju-test-hidden-friends") // 레거시 키 정리
+  window.dispatchEvent(new Event("saju-custom-friends-change"))
 }
 
 type Preset = {

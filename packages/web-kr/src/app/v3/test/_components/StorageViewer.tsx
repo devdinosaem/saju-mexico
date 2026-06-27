@@ -2,7 +2,7 @@
 import { useState } from "react"
 import SectionCard from "./SectionCard"
 import { BALANCE_MOCK_KEY } from "@/app/v3/charge/page"
-import { HIDDEN_FRIENDS_KEY } from "@/app/v3/interior/page"
+import { FRIENDS_KEY } from "@/lib/friends"
 
 const KEYS = [
   { key: "saju-mock-user",        label: "인증 (saju-mock-user)" },
@@ -11,7 +11,7 @@ const KEYS = [
   { key: "saju-miniroom-v1",      label: "미니룸 (saju-miniroom-v1)" },
   { key: "saju-guestbook-경진",   label: "방명록 (saju-guestbook-경진)" },
   { key: BALANCE_MOCK_KEY,        label: "명태 잔액 (saju-balance-mock)" },
-  { key: HIDDEN_FRIENDS_KEY,      label: "숨김 친구 (saju-test-hidden-friends)" },
+  { key: FRIENDS_KEY,             label: "친구 (saju-custom-friends)" },
 ]
 
 function StorageEntry({ label, storageKey }: { label: string; storageKey: string }) {
@@ -65,10 +65,11 @@ export default function StorageViewer() {
 
   const clearAll = () => {
     KEYS.forEach(k => localStorage.removeItem(k.key))
+    localStorage.removeItem("saju-sample-friends-seeded")
     window.dispatchEvent(new Event("saju-auth-change"))
     window.dispatchEvent(new Event("saju-inventory-change"))
     window.dispatchEvent(new Event("saju-balance-change"))
-    window.dispatchEvent(new Event("saju-friends-change"))
+    window.dispatchEvent(new Event("saju-custom-friends-change"))
     refresh()
   }
 

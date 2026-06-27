@@ -3,19 +3,15 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import StoryRow from "../my/_components/StoryRow"
 import MiniRoom, { RoomCanvas, myGuestbookKey, SKINS } from "../my/_components/MiniRoom"
-import { FRIEND_ROOMS, ELEM_RING } from "./_data/friendRooms"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { ELEMENT_THEME } from "@/lib/ilju-calc"
 import { useUser } from "@/lib/UserContext"
 import { DoodleSparkle, DoodleMoon, DoodleCrown, DoodleBox } from "@/components/doodles"
 import { useInventory } from "@/hooks/useInventory"
+import { useFriends } from "@/hooks/useFriends"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
 
-export const HIDDEN_FRIENDS_KEY = "saju-test-hidden-friends"
-export const CUSTOM_FRIENDS_KEY = "saju-custom-friends"
-
 type GuestEntry = { id: string; author: string; message: string; date: string }
-type CustomFriend = { id: string; name: string; iljuKey: string }
 
 const CARD_COLORS = [
   { bg: "#FFFDE8", border: "#F0DC6C" },
@@ -41,6 +37,13 @@ const STEM_TO_ELEM: Record<string, "목" | "화" | "토" | "금" | "수"> = {
 const ELEM_BG_MAP: Record<string, string> = {
   목: "#D1FAE5", 화: "#FEE2E2", 토: "#FEF3C7", 금: "#E2E8F0", 수: "#DBEAFE",
 }
+const ELEM_RING: Record<string, string> = {
+  목: "linear-gradient(135deg, #4ADE80, #86EFAC)",
+  화: "linear-gradient(135deg, #F87171, #FCA5A5)",
+  토: "linear-gradient(135deg, #FBBF24, #FDE68A)",
+  금: "linear-gradient(135deg, #94A3B8, #CBD5E1)",
+  수: "linear-gradient(135deg, #60A5FA, #93C5FD)",
+}
 function cfColors(iljuKey: string) {
   const elem = STEM_TO_ELEM[iljuKey[0]] ?? "토"
   return { bg: ELEM_BG_MAP[elem], ring: ELEM_RING[elem] }
@@ -49,6 +52,7 @@ function cfColors(iljuKey: string) {
 export default function InteriorPage() {
   const router = useRouter()
   const inv = useInventory()
+  const { friends, addFriend: addFriendToStore } = useFriends()
   const { user, ilju, hasIlju } = useUser()
   const meName = user.birthDate?.name ?? "나"
   const gbKey = myGuestbookKey(meName)
@@ -58,8 +62,6 @@ export default function InteriorPage() {
 
   const [guestEntries, setGuestEntries] = useState<GuestEntry[]>([])
   const [seenCount, setSeenCount] = useState(0)
-  const [hiddenFriends, setHiddenFriends] = useState<string[]>([])
-  const [customFriends, setCustomFriends] = useState<CustomFriend[]>([])
   const [showAddFriend, setShowAddFriend] = useState(false)
   const [addName, setAddName] = useState("")
   const [addIljuKey, setAddIljuKey] = useState("")
@@ -73,22 +75,6 @@ export default function InteriorPage() {
       const seen = localStorage.getItem(gbKey + "-seen")
       if (seen) setSeenCount(parseInt(seen))
     } catch {}
-    try {
-      const hf = localStorage.getItem(HIDDEN_FRIENDS_KEY)
-      if (hf) setHiddenFriends(JSON.parse(hf))
-    } catch {}
-    try {
-      const cf = localStorage.getItem(CUSTOM_FRIENDS_KEY)
-      if (cf) setCustomFriends(JSON.parse(cf))
-    } catch {}
-    const handler = () => {
-      try {
-        const hf = localStorage.getItem(HIDDEN_FRIENDS_KEY)
-        setHiddenFriends(hf ? JSON.parse(hf) : [])
-      } catch {}
-    }
-    window.addEventListener("saju-friends-change", handler)
-    return () => window.removeEventListener("saju-friends-change", handler)
   }, [gbKey])
 
   const previewEntries = guestEntries.slice(0, 2)
@@ -102,20 +88,10 @@ export default function InteriorPage() {
 
   const addFriend = () => {
     if (!addName.trim() || !addIljuKey) return
-    const next = [...customFriends, { id: Date.now().toString(), name: addName.trim(), iljuKey: addIljuKey }]
-    setCustomFriends(next)
-    localStorage.setItem(CUSTOM_FRIENDS_KEY, JSON.stringify(next))
-    window.dispatchEvent(new Event("saju-custom-friends-change"))
+    addFriendToStore(addName, addIljuKey)
     setShowAddFriend(false)
     setAddName("")
     setAddIljuKey("")
-  }
-
-  const removeFriend = (id: string) => {
-    const next = customFriends.filter(f => f.id !== id)
-    setCustomFriends(next)
-    localStorage.setItem(CUSTOM_FRIENDS_KEY, JSON.stringify(next))
-    window.dispatchEvent(new Event("saju-custom-friends-change"))
   }
 
   const stickerCount = ALL_STICKER_KEYS.filter(k => canAccess(k, itemAccess(k, STICKER_ACCESS), "sticker", inv)).length
@@ -127,8 +103,6 @@ export default function InteriorPage() {
     { icon: <DoodleBox className="w-6 h-6"><DoodleCrown /></DoodleBox>,   bg: "#F5F0FF", name: "캐릭터", count: charCount,    type: "characters" },
     { icon: <DoodleBox className="w-6 h-6"><DoodleMoon /></DoodleBox>,    bg: "#EFF6FF", name: "스킨",   count: skinCount,    type: "skins" },
   ]
-
-  const visibleDummyFriends = FRIEND_ROOMS.filter(f => !hiddenFriends.includes(f.name))
 
   return (
     <div className="flex flex-col gap-4">
@@ -152,17 +126,18 @@ export default function InteriorPage() {
               {previewEntries.map((entry, i) => {
                 const color = CARD_COLORS[i % CARD_COLORS.length]
                 const isMe = entry.author === meName
-                const friend = FRIEND_ROOMS.find(f => f.name === entry.author)
+                const friend = friends.find(f => f.name === entry.author)
+                const friendSvgFn = friend ? ILJU_SVG_ICONS[friend.iljuKey] : null
                 return (
                   <div key={entry.id} className="flex gap-2.5" style={{ transform: i % 2 === 0 ? "rotate(-0.3deg)" : "rotate(0.2deg)" }}>
                     <div
                       className="shrink-0 w-8 h-8 rounded-full overflow-hidden flex items-center justify-center"
-                      style={{ background: isMe ? meBg : (friend?.bg ?? "#F1F5F9"), border: "1.5px solid #E2E8F0" }}
+                      style={{ background: isMe ? meBg : (friend ? cfColors(friend.iljuKey).bg : "#F1F5F9"), border: "1.5px solid #E2E8F0" }}
                     >
                       {isMe
                         ? <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meIljuKey))}</div>
-                        : friend
-                          ? <friend.Face s={28} />
+                        : friendSvgFn
+                          ? <div className="w-full h-full">{friendSvgFn(getIljuProfileViewBox(friend!.iljuKey))}</div>
                           : <span className="text-[11px] font-bold text-charcoal/50">{entry.author[0]}</span>
                       }
                     </div>
@@ -202,24 +177,31 @@ export default function InteriorPage() {
         ))}
       </div>
 
-      {/* 추천 방문 (더미 친구들) */}
-      {visibleDummyFriends.length > 0 && (
+      {/* 친구 미니홈피 방문 */}
+      {friends.length > 0 && (
         <div>
-          <p className="text-[12px] font-bold mb-2" style={{ color: "#B09070" }}>추천 방문</p>
+          <p className="text-[12px] font-bold mb-2" style={{ color: "#B09070" }}>친구 미니홈피</p>
           <div className="flex flex-col gap-3">
-            {visibleDummyFriends.map(friend => (
+            {friends.map(friend => {
+              const colors = cfColors(friend.iljuKey)
+              const svgFn = ILJU_SVG_ICONS[friend.iljuKey]
+              return (
               <button
-                key={friend.name}
+                key={friend.id}
                 className="w-full rounded-2xl overflow-hidden border border-charcoal/10 active:opacity-90 transition-opacity text-left"
                 style={{ height: 220 }}
-                onClick={() => router.push(`/v3/interior/${encodeURIComponent(friend.name)}`)}
+                onClick={() => router.push(`/v3/interior/${friend.id}`)}
               >
                 <div className="relative w-full h-full">
-                  <RoomCanvas stickers={friend.stickers} charPos={friend.charPos} />
+                  <RoomCanvas
+                    stickers={friend.room?.stickers ?? []}
+                    charPos={friend.room?.charPos ?? { x: 50, y: 62 }}
+                    charIcon={svgFn ? <div className="w-full h-full">{svgFn()}</div> : undefined}
+                  />
                   <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
-                    <div className="p-[2px] rounded-full shrink-0" style={{ background: friend.ring }}>
-                      <div className="w-[38px] h-[38px] rounded-full overflow-hidden flex items-center justify-center" style={{ background: friend.bg }}>
-                        <friend.Face s={34} />
+                    <div className="p-[2px] rounded-full shrink-0" style={{ background: colors.ring }}>
+                      <div className="w-[38px] h-[38px] rounded-full overflow-hidden flex items-center justify-center" style={{ background: colors.bg }}>
+                        {svgFn ? <div className="w-full h-full">{svgFn(getIljuProfileViewBox(friend.iljuKey))}</div> : <span className="text-[13px] font-bold text-charcoal/50">{friend.name[0]}</span>}
                       </div>
                     </div>
                     <span className="text-[12px] text-[#A0896C]/70 leading-none" style={{ fontFamily: "'BinggraeTaom', sans-serif", fontWeight: 700 }}>{friend.name}</span>
@@ -229,7 +211,8 @@ export default function InteriorPage() {
                   </div>
                 </div>
               </button>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
