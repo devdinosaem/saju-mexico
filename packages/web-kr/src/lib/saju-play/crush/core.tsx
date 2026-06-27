@@ -9,10 +9,11 @@
 // ════════════════════════════════════════════════════════════════
 import { useState } from "react"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
-import { elemOf, relType, ELEMS, pairKey, mockDist, clamp, type Elem, type Rel } from "../engine"
+import { elemOf, relType, ELEMS, SHENG, KE, pairKey, mockDist, clamp, type Elem, type Rel } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
 import { useUser } from "@/lib/UserContext"
 import { buildRealCompat, to24h, type Birth, type Gender } from "./saju-adapter"
+import type { CompatSignals } from "./compat-engine"
 import {
   DoodleHeart, DoodleSparkle, DoodleSparkles, DoodleSpeechBubble, DoodlePencil, DoodlePolaroid,
   DoodleLightning, DoodleKey, DoodleHourglass, DoodleCalendar, DoodleTaegeuk,
@@ -83,6 +84,47 @@ function mockIlju(p: Person): string {
   return base[seed % base.length]
 }
 
+// ── 엔진 신호 → 카피 (운명 배지·저울·용신 강도) ──────────────────
+const FATE_CORE: Record<CompatSignals["core"], { label: string; line: string; gold?: boolean }> = {
+  천간합: { label: "천생연분 신호", line: "서로를 끌어당겨 묶는 기운이 흘러요", gold: true },
+  천간충: { label: "불꽃 신호", line: "부딪히며 끌리는, 강렬한 긴장의 기운" },
+  상생: { label: "북돋는 인연", line: "서로를 키워주는 결이에요" },
+  상극: { label: "끌리는 긴장", line: "다름에서 오는 강한 끌림" },
+  비화: { label: "닮은 결", line: "비슷해서 편안한 사이" },
+}
+const FATE_SPOUSE: Record<CompatSignals["spouse"], { label: string; line: string }> = {
+  육합: { label: "일지 육합", line: "곁에 있으면 자연스럽게 안정되는 끌림" },
+  삼합: { label: "일지 삼합", line: "죽이 잘 맞고 통하는 결" },
+  충: { label: "일지 충", line: "긴장이 오히려 끌림이 되는 밀당형" },
+  무관계: { label: "잔잔한 자성", line: "강한 끌림보단 진심·꾸준함이 변수" },
+}
+const BALANCE: Record<CompatSignals["role"], { pos: number; line: string }> = {
+  생받음: { pos: 70, line: "그 사람 기운이 너를 더 끌어당기는 결" },
+  극받음: { pos: 63, line: "그 사람이 너를 설레게·긴장하게 만드는 결" },
+  같음: { pos: 50, line: "비슷한 무게 — 서로 밀당하는 균형" },
+  생해줌: { pos: 33, line: "네가 더 챙겨주고 싶어지는 결" },
+  극해줌: { pos: 38, line: "네가 리드하게 되는 결" },
+}
+const YONG_LV = ["아직은 약하지만 천천히", "조금씩", "꽤 많이", "아주 많이"]
+
+// 사주 없을 때(목업/비로그인) 오행으로 유사 신호 생성 — 화면이 항상 채워지게
+function roleOf(eMe: Elem, eThem: Elem): CompatSignals["role"] {
+  if (eMe === eThem) return "같음"
+  if (SHENG[eThem] === eMe) return "생받음"   // 그 사람이 나를 생
+  if (SHENG[eMe] === eThem) return "생해줌"
+  if (KE[eThem] === eMe) return "극받음"       // 그 사람이 나를 극
+  return "극해줌"
+}
+function fallbackSignals(eMe: Elem, eThem: Elem, seed: number): { signals: CompatSignals; myYongKr: Elem } {
+  const role = roleOf(eMe, eThem)
+  const rel = relType(eMe, eThem)
+  const core: CompatSignals["core"] = rel === "same" ? "비화" : rel === "sheng" ? "상생" : "상극"
+  const spouse: CompatSignals["spouse"] = rel === "sheng" ? "삼합" : rel === "ke" ? "충" : "무관계"
+  const yongFulfill = ({ 생받음: 3, 같음: 2, 극받음: 2, 생해줌: 1, 극해줌: 1 } as const)[role]
+  const myYongKr = (ELEMS.find(e => SHENG[e] === eMe) ?? eMe) // 나를 생하는 원소(유사 용신)
+  return { signals: { spouse, yongFulfill, core, role, timingHot: seed % 3 === 0, dohwa: seed % 2 === 0 }, myYongKr }
+}
+
 // 결과 파생 — 나=계정 일주/생일, 그 사람만 입력. 둘 생일 다 있으면 진짜 사주(compat-engine),
 // 아니면 오행 fallback. 렌더·연출 동일 결과 보장(결정적).
 function derive(myKey: string, myBirth: Birth | null, myGender: Gender, them: Person, config: CrushConfig) {
@@ -96,16 +138,18 @@ function derive(myKey: string, myBirth: Birth | null, myGender: Gender, them: Pe
   const themK = real ? resolveCharKey(real.themKey) : mockIlju(them)
   const eThem = elemOf(themK)
   const rel = relType(eMe, eThem)
-  let score: number, compatBlock: string | null
-  if (real) { score = real.score; compatBlock = real.compatBlock }
-  else {
-    const seed = [...(myKey + them.name)].reduce((a, c) => a + c.charCodeAt(0), 0)
+  const seed = [...(myKey + them.name)].reduce((a, c) => a + c.charCodeAt(0), 0)
+  let score: number, compatBlock: string | null, signals: CompatSignals, myYongKr: Elem
+  if (real) {
+    score = real.score; compatBlock = real.compatBlock; signals = real.signals; myYongKr = real.myYongKr as Elem
+  } else {
     score = clamp(config.scoreOpt[rel] + (seed % 7) - 3, 35, 97)
     compatBlock = null
+    const fb = fallbackSignals(eMe, eThem, seed); signals = fb.signals; myYongKr = fb.myYongKr
   }
   const arch = eMe === eThem ? config.sameArch : (config.archetype[pairKey(eMe, eThem)] ?? config.sameArch)
   const stage = [...config.temp].reverse().find(t => score >= t.min) ?? config.temp[0]
-  return { meK, themK, eMe, eThem, rel, arch, score, stage, compatBlock }
+  return { meK, themK, eMe, eThem, rel, arch, score, stage, compatBlock, signals, myYongKr }
 }
 
 function Avatar({ iljuKey, size = 72 }: { iljuKey: string; size?: number }) {
@@ -288,7 +332,11 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   }
 
   // ── 결과 계산 ──
-  const { meK, themK, eMe, eThem, rel, arch, score, stage } = derive(myKey, myBirth, myGender, them, config)
+  const { meK, themK, eMe, eThem, rel, arch, score, stage, signals, myYongKr } = derive(myKey, myBirth, myGender, them, config)
+  const coreCopy = FATE_CORE[signals.core]
+  const spouseCopy = FATE_SPOUSE[signals.spouse]
+  const bal = BALANCE[signals.role]
+  const dohwaVal = signals.dohwa ? clamp(72 + (score % 14), 60, 95) : clamp(34 + (score % 16), 25, 55)
   const md = mockDist(meK), td = mockDist(themK)
   const open = config.openHeart[eThem]
   const lucky = config.lucky[eThem]
@@ -325,6 +373,87 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         )}
         {ai.status === "done" && <Prose text={ai.text} />}
         {(ai.status === "error" || ai.status === "idle") && <Prose text={fallbackProse} />}
+      </div>
+
+      {/* 운명 신호 — 천간합/일지 합충 (엔진 신호) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleRedString}>운명 신호</SectionTitle>
+        <div className="flex flex-col gap-2">
+          <div className="rounded-2xl px-4 py-3 flex items-center gap-3"
+            style={coreCopy.gold ? { background: "linear-gradient(135deg,#FFF7E0,#FFFDF5)", border: "1.5px solid #F0C060" } : { background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
+            <Ico as={coreCopy.gold ? DoodleSparkles : DoodleHeart} size={22} />
+            <div className="min-w-0">
+              <p className="text-[14px] font-bold text-charcoal flex items-center gap-1.5">
+                {coreCopy.label}
+                {coreCopy.gold && <span className="text-[11px] px-1.5 py-0.5 rounded-full text-white" style={{ background: "#F0A020" }}>RARE</span>}
+              </p>
+              <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{coreCopy.line}</p>
+            </div>
+          </div>
+          <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3 flex items-center gap-3">
+            <Ico as={DoodleTaegeuk} size={20} />
+            <div className="min-w-0">
+              <p className="text-[14px] font-bold text-charcoal">{spouseCopy.label}</p>
+              <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{spouseCopy.line}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 결핍 채워주는 사람 — 용신 충족 (엔진 신호) */}
+      <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[myYongKr], border: `1.5px solid ${ELEM_COLOR[myYongKr]}` }}>
+        <Ico as={ELEM_DOODLE[myYongKr]} size={26} />
+        <div className="min-w-0">
+          <p className="text-[14px] font-bold text-charcoal">네 부족한 {myYongKr} 기운을 채워주는 사람</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{them.name || "그 사람"}은 네게 부족한 {myYongKr}을 {YONG_LV[signals.yongFulfill]} 채워줘. 옆에 있으면 숨통 트이는 결이야.</p>
+        </div>
+      </div>
+
+      {/* 매력 발산 지수 — 도화 (엔진 신호) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleSparkles}>매력 발산 지수</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
+          <div className="flex items-center justify-between">
+            <span className="text-[14px] font-bold text-charcoal">{signals.dohwa ? "지금 매력이 빛나는 시기" : "은은한 매력 구간"}</span>
+            <span className="text-[15px] font-bold" style={{ color: signals.dohwa ? PINK : "#94A3B8" }}>{dohwaVal}</span>
+          </div>
+          <div className="h-3 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
+            <div className="h-full rounded-full" style={{ width: `${dohwaVal}%`, background: signals.dohwa ? "linear-gradient(90deg,#FBBF24,#E84B6A)" : "#CBD5E1" }} />
+          </div>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{signals.dohwa ? "지금이 들이대기 좋은 때. 자신감 있게 다가가도 통해." : "확 끌기보단 꾸준함으로 스며들 때야."}</p>
+        </div>
+      </div>
+
+      {/* 연애운 신호등 — 타이밍 (엔진 신호) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleCalendar}>연애운 신호등</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex items-center gap-3.5">
+          <div className="flex flex-col gap-1.5 shrink-0 rounded-full px-1.5 py-2" style={{ background: "#2D2D2D" }}>
+            {["#EF4444", "#FBBF24", "#22C55E"].map((c, i) => {
+              const lit = signals.timingHot ? i === 2 : i === 1
+              return <span key={i} className="w-3 h-3 rounded-full" style={{ background: lit ? c : "#4B5563", boxShadow: lit ? `0 0 6px ${c}` : "none" }} />
+            })}
+          </div>
+          <div className="min-w-0">
+            <p className="text-[14px] font-bold text-charcoal">{signals.timingHot ? "인연이 움직이는 시기" : "잔잔한 흐름"}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{signals.timingHot ? "네 연애운이 들어오는 때 — 적극적으로 움직여도 좋아." : "큰 바람은 약해 — 지금은 네가 먼저 만드는 게 핵심이야."}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* 끌림의 무게중심 — 역할 (엔진 신호) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleHeart}>끌림의 무게중심</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex flex-col items-center gap-0.5"><Avatar iljuKey={meK} size={30} /><span className="text-[12px] text-text-muted">나</span></div>
+            <div className="relative flex-1 h-3.5 rounded-full" style={{ background: "linear-gradient(90deg,#F9A8C4,#E5E7EB,#93C5FD)" }}>
+              <span className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 shadow-sm" style={{ left: `${bal.pos}%`, borderColor: "#2D2D2D" }} />
+            </div>
+            <div className="flex flex-col items-center gap-0.5"><Avatar iljuKey={themK} size={30} /><span className="text-[12px] text-text-muted">{them.name || "그 사람"}</span></div>
+          </div>
+          <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>{bal.line}</p>
+        </div>
       </div>
 
       {/* 두 사람 프로필 — 일주 캐릭터 */}

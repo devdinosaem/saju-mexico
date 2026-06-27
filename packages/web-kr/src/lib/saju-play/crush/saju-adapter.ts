@@ -4,10 +4,11 @@ import { calculateSaju, STEM_KOREAN, BRANCH_KOREAN } from "manseryeok"
 import {
   analyzeTenGods, analyzeYongShin, calculateMajorFortunes, calculateYearlyFortunes, TEN_GOD_KOREAN,
 } from "saju-engine"
-import { computeCompat, compatPromptBlock, type Person as CompatPerson, type Timing } from "./compat-engine"
+import { computeCompat, compatPromptBlock, type Person as CompatPerson, type Timing, type CompatSignals } from "./compat-engine"
 
 export type Gender = "M" | "F"
 export type Birth = { year: number; month: number; day: number; hour: number; minute: number }
+const EL_KO: Record<string, string> = { wood: "목", fire: "화", earth: "토", metal: "금", water: "수" }
 
 /** 시각 문자열 → 24시. 미상이면 정오(12) 추정. */
 export function to24h(hour?: string, ampm?: "AM" | "PM"): number {
@@ -51,17 +52,18 @@ function timingOf(saju: Saju, gender: Gender, b: Birth): Timing {
   return { tenGods: tg.filter(Boolean) }
 }
 
-export type RealCompat = { score: number; compatBlock: string; themKey: string }
+export type RealCompat = { score: number; compatBlock: string; themKey: string; signals: CompatSignals; myYongKr: string }
 
-/** 두 생일 → 깊은 궁합(점수·프롬프트 블록·상대 일주키). 실패 시 null. */
+/** 두 생일 → 깊은 궁합(점수·신호·프롬프트 블록·상대 일주키·내 용신). 실패 시 null. */
 export function buildRealCompat(myBirth: Birth, myGender: Gender, crushBirth: Birth, crushGender: Gender): RealCompat | null {
   try {
     const me = calculateSaju({ year: myBirth.year, month: myBirth.month, day: myBirth.day, hour: myBirth.hour, minute: myBirth.minute })
     const cr = calculateSaju({ year: crushBirth.year, month: crushBirth.month, day: crushBirth.day, hour: crushBirth.hour, minute: crushBirth.minute })
-    const { score, signals } = computeCompat(personOf(me), personOf(cr), timingOf(me, myGender, myBirth))
+    const mePerson = personOf(me)
+    const { score, signals } = computeCompat(mePerson, personOf(cr), timingOf(me, myGender, myBirth))
     const fp = cr.fourPillars
     const themKey = `${STEM_KOREAN[fp.day.stem]}${BRANCH_KOREAN[fp.day.branch]}-${crushGender === "M" ? "m" : "f"}`
-    return { score, compatBlock: compatPromptBlock(score, signals), themKey }
+    return { score, compatBlock: compatPromptBlock(score, signals), themKey, signals, myYongKr: EL_KO[mePerson.yongShin] ?? "토" }
   } catch {
     return null
   }
