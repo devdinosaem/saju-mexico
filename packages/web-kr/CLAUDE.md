@@ -231,6 +231,7 @@ const GAEGU: React.CSSProperties = {
 - 아이콘 크기: `w-5 h-5` (20px) — 컨테이너 대비 2px 여백
 - 폰트: `GAEGU` (Cafe24Dongdong)
 - 색상: `bg-pink/75 text-cream border-2 border-charcoal`
+- **그림자: 평평하게 — 검정 오프셋 그림자(`boxShadow: "2px 2px 0px ..."`) 금지.** `border-2 border-charcoal`만으로 입체감을 낸다. 입력 스텝의 "입력 완료" 버튼이 기준. (궁합 결과 CTA도 이 규칙으로 통일됨)
 
 ### 폰트 사용 규칙
 

@@ -415,7 +415,7 @@ export default function CoupleFunnelPage() {
       <div className="flex flex-col gap-2">
         <button onClick={() => router.push("/v3/interior")}
           className="w-full h-[54px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal"
-          style={{ background: PINK, color: "#FFF9F0", boxShadow: "2px 2px 0px #2D2D2D", ...BINGGRAE }}>
+          style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
           내 미니홈피로 →
         </button>
         <button className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-white text-charcoal active:opacity-70 flex items-center justify-center gap-1.5" style={GAEGU}>
