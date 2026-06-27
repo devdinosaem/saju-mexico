@@ -270,13 +270,15 @@ export default function CoupleFunnelPage() {
           {ELEMS.map(e => {
             const h = hd[e], m = md[e], tot = h + m
             return (
-              <div key={e} className="flex items-center gap-2.5">
+              <div key={e} className="flex items-center gap-2">
                 <Ico as={ELEM_DOODLE[e]} size={16} />
                 <span className="w-4 text-[14px] font-bold text-charcoal shrink-0">{e}</span>
+                <span className="w-4 text-[14px] font-bold text-right shrink-0" style={{ color: PINK }}>{h}</span>
                 <div className="flex-1 h-3.5 rounded-full overflow-hidden flex" style={{ background: "#F1F5F9" }}>
                   <div style={{ width: `${tot ? (h / tot) * 100 : 0}%`, background: PINK }} />
                   <div style={{ width: `${tot ? (m / tot) * 100 : 0}%`, background: "#60A5FA" }} />
                 </div>
+                <span className="w-4 text-[14px] font-bold shrink-0" style={{ color: "#60A5FA" }}>{m}</span>
               </div>
             )
           })}
