@@ -1,9 +1,15 @@
-import type { PlacedSticker } from "@/app/v3/my/_components/MiniRoom"
+import type { PlacedSticker, PlacedChar } from "@/app/v3/my/_components/MiniRoom"
 
-/** 친구가 꾸민 방 (없으면 빈 방으로 렌더) */
-export type FriendRoom = { stickers: PlacedSticker[]; charPos: { x: number; y: number } }
+/**
+ * 친구가 꾸민 방 (없으면 빈 방으로 렌더).
+ * ⚠️ 불변식: 캐릭터는 N개(chars). charPos는 단일 캐릭터 레거시 호환 필드.
+ */
+export type FriendRoom = { stickers: PlacedSticker[]; charPos: { x: number; y: number }; chars?: PlacedChar[] }
 
-/** 단일 친구 모델 — 등록 친구·샘플(테스트 계정) 모두 이 형태 하나로 통일 */
+/**
+ * 단일 친구 모델 — 등록 친구·샘플(테스트 계정) 모두 이 형태 하나로 통일.
+ * ⚠️ 프로젝트 불변식: iljuKey(일주/정체성)는 친구당 정확히 1개. 방 안 캐릭터는 N개(room.chars).
+ */
 export type Friend = {
   id: string
   name: string

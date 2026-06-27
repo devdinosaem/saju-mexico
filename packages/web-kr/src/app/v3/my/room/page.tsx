@@ -452,29 +452,30 @@ export default function RoomEditPage() {
           </div>
         )}
 
-        {/* 캐릭터 탭 */}
+        {/* 캐릭터 탭 — 일주는 1개지만 방엔 소유한 캐릭터를 N개 배치 가능 */}
         {activeMainTab === "캐릭터" && (
-          <div className="px-3 pb-4 pt-1 flex gap-2">
-            {canAccess(inv.iljuKey, itemAccess(inv.iljuKey, CHARACTER_ACCESS), "character", inv) && (
-              <button
-                className="flex flex-col items-center gap-1 shrink-0 p-2 rounded-xl border transition-colors bg-white border-charcoal/10"
-                onPointerDown={e => {
-                  e.stopPropagation()
-                  const newId = `char-${Date.now()}-${Math.random()}`
-                  const x = 25 + Math.random() * 50
-                  const y = 42 + Math.random() * 28
-                  setChars(prev => [...prev, { id: newId, key: inv.iljuKey, x, y, rotate: Math.floor(Math.random() * 10) - 5, scale: 1 }])
-                  setSelected(newId)
-                  setSelectedKey(null)
-                }}
-              >
-                {ILJU_SVG_ICONS[inv.iljuKey]
-                  ? <div className="w-[68px] h-[68px] rounded-full overflow-hidden">{ILJU_SVG_ICONS[inv.iljuKey]?.()}</div>
-                  : <RoomChar />
-                }
-                <span className="text-[9px] text-text-muted">내 캐릭터</span>
-              </button>
-            )}
+          <div className="flex-1 overflow-y-auto px-3 pb-4 pt-1">
+            <div className="flex flex-wrap gap-2">
+              {Object.keys(ILJU_SVG_ICONS)
+                .filter(key => canAccess(key, itemAccess(key, CHARACTER_ACCESS), "character", inv))
+                .map(key => (
+                  <button key={key}
+                    className="flex flex-col items-center gap-1 shrink-0 p-2 rounded-xl border transition-colors bg-white border-charcoal/10"
+                    onPointerDown={e => {
+                      e.stopPropagation()
+                      const newId = `char-${Date.now()}-${Math.random()}`
+                      const x = 25 + Math.random() * 50
+                      const y = 42 + Math.random() * 28
+                      setChars(prev => [...prev, { id: newId, key, x, y, rotate: Math.floor(Math.random() * 10) - 5, scale: 1 }])
+                      setSelected(newId)
+                      setSelectedKey(null)
+                    }}
+                  >
+                    <div className="w-12 h-12 rounded-full overflow-hidden">{ILJU_SVG_ICONS[key]?.()}</div>
+                    <span className="text-[9px] text-text-muted">{key === inv.iljuKey ? "내 캐릭터" : key}</span>
+                  </button>
+                ))}
+            </div>
           </div>
         )}
 

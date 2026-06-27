@@ -196,6 +196,7 @@ export default function InteriorPage() {
                   <RoomCanvas
                     stickers={friend.room?.stickers ?? []}
                     charPos={friend.room?.charPos ?? { x: 50, y: 62 }}
+                    chars={friend.room?.chars}
                     charIcon={svgFn ? <div className="w-full h-full">{svgFn()}</div> : undefined}
                   />
                   <div className="absolute top-3 left-3 z-20 flex items-center gap-2">

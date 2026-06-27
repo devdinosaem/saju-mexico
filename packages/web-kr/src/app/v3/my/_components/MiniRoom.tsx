@@ -25,7 +25,14 @@ export const STICKER_MAP: Record<string, React.FC<{ className?: string }>> = {
 }
 
 export type PlacedSticker = { id: string; name: string; x: number; y: number; rotate: number; scale: number }
+/** 방에 배치된 캐릭터 인스턴스. 한 방에 N개 배치 가능. key = 일주 캐릭터 키(소유한 것만). */
 export type PlacedChar = { id: string; key: string; x: number; y: number; rotate: number; scale: number }
+/**
+ * 방 데이터.
+ * ⚠️ 프로젝트 불변식: 일주(정체성)는 1개 / 캐릭터(chars)는 N개 배치 가능.
+ *   - chars: 캐릭터 다중 배치(정식). 있으면 이걸로 N개 렌더.
+ *   - charPos: 단일 캐릭터 레거시 호환 필드(첫 캐릭터 위치). chars 없을 때만 사용.
+ */
 export type RoomData = { stickers: PlacedSticker[]; charPos: { x: number; y: number; rotate?: number; scale?: number }; chars?: PlacedChar[]; skinId?: string }
 export const STORAGE_KEY = "saju-miniroom-v1"
 
