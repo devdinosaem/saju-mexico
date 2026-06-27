@@ -52,6 +52,7 @@ export type CrushConfig = {
   mines: Record<Elem, string[]>                                   // 상대 오행 → 지뢰(하지 말 것) TOP3
   manual: Record<Elem, { care: string; charge: string; ban: string; as: string }> // 상대 오행 → 사용설명서
   memes: { min: number; label: string }[]                         // 점수 → 한 단어 밈
+  pushPull: Record<Elem, { best: "push" | "pull"; pushLine: string; pullLine: string }> // 밀당 시뮬
   persona: Record<Elem, { tag: string; line: string }>        // 오행 → 연애 성향(프로필 카드)
   openHeart: Record<Elem, { title: string; line: string }>   // 상대(그 사람) 오행 → 마음 여는 법
   chemi: Record<Rel, { good: string; care: string }>          // 끌리는/어긋나는 포인트
@@ -255,6 +256,53 @@ function Prose({ text }: { text: string }) {
   )
 }
 
+// 밀당 시뮬레이터 — 당기기/풀기 선택 → 상대 오행 맞춤 예상 반응
+function PullPushSim({ best, pushLine, pullLine }: { best: "push" | "pull"; pushLine: string; pullLine: string }) {
+  const [sel, setSel] = useState<"push" | "pull" | null>(null)
+  const line = sel === "push" ? pushLine : sel === "pull" ? pullLine : null
+  const good = sel === best
+  return (
+    <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
+      <p className="text-[14px] font-bold text-charcoal text-center">지금, 어떻게 할까?</p>
+      <div className="flex gap-2">
+        {([["push", "당기기"], ["pull", "풀기"]] as const).map(([k, label]) => (
+          <button key={k} onClick={() => setSel(k)}
+            className="flex-1 py-3 rounded-xl text-[14px] font-bold border-2 transition-colors"
+            style={sel === k ? { background: PINK, color: "#FFF9F0", borderColor: PINK } : { background: "white", color: "#94A3B8", borderColor: "#E0D4C0" }}>
+            {label}
+          </button>
+        ))}
+      </div>
+      {line && (
+        <div className="rounded-xl px-3 py-2.5 flex items-start gap-2" style={{ background: good ? "#F0FFF4" : "#FFF7ED", border: `1.5px solid ${good ? "#86EFAC" : "#FDB877"}` }}>
+          <Ico as={good ? DoodleHeart : DoodleLightning} size={16} />
+          <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{line}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// 이번 달 캘린더 — 길일 마킹
+function MonthCalendar({ year, month, marks }: { year: number; month: number; marks: Record<number, string> }) {
+  const dim = new Date(year, month + 1, 0).getDate()
+  const fdow = new Date(year, month, 1).getDay()
+  const cells: (number | null)[] = [...Array(fdow).fill(null), ...Array.from({ length: dim }, (_, i) => i + 1)]
+  const W = ["일", "월", "화", "수", "목", "금", "토"]
+  return (
+    <div className="grid grid-cols-7 gap-1">
+      {W.map((w, i) => <div key={"w" + i} className="text-[12px] text-center text-text-muted py-0.5">{w}</div>)}
+      {cells.map((d, i) => (
+        <div key={i} className="aspect-square flex items-center justify-center text-[13px]">
+          {d && (marks[d]
+            ? <span className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-white" style={{ background: marks[d] }}>{d}</span>
+            : <span className="text-charcoal/70">{d}</span>)}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 type Step = "landing" | "input" | "loading" | "result"
 const emptyP = (): Person => ({ name: "", birth: { y: "", m: "", d: "" }, gender: "M" })
@@ -378,6 +426,20 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   ]
   const topCell = radar.reduce((a, b) => (b.value > a.value ? b : a))
   const meme = signals.core === "천간합" ? "운명 캐치" : ([...config.memes].reverse().find(m => score >= m.min)?.label ?? config.memes[0].label)
+  const cal = (() => {
+    const now = new Date(), y = now.getFullYear(), mo = now.getMonth()
+    const dim = new Date(y, mo + 1, 0).getDate()
+    const s = themK.charCodeAt(0) + score
+    const cl = (d: number) => Math.min(dim, Math.max(1, d))
+    const d1 = cl((s % 7) + 4), d2 = cl((s % 6) + 13), d3 = cl((s % 5) + 22)
+    const marks: Record<number, string> = { [d1]: "#60A5FA", [d2]: "#FBBF24", [d3]: PINK }
+    const legend = [
+      { d: d1, label: "연락 좋은 날", color: "#60A5FA" },
+      { d: d2, label: "만남 좋은 날", color: "#FBBF24" },
+      { d: d3, label: "고백 좋은 날", color: PINK },
+    ]
+    return { y, mo, marks, legend }
+  })()
   const md = mockDist(meK), td = mockDist(themK)
   const open = config.openHeart[eThem]
   const lucky = config.lucky[eThem]
@@ -688,6 +750,23 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
+      {/* 이번 달 썸 캘린더 — 길일 마킹 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleCalendar}>이번 달 썸 캘린더</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
+          <p className="text-[14px] font-bold text-charcoal text-center">{cal.mo + 1}월</p>
+          <MonthCalendar year={cal.y} month={cal.mo} marks={cal.marks} />
+          <div className="flex flex-col gap-1.5 pt-1">
+            {cal.legend.map((l, i) => (
+              <div key={i} className="flex items-center gap-2 text-[14px]">
+                <span className="w-3 h-3 rounded-full shrink-0" style={{ background: l.color }} />
+                <span className="text-charcoal/75">{cal.mo + 1}월 {l.d}일 · {l.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* 지뢰 TOP 3 — 이 조합에서 절대 하지 말 것 */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleQuestionMark}>지뢰 TOP 3</SectionTitle>
@@ -712,6 +791,12 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* 밀당 시뮬레이터 — 인터랙션 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleLightning}>밀당 시뮬레이터</SectionTitle>
+        <PullPushSim {...config.pushPull[eThem]} />
       </div>
 
       {/* 고백 럭키 */}

@@ -122,6 +122,13 @@ export const SOME_CONFIG: CrushConfig = {
     { min: 66, label: "running…" },
     { min: 80, label: "D-7 골든타임" },
   ],
+  pushPull: {
+    목: { best: "push", pushLine: "같이 그릴 그림을 슬쩍 보여주며 다가가면 마음이 열려요 — 좋아요!", pullLine: "너무 빼면 관심 없다고 느껴요. 적당히만 풀어요." },
+    화: { best: "push", pushLine: "직진에 바로 반응하는 타입 — 솔직하게 다가가요. 좋아요!", pullLine: "밀당하면 금세 식어요 — 역효과 주의." },
+    토: { best: "push", pushLine: "꾸준히 다가가면 신뢰가 쌓여요 — 좋아요!", pullLine: "변덕으로 느껴질 수 있어요. 한결같이가 정답." },
+    금: { best: "pull", pushLine: "들이대면 방어막이 켜져요 — 한 발 빼는 게 나아요.", pullLine: "여유 있는 거리에 더 끌려요 — 좋아요!" },
+    수: { best: "pull", pushLine: "몰아붙이면 부담스러워해요 — 천천히 가요.", pullLine: "여운을 주면 더 생각나게 해요 — 좋아요!" },
+  },
   lucky: {
     목: { day: "토요일", place: "공원·식물원", color: "초록", colorHex: "#4ADE80" },
     화: { day: "금요일", place: "야경 좋은 곳", color: "빨강", colorHex: "#F87171" },
