@@ -123,3 +123,25 @@ export function notifyFriendsChange() {
 
 export const findFriendById = (list: Friend[], id: string) => list.find(f => f.id === id)
 export const findFriendByName = (list: Friend[], name: string) => list.find(f => f.name === name)
+
+/**
+ * 친구의 최근 활동 시각(ms). 신호: 방명록 최신 글 / 친구 추가 시각(id=Date.now 기반).
+ * (친구 미니홈피 꾸밈은 mock엔 신호 없음 → 백엔드 room.updated_at으로 추후 합산)
+ */
+function lastActivityMs(f: Friend): number {
+  let ts = Number(f.id) || 0 // 숫자 id면 추가 시각, 샘플(sample-*)은 0
+  if (typeof window === "undefined") return ts
+  try {
+    const raw = localStorage.getItem(`saju-guestbook-${f.id}`)
+    if (raw) {
+      const entries: { id?: string }[] = JSON.parse(raw)
+      for (const e of entries) ts = Math.max(ts, Number(e?.id) || 0)
+    }
+  } catch {}
+  return ts
+}
+
+/** 최근 활동순(최신 먼저) 정렬 — 스토리(왼쪽=최신)·미니홈피 목록(위=최신) 공통 */
+export function sortByActivity(friends: Friend[]): Friend[] {
+  return [...friends].sort((a, b) => lastActivityMs(b) - lastActivityMs(a))
+}
