@@ -377,10 +377,11 @@ export default function ConsultPage() {
 
   const elemKey = ilju?.stemElement.charAt(0) ?? "목"
   const iljuKey = ilju?.id ?? ""
-  // 일주 있으면 해당 캐릭터, 없으면 회색 기본 캐릭터 이미지
+  // 일주 캐릭터 아트가 있으면 그걸로, 없으면(60갑자 중 미제작 일주) 기본 플레이스홀더
+  // 정책: 상담은 사주 맥락이라 ilju.id 유지(대표 캐릭터 안 씀). 아트 누락일 때만 폴백.
   const renderAvatar = () =>
-    ilju
-      ? ILJU_SVG_ICONS[iljuKey]?.(getIljuProfileViewBox(iljuKey))
+    ilju && ILJU_SVG_ICONS[iljuKey]
+      ? ILJU_SVG_ICONS[iljuKey]!(getIljuProfileViewBox(iljuKey))
       : <img src={DEFAULT_PROFILE_IMG} alt="" className="w-full h-full object-cover" />
   // 아바타 배경: 일주 있으면 오행색, 없으면 서비스 연분홍(--pink-light)
   const avatarBg = ilju ? ELEM_BG[elemKey] : "#FFE4EA"
