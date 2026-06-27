@@ -125,7 +125,10 @@ const ELEM_BG: Record<string, string> = {
   목: "#D1FAE5", 화: "#FEE2E2", 토: "#FEF3C7", 금: "#F1F5F9", 수: "#DBEAFE",
 }
 
-type Msg = { role: "user" | "char" | "system"; text: string; transient?: boolean }
+type Msg = { role: "user" | "char" | "system"; text: string; transient?: boolean; t?: number }
+
+const fmtTime = (t?: number) =>
+  t ? new Date(t).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }) : ""
 
 const ERROR_TEXT = "잠시 후 다시 시도해줘."
 const INITIAL_VISIBLE = 12 // 약 6턴
@@ -530,8 +533,8 @@ export default function ConsultPage() {
     setInput("")
     if (inputRef.current) { inputRef.current.style.height = "auto" }
 
-    const nextMsgs: Msg[] = [...msgs, { role: "user", text: userText }]
-    setMsgs([...nextMsgs, { role: "char", text: "" }])
+    const nextMsgs: Msg[] = [...msgs, { role: "user", text: userText, t: Date.now() }]
+    setMsgs([...nextMsgs, { role: "char", text: "", t: Date.now() }])
     wantScrollBottom.current = true // 보낸 직후 하단으로
     setIsLoading(true)
 
@@ -764,6 +767,8 @@ export default function ConsultPage() {
                 <button
                   key={t.label}
                   onClick={() => handleChip(t.label)}
+                  aria-pressed={active}
+                  aria-label={`${t.label} 상담 주제`}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium shrink-0 active:scale-95 transition-all border ${
                     active
                       ? "bg-pink/10 border-pink text-pink font-bold"
@@ -780,7 +785,7 @@ export default function ConsultPage() {
       </div>
 
       {/* 메시지 목록 — 고정 헤더/입력바 높이만큼 패딩 */}
-      <div className="flex flex-col gap-3 pb-32" style={{ paddingTop: headerH + 16 }}>
+      <div role="log" aria-label="상담 대화" className="flex flex-col gap-3 pb-32" style={{ paddingTop: headerH + 16 }}>
         {hasMore && (
           <div className="flex justify-center py-1 text-[11px] text-text-muted/60">⋯ 위로 올리면 이전 대화</div>
         )}
@@ -815,9 +820,11 @@ export default function ConsultPage() {
                   : <span className="flex gap-1 items-center h-5"><span className="w-1.5 h-1.5 rounded-full bg-charcoal/30 animate-bounce [animation-delay:0ms]" /><span className="w-1.5 h-1.5 rounded-full bg-charcoal/30 animate-bounce [animation-delay:150ms]" /><span className="w-1.5 h-1.5 rounded-full bg-charcoal/30 animate-bounce [animation-delay:300ms]" /></span>
                 }
               </div>
+              {msg.text && msg.t && !msg.transient ? <span className="text-[9px] text-text-muted/40 shrink-0 mb-0.5">{fmtTime(msg.t)}</span> : null}
             </div>
           ) : (
-            <div key={visibleStart + i} className="flex justify-end">
+            <div key={visibleStart + i} className="flex items-end justify-end gap-2">
+              {msg.t ? <span className="text-[9px] text-text-muted/40 shrink-0 mb-0.5">{fmtTime(msg.t)}</span> : null}
               <div className="max-w-[75%] rounded-2xl rounded-br-sm bg-pink/15 border border-pink/20 px-3.5 py-2.5">
                 <p className="text-[13px] text-charcoal leading-relaxed">{msg.text}</p>
               </div>
@@ -865,6 +872,7 @@ export default function ConsultPage() {
               value={input}
               onChange={handleInputChange}
               onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send() } }}
+              aria-label="메시지 입력"
               placeholder={!gate ? "고민을 털어놔봐..." : gate === "card" ? "사주카드를 뽑으면 대화할 수 있어" : "명태를 충전하면 대화할 수 있어"}
               rows={1}
               maxLength={500}
