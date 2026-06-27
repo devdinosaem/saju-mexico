@@ -5,7 +5,9 @@ import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import {
   DoodleSprout, DoodleFire, DoodleEarth, DoodleDiamond, DoodleWave,
   DoodleHeart, DoodleSparkle, DoodleSpeechBubble, DoodlePencil, DoodlePolaroid,
-  DoodleMirror, DoodleLightning, DoodleRing, DoodleCalendar,
+  DoodleMirror, DoodleLightning, DoodleRing, DoodleCalendar, DoodleTaegeuk,
+  DoodleBackpack, DoodleBamboo, DoodlePottedPlant, DoodleRamen, DoodleMusicNote,
+  DoodleColorPalette, DoodleOnggiJar, DoodlePictureFrame, DoodleCoffee, DoodleTicket,
 } from "@/components/doodles"
 
 /* ────────────────────────────────────────────────────────────
@@ -30,7 +32,9 @@ function Ico({ as: D, size = 18 }: { as: DoodleC; size?: number }) {
 
 type Elem = "목" | "화" | "토" | "금" | "수"
 const ELEM_BG: Record<string, string> = { 목: "#D1FAE5", 화: "#FEE2E2", 토: "#FEF3C7", 금: "#F1F5F9", 수: "#DBEAFE" }
+const ELEM_COLOR: Record<string, string> = { 목: "#4ADE80", 화: "#F87171", 토: "#FBBF24", 금: "#94A3B8", 수: "#60A5FA" }
 const ELEM_DOODLE: Record<Elem, DoodleC> = { 목: DoodleSprout, 화: DoodleFire, 토: DoodleEarth, 금: DoodleDiamond, 수: DoodleWave }
+const ELEMS: Elem[] = ["목", "화", "토", "금", "수"]
 const STEM_TO_ELEM: Record<string, Elem> = { 갑: "목", 을: "목", 병: "화", 정: "화", 무: "토", 기: "토", 경: "금", 신: "금", 임: "수", 계: "수" }
 const elemOf = (key: string): Elem => STEM_TO_ELEM[key[0]] ?? "토"
 
@@ -66,10 +70,35 @@ const FIT: Record<"same" | "sheng" | "ke", { good: string; care: string }> = {
   ke: { good: "정반대라 끌리고 절대 안 지루해요", care: "한 명이 가끔 져주지 않으면 기싸움이 길어져요" },
   same: { good: "말 안 해도 통하는 게 많아요", care: "비슷해서 둘 다 같은 실수를 해요" },
 }
-const REMEDY: Record<"same" | "sheng" | "ke", string> = {
-  sheng: "이미 잘 맞아요. 가끔 새로운 데이트로 설렘을 충전해요",
-  ke: "부딪힐 땐 차분한 쪽이 먼저 손 내밀기. 티격태격도 애정 표현이에요",
-  same: "둘 다 비슷해서 편한 만큼, 가끔 반대 성향과 어울려 환기해요",
+const REMEDY: Record<"same" | "sheng" | "ke", string[]> = {
+  sheng: ["이미 잘 맞아요. 가끔 새로운 데이트로 설렘을 충전해요", "편한 만큼 표현은 줄지 않게 — 사소한 칭찬 자주"],
+  ke: ["부딪힐 땐 차분한 쪽이 먼저 손 내밀기", "티격태격도 애정 표현 — 단, 선은 미리 정해두기"],
+  same: ["둘 다 비슷해 편한 만큼 반대 성향과 어울려 환기", "같은 실수 반복 주의 — 한 명은 브레이크 역할"],
+}
+// 각자에게 한마디 (커플 맥락)
+const COUPLE_PERSONAL: Record<Elem, string> = {
+  목: "관계를 키우는 사람. 가끔 앞서가니 상대 속도도 맞춰줘",
+  화: "표현이 확실해서 좋아. 욱할 땐 한 박자만 쉬어가자",
+  토: "한결같이 챙기는 기둥. 네 마음도 가끔 표현해줘",
+  금: "솔직해서 편한데, 말투에 다정 한 스푼이면 완벽",
+  수: "분위기 다 읽고 맞춰주는 사람. 혼자 참지 말고 말해",
+}
+// 부족 오행을 채우는 데이트 3가지
+const ELEM_FILL_C: Record<Elem, { label: string; D: DoodleC }[]> = {
+  목: [{ label: "등산·식물원 데이트", D: DoodleBackpack }, { label: "숲길 산책", D: DoodleBamboo }, { label: "화분 같이 키우기", D: DoodlePottedPlant }],
+  화: [{ label: "불멍 캠핑", D: DoodleFire }, { label: "매운맛 맛집 투어", D: DoodleRamen }, { label: "노래방 데이트", D: DoodleMusicNote }],
+  토: [{ label: "도자기 공방 체험", D: DoodleColorPalette }, { label: "집밥 같이 해먹기", D: DoodleOnggiJar }, { label: "캠핑", D: DoodleEarth }],
+  금: [{ label: "미술관·전시 관람", D: DoodlePictureFrame }, { label: "호캉스", D: DoodleSparkle }, { label: "드라이브", D: DoodleDiamond }],
+  수: [{ label: "바다·온천 여행", D: DoodleWave }, { label: "카페 데이트", D: DoodleCoffee }, { label: "영화관", D: DoodleTicket }],
+}
+// mock 사주 오행 분포 (8자 가정, 일간 강조 + char 기반 분배)
+function mockDist(key: string): Record<Elem, number> {
+  const d: Record<Elem, number> = { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 }
+  d[elemOf(key)] = 3
+  const seed = key.charCodeAt(0) + (key.charCodeAt(1) || 0) * 7 + (key.charCodeAt(3) || 0) * 3
+  let i = seed % 5, rest = 5
+  while (rest > 0) { d[ELEMS[i % 5]]++; i += (seed % 3) + 1; rest-- }
+  return d
 }
 
 const clamp = (n: number) => Math.max(40, Math.min(98, Math.round(n)))
@@ -201,6 +230,8 @@ export default function CoupleFunnelPage() {
   const t = relType(elemOf(HOST.iljuKey), elemOf(partner.iljuKey))
   const fit = FIT[t]
   const eHost = elemOf(HOST.iljuKey), eMe = elemOf(partner.iljuKey)
+  const hd = mockDist(HOST.iljuKey), md = mockDist(partner.iljuKey)
+  const minElem = ELEMS.reduce((a, b) => (hd[b] + md[b] < hd[a] + md[a] ? b : a), "목" as Elem)
 
   return (
     <div className="flex flex-col gap-6 pt-4 pb-10">
@@ -228,6 +259,30 @@ export default function CoupleFunnelPage() {
         <p className="text-[14px] text-charcoal/70 leading-relaxed" style={GAEGU}>{c.vibe}</p>
       </div>
 
+      {/* 사주 오행 밸런스 — 좌 초대자 / 우 나, 각 오행 개수 비율로 분할 */}
+      <div className="flex flex-col gap-2.5">
+        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleTaegeuk} size={18} /> 사주 오행 밸런스</p>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
+          <div className="flex items-center justify-end gap-3">
+            <span className="flex items-center gap-1 text-[14px] text-charcoal/70"><span className="w-2.5 h-2.5 rounded-full" style={{ background: PINK }} />{HOST.name}</span>
+            <span className="flex items-center gap-1 text-[14px] text-charcoal/70"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#60A5FA" }} />나</span>
+          </div>
+          {ELEMS.map(e => {
+            const h = hd[e], m = md[e], tot = h + m
+            return (
+              <div key={e} className="flex items-center gap-2.5">
+                <Ico as={ELEM_DOODLE[e]} size={16} />
+                <span className="w-4 text-[14px] font-bold text-charcoal shrink-0">{e}</span>
+                <div className="flex-1 h-3.5 rounded-full overflow-hidden flex" style={{ background: "#F1F5F9" }}>
+                  <div style={{ width: `${tot ? (h / tot) * 100 : 0}%`, background: PINK }} />
+                  <div style={{ width: `${tot ? (m / tot) * 100 : 0}%`, background: "#60A5FA" }} />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
       {/* 연애 스타일 매칭 */}
       <div className="flex flex-col gap-2.5">
         <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleHeart} size={18} /> 연애 스타일</p>
@@ -245,6 +300,22 @@ export default function CoupleFunnelPage() {
               </div>
             )
           })}
+        </div>
+      </div>
+
+      {/* 각자에게 한마디 */}
+      <div className="flex flex-col gap-2.5">
+        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleSpeechBubble} size={18} /> 각자에게 한마디</p>
+        <div className="flex flex-col gap-2">
+          {[HOST, partner].map((p, i) => (
+            <div key={i} className="flex gap-2.5 rounded-2xl bg-white border border-charcoal/10 px-3 py-2.5">
+              <Avatar p={p} size={36} />
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-bold text-charcoal">{p.me ? "나" : p.name} <span className="text-text-muted font-normal">· {LOVE_STYLE[elemOf(p.iljuKey)].label}</span></p>
+                <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{COUPLE_PERSONAL[elemOf(p.iljuKey)]}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -285,12 +356,35 @@ export default function CoupleFunnelPage() {
         </div>
       </div>
 
-      {/* 위기 처방 */}
-      <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
-        <Ico as={DoodleSpeechBubble} size={20} />
-        <div>
-          <p className="text-[14px] font-bold text-charcoal">우리 사이 처방전</p>
-          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{REMEDY[t]}</p>
+      {/* 우리 사이 처방전 (2개) */}
+      <div className="flex flex-col gap-2.5">
+        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleSpeechBubble} size={18} /> 우리 사이 처방전</p>
+        <div className="rounded-2xl px-4 py-3.5 flex flex-col gap-2.5" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
+          {REMEDY[t].map((r, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <span className="text-[14px] font-bold shrink-0" style={{ color: PINK }}>{i + 1}</span>
+              <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{r}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 부족 오행 → 채우는 데이트 (가장 부족한 원소) */}
+      <div className="rounded-2xl px-4 py-4 flex flex-col gap-3" style={{ background: ELEM_BG[minElem], border: `1.5px solid ${ELEM_COLOR[minElem]}` }}>
+        <div className="flex items-center gap-2">
+          <Ico as={ELEM_DOODLE[minElem]} size={22} />
+          <div className="flex-1 min-w-0">
+            <p className="text-[14px] font-bold text-charcoal leading-tight">둘 사이에 {minElem}({minElem}) 기운이 부족해요</p>
+            <p className="text-[14px] text-charcoal/60">{minElem}({minElem}) 기운을 채우는 데이트를 해봐요</p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          {ELEM_FILL_C[minElem].map((a, i) => (
+            <div key={i} className="flex items-center gap-2.5 rounded-xl px-3 py-2" style={{ background: "rgba(255,255,255,0.7)" }}>
+              <Ico as={a.D} size={18} />
+              <span className="text-[14px] font-bold text-charcoal">{a.label}</span>
+            </div>
+          ))}
         </div>
       </div>
 
