@@ -367,6 +367,8 @@ export default function ConsultPage() {
     ilju
       ? ILJU_SVG_ICONS[iljuKey]?.(getIljuProfileViewBox(iljuKey))
       : <img src={DEFAULT_PROFILE_IMG} alt="" className="w-full h-full object-cover" />
+  // 아바타 배경: 일주 있으면 오행색, 없으면 서비스 연분홍(--pink-light)
+  const avatarBg = ilju ? ELEM_BG[elemKey] : "#FFE4EA"
   const headerName = ilju ? `${ilju.ilju}(${ilju.hanja}) · 나` : "사주 친구"
   const headerLabel = ilju ? (ilju.name ?? "") : "사주카드를 뽑으면 시작돼"
 
@@ -533,7 +535,7 @@ export default function ConsultPage() {
           <div className="flex items-center gap-3 pb-3">
             <div
               className="w-[56px] h-[56px] rounded-full overflow-hidden border-2 border-charcoal/15 shrink-0"
-              style={{ background: ELEM_BG[elemKey] }}
+              style={{ background: avatarBg }}
             >
               {renderAvatar()}
             </div>
@@ -587,7 +589,7 @@ export default function ConsultPage() {
             <div key={i} className="flex items-end gap-2">
               <div
                 className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-charcoal/10"
-                style={{ background: ELEM_BG[elemKey] }}
+                style={{ background: avatarBg }}
               >
                 {renderAvatar()}
               </div>
