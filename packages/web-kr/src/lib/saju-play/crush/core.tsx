@@ -47,6 +47,9 @@ export type CrushConfig = {
   temp: { min: number; label: string; line: string }[]
   /** 상황별 케미 — base 점수에 delta 가감, % 바로 표시(커플 상황별 패턴). */
   situational: { key: string; D: DoodleC; delta: number; line: string }[]
+  journey: { name: string; tip: string }[]                       // 썸 진행 4단계
+  dateCourse: Record<Elem, { label: string; D: DoodleC }[]>       // 상대 오행 → 공략 데이트
+  mines: Record<Elem, string[]>                                   // 상대 오행 → 지뢰(하지 말 것) TOP3
   persona: Record<Elem, { tag: string; line: string }>        // 오행 → 연애 성향(프로필 카드)
   openHeart: Record<Elem, { title: string; line: string }>   // 상대(그 사람) 오행 → 마음 여는 법
   chemi: Record<Rel, { good: string; care: string }>          // 끌리는/어긋나는 포인트
@@ -337,6 +340,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   const spouseCopy = FATE_SPOUSE[signals.spouse]
   const bal = BALANCE[signals.role]
   const dohwaVal = signals.dohwa ? clamp(72 + (score % 14), 60, 95) : clamp(34 + (score % 16), 25, 55)
+  const jIdx = score >= 80 ? 3 : score >= 66 ? 2 : score >= 52 ? 1 : 0
   const md = mockDist(meK), td = mockDist(themK)
   const open = config.openHeart[eThem]
   const lucky = config.lucky[eThem]
@@ -456,6 +460,34 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
+      {/* 썸 진행 지도 — 4단계 + 다음 액션 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleRedString}>썸 진행 지도</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
+          <div className="flex items-center">
+            {config.journey.map((j, i) => (
+              <div key={i} className="flex items-center flex-1 last:flex-none">
+                <div className="flex flex-col items-center gap-1 shrink-0">
+                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-bold border-2"
+                    style={i === jIdx ? { background: PINK, color: "#FFF9F0", borderColor: PINK }
+                      : i < jIdx ? { background: "#FBD5E0", color: PINK, borderColor: "#FBD5E0" }
+                      : { background: "white", color: "#CBD5E1", borderColor: "#E5E7EB" }}>
+                    {i + 1}
+                  </span>
+                  <span className="text-[12px] font-bold" style={{ color: i === jIdx ? PINK : "#94A3B8" }}>{j.name}</span>
+                </div>
+                {i < config.journey.length - 1 && <div className="flex-1 h-0.5 mx-1 -mt-4" style={{ background: i < jIdx ? "#FBD5E0" : "#E5E7EB" }} />}
+              </div>
+            ))}
+          </div>
+          <div className="rounded-xl px-3 py-2.5" style={{ background: "#FFF0F5" }}>
+            <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>
+              <span className="font-bold" style={{ color: PINK }}>다음 칸으로 →</span> {config.journey[jIdx].tip}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* 두 사람 프로필 — 일주 캐릭터 */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleHeart}>두 사람 프로필</SectionTitle>
@@ -562,6 +594,22 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
+      {/* 첫 데이트 공략 코스 — 상대 오행이 끌리는 곳 */}
+      <div className="rounded-2xl px-4 py-4 flex flex-col gap-3" style={{ background: ELEM_BG[eThem], border: `1.5px solid ${ELEM_COLOR[eThem]}` }}>
+        <div className="flex items-center gap-2">
+          <Ico as={ELEM_DOODLE[eThem]} size={22} />
+          <p className="text-[14px] font-bold text-charcoal leading-tight">{them.name || "그 사람"} 공략 데이트 — {eThem} 기운이 끌리는 곳</p>
+        </div>
+        <div className="flex flex-col gap-2">
+          {config.dateCourse[eThem].map((a, i) => (
+            <div key={i} className="flex items-center gap-2.5 rounded-xl px-3 py-2" style={{ background: "rgba(255,255,255,0.7)" }}>
+              <Ico as={a.D} size={18} />
+              <span className="text-[14px] font-bold text-charcoal">{a.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* 진전·고백 타이밍 */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleHourglass}>진전·고백 타이밍</SectionTitle>
@@ -575,11 +623,17 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      {/* 하지 말 것 */}
-      <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#FEF2F2", border: "1.5px solid #FCA5A5" }}>
-        <Ico as={DoodleQuestionMark} size={18} />
-        <div><p className="text-[14px] font-bold text-charcoal">이건 역효과예요</p>
-          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.anti[eThem]}</p></div>
+      {/* 지뢰 TOP 3 — 이 조합에서 절대 하지 말 것 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleQuestionMark}>지뢰 TOP 3</SectionTitle>
+        <div className="rounded-2xl px-4 py-3.5 flex flex-col gap-2.5" style={{ background: "#FEF2F2", border: "1.5px solid #FCA5A5" }}>
+          {config.mines[eThem].map((m, i) => (
+            <div key={i} className="flex items-start gap-2.5">
+              <span className="w-5 h-5 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: "#EF4444" }}>{i + 1}</span>
+              <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{m}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* 모드 전용 (썸=밀당 / 짝사랑=현실·위로) */}

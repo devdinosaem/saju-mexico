@@ -5,6 +5,8 @@
 import {
   DoodleSparkles, DoodleFire, DoodleEarth, DoodleDiamond, DoodleWave,
   DoodleSprout, DoodleLightning, DoodleMirror, DoodleSpeechBubble, DoodleHeart,
+  DoodleBackpack, DoodleBamboo, DoodlePottedPlant, DoodleRamen, DoodleMusicNote,
+  DoodleColorPalette, DoodleOnggiJar, DoodlePictureFrame, DoodleCoffee, DoodleTicket,
 } from "@/components/doodles"
 import type { CrushConfig } from "./core"
 
@@ -43,6 +45,26 @@ export const SOME_CONFIG: CrushConfig = {
     { key: "밀당", D: DoodleLightning, delta: -8, line: "한 명이 더 달면 흔들리기 쉬운 구간" },
     { key: "고백 성공률", D: DoodleHeart, delta: -2, line: "타이밍만 맞추면 충분히 승산 있어요" },
   ],
+  journey: [
+    { name: "탐색기", tip: "가벼운 안부·공감으로 접점부터 늘려요" },
+    { name: "호감 싹틈", tip: "둘만의 대화·소소한 약속으로 특별함을 만들어요" },
+    { name: "그린라이트", tip: "한 발 더 — 단둘이 만나는 자리를 자연스럽게 제안해요" },
+    { name: "확신 직전", tip: "마음을 슬쩍 비춰 확신을 줘요. 고백 타이밍이 가까워요" },
+  ],
+  dateCourse: {
+    목: [{ label: "식물원·수목원", D: DoodlePottedPlant }, { label: "숲길 산책", D: DoodleBamboo }, { label: "감성 북카페", D: DoodleBackpack }],
+    화: [{ label: "야경 핫플", D: DoodleFire }, { label: "매운맛 맛집", D: DoodleRamen }, { label: "노래방·페스티벌", D: DoodleMusicNote }],
+    토: [{ label: "아늑한 카페", D: DoodleCoffee }, { label: "원데이 공방", D: DoodleColorPalette }, { label: "집밥·홈파티", D: DoodleOnggiJar }],
+    금: [{ label: "전시·미술관", D: DoodlePictureFrame }, { label: "드라이브", D: DoodleDiamond }, { label: "호텔 라운지", D: DoodleSparkles }],
+    수: [{ label: "바다·강가", D: DoodleWave }, { label: "영화관", D: DoodleTicket }, { label: "분위기 카페", D: DoodleCoffee }],
+  },
+  mines: {
+    목: ["재촉하거나 미래를 다그치기 — 부담이 제일 큰 적", "다른 사람과 비교하기 — 자존심을 건드려요", "즉흥 강요 — 생각할 시간을 뺏지 마요"],
+    화: ["밀당으로 약 올리기 — 한번 식으면 빨라요", "무덤덤·시큰둥한 반응 — 텐션이 확 깎여요", "우유부단하게 끌기 — 답답해해요"],
+    토: ["변덕스럽게 들었다 놨다 — 신뢰가 깨져요", "급하게 몰아붙이기 — 오히려 더 느려져요", "약속 어기기 — 한 번에 마이너스예요"],
+    금: ["과한 들이댐·집착 표현 — 거리감이 무기예요", "TMI·감정 폭발 — 부담스러워해요", "선 넘는 농담 — 정 떨어져요"],
+    수: ["감정을 가볍게 넘기기 — 깊게 상처받아요", "단답·무심한 연락 — 벽으로 느껴요", "다른 사람과 비교 — 마음을 닫아요"],
+  },
   persona: {
     목: { tag: "성장형", line: "같이 발전하고 미래를 그리는 타입" },
     화: { tag: "직진형", line: "좋으면 바로 표현하는 불같은 타입" },
