@@ -299,8 +299,31 @@ function stripHanjaSafe(text: string): string {
   return out
 }
 
+// 하드 욕설 차단 — 페르소나는 어떤 경우에도 욕 안 함. 프롬프트로도 새면 출력단에서 제거.
+// 오탐(년/시발/졸라/미친/병신(丙申)/보지/자지/꺼져/닥쳐 등)은 제외, 복합·명백 욕설만.
+const PROFANITY_RE = new RegExp(
+  [
+    "씨발년", "씨발놈", "씨발", "씨바", "씨불", "시발놈", "시발년",
+    "개새끼", "개색기", "개세끼", "개자식", "개놈",
+    "좆같", "좆나", "좆밥", "좆까", "존나", "존만",
+    "개지랄", "지랄",
+    "븅신", "빙신", "등신",
+    "미친새끼", "미친놈", "미친년",
+    "쌍놈", "쌍년", "썅",
+    "니애미", "니애비", "니미", "호로자식", "후레자식", "후레아들",
+    "엿같", "엿먹어",
+    "잠지", "창녀", "걸레년", "화냥년",
+    "(?<!전)염병",                                // 전염병 제외
+    "(?:이|그|저|나쁜|이런|미친|씨발)\\s*새끼",   // 새끼는 욕 맥락만 (강아지 새끼 제외)
+  ].join("|"),
+  "g",
+)
+function maskProfanity(text: string): string {
+  return text.replace(PROFANITY_RE, "").replace(/ {2,}/g, " ")
+}
+
 function renderInline(text: string): React.ReactNode[] {
-  return stripHanjaSafe(text).split(/(\*\*[^*]+\*\*)/).map((part, i) =>
+  return maskProfanity(stripHanjaSafe(text)).split(/(\*\*[^*]+\*\*)/).map((part, i) =>
     part.startsWith("**") && part.endsWith("**")
       ? <strong key={i} className="font-semibold">{part.slice(2, -2)}</strong>
       : <React.Fragment key={i}>{part}</React.Fragment>
