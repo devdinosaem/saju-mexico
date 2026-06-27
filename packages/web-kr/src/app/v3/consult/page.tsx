@@ -42,7 +42,10 @@ function buildSajuContext(user: MockUser, ilju: IljuType): string {
   if (!hasTime) hour = 12
   if (!Number.isFinite(minute)) minute = 0
   const gender = bd.gender === "M" ? "male" as const : "female" as const
-  const currentYear = new Date().getFullYear()
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const currentMonth = now.getMonth() + 1
+  const currentDay = now.getDate()
   const currentAge = currentYear - year + 1
 
   const saju = calculateSaju({ year, month, day, hour, minute })
@@ -55,6 +58,9 @@ function buildSajuContext(user: MockUser, ilju: IljuType): string {
   })
 
   const yearlyFortunes = calculateYearlyFortunes(year, dayMaster.stem, currentYear - 1, currentYear + 1)
+  const yThis = yearlyFortunes.find(f => f.year === currentYear)
+  const yNext = yearlyFortunes.find(f => f.year === currentYear + 1)
+  const yLast = yearlyFortunes.find(f => f.year === currentYear - 1)
   const tenGods = analyzeTenGods(fp, dayMaster.stem)
   const yongShin = analyzeYongShin(dayMaster.stem, fp, fiveElements, tenGods.count)
   const relations = analyzeRelations(fp)
@@ -65,6 +71,11 @@ function buildSajuContext(user: MockUser, ilju: IljuType): string {
     `생년월일: ${year}년 ${month}월 ${day}일 ${bd.ampm === "AM" ? "오전" : "오후"} ${bd.hour}시 ${bd.minute}분`,
     `성별: ${bd.gender === "M" ? "남성" : "여성"} / 현재 나이: ${currentAge}세`,
     ...(hasTime ? [] : [`⚠️ 출생 시간 미상 — 시주(時)는 정오 기준 추정값이야. 시간·시주 기반 해석은 단정하지 말 것.`]),
+    ``,
+    `## ⏰ 시간 기준 (반드시 이걸 따라라 — 다른 해를 올해로 착각 금지)`,
+    `오늘은 ${currentYear}년 ${currentMonth}월 ${currentDay}일이야.`,
+    `올해 = ${currentYear}년${yThis ? `(${gzStr(yThis.ganZhi)}년)` : ""} / 내년 = ${currentYear + 1}년${yNext ? `(${gzStr(yNext.ganZhi)}년)` : ""} / 작년 = ${currentYear - 1}년${yLast ? `(${gzStr(yLast.ganZhi)}년)` : ""}`,
+    `"올해"·"지금"이라고 말할 땐 무조건 ${currentYear}년 기준이야. ${currentYear - 1}년을 올해로 말하면 안 돼.`,
     ``,
     `## 사주 원국`,
     `년주: ${gzStr(fp.year)} / 월주: ${gzStr(fp.month)} / 일주: ${gzStr(fp.day)} / 시주: ${gzStr(fp.hour)}`,
@@ -96,9 +107,10 @@ function buildSajuContext(user: MockUser, ilju: IljuType): string {
     ),
     ``,
     `## 세운`,
-    ...yearlyFortunes.map(f =>
-      `${f.year}년(${f.age}세): ${gzStr(f.ganZhi)} [${TEN_GOD_KOREAN[f.stemTenGod]}/${TEN_GOD_KOREAN[f.branchTenGod]}]`
-    ),
+    ...yearlyFortunes.map(f => {
+      const rel = f.year === currentYear ? "올해, " : f.year === currentYear + 1 ? "내년, " : f.year === currentYear - 1 ? "작년, " : ""
+      return `${f.year}년(${rel}${f.age}세): ${gzStr(f.ganZhi)} [${TEN_GOD_KOREAN[f.stemTenGod]}/${TEN_GOD_KOREAN[f.branchTenGod]}]`
+    }),
     ``,
     `## 일주 캐릭터`,
     `${ilju.ilju}(${ilju.hanja}) / "${ilju.name}" / 강점: ${ilju.strengths.join(", ")} / 약점: ${ilju.weaknesses.join(", ")}`,
