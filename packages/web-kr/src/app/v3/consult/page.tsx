@@ -1,8 +1,10 @@
 "use client"
 import React, { useState, useRef } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { PRICES, WON_PER_MYONGTAE } from "@/lib/prices"
+import { useBalance, spend, refund, CONSULT_COST } from "@/lib/balance"
 import { DoodleBox, DoodleSparkle, DoodleHeart, DoodleSuitcase, DoodleCrystal, DoodleMagicWand, DoodleStar, DoodleMoon } from "@/components/doodles"
 import { useUser } from "@/lib/UserContext"
 import type { IljuType } from "@/lib/ilju-types"
@@ -364,7 +366,9 @@ function LockedScreen() {
 
 // ── 채팅 화면 ───────────────────────────────────────────────────────
 export default function ConsultPage() {
+  const router = useRouter()
   const { hasIlju, ilju, user } = useUser()
+  const balance = useBalance()
   const [input, setInput]            = useState("")
   const [msgs, setMsgs]              = useState<Msg[]>([{ role: "char", text: "" }])
   const [selectedTopic, setSelected]  = useState<string | null>(null)
@@ -382,6 +386,10 @@ export default function ConsultPage() {
   const iljuKey = ilju?.id ?? ""
   const iljuName = ilju ? `${ilju.ilju}(${ilju.hanja})` : ""
   const iljuLabel = ilju?.name ?? ""
+
+  // 잔액 게이팅: 0.1명태 미만이면 입력 비활성 + 충전 플로팅
+  const canChat = balance >= CONSULT_COST - 1e-9
+  const hasStarted = msgs.some(m => m.role === "user") // 대화 시작 여부(플로팅 문구 분기)
 
   function handleInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setInput(e.target.value)
@@ -436,6 +444,7 @@ export default function ConsultPage() {
 
   async function send() {
     if (!input.trim() || isLoading || !ilju) return
+    if (!spend(CONSULT_COST)) { router.push("/v3/charge"); return } // 잔액 부족 → 충전(게이팅으로 도달 안 하지만 안전)
     const userText = input.trim()
     setInput("")
     if (inputRef.current) { inputRef.current.style.height = "auto" }
@@ -490,6 +499,7 @@ export default function ConsultPage() {
       }
     } catch (err) {
       console.error("[consult] send 실패:", err)
+      refund(CONSULT_COST) // 응답 실패 → 차감분 환불
       setMsgs(prev => {
         const updated = [...prev]
         updated[updated.length - 1] = { role: "char", text: "연결이 안 됐어. 잠깐 후에 다시 물어봐." }
@@ -545,10 +555,13 @@ export default function ConsultPage() {
               <p className="text-[15px] font-bold text-charcoal">{iljuName} · 나</p>
               <p className="text-[11px] text-text-muted">{iljuLabel}</p>
             </div>
-            <div className="ml-auto flex items-center gap-1 bg-charcoal/5 rounded-full px-2.5 py-1 shrink-0">
-              <span className="text-[11px] text-text-muted">1회</span>
-              <span className="text-[11px] font-bold text-charcoal">{PRICES.aiConsultPerTurn}명태({Math.round(PRICES.aiConsultPerTurn * WON_PER_MYONGTAE)}원)</span>
-            </div>
+            <button
+              onClick={() => router.push("/v3/charge")}
+              className="ml-auto flex flex-col items-end gap-0.5 bg-charcoal/5 rounded-xl px-2.5 py-1 shrink-0 active:opacity-70 transition-opacity"
+            >
+              <span className="text-[11px] font-bold text-charcoal">잔액 {balance}명태</span>
+              <span className="text-[9px] text-text-muted">1회 {PRICES.aiConsultPerTurn}명태({Math.round(PRICES.aiConsultPerTurn * WON_PER_MYONGTAE)}원)</span>
+            </button>
           </div>
           {/* 주제 칩 */}
           <div className="flex gap-2 overflow-x-auto pb-3 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: "none" }}>
@@ -613,6 +626,17 @@ export default function ConsultPage() {
 
       {/* 입력바 — 하단 내비게이터 바로 위에 붙임 */}
       <div className="fixed left-0 right-0 z-40 bg-cream border-t border-charcoal/10" style={{ bottom: navH }}>
+        {/* 잔액 부족 시: 입력창 위에 충전 플로팅 */}
+        {!canChat && (
+          <div className="absolute bottom-full left-0 right-0 flex justify-center pb-3 px-4 pointer-events-none">
+            <button
+              onClick={() => router.push("/v3/charge")}
+              className="pointer-events-auto max-w-[480px] px-5 py-3 rounded-full bg-pink text-cream text-[13px] font-bold border-2 border-charcoal shadow-lg active:scale-95 transition-transform"
+            >
+              명태 충전하고 {hasStarted ? "이어가기" : "대화 시작하기"} →
+            </button>
+          </div>
+        )}
         <div className="max-w-[480px] mx-auto px-4 py-2.5 flex items-center gap-2">
           <div className="relative flex-1">
             <textarea
@@ -620,11 +644,12 @@ export default function ConsultPage() {
               value={input}
               onChange={handleInputChange}
               onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send() } }}
-              placeholder="고민을 털어놔봐..."
+              placeholder={canChat ? "고민을 털어놔봐..." : "명태를 충전하면 대화할 수 있어"}
               rows={1}
               maxLength={500}
+              disabled={!canChat}
               style={{ maxHeight: "104px", resize: "none" }}
-              className="w-full bg-white border border-charcoal/15 rounded-xl pl-3.5 pr-14 py-2.5 text-[13px] text-charcoal placeholder:text-charcoal/30 outline-none focus:border-pink/50 transition-colors overflow-y-auto leading-relaxed"
+              className={`w-full bg-white border border-charcoal/15 rounded-xl pl-3.5 pr-14 py-2.5 text-[13px] text-charcoal placeholder:text-charcoal/30 outline-none focus:border-pink/50 transition-all overflow-y-auto leading-relaxed ${!canChat ? "opacity-40 pointer-events-none" : ""}`}
             />
             <span className={`absolute top-1/2 -translate-y-1/2 right-3 text-[10px] pointer-events-none ${input.length >= 450 ? "text-pink font-bold" : "text-charcoal/30"}`}>
               {input.length}/500
@@ -632,7 +657,7 @@ export default function ConsultPage() {
           </div>
           <button
             onClick={send}
-            disabled={!input.trim() || isLoading}
+            disabled={!input.trim() || isLoading || !canChat}
             className="w-10 h-10 rounded-xl bg-pink flex items-center justify-center shrink-0 active:opacity-80 disabled:opacity-30 transition-opacity"
           >
             <span className="text-cream text-[16px] leading-none">→</span>
