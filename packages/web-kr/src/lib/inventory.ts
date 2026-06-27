@@ -6,9 +6,11 @@ export type UserInventory = {
   ownedStickers: string[]   // 구매한 소품 키 목록
   ownedSkins: string[]      // 구매한 스킨 ID 목록
   ownedCharacters: string[] // 구매한 캐릭터 키 목록 (iljuKey 제외)
+  displayCharacterKey?: string // 대표 캐릭터(소셜 아바타). 미설정 시 = 태생 일주. 소유한 캐릭터만 유효
 }
 
 export const INVENTORY_KEY = "saju-inventory-v1"
+export const INVENTORY_CHANGE_EVENT = "saju-inventory-change"
 
 export const DEFAULT_INVENTORY: UserInventory = {
   iljuKey: "경진-m",        // 미온보딩 폴백 전용 (온보딩 후엔 user.ilju가 주입됨)
@@ -59,4 +61,16 @@ export function loadInventory(): UserInventory {
 
 export function saveInventory(inv: UserInventory): void {
   try { localStorage.setItem(INVENTORY_KEY, JSON.stringify(inv)) } catch {}
+}
+
+export function notifyInventoryChange(): void {
+  if (typeof window !== "undefined") window.dispatchEvent(new Event(INVENTORY_CHANGE_EVENT))
+}
+
+/** 대표 캐릭터 설정. null이면 태생 일주로 리셋. */
+export function setDisplayCharacter(key: string | null): UserInventory {
+  const next: UserInventory = { ...loadInventory(), displayCharacterKey: key ?? undefined }
+  saveInventory(next)
+  notifyInventoryChange()
+  return next
 }

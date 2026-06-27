@@ -7,6 +7,7 @@ import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { ELEMENT_THEME } from "@/lib/ilju-calc"
 import { useUser } from "@/lib/UserContext"
 import { useFriends } from "@/hooks/useFriends"
+import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
 const withTime = (date: string) => /오전|오후/.test(date) ? date : date + " 오후 12:00"
 
 const STEM_TO_ELEM: Record<string, string> = {
@@ -38,9 +39,10 @@ export default function GuestbookPage() {
   const router = useRouter()
   const { user, ilju, hasIlju } = useUser()
   const meName = user.birthDate?.name ?? "나"
-  const meIljuKey = hasIlju && ilju ? ilju.id : ""
   const meBg = hasIlju && ilju ? (ELEMENT_THEME[ilju.stemElement]?.bg ?? "#F1F5F9") : "#F1F5F9"
-  const meSvgFn = meIljuKey ? ILJU_SVG_ICONS[meIljuKey] : null
+  // 작성자 아바타 = 대표 캐릭터(소셜)
+  const meDisplayKey = useMyDisplayCharacter() ?? ""
+  const meSvgFn = meDisplayKey ? ILJU_SVG_ICONS[meDisplayKey] : null
   const gbKey = myGuestbookKey(meName)
 
   const { friends } = useFriends()
@@ -154,7 +156,7 @@ export default function GuestbookPage() {
                         }}
                       >
                         {(() => {
-                          if (entry.author === meName) return <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meIljuKey))}</div>
+                          if (entry.author === meName) return <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meDisplayKey))}</div>
                           const friend = friends.find(f => f.name === entry.author)
                           const fn = friend ? ILJU_SVG_ICONS[friend.iljuKey] : null
                           return fn

@@ -1,9 +1,12 @@
 "use client"
+import { useState } from "react"
 import { ElementBadgePill, YinyangBadge } from "@/components/ilju-type-card"
 import { ILJU_TYPES } from "@/lib/ilju-types"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { ELEMENT_THEME } from "@/lib/ilju-calc"
 import { useUser, DEFAULT_PROFILE_IMG } from "@/lib/UserContext"
+import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
+import DisplayCharacterSheet from "./DisplayCharacterSheet"
 
 /* ── 아바타 SVG ─────────────────────────────────────────── */
 
@@ -91,27 +94,34 @@ export default function MyHero() {
   const { user, ilju: registeredIlju, hasIlju } = useUser()
   const ilju = registeredIlju ?? ILJU_TYPES[0]
   const theme = ELEMENT_THEME[ilju.stemElement]
-  const svgFn = hasIlju ? ILJU_SVG_ICONS[ilju.id] : null
+  // 아바타 = 대표 캐릭터(소셜), 타입 라벨/뱃지 = 태생 일주(정체성)
+  const displayKey = useMyDisplayCharacter()
+  const svgFn = hasIlju && displayKey ? ILJU_SVG_ICONS[displayKey] : null
+  const [sheetOpen, setSheetOpen] = useState(false)
 
   return (
     <div className="flex flex-col gap-5">
       {/* 프로필 행 */}
       <div className="flex items-center gap-4">
-        {/* 원형 아바타 */}
-        <div className="shrink-0 p-[3px] rounded-full" style={{ background: "linear-gradient(135deg, #E84B6A 0%, #FBBF24 100%)" }}>
+        {/* 원형 아바타 — 탭하면 대표 캐릭터 변경 (일주 등록된 경우만) */}
+        <button
+          className="shrink-0 p-[3px] rounded-full active:scale-95 transition-transform"
+          style={{ background: "linear-gradient(135deg, #E84B6A 0%, #FBBF24 100%)" }}
+          onClick={() => hasIlju && setSheetOpen(true)}
+        >
           <div
             className="w-[68px] h-[68px] rounded-full overflow-hidden flex items-end justify-center"
             style={{ background: hasIlju && theme ? `radial-gradient(ellipse at 50% 80%, white 0%, ${theme.bg} 100%)` : "#F1F5F9" }}
           >
             {svgFn ? (
-              svgFn(getIljuProfileViewBox(ilju.id))
+              svgFn(getIljuProfileViewBox(displayKey!))
             ) : DEFAULT_PROFILE_IMG ? (
               <img src={DEFAULT_PROFILE_IMG} alt="프로필" className="w-full h-full object-cover" />
             ) : (
               <AvatarMe s={56} />
             )}
           </div>
-        </div>
+        </button>
 
         {/* 이름 + 뱃지 */}
         <div className="flex-1 min-w-0">
@@ -150,6 +160,8 @@ export default function MyHero() {
           ))}
         </div>
       </div>
+
+      <DisplayCharacterSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
     </div>
   )
 }

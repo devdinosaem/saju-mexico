@@ -9,6 +9,7 @@ import { useUser } from "@/lib/UserContext"
 import { DoodleSparkle, DoodleMoon, DoodleCrown, DoodleBox } from "@/components/doodles"
 import { useInventory } from "@/hooks/useInventory"
 import { useFriends } from "@/hooks/useFriends"
+import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
 
 type GuestEntry = { id: string; author: string; message: string; date: string }
@@ -56,9 +57,10 @@ export default function InteriorPage() {
   const { user, ilju, hasIlju } = useUser()
   const meName = user.birthDate?.name ?? "나"
   const gbKey = myGuestbookKey(meName)
-  const meIljuKey = hasIlju && ilju ? ilju.id : ""
   const meBg = hasIlju && ilju ? (ELEMENT_THEME[ilju.stemElement]?.bg ?? "#F1F5F9") : "#F1F5F9"
-  const meSvgFn = meIljuKey ? ILJU_SVG_ICONS[meIljuKey] : null
+  // 작성자 아바타 = 대표 캐릭터(소셜)
+  const meDisplayKey = useMyDisplayCharacter() ?? ""
+  const meSvgFn = meDisplayKey ? ILJU_SVG_ICONS[meDisplayKey] : null
 
   const [guestEntries, setGuestEntries] = useState<GuestEntry[]>([])
   const [seenCount, setSeenCount] = useState(0)
@@ -135,7 +137,7 @@ export default function InteriorPage() {
                       style={{ background: isMe ? meBg : (friend ? cfColors(friend.iljuKey).bg : "#F1F5F9"), border: "1.5px solid #E2E8F0" }}
                     >
                       {isMe
-                        ? <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meIljuKey))}</div>
+                        ? <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meDisplayKey))}</div>
                         : friendSvgFn
                           ? <div className="w-full h-full">{friendSvgFn(getIljuProfileViewBox(friend!.iljuKey))}</div>
                           : <span className="text-[11px] font-bold text-charcoal/50">{entry.author[0]}</span>

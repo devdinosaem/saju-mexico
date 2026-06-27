@@ -6,6 +6,7 @@ import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { ELEMENT_THEME } from "@/lib/ilju-calc"
 import { useUser } from "@/lib/UserContext"
 import { useFriends } from "@/hooks/useFriends"
+import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
 
 const withTime = (date: string) => /오전|오후/.test(date) ? date : date + " 오후 12:00"
 
@@ -52,9 +53,10 @@ export default function FriendRoomPage() {
   const { friends } = useFriends()
   const { user, ilju, hasIlju } = useUser()
   const meName = user.birthDate?.name ?? "나"
-  const meIljuKey = hasIlju && ilju ? ilju.id : ""
   const meBg = hasIlju && ilju ? (ELEMENT_THEME[ilju.stemElement]?.bg ?? "#F1F5F9") : "#F1F5F9"
-  const meSvgFn = meIljuKey ? ILJU_SVG_ICONS[meIljuKey] : null
+  // 작성자 아바타 = 대표 캐릭터(소셜)
+  const meDisplayKey = useMyDisplayCharacter() ?? ""
+  const meSvgFn = meDisplayKey ? ILJU_SVG_ICONS[meDisplayKey] : null
 
   const friendId = decodeURIComponent(params.friend as string)
   const friend = friends.find(f => f.id === friendId)
@@ -197,7 +199,7 @@ export default function FriendRoomPage() {
                           style={{ background: isMe ? meBg : (entryFriend ? cfColors(entryFriend.iljuKey).bg : "#F1F5F9"), border: "1.5px dashed #D4B070" }}
                         >
                           {isMe
-                            ? <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meIljuKey))}</div>
+                            ? <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meDisplayKey))}</div>
                             : entrySvgFn
                               ? <div className="w-full h-full">{entrySvgFn(getIljuProfileViewBox(entryFriend!.iljuKey))}</div>
                               : <span className="text-[13px] font-bold text-charcoal/60">{entry.author[0]}</span>
