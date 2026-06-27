@@ -344,8 +344,8 @@ export default function CompatFunnelPage() {
               <div key={i} className="flex items-center gap-2.5 rounded-2xl bg-white border border-charcoal/10 px-3 py-2.5">
                 <Avatar p={p} size={40} />
                 <div className="min-w-0">
-                  <p className="text-[11px] text-text-muted truncate">{p.me ? "나" : p.name}</p>
-                  <p className="text-[13px] font-bold text-charcoal leading-tight flex items-center gap-1"><Ico as={r.D} size={15} /> {r.label}</p>
+                  <p className="text-[14px] text-text-muted truncate">{p.me ? "나" : p.name}</p>
+                  <p className="text-[14px] font-bold text-charcoal leading-tight flex items-center gap-1"><Ico as={r.D} size={15} /> {r.label}</p>
                 </div>
               </div>
             )
@@ -360,14 +360,14 @@ export default function CompatFunnelPage() {
           {ELEMS.map(e => (
             <div key={e} className="flex items-center gap-2.5">
               <Ico as={ELEM_DOODLE[e]} size={16} />
-              <span className="w-4 text-[12px] font-bold text-charcoal shrink-0">{e}</span>
+              <span className="w-4 text-[14px] font-bold text-charcoal shrink-0">{e}</span>
               <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
                 <div className="h-full rounded-full transition-all" style={{ width: `${(d[e] / maxCount) * 100}%`, background: ELEM_COLOR[e] }} />
               </div>
-              <span className="w-5 text-[11px] text-text-muted text-right shrink-0">{d[e]}</span>
+              <span className="w-5 text-[14px] text-text-muted text-right shrink-0">{d[e]}</span>
             </div>
           ))}
-          <p className="text-[12px] text-charcoal/70 leading-relaxed mt-1" style={GAEGU}>{balanceLine(d)}</p>
+          <p className="text-[14px] text-charcoal/70 leading-relaxed mt-1" style={GAEGU}>{balanceLine(d)}</p>
         </div>
       </div>
 
@@ -378,7 +378,7 @@ export default function CompatFunnelPage() {
           {allPairs(parts).map((pr, i, arr) => (
             <div key={i} className={`flex items-center gap-2.5 py-2 ${i < arr.length - 1 ? "border-b border-charcoal/5" : ""}`}>
               <div className="flex -space-x-1.5 shrink-0"><Avatar p={pr.a} size={30} /><Avatar p={pr.b} size={30} /></div>
-              <span className="text-[12px] text-charcoal/80 flex-1 min-w-0 truncate flex items-center gap-1">
+              <span className="text-[14px] text-charcoal/80 flex-1 min-w-0 truncate flex items-center gap-1">
                 {pr.a.me ? "나" : pr.a.name} · {pr.b.me ? "나" : pr.b.name} <Ico as={pr.label.D} size={13} /> <span className="text-text-muted">{pr.label.text}</span>
               </span>
               <span className="text-[14px] font-bold shrink-0" style={{ color: pr.s >= 85 ? "#E84B6A" : pr.s >= 70 ? "#2D2D2D" : "#94A3B8" }}>{pr.s}%</span>
@@ -395,7 +395,7 @@ export default function CompatFunnelPage() {
             <div key={i} className="flex gap-2.5 rounded-2xl bg-white border border-charcoal/10 px-3 py-2.5">
               <Avatar p={p} size={36} />
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-bold text-charcoal">{p.me ? "나" : p.name} <span className="text-text-muted font-normal">· {ROLE[elemOf(p.iljuKey)].label}</span></p>
+                <p className="text-[14px] font-bold text-charcoal">{p.me ? "나" : p.name} <span className="text-text-muted font-normal">· {ROLE[elemOf(p.iljuKey)].label}</span></p>
                 <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{PERSONAL[elemOf(p.iljuKey)]}</p>
               </div>
             </div>
@@ -410,13 +410,13 @@ export default function CompatFunnelPage() {
           {situational(parts, score).map(s => (
             <div key={s.key} className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
-                <span className="text-[13px] font-bold text-charcoal flex items-center gap-1.5"><Ico as={s.D} size={16} /> {s.key}</span>
-                <span className="text-[13px] font-bold" style={{ color: s.score >= 80 ? "#E84B6A" : "#2D2D2D" }}>{s.score}%</span>
+                <span className="text-[14px] font-bold text-charcoal flex items-center gap-1.5"><Ico as={s.D} size={16} /> {s.key}</span>
+                <span className="text-[14px] font-bold" style={{ color: s.score >= 80 ? "#E84B6A" : "#2D2D2D" }}>{s.score}%</span>
               </div>
               <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
                 <div className="h-full rounded-full" style={{ width: `${s.score}%`, background: s.score >= 80 ? "#E84B6A" : s.score >= 65 ? "#FBBF24" : "#94A3B8" }} />
               </div>
-              <p className="text-[11px] text-text-muted" style={GAEGU}>{s.line}</p>
+              <p className="text-[14px] text-text-muted" style={GAEGU}>{s.line}</p>
             </div>
           ))}
         </div>
@@ -429,14 +429,14 @@ export default function CompatFunnelPage() {
             <Ico as={ELEM_DOODLE[miss[0]]} size={22} />
             <div className="flex-1 min-w-0">
               <p className="text-[14px] font-bold text-charcoal leading-tight">이 모임엔 {miss[0]}({miss[0]}) 기운이 없어요</p>
-              <p className="text-[11px] text-charcoal/60">{miss[0]}({miss[0]}) 기운을 채우는 활동을 같이 해봐요</p>
+              <p className="text-[14px] text-charcoal/60">{miss[0]}({miss[0]}) 기운을 채우는 활동을 같이 해봐요</p>
             </div>
           </div>
           <div className="flex flex-col gap-2">
             {ELEM_FILL[miss[0]].map((a, i) => (
               <div key={i} className="flex items-center gap-2.5 rounded-xl px-3 py-2" style={{ background: "rgba(255,255,255,0.7)" }}>
                 <Ico as={a.D} size={18} />
-                <span className="text-[13px] font-bold text-charcoal">{a.label}</span>
+                <span className="text-[14px] font-bold text-charcoal">{a.label}</span>
               </div>
             ))}
           </div>
@@ -449,7 +449,7 @@ export default function CompatFunnelPage() {
         style={{ background: addAll ? "#FFF4E0" : "#F1F5F9", border: `1.5px solid ${addAll ? "#F0C060" : "#E0D4C0"}` }}>
         <div className="flex items-center gap-2">
           <div className="flex -space-x-2">{others.map((p, i) => <Avatar key={i} p={p} size={28} />)}</div>
-          <span className="text-[13px] font-bold text-charcoal">전원 친구 추가</span>
+          <span className="text-[14px] font-bold text-charcoal">전원 친구 추가</span>
         </div>
         <span className="w-11 h-6 rounded-full relative transition-colors shrink-0" style={{ background: addAll ? "#2D2D2D" : "#CBD5E1" }}>
           <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all" style={{ left: addAll ? 22 : 2 }} />
@@ -460,7 +460,7 @@ export default function CompatFunnelPage() {
       <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex items-center gap-3">
         <Ico as={DoodleCrown} size={24} />
         <div className="flex-1">
-          <p className="text-[12px] text-text-muted">이 모임 다음 만나기 좋은 날</p>
+          <p className="text-[14px] text-text-muted">이 모임 다음 만나기 좋은 날</p>
           <p className="text-[14px] font-bold text-charcoal flex items-center gap-1">7월 12일 (토) · 화기운 충전 <Ico as={DoodleFire} size={14} /></p>
         </div>
       </div>
