@@ -5,6 +5,7 @@ import { useUser } from "@/lib/UserContext"
 import MyHero from "./_components/MyHero"
 import MyIljuCard from "./_components/MyIljuCard"
 import MyongtaeCard from "./_components/MyongtaeCard"
+import MyMyeongsikCard from "./_components/MyMyeongsikCard"
 import MonthCalendar from "./_components/MonthCalendar"
 import { PRICES, priceLabel } from "@/lib/prices"
 import { ElementBadgePill } from "@/components/ilju-type-card"
@@ -68,6 +69,9 @@ export default function MyPage() {
 
       {/* 내 명태 (잔액 + 충전 + 내역) */}
       <MyongtaeCard />
+
+      {/* 내 명식 (사주팔자 + 오행 분포) */}
+      <MyMyeongsikCard />
 
       {/* 내 보관함 */}
       <div>
