@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation"
 // 유니코드 글리프는 문자마다 em 크기·베이스라인이 달라 같은 font-size여도 실제 크기가 제각각.
 // → 고정 컨테이너(w-7 h-7) 안에서 글리프별 fs(시각 크기 보정) + dy(세로 정렬 보정)로 맞춤.
 const TABS = [
-  { href: "/v3/shop",     label: "사주상품", icon: "✦", fs: 20, dy: 0    },
-  { href: "/v3/consult",  label: "상담",    icon: "✧", fs: 20, dy: 0    },
-  { href: "/v3/interior", label: "운테리어", icon: "⌂", fs: 24, dy: 0.5  },
-  { href: "/v3/my",       label: "마이",    icon: "☺", fs: 23, dy: -0.5 },
+  { href: "/v3/shop",     label: "사주상품", icon: "✦", fs: 22, dy: 0 },
+  { href: "/v3/consult",  label: "상담",    icon: "✧", fs: 22, dy: 0 },
+  { href: "/v3/interior", label: "운테리어", icon: "⌂", fs: 16, dy: 0 },
+  { href: "/v3/my",       label: "마이",    icon: "☺", fs: 17, dy: 0 },
 ]
 
 export default function BottomNav() {
