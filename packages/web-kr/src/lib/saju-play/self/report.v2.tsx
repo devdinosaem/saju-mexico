@@ -302,7 +302,7 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
       <Section icon={DoodleBook} title="나 사용설명서" basis="일간·용신">
         <Card className="overflow-hidden">
           {/* 제품 라벨 헤더 — 프로필 */}
-          <div className="px-4 py-3 flex items-center gap-2.5 border-b border-charcoal/5 ds-sunken">
+          <div className="px-4 py-3 flex items-center gap-2.5 border-b border-charcoal/10">
             <Avatar iljuKey={x.charKey} size={40} />
             <div className="min-w-0">
               <p className="text-[11px] text-text-muted">제품명</p>

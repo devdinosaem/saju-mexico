@@ -75,9 +75,10 @@
   --font-title:  'BinggraeTaom', var(--font-pretendard);
   --font-flavor: 'Cafe24Dongdong', var(--font-pretendard);
 
-  /* ── 서피스 (흰색 금지 → 따뜻한 파스텔) ── */
+  /* ── 서피스 ──
+     기본 카드는 흰색(가독성 우선). 파스텔감은 강조 박스(InfoBox)·그라디언트(Hero)에만. */
   --surface-page:   #FDF6EE;  /* 페이지 바탕 (=cream) */
-  --surface-card:   #FFFCF6;  /* 기본 카드 — 순백 아님, 아주 옅은 아이보리 */
+  --surface-card:   #FFFFFF;  /* 기본 카드 — 흰색 (아이보리 #FFFCF6은 노란기로 가독성↓ 폐기) */
   --surface-raised: #FFFFFF;  /* 카드 위에 한 단계 더 뜬 요소(칩 안쪽 등) 한정 */
   --surface-sunken: #F6EEE2;  /* 트랙·인셋·프로그레스 바탕 */
 
