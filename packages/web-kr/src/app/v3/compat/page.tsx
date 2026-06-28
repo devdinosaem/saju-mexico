@@ -50,6 +50,16 @@ function TitleRow({ icon, t, children }: { icon: DoodleC; t: string; children: R
   )
 }
 
+function ChapterDivider({ n, title }: { n: number; title: string }) {
+  return (
+    <div className="flex items-center gap-2.5 pt-1">
+      <span className="w-6 h-6 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: "#E84B6A" }}>{n}</span>
+      <span className="text-[15px] text-charcoal shrink-0" style={BINGGRAE}>{title}</span>
+      <div className="flex-1 h-px" style={{ background: "#E5E7EB" }} />
+    </div>
+  )
+}
+
 const ELEMS = ["목", "화", "토", "금", "수"] as const
 type Elem = (typeof ELEMS)[number]
 
@@ -356,6 +366,8 @@ export default function CompatFunnelPage() {
         </div>
       </div>
 
+      <ChapterDivider n={1} title="우리, 이런 모임이야" />
+
       {/* [2] 그룹 롤 배정 */}
       <div className="flex flex-col gap-2.5">
         <TitleRow icon={DoodleMedal} t="일간 오행">우리 모임 역할</TitleRow>
@@ -424,6 +436,8 @@ export default function CompatFunnelPage() {
         </div>
       </div>
 
+      <ChapterDivider n={2} title="누가 누구랑" />
+
       {/* [4] 페어별 궁합 */}
       <div className="flex flex-col gap-2.5">
         <TitleRow icon={DoodleHeart} t="오행 상생상극">페어별 궁합</TitleRow>
@@ -455,6 +469,8 @@ export default function CompatFunnelPage() {
           ))}
         </div>
       </div>
+
+      <ChapterDivider n={3} title="이럴 땐 우리" />
 
       {/* [6] 상황별 궁합 */}
       <div className="flex flex-col gap-2.5">

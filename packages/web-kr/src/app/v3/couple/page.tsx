@@ -131,6 +131,16 @@ function Avatar({ p, size = 72 }: { p: P; size?: number }) {
   )
 }
 
+function ChapterDivider({ n, title }: { n: number; title: string }) {
+  return (
+    <div className="flex items-center gap-2.5 pt-1">
+      <span className="w-6 h-6 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: PINK }}>{n}</span>
+      <span className="text-[15px] text-charcoal shrink-0" style={BINGGRAE}>{title}</span>
+      <div className="flex-1 h-px" style={{ background: "#E5E7EB" }} />
+    </div>
+  )
+}
+
 type Step = "landing" | "input" | "result"
 
 export default function CoupleFunnelPage() {
@@ -259,6 +269,8 @@ export default function CoupleFunnelPage() {
         <p className="text-[14px] text-charcoal/70 leading-relaxed" style={GAEGU}>{c.vibe}</p>
       </div>
 
+      <ChapterDivider n={1} title="우리, 이런 사이야" />
+
       {/* 사주 오행 밸런스 — 좌 초대자 / 우 나, 각 오행 개수 비율로 분할 */}
       <div className="flex flex-col gap-2.5">
         <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleTaegeuk} size={18} /> 사주 오행 밸런스</p>
@@ -321,6 +333,8 @@ export default function CoupleFunnelPage() {
         </div>
       </div>
 
+      <ChapterDivider n={2} title="잘 맞을까" />
+
       {/* 잘 맞는 점 / 조심할 점 */}
       <div className="grid grid-cols-1 gap-2">
         <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#F0FFF4", border: "1.5px solid #86EFAC" }}>
@@ -357,6 +371,8 @@ export default function CoupleFunnelPage() {
           ))}
         </div>
       </div>
+
+      <ChapterDivider n={3} title="오래 가려면" />
 
       {/* 우리 사이 처방전 (2개) */}
       <div className="flex flex-col gap-2.5">
