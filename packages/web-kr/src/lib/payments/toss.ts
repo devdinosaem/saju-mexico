@@ -32,3 +32,25 @@ export async function requestTossCharge(plan: ChargePlan): Promise<void> {
     card: { useEscrow: false, flowMode: "DEFAULT", useCardPoint: false, useAppCardOnly: false },
   })
 }
+
+/**
+ * 구독 빌링 — 카드 등록창(빌링키 발급용). 성공 시 successUrl로 customerKey·authKey 리다이렉트.
+ * 이후 서버가 authKey→billingKey 발급 + 첫 청구를 수행한다(/v3/subscription/billing).
+ */
+export async function requestSubscriptionBilling(customerKey: string): Promise<void> {
+  if (!TOSS_CLIENT_KEY) {
+    alert(
+      "토스 테스트 키가 아직 설정되지 않았어요.\n" +
+      ".env.local에 NEXT_PUBLIC_TOSS_CLIENT_KEY / TOSS_SECRET_KEY를 넣어주세요."
+    )
+    return
+  }
+  const { loadTossPayments } = await import("@tosspayments/tosspayments-sdk")
+  const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY)
+  const payment = tossPayments.payment({ customerKey })
+  await payment.requestBillingAuth({
+    method: "CARD",
+    successUrl: `${window.location.origin}/v3/subscription/billing`,
+    failUrl: `${window.location.origin}/v3/subscription/fail`,
+  })
+}

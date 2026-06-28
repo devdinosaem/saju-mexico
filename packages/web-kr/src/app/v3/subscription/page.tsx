@@ -2,8 +2,9 @@
 import Link from "next/link"
 import {
   useSubscription, isSubscribed, cancelSubscription,
-  activateSubscription, addOneMonth,
+  activateSubscription, addOneMonth, ensureCustomerKey,
 } from "@/lib/subscription"
+import { requestSubscriptionBilling } from "@/lib/payments/toss"
 import { SUBSCRIPTION_MONTHLY_WON, subscriptionLabel } from "@/lib/prices"
 import { DoodleCrown, DoodleSparkle } from "@/components/doodles"
 
@@ -81,9 +82,9 @@ export default function SubscriptionPage() {
       ) : (
         <div className="flex flex-col gap-2">
           <button
-            onClick={() => {
+            onClick={async () => {
               if (DEV) { activateSubscription("test_billing_key", addOneMonth()); return }
-              alert("결제 연동은 다음 단계(P2·P3)에서 붙어요. 지금은 정책·상태 모델까지 준비됐어요.")
+              await requestSubscriptionBilling(ensureCustomerKey())
             }}
             className="w-full py-3 rounded-xl bg-pink text-cream text-[14px] font-black active:scale-[0.98]"
           >
