@@ -570,6 +570,15 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
+      {/* 결핍 채워주는 사람 — 용신 충족 (엔진 신호) */}
+      <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[myYongKr], border: `1.5px solid ${ELEM_COLOR[myYongKr]}` }}>
+        <Ico as={ELEM_DOODLE[myYongKr]} size={26} />
+        <div className="min-w-0">
+          <p className="text-[14px] font-bold text-charcoal flex items-center gap-1.5 flex-wrap">네 부족한 {myYongKr} 기운을 채워주는 사람 <Basis t="용신" deep /></p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{them.name || "그 사람"}은 네게 부족한 {myYongKr}을 {YONG_LV[signals.yongFulfill]} 채워줘. 옆에 있으면 숨통 트이는 결이야.</p>
+        </div>
+      </div>
+
       {/* 운명 신호 — 천간합/일지 합충 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleRedString} basis={{ t: "일간·일지 합충", deep: true }}>운명 신호</SectionTitle>
@@ -607,15 +616,6 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
             <div className="flex flex-col items-center gap-0.5"><Avatar iljuKey={themK} size={30} /><span className="text-[12px] text-text-muted">{them.name || "그 사람"}</span></div>
           </div>
           <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>{bal.line}</p>
-        </div>
-      </div>
-
-      {/* 결핍 채워주는 사람 — 용신 충족 (엔진 신호) */}
-      <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[myYongKr], border: `1.5px solid ${ELEM_COLOR[myYongKr]}` }}>
-        <Ico as={ELEM_DOODLE[myYongKr]} size={26} />
-        <div className="min-w-0">
-          <p className="text-[14px] font-bold text-charcoal flex items-center gap-1.5 flex-wrap">네 부족한 {myYongKr} 기운을 채워주는 사람 <Basis t="용신" deep /></p>
-          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{them.name || "그 사람"}은 네게 부족한 {myYongKr}을 {YONG_LV[signals.yongFulfill]} 채워줘. 옆에 있으면 숨통 트이는 결이야.</p>
         </div>
       </div>
 
