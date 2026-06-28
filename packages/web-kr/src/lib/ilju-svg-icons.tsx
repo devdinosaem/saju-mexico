@@ -66,9 +66,9 @@ export function getIljuProfileViewBox(id: string, padding = 10): string {
   return `${x - padding} ${y - padding} ${w + padding * 2} ${h + padding * 2}`
 }
 
-export function IljuDefaultCharacter({ className }: { className?: string }) {
+export function IljuDefaultCharacter({ className, viewBox = "0 0 80 90" }: { className?: string; viewBox?: string }) {
   return (
-    <svg viewBox="0 0 80 90" className={className ?? "w-full h-full"} fill="none">
+    <svg viewBox={viewBox} className={className ?? "w-full h-full"} fill="none">
       {/* 점선 후광 */}
       <circle cx="40" cy="38" r="30" fill="none" stroke="#D1D5DB" strokeWidth="1" strokeDasharray="4 3" opacity="0.6" />
       {/* 헤어 실루엣 */}
