@@ -12,7 +12,7 @@ import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf, type Elem } from "../engine"
 import { ELEM_BG } from "../flavor"
 import { buildSinsal, POS_LABEL, type SinsalBirth, type Gender, type Pos } from "./sinsal-adapter"
-import { SINSAL, CAT_STYLE, CAT_ORDER, STAT_LABEL, type SinsalStat } from "./flavor"
+import { SINSAL, CAT_STYLE, CAT_ORDER, STAT_LABEL, SYNERGY, type SinsalStat } from "./flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
@@ -182,6 +182,21 @@ export default function SinsalFunnel() {
   const topStat = statData.reduce((a, b) => (b.value > a.value ? b : a))
   // 6분류 묶음 (보유한 카테고리만)
   const byCat = CAT_ORDER.map(cat => ({ cat, items: data.owned.filter(o => SINSAL[o.name].cat === cat) })).filter(g => g.items.length)
+  // 자리별 (년·월·일·시) 신살
+  const POS_ORDER: Pos[] = ["year", "month", "day", "hour"]
+  const POS_MEAN: Record<Pos, string> = {
+    year: "뿌리·어린 시절. 집안과 초년의 색이 여기 담겨.",
+    month: "사회·일터. 부모와 바깥 활동의 무대야.",
+    day: "나 자신·배우자. 가장 핵심이 되는 자리.",
+    hour: "노년·자식. 말년의 결실이 모이는 자리.",
+  }
+  const posStars = (p: Pos) => [...new Set([data.byPos[p].twelve, ...data.byPos[p].special])].filter(n => SINSAL[n])
+  // 시너지 (능력치 축 둘 다 보유)
+  const synergies = SYNERGY
+    .filter(s => data.stats[s.a] > 0 && data.stats[s.b] > 0)
+    .map(s => ({ ...s, power: data.stats[s.a] + data.stats[s.b] }))
+    .sort((a, b) => b.power - a.power)
+    .slice(0, 4)
   const teaser = `${data.bareIlju} 일주 — 신살 ${data.ownedCount}개를 타고났어. 대표는 «${sigInfo.alias}».`
   const fallbackProse =
     `너에겐 신살이 **${data.ownedCount}개** 있어. 그중 가장 너다운 건 **${sigInfo.alias}**(${sig}) — ${sigInfo.mean}.\n\n` +
@@ -285,6 +300,60 @@ export default function SinsalFunnel() {
           {data.owned.map(o => <SinsalCard key={o.name} name={o.name} positions={o.positions} />)}
         </div>
         <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>겁주는 이름은 다 옛날식 작명일 뿐 — 네가 가진 건 전부 쓸 수 있는 힘이야.</p>
+      </div>
+
+      <ChapterDivider n={3} title="어디에 있냐면" />
+
+      {/* 자리별 신살 — 4영역 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleStar} basis="년·월·일·시">자리마다 다른 신살</SectionTitle>
+        <div className="flex flex-col gap-2">
+          {POS_ORDER.map(p => {
+            const stars = posStars(p), isMe = p === "day"
+            return (
+              <div key={p} className="rounded-2xl px-4 py-3 flex flex-col gap-1.5" style={isMe ? { background: "#FFF0F5", border: `1.5px solid ${PINK}` } : { background: "white", border: "1px solid rgba(45,45,45,0.1)" }}>
+                <div className="flex items-center gap-2">
+                  <span className="text-[14px] font-bold text-charcoal">{POS_LABEL[p].era}</span>
+                  <span className="text-[12px] text-text-muted">{POS_LABEL[p].area}</span>
+                  {isMe && <span className="ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full text-white shrink-0" style={{ background: PINK }}>나</span>}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {stars.map(n => {
+                    const cs = CAT_STYLE[SINSAL[n].cat]
+                    return <span key={n} className="text-[12px] font-bold px-2 py-0.5 rounded-full" style={{ background: cs.bg, color: cs.ink }}>{SINSAL[n].alias}</span>
+                  })}
+                </div>
+                <p className="text-[13px] text-charcoal/60 leading-snug" style={GAEGU}>{POS_MEAN[p]}</p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      <ChapterDivider n={4} title="신살끼리 만나면" />
+
+      {/* 시너지 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleSparkles} basis="능력치 조합">내 신살 시너지</SectionTitle>
+        {synergies.length > 0 ? (
+          <div className="flex flex-col gap-2">
+            {synergies.map((s, i) => (
+              <div key={i} className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3 flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold text-white shrink-0 mt-0.5" style={{ background: PINK }}>{i + 1}</span>
+                <div className="min-w-0">
+                  <p className="text-[14px] font-bold text-charcoal leading-tight">
+                    {s.alias} <span className="text-[12px] text-text-muted font-normal">· {STAT_LABEL[s.a]}+{STAT_LABEL[s.b]}</span>
+                  </p>
+                  <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{s.line}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 text-center">
+            <p className="text-[14px] text-charcoal/60 leading-snug" style={GAEGU}>한 가지 힘에 집중된 타입 — 시그니처 «{sigInfo.alias}» 하나로 승부 보는 스타일이야.</p>
+          </div>
+        )}
       </div>
 
       {/* consult 크로스셀 */}
