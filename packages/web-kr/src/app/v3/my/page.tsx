@@ -82,6 +82,18 @@ export default function MyPage() {
         <span className="text-text-muted text-xs">›</span>
       </Link>
 
+      {/* 사주 볼 사람들 진입 */}
+      <Link href="/v3/my/people" className="rounded-2xl bg-white border border-charcoal/10 p-4 flex items-center gap-3 active:opacity-90 transition-opacity">
+        <span className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ background: "#EFEAFE" }}>
+          <DoodleHeart className="w-6 h-6" />
+        </span>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-charcoal">사주 볼 사람들</p>
+          <p className="text-[11px] text-text-muted mt-0.5 leading-tight">가족·친구·연인 생일 저장 — 재입력 없이 또 보기</p>
+        </div>
+        <span className="text-text-muted text-xs">›</span>
+      </Link>
+
       {/* 내 보관함 */}
       <div>
         <div className="flex items-center justify-between mb-2.5">
