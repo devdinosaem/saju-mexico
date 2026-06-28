@@ -11,7 +11,12 @@ export default function TopBarCenter() {
       className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[20px] leading-none text-charcoal tracking-tight pointer-events-none select-none"
       style={{ fontFamily: "'Cafe24Meongi', sans-serif" }}
     >
-      SAJUPLAY
+      SAJU
+      {/* PLAY — 오행 플라워 로고 색상에 맞춤 */}
+      <span style={{ color: "#EF4444" }}>P</span>
+      <span style={{ color: "#60A5FA" }}>L</span>
+      <span style={{ color: "#4ADE80" }}>A</span>
+      <span style={{ color: "#FACC15" }}>Y</span>
     </span>
   )
 }
