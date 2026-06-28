@@ -40,7 +40,7 @@ export default function FriendRequests() {
   }
 
   return (
-    <div className="rounded-2xl bg-white border-2 border-charcoal p-3 flex flex-col gap-2" style={{ boxShadow: "2px 2px 0px #2D2D2D" }}>
+    <div className="rounded-2xl p-3 flex flex-col gap-2" style={{ background: "#FDF1F0", border: "1px solid #F0DAD8", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
       <p className="text-[13px] font-bold text-charcoal flex items-center gap-1.5" style={{ fontFamily: "'BinggraeTaom', sans-serif" }}>
         💌 받은 친구 요청 <span className="text-pink">{reqs.length}</span>
       </p>
