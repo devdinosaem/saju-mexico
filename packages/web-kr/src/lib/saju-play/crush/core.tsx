@@ -238,9 +238,33 @@ function PersonForm({ label, hint, p, set }: {
   )
 }
 
-const SectionTitle = ({ icon, children }: { icon: DoodleC; children: React.ReactNode }) => (
-  <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={icon} size={18} /> {children}</p>
+// 근거 칩 — 깊은 엔진 근거(deep)=핑크, 일간 오행=회색
+function Basis({ t, deep }: { t: string; deep?: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] font-bold shrink-0"
+      style={deep ? { background: "#FFF0F5", color: PINK } : { background: "#F1F5F9", color: "#94A3B8" }}>
+      <Ico as={DoodleTaegeuk} size={11} /> {t}
+    </span>
+  )
+}
+const SectionTitle = ({ icon, children, basis }: { icon: DoodleC; children: React.ReactNode; basis?: { t: string; deep?: boolean } }) => (
+  <div className="flex items-center justify-between gap-2">
+    <p className="text-[15px] text-charcoal flex items-center gap-1.5 min-w-0" style={BINGGRAE}><Ico as={icon} size={18} /> {children}</p>
+    {basis && <Basis {...basis} />}
+  </div>
 )
+// 하단 글로서리 — [용어, 깊은엔진여부, 쉬운설명]
+const GLOSSARY: [string, boolean, string][] = [
+  ["종합 풀이", true, "아래 근거를 다 합쳐 읽은 풀이예요"],
+  ["일간 인력", true, "두 사람 본체(일간)가 끌어당기는 힘"],
+  ["일지 합·충", true, "배우자 자리(일지)끼리의 끌림·긴장"],
+  ["용신", true, "내게 부족해 채워야 할 기운"],
+  ["도화", true, "매력이 잘 드러나는 기운(도화살)"],
+  ["대운·세운", true, "지금의 연애운 흐름과 좋은 날"],
+  ["원국 오행", true, "사주 8글자 기운의 균형"],
+  ["오행 종합", true, "위 신호들을 점수로 종합한 거예요"],
+  ["일간 오행", false, "상대의 기본 기질(목·화·토·금·수)"],
+]
 
 // **굵게** 인라인 파싱 (줄글용)
 function renderBold(s: string) {
@@ -495,6 +519,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         <div className="flex items-center gap-2">
           <Ico as={DoodleSparkles} size={20} />
           <span className="text-[15px] text-charcoal" style={BINGGRAE}>사주 정밀 풀이</span>
+          <Basis t="종합 풀이" deep />
           <span className="ml-auto flex -space-x-2">
             <Avatar iljuKey={meK} size={26} /><Avatar iljuKey={themK} size={26} />
           </span>
@@ -513,7 +538,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 운명 신호 — 천간합/일지 합충 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleRedString}>운명 신호</SectionTitle>
+        <SectionTitle icon={DoodleRedString} basis={{ t: "일간·일지 합충", deep: true }}>운명 신호</SectionTitle>
         <div className="flex flex-col gap-2">
           <div className="rounded-2xl px-4 py-3 flex items-center gap-3"
             style={coreCopy.gold ? { background: "linear-gradient(135deg,#FFF7E0,#FFFDF5)", border: "1.5px solid #F0C060" } : { background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
@@ -540,14 +565,14 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
       <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[myYongKr], border: `1.5px solid ${ELEM_COLOR[myYongKr]}` }}>
         <Ico as={ELEM_DOODLE[myYongKr]} size={26} />
         <div className="min-w-0">
-          <p className="text-[14px] font-bold text-charcoal">네 부족한 {myYongKr} 기운을 채워주는 사람</p>
+          <p className="text-[14px] font-bold text-charcoal flex items-center gap-1.5 flex-wrap">네 부족한 {myYongKr} 기운을 채워주는 사람 <Basis t="용신" deep /></p>
           <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{them.name || "그 사람"}은 네게 부족한 {myYongKr}을 {YONG_LV[signals.yongFulfill]} 채워줘. 옆에 있으면 숨통 트이는 결이야.</p>
         </div>
       </div>
 
       {/* 매력 발산 지수 — 도화 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleSparkles}>매력 발산 지수</SectionTitle>
+        <SectionTitle icon={DoodleSparkles} basis={{ t: "도화", deep: true }}>매력 발산 지수</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
             <span className="text-[14px] font-bold text-charcoal">{signals.dohwa ? "지금 매력이 빛나는 시기" : "은은한 매력 구간"}</span>
@@ -562,7 +587,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 연애운 신호등 — 타이밍 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleCalendar}>연애운 신호등</SectionTitle>
+        <SectionTitle icon={DoodleCalendar} basis={{ t: "대운·세운", deep: true }}>연애운 신호등</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex items-center gap-3.5">
           <div className="flex flex-col gap-1.5 shrink-0 rounded-full px-1.5 py-2" style={{ background: "#2D2D2D" }}>
             {["#EF4444", "#FBBF24", "#22C55E"].map((c, i) => {
@@ -579,7 +604,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 끌림의 무게중심 — 역할 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleHeart}>끌림의 무게중심</SectionTitle>
+        <SectionTitle icon={DoodleHeart} basis={{ t: "일간 역할", deep: true }}>끌림의 무게중심</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
           <div className="flex items-center gap-2.5">
             <div className="flex flex-col items-center gap-0.5"><Avatar iljuKey={meK} size={30} /><span className="text-[12px] text-text-muted">나</span></div>
@@ -594,7 +619,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 썸 진행 지도 — 4단계 + 다음 액션 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleRedString}>썸 진행 지도</SectionTitle>
+        <SectionTitle icon={DoodleRedString} basis={{ t: "오행 종합", deep: true }}>썸 진행 지도</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
           <div className="flex items-center">
             {config.journey.map((j, i) => (
@@ -622,7 +647,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 두 사람 프로필 — 일주 캐릭터 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleHeart}>두 사람 프로필</SectionTitle>
+        <SectionTitle icon={DoodleHeart} basis={{ t: "일간 오행" }}>두 사람 프로필</SectionTitle>
         <div className="grid grid-cols-2 gap-2">
           {people.map((x, i) => {
             const per = config.persona[x.e]
@@ -641,7 +666,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 연애 세포 레이더차트 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleSparkle}>연애 세포 활성도</SectionTitle>
+        <SectionTitle icon={DoodleSparkle} basis={{ t: "오행 종합", deep: true }}>연애 세포 활성도</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-1">
           <RadarChart data={radar} />
           <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>
@@ -652,7 +677,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 상대 마음 여는 법 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleKey}>{them.name || "그 사람"} 마음 여는 법</SectionTitle>
+        <SectionTitle icon={DoodleKey} basis={{ t: "일간 오행" }}>{them.name || "그 사람"} 마음 여는 법</SectionTitle>
         <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[eThem], border: `1.5px solid ${ELEM_COLOR[eThem]}` }}>
           <Avatar iljuKey={themK} size={48} />
           <div className="min-w-0">
@@ -664,7 +689,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 그 사람 사용설명서 — 오행 매뉴얼 패러디 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleBook}>{them.name || "그 사람"} 사용설명서</SectionTitle>
+        <SectionTitle icon={DoodleBook} basis={{ t: "일간 오행" }}>{them.name || "그 사람"} 사용설명서</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 overflow-hidden">
           <div className="px-4 py-2.5 flex items-center gap-2 border-b border-charcoal/10" style={{ background: "#F8FAFC" }}>
             <Avatar iljuKey={themK} size={28} />
@@ -695,7 +720,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 사주 오행 밸런스 (좌 나 / 우 그 사람) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleTaegeuk}>사주 오행 밸런스</SectionTitle>
+        <SectionTitle icon={DoodleTaegeuk} basis={{ t: "원국 오행", deep: true }}>사주 오행 밸런스</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
           <div className="flex items-center justify-end gap-3">
             <span className="flex items-center gap-1 text-[14px] text-charcoal/70"><span className="w-2.5 h-2.5 rounded-full" style={{ background: PINK }} />{"나"}</span>
@@ -721,7 +746,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 썸 상황별 케미 — % 바 (커플 상황별 패턴) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleSparkles}>썸 상황별 케미</SectionTitle>
+        <SectionTitle icon={DoodleSparkles} basis={{ t: "오행 종합", deep: true }}>썸 상황별 케미</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
           {config.situational.map(s => {
             const v = clamp(score + s.delta, 35, 98)
@@ -743,7 +768,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 다가가는 전략 (처방전) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleSpeechBubble}>다가가는 전략</SectionTitle>
+        <SectionTitle icon={DoodleSpeechBubble} basis={{ t: "일간 오행" }}>다가가는 전략</SectionTitle>
         <div className="rounded-2xl px-4 py-3.5 flex flex-col gap-2.5" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
           {config.strategy[rel].map((s, i) => (
             <div key={i} className="flex items-start gap-2.5">
@@ -758,7 +783,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
       <div className="rounded-2xl px-4 py-4 flex flex-col gap-3" style={{ background: ELEM_BG[eThem], border: `1.5px solid ${ELEM_COLOR[eThem]}` }}>
         <div className="flex items-center gap-2">
           <Ico as={ELEM_DOODLE[eThem]} size={22} />
-          <p className="text-[14px] font-bold text-charcoal leading-tight">{them.name || "그 사람"} 공략 데이트 — {eThem} 기운이 끌리는 곳</p>
+          <p className="text-[14px] font-bold text-charcoal leading-tight flex items-center gap-1.5 flex-wrap">{them.name || "그 사람"} 공략 데이트 — {eThem} 기운이 끌리는 곳 <Basis t="일간 오행" /></p>
         </div>
         <div className="flex flex-col gap-2">
           {config.dateCourse[eThem].map((a, i) => (
@@ -772,7 +797,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 진전·고백 타이밍 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleHourglass}>진전·고백 타이밍</SectionTitle>
+        <SectionTitle icon={DoodleHourglass} basis={{ t: "대운·세운", deep: true }}>진전·고백 타이밍</SectionTitle>
         <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={{ background: "#EFF6FF", border: "1.5px solid #93C5FD" }}>
           <Ico as={DoodleCalendar} size={20} />
           <div>
@@ -785,7 +810,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 이번 달 썸 캘린더 — 길일 마킹 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleCalendar}>이번 달 썸 캘린더</SectionTitle>
+        <SectionTitle icon={DoodleCalendar} basis={{ t: "대운·세운", deep: true }}>이번 달 썸 캘린더</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
           <p className="text-[14px] font-bold text-charcoal text-center">{cal.mo + 1}월</p>
           <MonthCalendar year={cal.y} month={cal.mo} marks={cal.marks} />
@@ -802,7 +827,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 지뢰 TOP 3 — 이 조합에서 절대 하지 말 것 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleQuestionMark}>지뢰 TOP 3</SectionTitle>
+        <SectionTitle icon={DoodleQuestionMark} basis={{ t: "일간 오행" }}>지뢰 TOP 3</SectionTitle>
         <div className="rounded-2xl px-4 py-3.5 flex flex-col gap-2.5" style={{ background: "#FEF2F2", border: "1.5px solid #FCA5A5" }}>
           {config.mines[eThem].map((m, i) => (
             <div key={i} className="flex items-start gap-2.5">
@@ -815,7 +840,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 모드 전용 (썸=밀당 / 짝사랑=현실·위로) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={config.extra.D}>{config.extra.title}</SectionTitle>
+        <SectionTitle icon={config.extra.D} basis={{ t: "일간 오행" }}>{config.extra.title}</SectionTitle>
         <div className="rounded-xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
           <Ico as={DoodleLightning} size={16} />
           <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>이 사람한텐 <span className="font-bold" style={{ color: PINK }}>{config.pushPull[eThem].best === "push" ? "당기기" : "풀기"}</span>가 더 통해요</p>
@@ -832,13 +857,13 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 밀당 시뮬레이터 — 인터랙션 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleLightning}>밀당 시뮬레이터</SectionTitle>
+        <SectionTitle icon={DoodleLightning} basis={{ t: "일간 오행" }}>밀당 시뮬레이터</SectionTitle>
         <PullPushSim {...config.pushPull[eThem]} />
       </div>
 
       {/* 고백 럭키 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleClover}>고백 럭키</SectionTitle>
+        <SectionTitle icon={DoodleClover} basis={{ t: "일간 오행" }}>고백 럭키</SectionTitle>
         <div className="grid grid-cols-3 gap-2">
           {[
             { k: "좋은 날", v: lucky.day },
@@ -857,7 +882,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 내 썸 랭킹 — 분석한 상대들 순위 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleTrophy}>내 썸 랭킹</SectionTitle>
+        <SectionTitle icon={DoodleTrophy} basis={{ t: "오행 종합", deep: true }}>내 썸 랭킹</SectionTitle>
         {sortedRank.length <= 1 ? (
           <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 text-center">
             <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>지금은 {them.name || "그 사람"}이 1순위! 다른 사람도 분석하면 여기 순위가 매겨져요.</p>
@@ -888,6 +913,20 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         <span className="text-[13px] text-text-muted">이 썸을 한 단어로</span>
         <p className="text-[26px]" style={{ ...BINGGRAE, color: PINK }}>{meme}</p>
         <div className="flex items-center gap-1.5 text-[13px] text-text-muted"><Ico as={DoodleSparkles} size={14} /> 캡처해서 공유하기 좋아요</div>
+      </div>
+
+      {/* 사주 근거 한눈에 — 글로서리 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleBook}>사주 근거 한눈에</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-1">
+          {GLOSSARY.map(([term, deep, desc]) => (
+            <div key={term} className="flex items-center gap-2.5 py-2 border-b border-charcoal/5 last:border-0">
+              <span className="w-[88px] shrink-0"><Basis t={term} deep={deep} /></span>
+              <span className="text-[14px] text-charcoal/70 leading-snug">{desc}</span>
+            </div>
+          ))}
+        </div>
+        <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>핑크 칩은 깊은 명리(천간합·용신·도화 등), 회색 칩은 일간 오행 기반이에요.</p>
       </div>
     </div>
   )
@@ -921,7 +960,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* [무료] 온도계 — 양 끝에서 두 캐릭터가 끌어당기는 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleSparkle}>우리 사이 온도</SectionTitle>
+        <SectionTitle icon={DoodleSparkle} basis={{ t: "오행 종합", deep: true }}>우리 사이 온도</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
           <div className="flex items-center gap-2.5">
             <Avatar iljuKey={meK} size={30} />
