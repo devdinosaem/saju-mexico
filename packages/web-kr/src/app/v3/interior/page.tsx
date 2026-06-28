@@ -11,11 +11,8 @@ import { useInventory } from "@/hooks/useInventory"
 import { useFriends } from "@/hooks/useFriends"
 import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
-import RoomElementCard from "./_components/RoomElementCard"
-import RoomElementCardA from "./_components/RoomElementCardA"
-import RoomElementCardB from "./_components/RoomElementCardB"
-import RoomElementCardC from "./_components/RoomElementCardC"
-import RoomElementCardD from "./_components/RoomElementCardD"
+import RoomElementStrip from "./_components/RoomElementStrip"
+import RoomElementMini from "./_components/RoomElementMini"
 
 type GuestEntry = { id: string; author: string; message: string; date: string }
 
@@ -118,28 +115,16 @@ export default function InteriorPage() {
       {/* 내 미니홈피 */}
       <MiniRoom />
 
-      {/* ▼▼▼ 방의 기운 — 컴팩트 시안 비교(임시) ▼▼▼ */}
+      {/* ▼▼▼ 방의 기운 — 인라인 시안 2종 비교(임시) · 탭 → /energy ▼▼▼ */}
       <div className="flex flex-col gap-1">
-        <span className="text-[10px] font-bold text-charcoal/35 px-1">현재 · 개편본</span>
-        <RoomElementCard />
+        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 1 · 슬림 스트립</span>
+        <RoomElementStrip />
       </div>
       <div className="flex flex-col gap-1">
-        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 A · 접이식</span>
-        <RoomElementCardA />
+        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 2 · 컴팩트 미니카드</span>
+        <RoomElementMini />
       </div>
-      <div className="flex flex-col gap-1">
-        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 B · 미니 레이더</span>
-        <RoomElementCardB />
-      </div>
-      <div className="flex flex-col gap-1">
-        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 C · 초박형</span>
-        <RoomElementCardC />
-      </div>
-      <div className="flex flex-col gap-1">
-        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 D · 칩+개수+설명 (그래프 없음)</span>
-        <RoomElementCardD />
-      </div>
-      {/* ▲▲▲ 방의 기운 — 컴팩트 시안 비교(임시) ▲▲▲ */}
+      {/* ▲▲▲ 방의 기운 — 인라인 시안 2종 비교(임시) ▲▲▲ */}
 
       {/* 방명록 인라인 미리보기 */}
       {previewEntries.length > 0 && (
