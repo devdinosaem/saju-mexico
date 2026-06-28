@@ -16,7 +16,7 @@ type TGGroup = "비겁" | "식상" | "재성" | "관성" | "인성"
 
 const EL_KO: Record<string, Elem> = { wood: "목", fire: "화", earth: "토", metal: "금", water: "수" }
 const clamp = (n: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, Math.round(n)))
-const tgGroup = (kr: string): TGGroup =>
+export const tgGroup = (kr: string): TGGroup =>
   ["비견", "겁재"].includes(kr) ? "비겁" :
   ["식신", "상관"].includes(kr) ? "식상" :
   ["정재", "편재"].includes(kr) ? "재성" :

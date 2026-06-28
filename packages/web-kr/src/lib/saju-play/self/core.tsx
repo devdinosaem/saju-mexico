@@ -6,17 +6,19 @@
 // AI는 /api/saju-play/self(에이전트 제작) 호출, 없으면 폴백 줄글.
 // ════════════════════════════════════════════════════════════════
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { useUser } from "@/lib/UserContext"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { ILJU_TYPES } from "@/lib/ilju-types"
 import { elemOf, ELEMS, type Elem } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
-import { buildSelf, type SelfBirth, type Gender } from "./self-adapter"
-import { TALENT, ELEM_TRAIT, MEETING } from "./flavor"
+import { buildSelf, tgGroup, type SelfBirth, type Gender, type LifePoint } from "./self-adapter"
+import { TALENT, ELEM_TRAIT, MEETING, LOVE_STYLE, IDEAL, JOB } from "./flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
   DoodleLightning, DoodleMedal, DoodleMirror, DoodleSpeechBubble, DoodleStar,
+  DoodleDiamond, DoodleCalendar,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -65,6 +67,34 @@ function resolveChar(id: string): string {
 }
 function Avatar({ iljuKey, size = 80 }: { iljuKey: string; size?: number }) {
   return <div className="rounded-full overflow-hidden border-2 border-charcoal/15 shrink-0 flex items-center justify-center" style={{ width: size, height: size, background: ELEM_BG[elemOf(iljuKey)] }}>{ILJU_SVG_ICONS[iljuKey]?.(getIljuProfileViewBox(iljuKey))}</div>
+}
+
+// 인생 그래프 — 대운 길흉 곡선
+function LifeGraph({ life }: { life: LifePoint[] }) {
+  const W = 320, H = 150, padL = 10, padR = 10, padT = 16, padB = 26
+  const n = life.length
+  const xs = (i: number) => padL + (n > 1 ? (i / (n - 1)) * (W - padL - padR) : 0)
+  const ys = (f: number) => padT + (1 - (Math.max(20, Math.min(95, f)) - 20) / 75) * (H - padT - padB)
+  const pts = life.map((l, i) => [xs(i), ys(l.favor)] as const)
+  const line = pts.map(p => p.join(",")).join(" ")
+  const area = `${padL},${H - padB} ${line} ${xs(n - 1)},${H - padB}`
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
+      <polygon points={area} fill="rgba(232,75,106,0.10)" />
+      <polyline points={line} fill="none" stroke={PINK} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+      {life.map((l, i) => {
+        const [x, y] = pts[i]
+        const top = l.favor >= Math.max(...life.map(p => p.favor))
+        return (
+          <g key={i}>
+            {top && <circle cx={x} cy={y} r={7} fill="none" stroke="#F0A020" strokeWidth={2} />}
+            <circle cx={x} cy={y} r={l.current ? 5 : 3.5} fill={l.current ? "#fff" : PINK} stroke={l.current ? PINK : "none"} strokeWidth={l.current ? 2.5 : 0} />
+            <text x={x} y={H - 8} textAnchor="middle" fontSize={11} fontWeight={700} fill={l.current ? PINK : "#94A3B8"}>{l.startAge}</text>
+          </g>
+        )
+      })}
+    </svg>
+  )
 }
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
@@ -116,6 +146,15 @@ export default function SelfFunnel() {
     : self.strongLevel.includes("극신약") ? 8 : self.strongLevel.includes("신약") ? 30 : 50
   const seenLine = `${self.tgGroups.식상 >= 2 ? "표현이 분명하고 끼 있는" : "차분하고 편안한"} 인상${self.tgGroups.관성 >= 2 ? " + 믿음직한 분위기" : ""}${self.dohwa ? " + 묘하게 끌리는 매력" : ""}`
   const meetingOrder = [...ELEMS].sort((a, b) => self.dist[b] - self.dist[a])
+  // 연애·일·돈·흐름 파생
+  const loveAges = self.life.filter(l => tgGroup(l.tenGod) === "관성").map(l => `${l.startAge}세`)
+  const moneyAges = self.life.filter(l => tgGroup(l.tenGod) === "재성").map(l => `${l.startAge}세`)
+  const jae = self.tgGroups.재성
+  const moneyLine = jae >= 3 ? "돈·실리 감각이 타고난 편 — 현실을 굴려 결과로 만드는 그릇이야."
+    : jae >= 1 ? "돈 감각은 무난한 편 — 꾸준히 쌓을수록 그릇이 커져."
+    : "돈보다 전문성·관계가 먼저 와. 그게 결국 돈으로 돌아오는 타입이야."
+  const cur = self.life.find(l => l.current)
+  const curFavorLine = cur ? (cur.favor >= 72 ? "흐름이 트이는 좋은 구간" : cur.favor >= 50 ? "차곡차곡 쌓는 구간" : "눌렸다 펴지기 직전 구간") : "흐름 위"
   const fallbackProse =
     `너는 **${self.dayKr}(${self.dayElem})·${self.yinYang}** 일간, ${self.strongLevel}이야.\n\n` +
     `타고난 결은 **${self.topTalent.join("·")}** 쪽 — 여기에 네 무기가 있어. 나를 살리는 기운은 **${self.yong}**, 이걸 채울수록 잘 풀려.\n\n` +
@@ -284,7 +323,81 @@ export default function SelfFunnel() {
         <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>제일 목소리 큰 {meetingOrder[0]}({MEETING[meetingOrder[0]].role})이 너를 주로 끌고 가. {weakElems.length ? `빠진 ${weakElems.join("·")}은 의식적으로 챙겨야 균형이 맞아.` : ``}</p>
       </div>
 
-      <p className="text-[13px] text-text-muted text-center" style={GAEGU}>…연애 모드 · 일·돈 · 인생 그래프 · 취급법 · 올해의 나 (준비 중)</p>
+      <ChapterDivider n={3} title="연애 모드" />
+
+      {/* 내 연애 스타일 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleHeart} basis="일간·도화">내 연애 스타일</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex flex-col gap-1.5">
+          <p className="text-[14px] font-bold" style={{ color: PINK }}>{LOVE_STYLE[self.dayElem].tag}</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{LOVE_STYLE[self.dayElem].line}.{self.dohwa ? " 매력(도화) 기운이 있어 끌어당기는 힘도 있어." : ""}</p>
+        </div>
+      </div>
+
+      {/* 이상형 + 결혼 흐름 */}
+      <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={{ background: ELEM_BG[self.yong], border: `1.5px solid ${ELEM_COLOR[self.yong]}` }}>
+        <Ico as={ELEM_DOODLE[self.yong]} size={22} />
+        <div className="min-w-0"><p className="text-[14px] font-bold text-charcoal">나를 채워주는 사람 ({self.yong} 기운)</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{IDEAL[self.yong]}{loveAges.length ? ` 관계 흐름은 ${loveAges.slice(0, 2).join(", ")} 전후에 움직여.` : ""}</p></div>
+      </div>
+
+      {/* 크로스셀 → 썸/짝사랑 */}
+      <div className="grid grid-cols-2 gap-2">
+        <Link href="/v3/some" className="rounded-2xl px-3 py-3 flex flex-col gap-1 active:opacity-85 transition-opacity" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
+          <Ico as={DoodleHeart} size={18} />
+          <p className="text-[13px] font-bold text-charcoal">썸 궁합 보기 →</p>
+          <p className="text-[12px] text-charcoal/55 leading-snug" style={GAEGU}>그 사람과 나, 가능성은?</p>
+        </Link>
+        <Link href="/v3/onesided" className="rounded-2xl px-3 py-3 flex flex-col gap-1 active:opacity-85 transition-opacity" style={{ background: "#EFEAFE", border: "1.5px solid #C4B5FD" }}>
+          <Ico as={DoodleSparkles} size={18} />
+          <p className="text-[13px] font-bold text-charcoal">짝사랑 궁합 보기 →</p>
+          <p className="text-[12px] text-charcoal/55 leading-snug" style={GAEGU}>그 사람, 내 맘 알까?</p>
+        </Link>
+      </div>
+
+      <ChapterDivider n={4} title="성능 (일·돈)" />
+
+      {/* 어울리는 일 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleMedal} basis="십신">어울리는 일</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex flex-col gap-2">
+          {self.topTalent.map((gp, i) => (
+            <div key={i} className="flex items-start gap-2.5">
+              <span className="w-5 h-5 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: PINK }}>{i + 1}</span>
+              <p className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{JOB[gp]}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 재물 그릇 + 돈 시기 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleDiamond} basis="재성·대운">재물 그릇</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex flex-col gap-2.5">
+          <p className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{moneyLine}</p>
+          <div className="rounded-xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
+            <Ico as={DoodleCalendar} size={16} />
+            <p className="text-[13px] text-charcoal/75 leading-snug" style={GAEGU}>{moneyAges.length ? `돈이 트이는 시기: ${moneyAges.slice(0, 3).join(", ")} 전후` : "한 방보다 쌓는 게 맞아 — 꾸준함이 돈으로 와."}</p>
+          </div>
+        </div>
+      </div>
+
+      <ChapterDivider n={5} title="현재 상태" />
+
+      {/* 내 인생 그래프 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleStar} basis="대운">내 인생 그래프</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2">
+          <LifeGraph life={self.life} />
+          <div className="flex items-center justify-center gap-3 text-[12px] text-text-muted">
+            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full border-2" style={{ borderColor: PINK, background: "#fff" }} />지금</span>
+            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full border-2" style={{ borderColor: "#F0A020" }} />황금기</span>
+          </div>
+          <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>{self.peak ? `황금기는 ${self.peak.ageLabel}세 전후. ` : ""}지금({self.curAge}세)은 {curFavorLine}이야.</p>
+        </div>
+      </div>
+
+      <p className="text-[13px] text-text-muted text-center" style={GAEGU}>…취급·관리법 · 올해의 나 (준비 중)</p>
     </div>
   )
 
