@@ -96,6 +96,36 @@
   --warn-bg:    #FFF3E2;  --warn-line:    #FAD9A8;  --warn-ink:    #C9821F;  /* 주의·재물·번아웃 */
   --ok-bg:      #E8F7EE;  --ok-line:      #B7E6C6;  --ok-ink:      #2F9E5B;  /* 긍정·건강 */
   --special-bg: #F1ECFE;  --special-line: #D7CAFB;  --special-ink: #7C5CD6;  /* 특별·전생·신비 */
+
+  /* ── 핵심 그라디언트 (위계 강조·AI 요약 전용 시그니처) ──
+     디폴트=pink, 오행 커스텀=목/화/토/금/수. 테마별 3종:
+       surface = 옅은 160deg 배경(텍스트 위 가독성 ↑ — 히어로·AI요약·말풍선)
+       bold    = 진한 135deg 강조(흰 텍스트 — 핵심 CTA·강조 배지·대표 수치)
+       accent  = 단색 포인트(아이콘·테두리·강조 텍스트)  /  glow = 은은한 발광
+     SSOT: lib/ds.ts 의 GRADIENT (consult ELEM_HERO 포함 전 화면이 여기서 파생) */
+  --grad-pink-surface: linear-gradient(160deg,#FFF6FA,#FFFDF5);
+  --grad-pink-bold:    linear-gradient(135deg,#FF8FB0,#E84B6A);
+  --grad-pink-accent:  #E84B6A;  --grad-pink-glow: rgba(232,75,106,0.10);
+
+  --grad-mok-surface:  linear-gradient(160deg,#E9FBF1,#FFF7EC);
+  --grad-mok-bold:     linear-gradient(135deg,#6EE7B7,#10B981);
+  --grad-mok-accent:   #34D399;  --grad-mok-glow: rgba(52,211,153,0.10);
+
+  --grad-hwa-surface:  linear-gradient(160deg,#FFEFEC,#F6EFFA);
+  --grad-hwa-bold:     linear-gradient(135deg,#FDA4AF,#F43F5E);
+  --grad-hwa-accent:   #FB7185;  --grad-hwa-glow: rgba(251,113,133,0.10);
+
+  --grad-to-surface:   linear-gradient(160deg,#FFF6DF,#EFFAF1);
+  --grad-to-bold:      linear-gradient(135deg,#FCD34D,#F59E0B);
+  --grad-to-accent:    #F59E0B;  --grad-to-glow: rgba(245,158,11,0.10);
+
+  --grad-geum-surface: linear-gradient(160deg,#ECF3FB,#FFF8EC);
+  --grad-geum-bold:    linear-gradient(135deg,#AEBFD0,#64748B);
+  --grad-geum-accent:  #7C93AC;  --grad-geum-glow: rgba(124,147,172,0.12);
+
+  --grad-su-surface:   linear-gradient(160deg,#E8F2FE,#FFF6EC);
+  --grad-su-bold:      linear-gradient(135deg,#93C5FD,#3B82F6);
+  --grad-su-accent:    #3B82F6;  --grad-su-glow: rgba(59,130,246,0.10);
 }
 
 @theme inline {

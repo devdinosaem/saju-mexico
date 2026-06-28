@@ -76,6 +76,7 @@ import {
   DoodleRitualPollackV2,
   DoodleRitualPollackChubbyRed, DoodleRitualPollackChubbyOrange, DoodleRitualPollackChubbyYellow,
   DoodleRitualPollackChubbyGreen, DoodleRitualPollackChubbySky, DoodleRitualPollackChubbyViolet, DoodleRitualPollackChubbyPink,
+  DoodleRitualPollackTwist,
 } from "@/components/doodle-ritual-pollack";
 
 export type DoodleComp = (props: { className?: string }) => JSX.Element;
@@ -411,6 +412,7 @@ export const DOODLE_CATEGORIES: DoodleCategory[] = [
       { name: "Pollack Chubby 🔵", label: "북어 (통통·파랑)", comp: DoodleRitualPollackChubbySky, element: "수" },
       { name: "Pollack Chubby 🟣", label: "북어 (통통·보라)", comp: DoodleRitualPollackChubbyViolet, element: "수" },
       { name: "Pollack Chubby 🩷", label: "북어 (통통·분홍)", comp: DoodleRitualPollackChubbyPink, element: "화" },
+      { name: "Pollack Twist 🪢", label: "북어 (꽈배기 끈)", comp: DoodleRitualPollackTwist, element: "목" },
     ],
   },
   {

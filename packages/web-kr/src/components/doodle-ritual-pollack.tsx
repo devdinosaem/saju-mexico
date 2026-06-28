@@ -123,6 +123,40 @@ function ShortBase({ className = "", c }: { className?: string; c: PollackColors
   );
 }
 
+// 상단 끈만 '꽈배기 꼬임'(두 가닥 실제 교차)으로 바꾼 숏 변형
+function ShortTwistBase({ className = "", c }: { className?: string; c: PollackColors }) {
+  return (
+    <svg viewBox="0 0 60 90" className={`w-12 h-[144px] ${className}`} fill="none">
+      <line x1="30" y1="14" x2="22" y2="4" stroke="#F1F5F9" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="30" y1="14" x2="24" y2="2" stroke="#F1F5F9" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="30" y1="14" x2="27" y2="1" stroke="#F1F5F9" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="30" y1="14" x2="30" y2="2" stroke="#F1F5F9" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="30" y1="14" x2="33" y2="1" stroke="#F1F5F9" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="30" y1="14" x2="36" y2="2" stroke="#F1F5F9" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="30" y1="14" x2="38" y2="4" stroke="#F1F5F9" strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="30" cy="14" r="3" fill="none" stroke="#94A3B8" strokeWidth="1.8"/>
+      <circle cx="30" cy="14" r="1.5" fill="#94A3B8"/>
+      {/* 꽈배기 꼬임 끈 — 두 가닥이 실제로 교차 (가닥2가 교차점마다 위로) */}
+      <path d="M30 16 Q38 19 30 22 Q22 25 30 28 Q38 31 30 34 Q22 37 30 40 Q38 43 30 46" stroke="#F8FAFC" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+      <path d="M30 16 Q38 19 30 22 Q22 25 30 28 Q38 31 30 34 Q22 37 30 40 Q38 43 30 46" stroke="#CBD5E1" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M30 16 Q22 19 30 22 Q38 25 30 28 Q22 31 30 34 Q38 37 30 40 Q22 43 30 46" stroke="#F8FAFC" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+      <path d="M30 16 Q22 19 30 22 Q38 25 30 28 Q22 31 30 34 Q38 37 30 40 Q22 43 30 46" stroke="#CBD5E1" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+      <path d="M46 50 Q54 46 56 52 Q54 58 46 56 Z" fill={c.tail} stroke="#2D2D2D" strokeWidth="1.2" strokeLinejoin="round"/>
+      <path d="M10 48 Q6 50 6 54 Q8 60 22 62 Q36 64 46 58 Q50 56 50 52 Q48 47 36 46 Q22 44 12 46 Q10 46 10 48 Z" fill={c.body} stroke="#2D2D2D" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M16 51 Q28 49 40 52" stroke={c.grain} strokeWidth="0.8" fill="none" opacity="0.5"/>
+      <path d="M14 56 Q28 54 42 57" stroke={c.grain} strokeWidth="0.8" fill="none" opacity="0.45"/>
+      <path d="M24 46 Q30 41 36 46" fill={c.tail} stroke="#2D2D2D" strokeWidth="1" strokeLinejoin="round"/>
+      <circle cx="13" cy="53" r="2.5" fill="#2D2D2D"/>
+      <circle cx="13.8" cy="52.2" r="1" fill="white"/>
+      <path d="M30 46 Q28 52 28 60 Q30 64 32 60 Q32 52 30 46" stroke="#F8FAFC" strokeWidth="6" strokeLinecap="round" fill="none"/>
+      <path d="M30 46 Q28 52 28 60 Q30 64 32 60 Q32 52 30 46" stroke="#CBD5E1" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
+      {/* 아래 새끼줄 — 짧게 */}
+      <rect x="27" y="62" width="6" height="8" rx="3" fill="#F8FAFC" stroke="#CBD5E1" strokeWidth="1.2"/>
+      <path d="M27 66 Q30 68 33 66" stroke="#CBD5E1" strokeWidth="0.8" fill="none"/>
+    </svg>
+  );
+}
+
 // ── 슬림 ──────────────────────────────────────
 export function DoodleRitualPollackV1       ({ className = "" }: { className?: string }) { return <SlimBase className={className} c={COLORS.wood}   />; }
 export function DoodleRitualPollackSlimRed  ({ className = "" }: { className?: string }) { return <SlimBase className={className} c={COLORS.red}    />; }
@@ -152,3 +186,6 @@ export function DoodleRitualPollackChubbyGreen({ className = "" }: { className?:
 export function DoodleRitualPollackChubbySky  ({ className = "" }: { className?: string }) { return <ChubbyBase className={className} c={COLORS.sky}    />; }
 export function DoodleRitualPollackChubbyViolet({ className = "" }: { className?: string }) { return <ChubbyBase className={className} c={COLORS.violet} />; }
 export function DoodleRitualPollackChubbyPink ({ className = "" }: { className?: string }) { return <ChubbyBase className={className} c={COLORS.pink}   />; }
+
+// ── 꽈배기 꼬임 끈 ──────────────────────────────────────
+export function DoodleRitualPollackTwist     ({ className = "" }: { className?: string }) { return <ShortTwistBase className={className} c={COLORS.wood}   />; }

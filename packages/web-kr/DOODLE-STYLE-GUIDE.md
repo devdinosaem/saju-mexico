@@ -9,7 +9,7 @@
 ```
 export function Doodle{Name}({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 {W} {H}" className={`w-{n} h-{n} ${className}`} fill="none">
+    <svg viewBox="0 0 {N} {N}" className={`w-{n} h-{n} ${className}`} fill="none">
       {/* 본체 */}
       {/* 눈 (선택) */}
       {/* 입 (선택) */}
@@ -21,8 +21,47 @@ export function Doodle{Name}({ className = "" }: { className?: string }) {
 
 - React 함수 컴포넌트, `className` prop만 받음
 - `fill="none"`을 svg에 설정, 각 path에서 개별 fill
-- viewBox 크기: 20~48 범위 (작은 것 20, 큰 것 48)
-- Tailwind 기본 크기: `w-5 h-5` ~ `w-10 h-7` 범위
+- **viewBox는 반드시 정사각형** — `0 0 N N` 형태 (아래 규칙 참고)
+- Tailwind 기본 크기: `w-5 h-5` ~ `w-10 h-10` 범위 (정사각)
+
+### 1-1. viewBox 정규화 규칙 (중요)
+
+**모든 doodle의 viewBox는 정사각형이어야 한다.** `DoodleBox` 컨테이너 안에서 크기가 일관되게 보이기 위한 필수 조건.
+
+- 콘텐츠가 세로로 길면: 좌우에 여백 추가 → `"-{pad} 0 {N} {N}"`
+- 콘텐츠가 가로로 길면: 위아래에 여백 추가 → `"0 -{pad} {N} {N}"`
+- path 좌표는 그대로, viewBox만 변경
+
+```
+// 예: 콘텐츠가 24x32 (세로 길) → 32x32 정사각으로 정규화
+viewBox="-4 0 32 32"   ← 좌우 4px 여백 추가
+
+// 예: 콘텐츠가 40x28 (가로 길) → 40x40 정사각으로 정규화
+viewBox="0 -6 40 40"   ← 상하 6px 여백 추가
+```
+
+기존 비정사각형 doodle 수정 이력:
+| 이름 | 수정 전 | 수정 후 |
+|------|---------|---------|
+| DoodleCrystal | `0 0 24 32` | `-4 0 32 32` |
+| DoodleSuitcase | `0 0 32 36` | `-2 0 36 36` |
+| DoodleCrown | `0 0 40 28` | `0 -6 40 40` |
+
+### 1-2. DoodleBox — 크기 정규화 컨테이너
+
+```tsx
+import { DoodleBox } from "@/components/doodles"
+
+// 사용법: className으로 컨테이너 크기만 지정
+<DoodleBox className="w-5 h-5">
+  <DoodleHeart />
+</DoodleBox>
+```
+
+- 내부 SVG가 `[&>svg]:!w-full [&>svg]:!h-full`로 컨테이너를 채움
+- 모든 viewBox가 정사각이므로 어떤 doodle도 동일한 시각 밀도
+- **인라인 아이콘, 칩, 버튼 등 UI 요소에 반드시 사용**
+- 단독 장식용 doodle (배경, 일러스트)은 직접 className으로 크기 지정
 
 ### 2. 선 스타일 (가장 중요)
 
@@ -125,6 +164,13 @@ strokeLinecap: "round" (곡선에만)
 | DoodleQuestionMark | 물음표 | #2D2D2D | ✗ |
 | DoodleSpeechBubble | 말풍선 | #E84B6A | ✗ |
 | DoodleSuitcase | 캐리어 | #E84B6A | ✗ (스티커 얼굴) |
+
+| DoodleCharm | 매력 (윙크 얼굴+하트) | #FACC15 | ✓ (윙크) |
+| DoodlePull | 당기다 (말굽 자석) | #EF4444 | ✗ |
+| DoodlePush | 밀다 (손바닥) | #FDE68A | ✗ |
+| DoodleBackfire | 역효과 (되돌아오는 화살) | #FB923C | ✗ |
+| DoodleConfidence | 확신 (초록 인장+체크) | #4ADE80 | ✗ |
+| DoodleLocation | 장소 (지도 핀) | #E84B6A | ✗ |
 
 ## 캐릭터 두들 추가 규칙
 
