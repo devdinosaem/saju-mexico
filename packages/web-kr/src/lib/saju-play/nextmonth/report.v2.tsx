@@ -49,8 +49,8 @@ export function NextMonthReportV2({ data, aiText, aiLoading = false }: { data: N
         </div>
       </Section>
 
-      {/* 이 달의 테마 */}
-      <InfoBox accent="warn" icon={x.theme.D} title={`${x.theme.title} · ${data.monthTenGod}결`}>{x.theme.line}</InfoBox>
+      {/* 이 달의 테마 — 긍정/중립 헤드라인이라 주의색(warn) 아닌 special(특별 강조) */}
+      <InfoBox accent="special" icon={x.theme.D} title={`${x.theme.title} · ${data.monthTenGod}결`}>{x.theme.line}</InfoBox>
 
       {/* 오행 호악 */}
       {x.elemFavor === "good" ? (
@@ -73,7 +73,7 @@ export function NextMonthReportV2({ data, aiText, aiLoading = false }: { data: N
         const withList = [...new Set(data.events.filter(e => e.type === type).map(e => e.withLabel))].join(", ")
         const good = type === "합"
         return (
-          <InfoBox key={type} accent={good ? "info" : "warn"} icon={good ? DoodleSparkles : DoodleLightning}
+          <InfoBox key={type} accent={good ? "ok" : "warn"} icon={good ? DoodleSparkles : DoodleLightning}
             title={<>{c.title} <span className="text-[12px] text-text-muted font-normal">· {withList} {type}</span></>}>
             {c.line}
           </InfoBox>
