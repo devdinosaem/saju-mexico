@@ -119,7 +119,7 @@ const clampN = (n: number) => Math.max(22, Math.min(96, Math.round(n)))
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 const FALLBACK_BIRTH: SelfBirth = { year: 1995, month: 3, day: 15, hour: 12, minute: 0 }
-const PRICE = "1명태"
+const PRICE = "0.8명태"
 
 export default function SelfFunnel() {
   const { user } = useUser()

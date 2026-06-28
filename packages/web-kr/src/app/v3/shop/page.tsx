@@ -1,6 +1,8 @@
 import Image from "next/image"
+import Link from "next/link"
 import AdBanner from "@/components/AdBanner"
 import { PRICES, priceLabel } from "@/lib/prices"
+import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import IljuDiscovery from "./_components/IljuDiscovery"
 import CelebDiscovery from "./_components/CelebDiscovery"
 import { SquadSection, PairsSection } from "./_components/CompatibilityCards"
@@ -15,6 +17,16 @@ import {
 const CELEBS = [
   { name: "젠슨 황",     role: "NVIDIA CEO",   file: "젠슨황.png"    },
   { name: "일론 머스크", role: "Tesla CEO",    file: "일론머스크.png" },
+]
+
+// 썸/짝사랑 궁합 — 미니 마주보기 카드(랜딩 녹임). '나'는 고정 캐릭터.
+const BINGGRAE = { fontFamily: "'BinggraeTaom', sans-serif", fontWeight: 700 } as const
+const GAEGU = { fontFamily: "'Cafe24Dongdong', cursive" } as const
+const PINK = "#E84B6A"
+const ME_KEY = "을미-f" // 고정 캐릭터
+const COMPAT_HINTS = [
+  { href: "/v3/some", title: "썸 궁합", sub: "그 사람도 날 좋아할까?", D: DoodleHeart, meBg: "#FFE9F0" },
+  { href: "/v3/onesided", title: "짝사랑 궁합", sub: "그 사람, 내 맘 알까?", D: DoodleMoon, meBg: "#EFEAFE" },
 ]
 
 export default function ShopPage() {
@@ -40,6 +52,20 @@ export default function ShopPage() {
         <p className="text-[22px] leading-snug text-charcoal" style={{ fontFamily: "'BinggraeTaom', sans-serif", fontWeight: 700 }}>
           <span className="highlight-pink">귀한 나</span>를 위한 우주의 힌트
         </p>
+
+        {/* ★ 나 사용설명서 — 플래그십 셀프 리포트 */}
+        <Link href="/v3/self" className="rounded-2xl bg-white border border-charcoal/10 p-4 flex items-center gap-3.5 active:opacity-90 transition-opacity">
+          <div className="p-[3px] rounded-full shrink-0" style={{ background: "linear-gradient(135deg, #E84B6A, #FBBF24)" }}>
+            <div className="w-[52px] h-[52px] rounded-full overflow-hidden border-2 border-white flex items-center justify-center" style={{ background: "#FFF0F5" }}>
+              {ILJU_SVG_ICONS[ME_KEY]?.(getIljuProfileViewBox(ME_KEY))}
+            </div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[16px] text-charcoal" style={BINGGRAE}>나 사용설명서</p>
+            <p className="text-[13px] text-charcoal/60 leading-snug mt-0.5" style={GAEGU}>제품명: 나 — 취급주의·충전법·인생 그래프까지</p>
+          </div>
+          <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>0.8명태</span>
+        </Link>
 
         {/* 전남친운 + 전여친운 */}
         <div className="grid grid-cols-2 gap-2.5">
@@ -100,6 +126,33 @@ export default function ShopPage() {
               </button>
             </div>
           ))}
+        </div>
+
+        {/* 썸 궁합 + 짝사랑 궁합 — 미니 마주보기 카드 (랜딩 녹임) */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {COMPAT_HINTS.map(c => {
+            const D = c.D
+            return (
+              <Link key={c.title} href={c.href}
+                className="rounded-2xl bg-white border border-charcoal/10 p-3.5 flex flex-col h-[168px] active:opacity-90 transition-opacity">
+                {/* 미니 마주보기: 고정 캐릭터 + 연결부 + ? */}
+                <div className="flex items-center gap-1.5">
+                  <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-charcoal/15 flex items-center justify-center shrink-0" style={{ background: c.meBg }}>
+                    {ILJU_SVG_ICONS[ME_KEY]?.(getIljuProfileViewBox(ME_KEY))}
+                  </div>
+                  <span className="w-4 h-4 inline-flex items-center justify-center shrink-0"><D className="w-full h-full" /></span>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "#F1F5F9", border: "2px dashed #CBD5E1" }}>
+                    <span className="text-[14px] text-charcoal/30">?</span>
+                  </div>
+                </div>
+                <div className="mt-2.5">
+                  <p className="text-[14px] text-charcoal" style={BINGGRAE}>{c.title}</p>
+                  <p className="text-[12px] text-charcoal/55 mt-0.5 leading-snug" style={GAEGU}>{c.sub}</p>
+                </div>
+                <span className="mt-auto w-full py-2 rounded-xl text-cream text-[12px] text-center" style={{ background: PINK, ...BINGGRAE }}>0.8명태</span>
+              </Link>
+            )
+          })}
         </div>
       </div>
 
