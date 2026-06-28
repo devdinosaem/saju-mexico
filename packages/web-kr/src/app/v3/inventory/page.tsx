@@ -8,6 +8,7 @@ import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/i
 import { useWishlist } from "@/hooks/useWishlist"
 import { ITEM_PRICES, wonLabel } from "@/lib/prices"
 import { ILJU_SVG_ICONS } from "@/lib/ilju-svg-icons"
+import { getIljuType } from "@/lib/ilju-types"
 import type { WishlistItem, WishlistItemType } from "@/lib/wishlist"
 
 const STICKER_LABELS: Record<string, string> = {
@@ -522,7 +523,7 @@ function InventoryPageInner() {
                     <div className="w-10 h-10 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
                       {ILJU_SVG_ICONS[key]?.()}
                     </div>
-                    <span className="text-[9px] text-text-muted">{key}</span>
+                    <span className="text-[9px] text-text-muted text-center leading-tight max-w-[60px]" style={{ wordBreak: "keep-all" }}>{getIljuType(key)?.name ?? key}</span>
                     {!owned && <span className="text-[8px] font-bold text-amber-500">{ITEM_PRICES.character}명태</span>}
                   </button>
                 )
