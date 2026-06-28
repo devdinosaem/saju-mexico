@@ -39,9 +39,17 @@ const STEM_TO_ELEM: Record<string, ElemKr> = {
 const STICKER_ELEM = new Map<string, StickerElement>(
   ALL_STICKERS.map(s => [s.name, s.element]),
 )
+/** 소품 name → 한글 상품명 룩업 */
+const STICKER_LABEL = new Map<string, string | undefined>(
+  ALL_STICKERS.map(s => [s.name, s.label]),
+)
 
 export function getStickerElement(name: string): StickerElement | undefined {
   return STICKER_ELEM.get(name)
+}
+
+export function getStickerLabel(name: string): string | undefined {
+  return STICKER_LABEL.get(name)
 }
 
 export type ElementScores = Record<ElemKr, number>
@@ -106,6 +114,55 @@ export function calcRoomElements(
   }
 
   return { raw, percent, total, dominant, lacking }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 아이템별 기여 내역 (상세 시트용)
+// ─────────────────────────────────────────────────────────────
+
+export type BreakdownItem = {
+  id: string
+  kind: "sticker" | "character" | "skin"
+  label: string
+  element: StickerElement
+  weight: number
+}
+
+/** 방에 배치된 각 아이템의 오행·가중치 내역. 무/전체도 포함(표시는 호출부 판단). */
+export function roomElementBreakdown(
+  room: Pick<RoomData, "stickers" | "chars" | "skinId">,
+): BreakdownItem[] {
+  const out: BreakdownItem[] = []
+
+  for (const s of room.stickers ?? []) {
+    const el = getStickerElement(s.name)
+    if (!el) continue
+    out.push({
+      id: s.id, kind: "sticker",
+      label: getStickerLabel(s.name) ?? s.name,
+      element: el, weight: ELEMENT_WEIGHTS.sticker,
+    })
+  }
+
+  for (const c of room.chars ?? []) {
+    const el = STEM_TO_ELEM[c.key[0]]
+    if (!el) continue
+    out.push({
+      id: c.id, kind: "character",
+      label: c.key.replace(/-[mf]$/, ""),
+      element: el, weight: ELEMENT_WEIGHTS.character,
+    })
+  }
+
+  if (room.skinId) {
+    const skin = SKINS.find(s => s.id === room.skinId)
+    if (skin) out.push({
+      id: `skin-${skin.id}`, kind: "skin",
+      label: skin.name, element: skin.element, weight: ELEMENT_WEIGHTS.skin,
+    })
+  }
+
+  return out
 }
 
 // ─────────────────────────────────────────────────────────────

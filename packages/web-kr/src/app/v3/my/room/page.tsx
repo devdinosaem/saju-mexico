@@ -6,6 +6,8 @@ import type { PlacedSticker, PlacedChar, RoomData, RoomSkin } from "../_componen
 import { useInventory } from "@/hooks/useInventory"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
 import { ILJU_SVG_ICONS } from "@/lib/ilju-svg-icons"
+import { calcRoomElements, ELEMENT_COLORS, ELEMENT_LABEL } from "@/lib/room-element"
+import RoomElementBar from "../../interior/_components/RoomElementBar"
 
 const STICKER_LABELS: Record<string, string> = {
   Chair: "의자", Sofa: "소파", Lamp: "램프", Mirror: "거울", Clock: "시계",
@@ -307,6 +309,12 @@ export default function RoomEditPage() {
   const selData = selected ? getItem(selected) : null
   const selBasePx = chars.some(c => c.id === selected) ? CHAR_PX : BASE_PX
 
+  // 실시간 방 오행 미터 (편집 중 즉시 갱신)
+  const roomElements = useMemo(
+    () => calcRoomElements({ stickers, chars, skinId: activeSkin.id }),
+    [stickers, chars, activeSkin],
+  )
+
   const hintText = selected
     ? "드래그 이동 · 모서리 크기 · ↻ 회전"
     : "아이템을 탭하면 바로 배치돼요"
@@ -387,6 +395,28 @@ export default function RoomEditPage() {
 
       </div>
       </div>{/* px-4 wrapper */}
+
+      {/* 실시간 방 오행 미터 */}
+      <div className="shrink-0 px-4 pb-2">
+        <div className="rounded-xl px-3 py-2" style={{ background: "#FFF7E8", border: "1px solid #F0E2C4" }}>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[11px] font-bold text-charcoal/70">방의 기운</span>
+            {roomElements.total > 0 && roomElements.dominant ? (
+              <span className="flex items-center gap-1 text-[10px] font-bold" style={{ color: "#A0896C" }}>
+                <span className="w-2 h-2 rounded-full" style={{ background: ELEMENT_COLORS[roomElements.dominant] }} />
+                {ELEMENT_LABEL[roomElements.dominant]} 기운
+              </span>
+            ) : (
+              <span className="text-[10px] text-charcoal/35">아이템을 배치해보세요</span>
+            )}
+          </div>
+          {roomElements.total > 0 ? (
+            <RoomElementBar percent={roomElements.percent} compact />
+          ) : (
+            <div className="h-2.5 rounded-full" style={{ background: "#EDE4D4" }} />
+          )}
+        </div>
+      </div>
 
       {/* 스티커 트레이 */}
       <div className="flex-1 flex flex-col overflow-hidden border-t border-black/8" style={{ background: "#FFFBF2" }}>
