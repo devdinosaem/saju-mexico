@@ -8,6 +8,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useUser } from "@/lib/UserContext"
+import { PRICES, priceLabel } from "@/lib/prices"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf, type Elem } from "../engine"
 import { ELEM_BG } from "../flavor"
@@ -140,7 +141,7 @@ function SinsalCard({ name, positions }: { name: string; positions: Pos[] }) {
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 const FALLBACK_BIRTH: SinsalBirth = { year: 1990, month: 2, day: 14, hour: 12, minute: 0 }  // 갑신일주(셀럽 풍부) 테스트
-const PRICE = "0.9명태"
+const PRICE = priceLabel(PRICES.sinsal)
 
 export default function SinsalFunnel() {
   const { user } = useUser()

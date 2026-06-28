@@ -12,7 +12,7 @@ import TodaySaju from "./_components/TodaySaju"
 import MonthCalendar from "./_components/MonthCalendar"
 import WeeklyEnergyFlow from "./_components/WeeklyEnergyFlow"
 import SajuInputSheet from "../shop/_components/SajuInputSheet"
-import { PRICES, priceLabel } from "@/lib/prices"
+import { PRICES, priceLabel, subscriptionLabel } from "@/lib/prices"
 import { ElementBadgePill } from "@/components/ilju-type-card"
 import { DoodleHeart, DoodleSparkle, DoodleStar, DoodleMoon, DoodleCrystal, DoodleKey, DoodleMagicWand, DoodleCrown } from "@/components/doodles"
 import AdBanner from "@/components/AdBanner"
@@ -250,7 +250,7 @@ export default function MyPage() {
               <p className="text-[11px] text-cream/60 mt-0.5 leading-tight">모든 기능 무제한</p>
             </div>
             <div className="mt-auto w-full py-1.5 rounded-xl bg-pink text-cream text-[11px] font-bold text-center" style={GAEGU}>
-              ₩2,900/월
+              {subscriptionLabel()}
             </div>
           </button>
 

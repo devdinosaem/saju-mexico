@@ -1,4 +1,5 @@
 import { DoodleSparkle } from "@/components/doodles"
+import { subscriptionLabel } from "@/lib/prices"
 
 const FORTUNES = [
   { label: "전체운", stars: 4, sub: "기운이 넘쳐. 실행해!" },
@@ -86,7 +87,7 @@ export default function TodaySaju() {
           <span className="text-xl">🔒</span>
           <p className="text-xs font-bold text-charcoal">상세 리포트는 구독자 전용</p>
           <button className="px-4 py-1.5 rounded-full bg-pink/75 text-cream text-[11px] font-bold border border-charcoal active:opacity-80">
-            구독하기 · ₩2,900/월
+            구독하기 · {subscriptionLabel()}
           </button>
         </div>
       </div>

@@ -8,6 +8,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useUser } from "@/lib/UserContext"
+import { PRICES, priceLabel } from "@/lib/prices"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { ILJU_TYPES } from "@/lib/ilju-types"
 import { ILJU_CELEB_DATA } from "@/lib/ilju-celeb-data"
@@ -198,7 +199,7 @@ function NaCard({ iljuKey, role, elem, idx }: { iljuKey: string; role: string; e
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 const FALLBACK_BIRTH: SelfBirth = { year: 1995, month: 3, day: 15, hour: 12, minute: 0 }
-const PRICE = "0.8명태"
+const PRICE = priceLabel(PRICES.selfManual)
 
 export default function SelfFunnel() {
   const { user } = useUser()

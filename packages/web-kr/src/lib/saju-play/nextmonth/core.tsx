@@ -7,6 +7,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useUser } from "@/lib/UserContext"
+import { PRICES, priceLabel } from "@/lib/prices"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf } from "../engine"
 import { ELEM_BG, ELEM_DOODLE } from "../flavor"
@@ -94,7 +95,7 @@ function CalendarGrid({ days, year, month }: { days: DayPoint[]; year: number; m
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 const FALLBACK_BIRTH: NextMonthBirth = { year: 1990, month: 2, day: 14, hour: 12, minute: 0 }
-const PRICE = "0.7명태"
+const PRICE = priceLabel(PRICES.nextMonth)
 const AREA_LABEL = Object.fromEntries(AREA.map(a => [a.key, a.label]))
 
 export default function NextMonthFunnel() {

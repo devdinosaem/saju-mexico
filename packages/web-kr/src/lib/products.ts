@@ -16,7 +16,7 @@
  */
 
 import { ALL_STICKERS, type StickerElement } from "@/components/doodle-categories"
-import { ITEM_PRICES, PRICES } from "@/lib/prices"
+import { ITEM_PRICES, PRICES, SUBSCRIPTION_MONTHLY_WON } from "@/lib/prices"
 
 export type ProductType =
   | "sticker" | "character" | "skin"        // 영구 자산
@@ -121,8 +121,14 @@ export const STICKER_PRODUCTS: StickerProduct[] = (() => {
 // ── 소모형 상품 (리포트·상담) ───────────────────────────────
 
 export const REPORT_PRODUCTS: Product[] = [
+  // saju-play 단품 (1명태 일괄)
+  { id: pid("report", "self_manual"),    type: "report", grant: "consumable", price: { myongtae: PRICES.selfManual } },
+  { id: pid("report", "sinsal"),         type: "report", grant: "consumable", price: { myongtae: PRICES.sinsal } },
+  { id: pid("report", "next_month"),     type: "report", grant: "consumable", price: { myongtae: PRICES.nextMonth } },
+  { id: pid("report", "some_compat"),    type: "report", grant: "consumable", price: { myongtae: PRICES.someCompat } },
+  { id: pid("report", "onesided_compat"),type: "report", grant: "consumable", price: { myongtae: PRICES.onesidedCompat } },
+  // 기타 리포트
   { id: pid("report", "detail"),         type: "report", grant: "consumable", price: { myongtae: PRICES.detailReport } },
-  { id: pid("report", "ex_fortune"),     type: "report", grant: "consumable", price: { myongtae: PRICES.exFortune } },
   { id: pid("report", "year_fortune"),   type: "report", grant: "consumable", price: { myongtae: PRICES.yearFortune } },
   { id: pid("report", "parent_fortune"), type: "report", grant: "consumable", price: { myongtae: PRICES.parentFortune } },
   { id: pid("report", "celeb_card"),     type: "report", grant: "consumable", price: { myongtae: PRICES.celebCard } },
@@ -135,7 +141,7 @@ export const CONSULT_PRODUCTS: Product[] = [
 // ── 기간제 상품 (구독) ──────────────────────────────────────
 
 export const SUBSCRIPTION_PRODUCTS: Product[] = [
-  { id: pid("plan", "monthly"), type: "subscription", grant: "term", price: { won: 2900 }, term: { unit: "month", length: 1 } },
+  { id: pid("plan", "monthly"), type: "subscription", grant: "term", price: { won: SUBSCRIPTION_MONTHLY_WON }, term: { unit: "month", length: 1 } },
 ]
 
 // ── 통합 조회 ───────────────────────────────────────────────

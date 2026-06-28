@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react"
 import SectionCard from "./SectionCard"
 import { loadInventory, saveInventory, INVENTORY_KEY, type UserInventory, STICKER_ACCESS } from "@/lib/inventory"
+import { ITEM_PRICES, priceLabel } from "@/lib/prices"
 import { SKINS } from "@/app/v3/my/_components/MiniRoom"
 
 const PURCHASE_STICKERS = ["CrystalBall", "MagicWand", "Tarot", "Crystal"]
@@ -115,7 +116,7 @@ export default function InventorySection() {
                 className="w-4 h-4 rounded accent-[#2D2D2D]"
               />
               <span className="text-[13px] text-charcoal flex-1">{STICKER_LABELS[key] ?? key}</span>
-              <span className="text-[10px] text-text-muted bg-white border border-charcoal/10 rounded-full px-2 py-0.5">구매 0.3명태</span>
+              <span className="text-[10px] text-text-muted bg-white border border-charcoal/10 rounded-full px-2 py-0.5">구매 {priceLabel(ITEM_PRICES.sticker)}</span>
             </label>
           ))}
           {SUBSCRIPTION_STICKERS.map(key => (
@@ -166,7 +167,7 @@ export default function InventorySection() {
                 <div className="min-w-0">
                   <p className="text-[11px] font-bold text-charcoal truncate">{skin.name}</p>
                   <p className="text-[9px] text-text-muted">
-                    {skin.access === "free" ? "무료" : skin.access === "subscription" ? "구독" : "2명태"}
+                    {skin.access === "free" ? "무료" : skin.access === "subscription" ? "구독" : priceLabel(ITEM_PRICES.skin)}
                   </p>
                 </div>
               </label>

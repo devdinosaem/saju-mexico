@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import AdBanner from "@/components/AdBanner"
-import { PRICES, priceLabel } from "@/lib/prices"
+import { PRICES, priceLabel, subscriptionLabel } from "@/lib/prices"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import IljuDiscovery from "./_components/IljuDiscovery"
 import CelebDiscovery from "./_components/CelebDiscovery"
@@ -25,8 +25,8 @@ const GAEGU = { fontFamily: "'Cafe24Dongdong', cursive" } as const
 const PINK = "#E84B6A"
 const ME_KEY = "을미-f" // 고정 캐릭터
 const COMPAT_HINTS = [
-  { href: "/v3/some", title: "썸 궁합", sub: "그 사람도 날 좋아할까?", D: DoodleHeart, meBg: "#FFE9F0" },
-  { href: "/v3/onesided", title: "짝사랑 궁합", sub: "그 사람, 내 맘 알까?", D: DoodleMoon, meBg: "#EFEAFE" },
+  { href: "/v3/some", title: "썸 궁합", sub: "그 사람도 날 좋아할까?", D: DoodleHeart, meBg: "#FFE9F0", price: priceLabel(PRICES.someCompat) },
+  { href: "/v3/onesided", title: "짝사랑 궁합", sub: "그 사람, 내 맘 알까?", D: DoodleMoon, meBg: "#EFEAFE", price: priceLabel(PRICES.onesidedCompat) },
 ]
 
 export default function ShopPage() {
@@ -64,7 +64,7 @@ export default function ShopPage() {
             <p className="text-[16px] text-charcoal" style={BINGGRAE}>나 사용설명서</p>
             <p className="text-[13px] text-charcoal/60 leading-snug mt-0.5" style={GAEGU}>제품명: 나 — 취급주의·충전법·인생 그래프까지</p>
           </div>
-          <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>0.8명태</span>
+          <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>{priceLabel(PRICES.selfManual)}</span>
         </Link>
 
         {/* ★ 내 신살 도감 — 신살 리포트 */}
@@ -78,7 +78,7 @@ export default function ShopPage() {
             <p className="text-[16px] text-charcoal" style={BINGGRAE}>내 신살 도감</p>
             <p className="text-[13px] text-charcoal/60 leading-snug mt-0.5" style={GAEGU}>무서운 살의 진짜 뜻 — 능력치·시너지·올해 운까지</p>
           </div>
-          <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>0.9명태</span>
+          <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>{priceLabel(PRICES.sinsal)}</span>
         </Link>
 
         {/* ★ 다음달 운 미리보기 — 월간 예보 */}
@@ -92,7 +92,7 @@ export default function ShopPage() {
             <p className="text-[16px] text-charcoal" style={BINGGRAE}>다음달 운 미리보기</p>
             <p className="text-[13px] text-charcoal/60 leading-snug mt-0.5" style={GAEGU}>운세 날씨·영역별·일진 캘린더(길일까지)</p>
           </div>
-          <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>0.7명태</span>
+          <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>{priceLabel(PRICES.nextMonth)}</span>
         </Link>
 
         {/* 올해운 + 광고 */}
@@ -135,7 +135,7 @@ export default function ShopPage() {
                   <p className="text-[14px] text-charcoal" style={BINGGRAE}>{c.title}</p>
                   <p className="text-[12px] text-charcoal/55 mt-0.5 leading-snug" style={GAEGU}>{c.sub}</p>
                 </div>
-                <span className="mt-auto w-full py-2 rounded-xl text-cream text-[12px] text-center" style={{ background: PINK, ...BINGGRAE }}>0.8명태</span>
+                <span className="mt-auto w-full py-2 rounded-xl text-cream text-[12px] text-center" style={{ background: PINK, ...BINGGRAE }}>{c.price}</span>
               </Link>
             )
           })}
@@ -233,7 +233,7 @@ export default function ShopPage() {
               <p className="text-[11px] text-cream/60 mt-0.5 leading-tight">모든 기능 무제한</p>
             </div>
             <button className="mt-auto py-1.5 rounded-lg bg-pink text-cream text-[11px] font-bold active:opacity-80">
-              ₩2,900/월
+              {subscriptionLabel()}
             </button>
           </div>
         </div>

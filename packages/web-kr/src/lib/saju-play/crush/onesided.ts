@@ -10,6 +10,7 @@ import {
   DoodleColorPalette, DoodleOnggiJar, DoodlePictureFrame, DoodleCoffee, DoodleTicket,
 } from "@/components/doodles"
 import type { CrushConfig } from "./core"
+import { PRICES, priceLabel } from "@/lib/prices"
 
 export const ONESIDED_CONFIG: CrushConfig = {
   mode: "crush",
@@ -141,7 +142,7 @@ export const ONESIDED_CONFIG: CrushConfig = {
     금: { day: "목요일", place: "전시·미술관", color: "화이트", colorHex: "#E2E8F0" },
     수: { day: "수요일", place: "바다·강가", color: "파랑", colorHex: "#60A5FA" },
   },
-  price: "1명태",
+  price: priceLabel(PRICES.onesidedCompat),
   apiPath: "/api/saju-play/onesided",
   chapters: ["두 기운이 만나면", "그 사람 마음엔", "그래서 가능성은", "그 사람 파헤치기", "어떻게 닿을까", "다가갈까, 기다릴까", "언제 움직일까"],
   tempTitle: "마음 온도계",
