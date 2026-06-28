@@ -48,10 +48,11 @@ const REPORTS = [
 ]
 
 // ── 썸·짝사랑 (사진2 스타일: 마주보기 카드) — 짝사랑 좌, 썸 우 ──
+// leftKey: 왼쪽 아바타를 ME 대신 지정 캐릭터로 교체 (오른쪽은 항상 ?)
 type CompatItem = {
   href: string; title: string; sub: string; D: DoodleC
   bg: string; price: string
-  partnerKey?: string; partnerLabel?: string
+  leftKey?: string
 }
 const COMPAT: CompatItem[] = [
   {
@@ -61,7 +62,7 @@ const COMPAT: CompatItem[] = [
   {
     href: "/v3/some", title: "썸 궁합", sub: "그 사람도 날 좋아할까?",
     D: DoodleHeart, bg: "var(--love-bg)", price: priceLabel(PRICES.someCompat),
-    partnerKey: "계사-m", partnerLabel: "🎯 시나리오 작가",
+    leftKey: "계사-m",
   },
 ]
 
@@ -93,28 +94,22 @@ function ReportCard({ r, className = "" }: { r: ReportItem; className?: string }
   )
 }
 
-// 궁합 카드 (사진2 스타일: 마주보기) — partnerKey 있으면 실 캐릭터 표시
+// 궁합 카드 (사진2 스타일: 마주보기) — leftKey 있으면 그 캐릭터가 왼쪽, 오른쪽은 항상 ?
 function CompatCard({ c, className = "" }: { c: CompatItem; className?: string }) {
   const D = c.D
-  const partnerSvg = c.partnerKey ? ILJU_SVG_ICONS[c.partnerKey] : null
-  const partnerBg = c.partnerKey ? iljuBg(c.partnerKey) : "#F1F5F9"
+  const leftKey = c.leftKey ?? ME_KEY
+  const leftBg = c.leftKey ? iljuBg(c.leftKey) : c.bg
   return (
     <Link href={c.href} className={`rounded-[var(--r-lg)] bg-white border border-charcoal/10 p-3.5 flex flex-col gap-2 active:opacity-90 transition-opacity ${className}`}>
       <div className="flex items-center gap-1.5">
-        <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-charcoal/15 flex items-center justify-center shrink-0" style={{ background: c.bg }}>
-          {ILJU_SVG_ICONS[ME_KEY]?.(getIljuProfileViewBox(ME_KEY))}
+        <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-charcoal/15 flex items-center justify-center shrink-0" style={{ background: leftBg }}>
+          {ILJU_SVG_ICONS[leftKey]?.(getIljuProfileViewBox(leftKey))}
         </div>
         <span className="w-4 h-4 inline-flex items-center justify-center shrink-0"><D className="w-full h-full" /></span>
-        <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-          style={{ background: partnerBg, border: partnerSvg ? "2px solid rgba(0,0,0,0.08)" : "2px dashed #CBD5E1" }}>
-          {partnerSvg
-            ? partnerSvg(getIljuProfileViewBox(c.partnerKey!))
-            : <span className="text-[14px] text-charcoal/30">?</span>}
+        <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "#F1F5F9", border: "2px dashed #CBD5E1" }}>
+          <span className="text-[14px] text-charcoal/30">?</span>
         </div>
       </div>
-      {c.partnerLabel && (
-        <p className="text-[10px] text-text-muted leading-tight">{c.partnerLabel} · {c.partnerKey}</p>
-      )}
       <div>
         <p className="text-[13px] font-bold text-charcoal leading-tight">{c.title}</p>
         <p className="text-[11px] text-text-muted mt-0.5 leading-tight">{c.sub}</p>
@@ -142,10 +137,6 @@ function FriendCompatCard({ className = "" }: { className?: string }) {
                 style={{ background: bg }}>
                 {svgFn?.(getIljuProfileViewBox(f.key))}
               </div>
-              <div className="text-center">
-                <p className="text-[9px] text-text-muted leading-tight">{f.emoji} {f.label}</p>
-                <p className="text-[9px] text-charcoal/40 leading-tight mt-0.5">{f.key}</p>
-              </div>
             </div>
           )
         })}
@@ -168,7 +159,6 @@ function ConsultCard({ className = "" }: { className?: string }) {
         {svgFn?.(getIljuProfileViewBox(CONSULT_CHAR.key))}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[10px] text-text-muted leading-tight mb-0.5">{CONSULT_CHAR.emoji} {CONSULT_CHAR.label}</p>
         <p className="text-[13px] font-bold text-charcoal leading-tight">무물 상담</p>
         <p className="text-[11px] text-text-muted mt-0.5 leading-tight">뭐든 물어봐, 다 받아줄게</p>
       </div>
