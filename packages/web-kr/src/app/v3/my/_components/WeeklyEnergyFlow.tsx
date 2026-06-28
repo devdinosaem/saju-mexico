@@ -9,15 +9,16 @@ const BAR: Record<string, string> = {
   수: "#60A5FA",
 }
 
-// TODO(주간 재설계): 현재는 calendar에서 옮겨온 월간 5주 목업.
-// 지침(CLAUDE.md "주간 에너지 그래프" / APP-UI-PLAN 마이 섹션)대로
-// 월~일 7일 + 오늘 강조 + 베스트/워스트 마킹으로 재설계 예정.
-const WEEKS = [
-  { week: "1주", height: 40, ohaeng: "목" },
-  { week: "2주", height: 60, ohaeng: "화" },
-  { week: "3주", height: 85, ohaeng: "금" },
-  { week: "4주", height: 70, ohaeng: "금" },
-  { week: "5주", height: 45, ohaeng: "수" },
+// 월~일 7일 영역(골격만). 높이·오행은 placeholder.
+// TODO(주간 재설계): 오늘 강조 + 베스트/워스트 마킹 + saju-engine 실데이터 연동.
+const DAYS = [
+  { day: "월", height: 40, ohaeng: "목" },
+  { day: "화", height: 60, ohaeng: "화" },
+  { day: "수", height: 85, ohaeng: "토" },
+  { day: "목", height: 70, ohaeng: "금" },
+  { day: "금", height: 45, ohaeng: "수" },
+  { day: "토", height: 55, ohaeng: "목" },
+  { day: "일", height: 35, ohaeng: "화" },
 ]
 
 export default function WeeklyEnergyFlow() {
@@ -28,13 +29,13 @@ export default function WeeklyEnergyFlow() {
         <p className="text-sm font-bold text-charcoal">이번 주 에너지 흐름</p>
       </div>
       <div className="flex items-end justify-between gap-1 h-20">
-        {WEEKS.map(w => (
-          <div key={w.week} className="flex-1 flex flex-col items-center gap-1">
+        {DAYS.map(d => (
+          <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
             <div
               className="w-full rounded-t-lg"
-              style={{ height: `${w.height}%`, backgroundColor: BAR[w.ohaeng] + "66", border: `1px solid ${BAR[w.ohaeng]}` }}
+              style={{ height: `${d.height}%`, backgroundColor: BAR[d.ohaeng] + "66", border: `1px solid ${BAR[d.ohaeng]}` }}
             />
-            <span className="text-[10px] text-text-muted">{w.week}</span>
+            <span className="text-[10px] text-text-muted">{d.day}</span>
           </div>
         ))}
       </div>
