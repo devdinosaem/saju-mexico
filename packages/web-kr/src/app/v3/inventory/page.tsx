@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { RoomCanvas, STICKER_MAP, SKINS, RoomChar, STORAGE_KEY } from "../my/_components/MiniRoom"
 import type { PlacedSticker, PlacedChar, RoomSkin, RoomData } from "../my/_components/MiniRoom"
 import { useInventory } from "@/hooks/useInventory"
-import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
+import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS, purchaseItems, type ItemType } from "@/lib/inventory"
 import { useWishlist } from "@/hooks/useWishlist"
 import { ITEM_PRICES, wonLabel } from "@/lib/prices"
 import { ILJU_SVG_ICONS } from "@/lib/ilju-svg-icons"
@@ -584,7 +584,11 @@ function InventoryPageInner() {
             <button
               className="flex-1 h-[44px] rounded-xl text-[14px] font-bold transition-colors border-2 text-white active:opacity-70"
               style={{ background: "#E84B6A", borderColor: "#E84B6A", fontFamily: "'BinggraeTaom', sans-serif" }}
-              onClick={() => alert("결제 준비중 🌙")}
+              onClick={() => {
+                const res = purchaseItems(cartItems.map(i => ({ type: i.type as ItemType, key: i.key, price: i.price })), "소품·캐릭터·스킨 구매")
+                if (!res.ok) router.push("/v3/charge") // 잔액 부족 → 충전
+                // 성공 시 owned 갱신 → cartItems 비어 CTA 자동 사라짐
+              }}
             >
               구매하기
             </button>

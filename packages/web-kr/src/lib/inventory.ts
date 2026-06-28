@@ -1,3 +1,5 @@
+import { spend } from "./balance"
+
 export type AccessType = "free" | "purchase" | "subscription"
 
 export type UserInventory = {
@@ -65,6 +67,37 @@ export function saveInventory(inv: UserInventory): void {
 
 export function notifyInventoryChange(): void {
   if (typeof window !== "undefined") window.dispatchEvent(new Event(INVENTORY_CHANGE_EVENT))
+}
+
+export type ItemType = "sticker" | "skin" | "character"
+const OWNED_FIELD: Record<ItemType, "ownedStickers" | "ownedSkins" | "ownedCharacters"> = {
+  sticker: "ownedStickers", skin: "ownedSkins", character: "ownedCharacters",
+}
+export type PurchaseResult = { ok: boolean; reason?: "owned" | "insufficient" }
+
+/** 명태로 아이템 구매 — spend 후 owned 적재. 보유 중이면 무차감(ok), 잔액부족이면 ok:false. */
+export function purchaseItem(type: ItemType, key: string, price: number, label?: string): PurchaseResult {
+  const inv = loadInventory()
+  const field = OWNED_FIELD[type]
+  if (inv[field].includes(key)) return { ok: true, reason: "owned" }
+  if (!spend(price, label)) return { ok: false, reason: "insufficient" }
+  saveInventory({ ...inv, [field]: [...inv[field], key] })
+  notifyInventoryChange()
+  return { ok: true }
+}
+
+/** 카트 일괄 구매 — 미보유분 합계를 한 번에 차감하고 모두 적재(원자적). */
+export function purchaseItems(items: { type: ItemType; key: string; price: number }[], label?: string): PurchaseResult {
+  const inv = loadInventory()
+  const toBuy = items.filter(it => !inv[OWNED_FIELD[it.type]].includes(it.key))
+  if (toBuy.length === 0) return { ok: true, reason: "owned" }
+  const total = Math.round(toBuy.reduce((s, it) => s + it.price, 0) * 1000) / 1000
+  if (!spend(total, label)) return { ok: false, reason: "insufficient" }
+  const next: UserInventory = { ...inv }
+  for (const it of toBuy) next[OWNED_FIELD[it.type]] = [...next[OWNED_FIELD[it.type]], it.key]
+  saveInventory(next)
+  notifyInventoryChange()
+  return { ok: true }
 }
 
 /** 대표 캐릭터 설정. null이면 태생 일주로 리셋. */
