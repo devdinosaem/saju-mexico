@@ -1111,70 +1111,58 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
   {
     id: "을사-f",
     node: (
-        <div className="flex flex-col items-center gap-3">
-          <div className="bg-gradient-to-b from-[#D1FAE5] to-[#FDF6EE] rounded-2xl p-6 border-2 border-[#2D2D2D]/10 w-full flex justify-center relative overflow-hidden">
-            <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full" fill="none">
-              {/* 꽃잎들 */}
-              <circle cx="30" cy="60" r="12" fill="#F9A8D4" opacity="0.12" />
-              <circle cx="170" cy="50" r="10" fill="#4ADE80" opacity="0.12" />
-              <circle cx="150" cy="150" r="14" fill="#F9A8D4" opacity="0.1" />
-              {/* 비단결 */}
-              <path d="M0 100 Q50 80 100 100 Q150 120 200 100" stroke="#4ADE80" strokeWidth="1.5" fill="none" opacity="0.1" />
-              <path d="M0 115 Q50 95 100 115 Q150 135 200 115" stroke="#4ADE80" strokeWidth="1" fill="none" opacity="0.07" />
-              {/* 스파클 */}
-              <circle cx="50" cy="170" r="2.5" fill="#4ADE80" opacity="0.15" />
-              <circle cx="170" cy="170" r="2" fill="#F9A8D4" opacity="0.15" />
-            </svg>
-            {SHOW_ELEMENT_BADGE && <ElementBadge element="wood" />}
-            <svg viewBox="0 0 80 90" className="w-[120px] relative z-10" fill="none">
-              {/* 꽃 머리장식 */}
-              <circle cx="52" cy="12" r="6" fill="#F9A8D4" stroke="#2D2D2D" strokeWidth="1.2" />
-              <circle cx="48" cy="8" r="4" fill="#F472B6" stroke="#2D2D2D" strokeWidth="1" />
-              <circle cx="56" cy="8" r="4" fill="#F472B6" stroke="#2D2D2D" strokeWidth="1" />
-              <circle cx="52" cy="5" r="4" fill="#F472B6" stroke="#2D2D2D" strokeWidth="1" />
-              <circle cx="52" cy="10" r="3" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="0.8" />
-              {/* 헤어 — 중단발 스트레이트, 짙은 슬레이트 (닫힌 Z) */}
-              <path d="M18 32 Q18 10 40 8 Q62 10 62 32 L62 62 Q56 72 46 70 Q40 68 34 70 Q24 72 18 62 Z" fill="#374151" stroke="#2D2D2D" strokeWidth="1.5" />
-              {/* 얼굴 */}
-              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="2" />
-              {/* 속눈썹 */}
-              <path d="M31 31 Q34 29 37 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              <path d="M43 31 Q46 29 49 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              {/* 조용하지만 날카로운 눈 */}
-              <ellipse cx="34" cy="34" rx="4" ry="2.5" fill="#2D2D2D" />
-              <ellipse cx="46" cy="34" rx="4" ry="2.5" fill="#2D2D2D" />
-              <circle cx="35.5" cy="33" r="1.2" fill="white" opacity="0.7" />
-              <circle cx="47.5" cy="33" r="1.2" fill="white" opacity="0.7" />
-              {/* 눈썹 — 섬세하게 */}
-              <path d="M29 28 Q34 26 38 28" stroke="#2D2D2D" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-              <path d="M42 28 Q46 26 51 28" stroke="#2D2D2D" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-              {/* 입 — 우아한 미소 */}
-              <path d="M34 43 Q40 48 46 43" stroke="#2D2D2D" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-              {/* 볼터치 */}
-              <ellipse cx="27" cy="39" rx="3.8" ry="2" fill="#F9A8D4" opacity="0.45" />
-              <ellipse cx="53" cy="39" rx="3.8" ry="2" fill="#F9A8D4" opacity="0.45" />
-              {/* 몸통 — 꽃 무늬 원피스 */}
-              <path d="M26 52 Q22 56 20 74 L60 74 Q58 56 54 52 Q46 50 40 50 Q34 50 26 52Z" fill="#D1FAE5" stroke="#2D2D2D" strokeWidth="1.5" />
-              {/* 꽃 무늬 프린트 */}
-              <circle cx="40" cy="62" r="3" fill="#F9A8D4" stroke="#2D2D2D" strokeWidth="0.6" />
-              <circle cx="36" cy="57" r="2" fill="#F472B6" stroke="#2D2D2D" strokeWidth="0.5" />
-              <circle cx="44" cy="67" r="2" fill="#F472B6" stroke="#2D2D2D" strokeWidth="0.5" />
-              <circle cx="40" cy="61.5" r="1" fill="#FDE68A" />
-              {/* 오른팔 — 강력한 주먹질 */}
-              <path d="M54 56 Q64 48 68 44" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-              <rect x="65" y="40" width="10" height="8" rx="2" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5" />
-              <line x1="67" y1="40" x2="67" y2="38" stroke="#2D2D2D" strokeWidth="1" strokeLinecap="round" />
-              <line x1="70" y1="40" x2="70" y2="38" stroke="#2D2D2D" strokeWidth="1" strokeLinecap="round" />
-              <line x1="73" y1="40" x2="73" y2="38" stroke="#2D2D2D" strokeWidth="1" strokeLinecap="round" />
-              {/* 주먹 이펙트 */}
-              <path d="M75 37 L78 33 L80 35" stroke="#F9A8D4" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.8" />
-              {/* 왼팔 — 여유로운 */}
-              <path d="M26 58 Q16 56 12 52" stroke="#2D2D2D" strokeWidth="2" strokeLinecap="round" fill="none" />
-            </svg>
-          </div>
-          <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("을사-f")!.emoji} {getIljuType("을사-f")!.name}</p>
-          <p className="text-xs text-gray-500 text-center">{getIljuType("을사-f")!.id} · {getIljuType("을사-f")!.stemElement}</p>
+      <div className="flex flex-col items-center gap-3">
+        <div className="bg-gradient-to-b from-[#D1FAE5] to-[#FDF6EE] rounded-2xl p-6 border-2 border-[#2D2D2D]/10 w-full flex justify-center relative overflow-hidden">
+          <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full" fill="none">
+            <circle cx="30" cy="60" r="12" fill="#F9A8D4" opacity="0.12" />
+            <circle cx="170" cy="50" r="10" fill="#4ADE80" opacity="0.12" />
+            <path d="M0 100 Q50 80 100 100 Q150 120 200 100" stroke="#4ADE80" strokeWidth="1.5" fill="none" opacity="0.1" />
+            <circle cx="50" cy="170" r="2.5" fill="#4ADE80" opacity="0.15" />
+          </svg>
+          <svg viewBox="0 0 80 90" className="w-[120px] relative z-10" fill="none">
+            {/* 꽃 머리장식 */}
+            <circle cx="52" cy="12" r="6" fill="#F9A8D4" stroke="#2D2D2D" strokeWidth="1.2" />
+            <circle cx="48" cy="8" r="4" fill="#F472B6" stroke="#2D2D2D" strokeWidth="1" />
+            <circle cx="56" cy="8" r="4" fill="#F472B6" stroke="#2D2D2D" strokeWidth="1" />
+            <circle cx="52" cy="5" r="4" fill="#F472B6" stroke="#2D2D2D" strokeWidth="1" />
+            <circle cx="52" cy="10" r="3" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="0.8" />
+            {/* 헤어 — 중단발 슬레이트 */}
+            <path d="M18 32 Q18 10 40 8 Q62 10 62 32 L62 62 Q56 72 46 70 Q40 68 34 70 Q24 72 18 62 Z" fill="#374151" stroke="#2D2D2D" strokeWidth="1.5" />
+            {/* 얼굴 */}
+            <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5" />
+            {/* 속눈썹 */}
+            <path d="M31 31 Q34 29 37 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+            <path d="M43 31 Q46 29 49 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+            {/* 눈 — 둥글고 환한 (표정 변경) */}
+            <circle cx="34" cy="34" r="3" fill="#2D2D2D" />
+            <circle cx="46" cy="34" r="3" fill="#2D2D2D" />
+            <circle cx="35.2" cy="32.9" r="1.2" fill="white" />
+            <circle cx="47.2" cy="32.9" r="1.2" fill="white" />
+            {/* 눈썹 — 섬세하게 */}
+            <path d="M29 28 Q34 26 38 28" stroke="#2D2D2D" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+            <path d="M42 28 Q46 26 51 28" stroke="#2D2D2D" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+            {/* 입 — 우아한 미소 (유지) */}
+            <path d="M34 43 Q40 48 46 43" stroke="#2D2D2D" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+            {/* 볼터치 */}
+            <ellipse cx="27" cy="39" rx="3.8" ry="2" fill="#F9A8D4" opacity="0.45" />
+            <ellipse cx="53" cy="39" rx="3.8" ry="2" fill="#F9A8D4" opacity="0.45" />
+            {/* 몸통 — 꽃 무늬 원피스 */}
+            <path d="M26 52 Q22 56 20 74 L60 74 Q58 56 54 52 Q46 50 40 50 Q34 50 26 52Z" fill="#D1FAE5" stroke="#2D2D2D" strokeWidth="1.5" />
+            <circle cx="40" cy="62" r="3" fill="#F9A8D4" stroke="#2D2D2D" strokeWidth="0.6" />
+            <circle cx="36" cy="57" r="2" fill="#F472B6" stroke="#2D2D2D" strokeWidth="0.5" />
+            <circle cx="44" cy="67" r="2" fill="#F472B6" stroke="#2D2D2D" strokeWidth="0.5" />
+            <circle cx="40" cy="61.5" r="1" fill="#FDE68A" />
+            {/* 오른팔 — 부드러운 한 방 */}
+            <path d="M54 56 Q64 48 68 44" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+            <rect x="65" y="40" width="10" height="8" rx="2" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5" />
+            <path d="M75 37 L78 33 L80 35" stroke="#F9A8D4" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.8" />
+            {/* 왼팔 — 여유 */}
+            <path d="M26 58 Q16 56 12 52" stroke="#2D2D2D" strokeWidth="2" strokeLinecap="round" fill="none" />
+          </svg>
         </div>
+        <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("을사-f")!.emoji + " " + getIljuType("을사-f")!.name}</p>
+        <p className="text-xs text-gray-500 text-center">{getIljuType("을사-f")!.id + " · " + getIljuType("을사-f")!.stemElement}</p>
+      </div>
     ),
   },
   {
