@@ -137,4 +137,18 @@ export const SOME_CONFIG: CrushConfig = {
     수: { day: "수요일", place: "바다·강가", color: "파랑", colorHex: "#60A5FA" },
   },
   price: "1명태",
+  apiPath: "/api/saju-play/some",
+  chapters: ["두 기운이 만나면", "이 끌림, 운명일까", "그래서 케미는 몇 점", "그 사람 파헤치기", "어떻게 다가갈까", "밀까, 당길까", "언제 움직일까"],
+  tempTitle: "우리 사이 온도",
+  journeyTitle: "썸 진행 지도",
+  situationalTitle: "썸 상황별 케미",
+  leverTitle: "밀당 시뮬레이터",
+  lever: { prompt: "지금, 어떻게 할까?", push: "당기기", pull: "밀기" },
+  balance: {
+    생받음: { pos: 70, line: "그 사람 기운이 너를 더 끌어당기는 결" },
+    극받음: { pos: 63, line: "그 사람이 너를 설레게·긴장하게 만드는 결" },
+    같음: { pos: 50, line: "비슷한 무게 — 서로 밀당하는 균형" },
+    생해줌: { pos: 33, line: "네가 더 챙겨주고 싶어지는 결" },
+    극해줌: { pos: 38, line: "네가 리드하게 되는 결" },
+  },
 }

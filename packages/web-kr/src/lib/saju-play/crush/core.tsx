@@ -62,6 +62,18 @@ export type CrushConfig = {
   extra: { title: string; D: DoodleC; a: { k: string; v: string }[] } // 모드 전용(썸=밀당 / 짝사랑=현실·위로)
   lucky: Record<Elem, { day: string; place: string; color: string; colorHex: string }>
   price: string
+  // ── 모드별 제목·라벨 (썸/짝사랑) ──
+  apiPath: string                                   // 정밀 풀이 호출 경로
+  chapters: string[]                                // 7개 챕터명
+  tempTitle: string                                 // 무료 온도 섹션 제목
+  journeyTitle: string                              // 진행 지도 제목
+  situationalTitle: string                          // 상황별 제목
+  leverTitle: string                                // 다가가기/밀당 시뮬 제목
+  lever: { prompt: string; push: string; pull: string } // 시뮬 버튼·배너 라벨
+  balance: Record<CompatSignals["role"], { pos: number; line: string }> // 끌림 무게중심
+  /** 가능성 낮을 때 모드전용(짝사랑 위로). 있으면 점수 기준으로 extra와 교체 */
+  extraLow?: { title: string; D: DoodleC; a: { k: string; v: string }[] }
+  extraThreshold?: number                           // 위로 전환 점수(기본 60)
 }
 
 // ── mock 일주: 등록된 캐릭터 키 풀에서 입력 기반으로 결정적 선택(빈 아바타 방지) ──
@@ -103,13 +115,6 @@ const FATE_SPOUSE: Record<CompatSignals["spouse"], { label: string; line: string
   삼합: { label: "일지 삼합", line: "죽이 잘 맞고 통하는 결" },
   충: { label: "일지 충", line: "긴장이 오히려 끌림이 되는 밀당형" },
   무관계: { label: "잔잔한 자성", line: "강한 끌림보단 진심·꾸준함이 변수" },
-}
-const BALANCE: Record<CompatSignals["role"], { pos: number; line: string }> = {
-  생받음: { pos: 70, line: "그 사람 기운이 너를 더 끌어당기는 결" },
-  극받음: { pos: 63, line: "그 사람이 너를 설레게·긴장하게 만드는 결" },
-  같음: { pos: 50, line: "비슷한 무게 — 서로 밀당하는 균형" },
-  생해줌: { pos: 33, line: "네가 더 챙겨주고 싶어지는 결" },
-  극해줌: { pos: 38, line: "네가 리드하게 되는 결" },
 }
 const YONG_LV = ["아직은 약하지만 천천히", "조금씩", "꽤 많이", "아주 많이"]
 const RADAR_TIP: Record<string, string> = {
@@ -293,16 +298,16 @@ function Prose({ text }: { text: string }) {
   )
 }
 
-// 밀당 시뮬레이터 — 당기기/풀기 선택 → 상대 오행 맞춤 예상 반응
-function PullPushSim({ best, pushLine, pullLine }: { best: "push" | "pull"; pushLine: string; pullLine: string }) {
+// 다가가기/밀당 시뮬레이터 — 선택 → 상대 오행 맞춤 예상 반응. 라벨은 모드별(lever)
+function PullPushSim({ best, pushLine, pullLine, lever }: { best: "push" | "pull"; pushLine: string; pullLine: string; lever: { prompt: string; push: string; pull: string } }) {
   const [sel, setSel] = useState<"push" | "pull" | null>(null)
   const line = sel === "push" ? pushLine : sel === "pull" ? pullLine : null
   const good = sel === best
   return (
     <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
-      <p className="text-[14px] font-bold text-charcoal text-center">지금, 어떻게 할까?</p>
+      <p className="text-[14px] font-bold text-charcoal text-center">{lever.prompt}</p>
       <div className="flex gap-2">
-        {([["push", "당기기"], ["pull", "밀기"]] as const).map(([k, label]) => (
+        {([["push", lever.push], ["pull", lever.pull]] as const).map(([k, label]) => (
           <button key={k} onClick={() => setSel(k)}
             className="flex-1 py-3 rounded-xl text-[14px] font-bold border-2 transition-colors"
             style={sel === k ? { background: PINK, color: "#FFF9F0", borderColor: PINK } : { background: "white", color: "#94A3B8", borderColor: "#E0D4C0" }}>
@@ -363,7 +368,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
     setStep("loading")
     const d = derive(myKey, myBirth, myGender, them, config)
     setAi({ status: "loading", text: "" })
-    fetch("/api/some", {
+    fetch(config.apiPath, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         me: { name: "나", elem: d.eMe }, them: { name: them.name, elem: d.eThem },
@@ -456,7 +461,10 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
     : config.timing.line
   const coreCopy = FATE_CORE[signals.core]
   const spouseCopy = FATE_SPOUSE[signals.spouse]
-  const bal = BALANCE[signals.role]
+  const bal = config.balance[signals.role]
+  const isLow = !!config.extraLow && score < (config.extraThreshold ?? 60)
+  const extraSec = isLow ? config.extraLow! : config.extra
+  const leverPick = config.pushPull[eThem].best === "push" ? config.lever.push : config.lever.pull
   const dohwaVal = signals.dohwa ? clamp(72 + (score % 14), 60, 95) : clamp(34 + (score % 16), 25, 55)
   const jIdx = score >= 80 ? 3 : score >= 66 ? 2 : score >= 52 ? 1 : 0
   const radar = [
@@ -523,7 +531,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         {(ai.status === "error" || ai.status === "idle") && <Prose text={fallbackProse} />}
       </div>
 
-      <ChapterDivider n={1} title="두 기운이 만나면" />
+      <ChapterDivider n={1} title={config.chapters[0]} />
 
       {/* 사주 오행 밸런스 (좌 나 / 우 그 사람) */}
       <div className="flex flex-col gap-2.5">
@@ -579,7 +587,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      <ChapterDivider n={2} title="이 끌림, 운명일까" />
+      <ChapterDivider n={2} title={config.chapters[1]} />
 
       {/* 운명 신호 — 천간합/일지 합충 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
@@ -621,11 +629,11 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      <ChapterDivider n={3} title="그래서 케미는 몇 점" />
+      <ChapterDivider n={3} title={config.chapters[2]} />
 
       {/* 썸 상황별 케미 — % 바 (커플 상황별 패턴) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleSparkles} basis={{ t: "오행 종합", deep: true }}>썸 상황별 케미</SectionTitle>
+        <SectionTitle icon={DoodleSparkles} basis={{ t: "오행 종합", deep: true }}>{config.situationalTitle}</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
           {config.situational.map(s => {
             const v = clamp(score + s.delta, 35, 98)
@@ -656,7 +664,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      <ChapterDivider n={4} title="그 사람 파헤치기" />
+      <ChapterDivider n={4} title={config.chapters[3]} />
 
       {/* 두 사람 프로필 — 일주 캐릭터 */}
       <div className="flex flex-col gap-2.5">
@@ -706,11 +714,11 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      <ChapterDivider n={5} title="어떻게 다가갈까" />
+      <ChapterDivider n={5} title={config.chapters[4]} />
 
       {/* 썸 진행 지도 — 4단계 + 다음 액션 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleRedString} basis={{ t: "오행 종합", deep: true }}>썸 진행 지도</SectionTitle>
+        <SectionTitle icon={DoodleRedString} basis={{ t: "오행 종합", deep: true }}>{config.journeyTitle}</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
           <div className="flex items-center">
             {config.journey.map((j, i) => (
@@ -779,17 +787,19 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      <ChapterDivider n={6} title="밀까, 당길까" />
+      <ChapterDivider n={6} title={config.chapters[5]} />
 
       {/* 밀당 가이드 (썸=밀당 / 짝사랑=현실·위로) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={config.extra.D} basis={{ t: "일간 오행" }}>{config.extra.title}</SectionTitle>
-        <div className="rounded-xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
-          <Ico as={DoodleLightning} size={16} />
-          <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>이 사람한텐 <span className="font-bold" style={{ color: PINK }}>{config.pushPull[eThem].best === "push" ? "당기기" : "밀기"}</span>가 더 통해요</p>
-        </div>
+        <SectionTitle icon={extraSec.D} basis={{ t: "일간 오행" }}>{extraSec.title}</SectionTitle>
+        {!isLow && (
+          <div className="rounded-xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
+            <Ico as={DoodleLightning} size={16} />
+            <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>이 사람한텐 <span className="font-bold" style={{ color: PINK }}>{leverPick}</span>가 더 통해요</p>
+          </div>
+        )}
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-1">
-          {config.extra.a.map((row, i) => (
+          {extraSec.a.map((row, i) => (
             <div key={i} className="flex items-start gap-3 py-2.5 border-b border-charcoal/5 last:border-0">
               <span className="text-[14px] font-bold text-charcoal shrink-0 w-[72px] whitespace-nowrap">{row.k}</span>
               <span className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{row.v}</span>
@@ -800,8 +810,8 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* 밀당 시뮬레이터 — 인터랙션 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleLightning} basis={{ t: "일간 오행" }}>밀당 시뮬레이터</SectionTitle>
-        <PullPushSim {...config.pushPull[eThem]} />
+        <SectionTitle icon={DoodleLightning} basis={{ t: "일간 오행" }}>{config.leverTitle}</SectionTitle>
+        <PullPushSim {...config.pushPull[eThem]} lever={config.lever} />
       </div>
 
       {/* 이건 조심해요 — 이 조합에서 역효과 나는 행동 */}
@@ -817,7 +827,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      <ChapterDivider n={7} title="언제 움직일까" />
+      <ChapterDivider n={7} title={config.chapters[6]} />
 
       {/* 매력 발산 지수 — 도화 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
@@ -945,7 +955,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
 
       {/* [무료] 온도계 — 양 끝에서 두 캐릭터가 끌어당기는 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleSparkle} basis={{ t: "오행 종합", deep: true }}>우리 사이 온도</SectionTitle>
+        <SectionTitle icon={DoodleSparkle} basis={{ t: "오행 종합", deep: true }}>{config.tempTitle}</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
           <div className="flex items-center gap-2.5">
             <Avatar iljuKey={meK} size={30} />
