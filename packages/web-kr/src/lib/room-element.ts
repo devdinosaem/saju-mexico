@@ -25,7 +25,7 @@ export const ELEMENT_LABEL: Record<ElemKr, string> = {
   목: "나무", 화: "불", 토: "흙", 금: "쇠", 수: "물",
 }
 
-/** 오행 칩(pill) 색상 — 운기달력 "내 오행 밸런스" 디자인과 통일 */
+/** 오행 칩(pill) 색상 — "내 오행 밸런스" 디자인과 통일 */
 export const ELEMENT_PILL: Record<ElemKr, { bg: string; border: string; text: string }> = {
   목: { bg: "#D1FAE5", border: "#4ADE80", text: "#166534" },
   화: { bg: "#FEE2E2", border: "#F87171", text: "#991B1B" },

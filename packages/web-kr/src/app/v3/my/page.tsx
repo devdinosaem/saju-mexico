@@ -78,7 +78,7 @@ export default function MyPage() {
       {/* 오늘의 사주 (일일 운세 위젯) */}
       <OhneulSajuCard />
 
-      {/* 오늘의 사주 상세 (운기달력에서 이전) */}
+      {/* 오늘의 사주 상세 */}
       <TodaySaju />
 
       {/* 내 명식 (사주팔자 + 오행 분포) */}
@@ -282,7 +282,7 @@ export default function MyPage() {
         </div>
       </div>
 
-      {/* 이번 주 에너지 흐름 (운기달력에서 이전) */}
+      {/* 이번 주 에너지 흐름 */}
       <WeeklyEnergyFlow />
 
       {/* 광고 배너 */}

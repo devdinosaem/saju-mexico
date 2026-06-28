@@ -1,5 +1,5 @@
 /**
- * 오행 칩(pill) — 두들 아이콘 + 순한글 라벨. 운기달력 "내 오행 밸런스" 룩.
+ * 오행 칩(pill) — 두들 아이콘 + 순한글 라벨. "내 오행 밸런스" 룩.
  */
 import { DoodleBox, DoodleSprout, DoodleFire, DoodleEarth, DoodleDiamond, DoodleWave } from "@/components/doodles"
 import { ELEMENT_LABEL, ELEMENT_PILL } from "@/lib/room-element"
