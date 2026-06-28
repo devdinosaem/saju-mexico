@@ -13,6 +13,7 @@ import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
 import RoomElementStrip from "./_components/RoomElementStrip"
 import RoomElementMini from "./_components/RoomElementMini"
+import RoomElementChips from "./_components/RoomElementChips"
 
 type GuestEntry = { id: string; author: string; message: string; date: string }
 
@@ -124,7 +125,11 @@ export default function InteriorPage() {
         <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 2 · 컴팩트 미니카드</span>
         <RoomElementMini />
       </div>
-      {/* ▲▲▲ 방의 기운 — 인라인 시안 2종 비교(임시) ▲▲▲ */}
+      <div className="flex flex-col gap-1">
+        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 3 · 두들 칩 일렬</span>
+        <RoomElementChips />
+      </div>
+      {/* ▲▲▲ 방의 기운 — 인라인 시안 3종 비교(임시) ▲▲▲ */}
 
       {/* 방명록 인라인 미리보기 */}
       {previewEntries.length > 0 && (
