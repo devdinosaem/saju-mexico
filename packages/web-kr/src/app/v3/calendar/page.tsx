@@ -3,7 +3,6 @@ import AdBanner from "@/components/AdBanner"
 import { ElementBadgePill } from "@/components/ilju-type-card"
 import TodaySaju from "./_components/TodaySaju"
 import AttendanceStreak from "./_components/AttendanceStreak"
-import FoodLogger from "./_components/FoodLogger"
 
 const BALANCE = [
   { key: "목", label: "목(木)", pct: 28, bg: "#D1FAE5", border: "#4ADE80", text: "#166534", bar: "#4ADE80" },
@@ -82,9 +81,6 @@ export default function CalendarPage() {
           💡 금(金) 기운이 강한 달. 수(水)가 부족해 — 물 많이 마시고 직관을 믿어.
         </p>
       </div>
-
-      {/* 음식 입력 */}
-      <FoodLogger />
 
       {/* 광고 배너 */}
       <div className="rounded-xl overflow-hidden">
