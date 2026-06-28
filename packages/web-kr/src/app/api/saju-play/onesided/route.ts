@@ -2,7 +2,7 @@ import { NextRequest } from "next/server"
 
 export const runtime = "edge"
 
-// 짝사랑(크러시) 분석기 — 썸과 동일 body 계약, 톤만 '일방·불확실'.
+// 짝사랑(onesided) 분석기 — 썸과 동일 body 계약, 톤만 '일방·불확실'.
 // 나만 좋아하는 상황: 상대 마음 단정 금지(성향·경향만), 가능성 낮아도 절망 금지
 // → "지금은 타이밍이 아냐 + 행동" 또는 "정리도 용기"로 너를 지키는 위로.
 export async function POST(req: NextRequest) {
