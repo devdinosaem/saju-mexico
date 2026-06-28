@@ -1182,9 +1182,10 @@ const _EarthChars: Array<{id: string; node: React.ReactNode}> = [
             </svg>
             {SHOW_ELEMENT_BADGE && <ElementBadge element="earth" />}
             <svg viewBox="0 0 80 90" className="w-[120px] relative z-10" fill="none">
-              {/* 헤어 — 웨이브 단발, 갈색 */}
-              <path d="M20 32 Q18 10 40 8 Q62 10 60 32 Q58 46 52 54 Q46 58 40 58 Q34 58 28 54 Q22 46 20 32 Z" fill="#92400E" stroke="#2D2D2D" strokeWidth="1.5" />
-              <path d="M26 16 Q32 10 40 10" stroke="#B45309" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.5" />
+              {/* 헤어 — 롱웨이브, 따뜻한 갈색 (여성 템플릿3) */}
+              <path d="M16 30 Q16 8 40 6 Q64 8 64 30 Q68 42 62 50 Q56 58 64 66 Q68 74 62 80 Q54 86 46 82 Q40 80 34 82 Q26 86 18 80 Q12 74 16 66 Q24 58 18 50 Q12 42 16 30 Z" fill="#A16207" stroke="#2D2D2D" strokeWidth="1.5" />
+              <path d="M20 42 Q24 38 28 42" stroke="#854D0E" strokeWidth="0.9" fill="none" opacity="0.5" />
+              <path d="M52 42 Q56 38 60 42" stroke="#854D0E" strokeWidth="0.9" fill="none" opacity="0.5" />
               {/* 얼굴 — 여성 타원 */}
               <ellipse cx="40" cy="38" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5" />
               {/* 속눈썹 */}
