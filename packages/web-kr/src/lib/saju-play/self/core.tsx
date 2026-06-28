@@ -13,12 +13,12 @@ import { ILJU_TYPES } from "@/lib/ilju-types"
 import { elemOf, ELEMS, type Elem } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
 import { buildSelf, tgGroup, type SelfBirth, type Gender, type LifePoint } from "./self-adapter"
-import { TALENT, ELEM_TRAIT, MEETING, LOVE_STYLE, IDEAL, JOB, SELF_MANUAL, SELF_ENV, ELEM_ORGAN, SEUN_LINE } from "./flavor"
+import { TALENT, ELEM_TRAIT, MEETING, LOVE_STYLE, IDEAL, JOB, SELF_MANUAL, SELF_ENV, ELEM_ORGAN, SEUN_LINE, PAST_LIFE, DARK_HIST, MEME } from "./flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
   DoodleLightning, DoodleMedal, DoodleMirror, DoodleSpeechBubble, DoodleStar,
-  DoodleDiamond, DoodleCalendar, DoodleClover, DoodleQuestionMark,
+  DoodleDiamond, DoodleCalendar, DoodleClover, DoodleQuestionMark, DoodleMoon,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -97,6 +97,26 @@ function LifeGraph({ life }: { life: LifePoint[] }) {
   )
 }
 
+// 사주 RPG 스탯 — 5각 레이더
+function Radar({ data }: { data: { label: string; value: number }[] }) {
+  const size = 200, c = 100, R = 64, n = data.length
+  const pt = (i: number, r: number): [number, number] => {
+    const a = -Math.PI / 2 + (i * 2 * Math.PI) / n
+    return [c + r * Math.cos(a), c + r * Math.sin(a)]
+  }
+  const ring = (f: number) => data.map((_, i) => pt(i, R * f).join(",")).join(" ")
+  const poly = data.map((d, i) => pt(i, R * (Math.max(0, Math.min(100, d.value)) / 100)).join(",")).join(" ")
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} className="mx-auto" style={{ width: "100%", maxWidth: 220 }}>
+      {[0.25, 0.5, 0.75, 1].map((f, i) => <polygon key={i} points={ring(f)} fill="none" stroke="#E5E7EB" strokeWidth={1} />)}
+      {data.map((_, i) => { const [x, y] = pt(i, R); return <line key={i} x1={c} y1={c} x2={x} y2={y} stroke="#E5E7EB" strokeWidth={1} /> })}
+      <polygon points={poly} fill="rgba(232,75,106,0.18)" stroke={PINK} strokeWidth={2} strokeLinejoin="round" />
+      {data.map((d, i) => { const [x, y] = pt(i, R + 16); return <text key={i} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize={12} fontWeight={700} fill="#2D2D2D">{d.label}</text> })}
+    </svg>
+  )
+}
+const clampN = (n: number) => Math.max(22, Math.min(96, Math.round(n)))
+
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 const FALLBACK_BIRTH: SelfBirth = { year: 1995, month: 3, day: 15, hour: 12, minute: 0 }
 const PRICE = "1명태"
@@ -165,6 +185,23 @@ export default function SelfFunnel() {
   const seunGroup = self.seunTenGod ? tgGroup(self.seunTenGod) : null
   const curIdx = self.life.findIndex(l => l.current)
   const nextDaeun = curIdx >= 0 ? self.life[curIdx + 1] : undefined
+  // 재미 파생
+  const d = self.dist, tg = self.tgGroups
+  const stats = [
+    { label: "추진", value: clampN(34 + d.목 * 13 + tg.비겁 * 8 + (self.isStrong ? 8 : 0)) },
+    { label: "매력", value: clampN(34 + d.화 * 10 + tg.식상 * 7 + (self.dohwa ? 22 : 0)) },
+    { label: "안정", value: clampN(40 + d.토 * 13 + tg.인성 * 5) },
+    { label: "지혜", value: clampN(34 + d.수 * 13 + tg.인성 * 8) },
+    { label: "재력", value: clampN(34 + d.금 * 8 + tg.재성 * 14) },
+  ]
+  const topStat = stats.reduce((a, b) => (b.value > a.value ? b : a))
+  const code = [
+    self.yinYang === "양" ? "E" : "I",
+    (d.목 + d.화) >= (d.금 + d.수) ? "D" : "C",
+    self.isStrong ? "L" : "S",
+    (tg.식상 + d.화 + d.수) >= (tg.재성 + d.토 + d.금) ? "F" : "T",
+  ].join("")
+  const meme = MEME[dominantElem]
   const fallbackProse =
     `너는 **${self.dayKr}(${self.dayElem})·${self.yinYang}** 일간, ${self.strongLevel}이야.\n\n` +
     `타고난 결은 **${self.topTalent.join("·")}** 쪽 — 여기에 네 무기가 있어. 나를 살리는 기운은 **${self.yong}**, 이걸 채울수록 잘 풀려.\n\n` +
@@ -480,6 +517,49 @@ export default function SelfFunnel() {
             <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>너무 겁먹지 마 — 큰 결정만 한 박자 신중히, 평소처럼 살면 무탈하게 지나가.</p></div>
         </div>
       )}
+
+      {/* ── 보너스 · 재미로 보는 나 ── */}
+      <div className="flex items-center gap-2.5 pt-3">
+        <Ico as={DoodleSparkles} size={20} />
+        <span className="text-[15px] text-charcoal shrink-0" style={BINGGRAE}>재미로 보는 나</span>
+        <div className="flex-1 h-px" style={{ background: "#E5E7EB" }} />
+      </div>
+
+      {/* 사주 RPG 스탯 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleStar} basis="오행·십신">사주 RPG 스탯</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-1">
+          <Radar data={stats} />
+          <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>최고 스탯은 <span className="font-bold" style={{ color: PINK }}>{topStat.label}</span> ({topStat.value}) — 여기로 승부 봐.</p>
+        </div>
+      </div>
+
+      {/* 나 코드 + 한 줄 밈 */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-3 py-3.5 flex flex-col items-center gap-1 text-center">
+          <Ico as={DoodleKey} size={18} />
+          <span className="text-[12px] text-text-muted">나 코드</span>
+          <span className="text-[20px]" style={{ ...BINGGRAE, color: PINK, letterSpacing: "0.05em" }}>{code}</span>
+        </div>
+        <div className="rounded-2xl px-3 py-3.5 flex flex-col items-center justify-center gap-1 text-center border-2 border-dashed border-charcoal/25" style={{ background: "#FFFDF5" }}>
+          <span className="text-[12px] text-text-muted">한 줄 요약</span>
+          <span className="text-[16px]" style={{ ...BINGGRAE, color: PINK }}>{meme}</span>
+        </div>
+      </div>
+
+      {/* 전생의 나 */}
+      <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={{ background: "#EFEAFE", border: "1.5px solid #C4B5FD" }}>
+        <Ico as={DoodleMoon} size={20} />
+        <div><p className="text-[14px] font-bold text-charcoal">전생의 나</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{PAST_LIFE[dominantElem]}</p></div>
+      </div>
+
+      {/* 나의 흑역사 버튼 */}
+      <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
+        <Ico as={DoodleLightning} size={18} />
+        <div><p className="text-[14px] font-bold text-charcoal">나의 흑역사 버튼</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{DARK_HIST[dominantElem]}</p></div>
+      </div>
 
       {/* consult 크로스셀 */}
       <Link href="/v3/consult" className="rounded-2xl px-4 py-4 flex items-center gap-3 active:opacity-85 transition-opacity" style={{ background: "linear-gradient(160deg,#FFF6FA,#FFFDF5)", border: "2px solid #2D2D2D" }}>
