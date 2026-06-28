@@ -269,7 +269,7 @@ function ChapterDivider({ n, title }: { n: number; title: string }) {
     <div className="flex items-center gap-2.5 pt-3">
       <span className="w-6 h-6 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: PINK }}>{n}</span>
       <span className="text-[15px] text-charcoal shrink-0" style={BINGGRAE}>{title}</span>
-      <div className="flex-1 h-px" style={{ background: "#E5E7EB" }} />
+      <div className="flex-1 h-px" style={{ background: "var(--line-medium)" }} />
     </div>
   )
 }
@@ -323,7 +323,7 @@ function PullPushSim({ best, pushLine, pullLine, lever }: { best: "push" | "pull
       {line && (
         <div className="rounded-xl px-3 py-2.5 flex items-start gap-2" style={{ background: good ? "#F0FFF4" : "#FFF7ED", border: `1.5px solid ${good ? "#86EFAC" : "#FDB877"}` }}>
           <Ico as={good ? DoodleHeart : DoodleLightning} size={16} />
-          <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{line}</p>
+          <p className="text-[14px] text-charcoal/80 leading-snug">{line}</p>
         </div>
       )}
     </div>
@@ -423,7 +423,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
           </div>
         </div>
         <div className="w-full rounded-2xl bg-white border border-charcoal/10 px-4 py-4">
-          <p className="text-[14px] text-charcoal flex items-center justify-center gap-1.5 leading-relaxed" style={GAEGU}>{config.landing.sub} <Ico as={DoodleSparkle} size={16} /></p>
+          <p className="text-[14px] text-charcoal flex items-center justify-center gap-1.5 leading-relaxed">{config.landing.sub} <Ico as={DoodleSparkle} size={16} /></p>
         </div>
         <div className="flex items-center gap-1.5 text-[13px] text-text-muted">
           <Ico as={DoodleKey} size={15} /> 혼자만 보는 분석이에요. 상대는 몰라요.
@@ -556,7 +556,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
     <div className="flex flex-col gap-6">
       {/* 정밀 풀이 — 유료 히어로 (줄글) */}
       <div className="rounded-2xl px-4 py-4 flex flex-col gap-3 border-2 border-charcoal"
-        style={{ background: "linear-gradient(160deg,#FFF6FA,#FFFDF5)", boxShadow: "0 4px 16px rgba(232,75,106,0.08)" }}>
+        style={{ background: "linear-gradient(160deg,#FFF6FA,#FFFDF5)" }}>
         <div className="flex items-center gap-2">
           <Ico as={DoodleSparkles} size={20} />
           <span className="text-[15px] text-charcoal" style={BINGGRAE}>사주 정밀 풀이</span>
@@ -629,7 +629,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
         <Ico as={ELEM_DOODLE[myYongKr]} size={26} />
         <div className="min-w-0">
           <p className="text-[14px] font-bold text-charcoal flex items-center gap-1.5 flex-wrap">네 부족한 {myYongKr} 기운을 채워주는 사람 <Basis t="용신" deep /></p>
-          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{them.name || "그 사람"}은 네게 부족한 {myYongKr}을 {YONG_LV[signals.yongFulfill]} 채워줘. 옆에 있으면 숨통 트이는 결이야.</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug">{them.name || "그 사람"}은 네게 부족한 {myYongKr}을 {YONG_LV[signals.yongFulfill]} 채워줘. 옆에 있으면 숨통 트이는 결이야.</p>
         </div>
       </div>
 
@@ -647,14 +647,14 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
                 {coreCopy.label}
                 {coreCopy.gold && <span className="text-[11px] px-1.5 py-0.5 rounded-full text-white" style={{ background: "#F0A020" }}>RARE</span>}
               </p>
-              <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{coreCopy.line}</p>
+              <p className="text-[14px] text-charcoal/70 leading-snug">{coreCopy.line}</p>
             </div>
           </div>
           <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3 flex items-center gap-3">
             <Ico as={DoodleTaegeuk} size={20} />
             <div className="min-w-0">
               <p className="text-[14px] font-bold text-charcoal">{spouseCopy.label}</p>
-              <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{spouseCopy.line}</p>
+              <p className="text-[14px] text-charcoal/70 leading-snug">{spouseCopy.line}</p>
             </div>
           </div>
         </div>
@@ -671,7 +671,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
             </div>
             <div className="flex flex-col items-center gap-0.5"><Avatar iljuKey={themK} size={30} /><span className="text-[12px] text-text-muted">{them.name || "그 사람"}</span></div>
           </div>
-          <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>{bal.line}</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug text-center">{bal.line}</p>
         </div>
       </div>
 
@@ -692,7 +692,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
                 <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
                   <div className="h-full rounded-full" style={{ width: `${v}%`, background: v >= 80 ? PINK : v >= 65 ? "#FBBF24" : "#94A3B8" }} />
                 </div>
-                <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>{s.line}</p>
+                <p className="text-[13px] text-text-muted leading-snug">{s.line}</p>
               </div>
             )
           })}
@@ -704,7 +704,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
         <SectionTitle icon={DoodleSparkle} basis={{ t: "오행 종합", deep: true }}>연애 세포 활성도</SectionTitle>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-1">
           <RadarChart data={radar} />
-          <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>
+          <p className="text-[14px] text-charcoal/70 leading-snug text-center">
             가장 도드라지는 건 <span className="font-bold" style={{ color: PINK }}>{topCell.label}</span> ({topCell.value}) — {RADAR_TIP[topCell.label]}
           </p>
         </div>
@@ -724,7 +724,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
                 <span className="text-[14px] font-bold text-charcoal">{x.label}</span>
                 <ElemBadge elem={x.e} />
                 <span className="text-[14px] font-bold" style={{ color: PINK }}>{per.tag}</span>
-                <span className="text-[13px] text-charcoal/60 leading-snug" style={GAEGU}>{per.line}</span>
+                <span className="text-[13px] text-charcoal/60 leading-snug">{per.line}</span>
               </div>
             )
           })}
@@ -738,7 +738,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
           <Avatar iljuKey={themK} size={48} />
           <div className="min-w-0">
             <p className="text-[14px] font-bold text-charcoal">{open.title}</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{open.line}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug">{open.line}</p>
           </div>
         </div>
       </div>
@@ -754,7 +754,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
           {([["취급주의", "care"], ["충전법", "charge"], ["금지사항", "ban"], ["A/S", "as"]] as const).map(([k, key]) => (
             <div key={k} className="px-4 py-2.5 flex gap-3 border-b border-charcoal/5 last:border-0">
               <span className="text-[13px] font-bold shrink-0 w-16" style={{ color: PINK }}>{k}</span>
-              <span className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{config.manual[eThem][key]}</span>
+              <span className="text-[14px] text-charcoal/75 leading-snug">{config.manual[eThem][key]}</span>
             </div>
           ))}
         </div>
@@ -783,7 +783,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
             ))}
           </div>
           <div className="rounded-xl px-3 py-2.5" style={{ background: "#FFF0F5" }}>
-            <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>
+            <p className="text-[14px] text-charcoal/80 leading-snug">
               <span className="font-bold" style={{ color: PINK }}>다음 칸으로 →</span> {config.journey[jIdx].tip}
             </p>
           </div>
@@ -795,12 +795,12 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
         <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#F0FFF4", border: "1.5px solid #86EFAC" }}>
           <Ico as={DoodleHeart} size={18} />
           <div><p className="text-[14px] font-bold text-charcoal">끌리는 포인트</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.chemi[rel].good}</p></div>
+            <p className="text-[14px] text-charcoal/70 leading-snug">{config.chemi[rel].good}</p></div>
         </div>
         <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
           <Ico as={DoodleLightning} size={18} />
           <div><p className="text-[14px] font-bold text-charcoal">어긋나기 쉬운 포인트</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.chemi[rel].care}</p></div>
+            <p className="text-[14px] text-charcoal/70 leading-snug">{config.chemi[rel].care}</p></div>
         </div>
       </div>
 
@@ -811,7 +811,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
           {config.strategy[rel].map((s, i) => (
             <div key={i} className="flex items-start gap-2.5">
               <span className="w-5 h-5 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: PINK }}>{i + 1}</span>
-              <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{s}</p>
+              <p className="text-[14px] text-charcoal/80 leading-snug">{s}</p>
             </div>
           ))}
         </div>
@@ -841,14 +841,14 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
         {!isLow && (
           <div className="rounded-xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
             <Ico as={DoodleLightning} size={16} />
-            <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>이 사람한텐 <span className="font-bold" style={{ color: PINK }}>{leverPick}</span>가 더 통해요</p>
+            <p className="text-[14px] text-charcoal/80 leading-snug">이 사람한텐 <span className="font-bold" style={{ color: PINK }}>{leverPick}</span>가 더 통해요</p>
           </div>
         )}
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-1">
           {extraSec.a.map((row, i) => (
             <div key={i} className="flex items-start gap-3 py-2.5 border-b border-charcoal/5 last:border-0">
               <span className="text-[14px] font-bold text-charcoal shrink-0 w-[72px] whitespace-nowrap">{row.k}</span>
-              <span className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{row.v}</span>
+              <span className="text-[14px] text-charcoal/70 leading-snug">{row.v}</span>
             </div>
           ))}
         </div>
@@ -867,7 +867,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
           {config.mines[eThem].map((m, i) => (
             <div key={i} className="flex items-start gap-2.5">
               <span className="w-5 h-5 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: "#EF4444" }}>{i + 1}</span>
-              <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{m}</p>
+              <p className="text-[14px] text-charcoal/80 leading-snug">{m}</p>
             </div>
           ))}
         </div>
@@ -886,7 +886,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
           <div className="h-3 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
             <div className="h-full rounded-full" style={{ width: `${dohwaVal}%`, background: signals.dohwa ? "linear-gradient(90deg,#FBBF24,#E84B6A)" : "#CBD5E1" }} />
           </div>
-          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{signals.dohwa ? "지금이 들이대기 좋은 때. 자신감 있게 다가가도 통해." : "확 끌기보단 꾸준함으로 스며들 때야."}</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug">{signals.dohwa ? "지금이 들이대기 좋은 때. 자신감 있게 다가가도 통해." : "확 끌기보단 꾸준함으로 스며들 때야."}</p>
         </div>
       </div>
 
@@ -902,7 +902,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
           </div>
           <div className="min-w-0">
             <p className="text-[14px] font-bold text-charcoal">{signals.timingHot ? "인연이 움직이는 시기" : "잔잔한 흐름"}</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{signals.timingHot ? "네 연애운이 들어오는 때 — 적극적으로 움직여도 좋아." : "큰 바람은 약해 — 지금은 네가 먼저 만드는 게 핵심이야."}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug">{signals.timingHot ? "네 연애운이 들어오는 때 — 적극적으로 움직여도 좋아." : "큰 바람은 약해 — 지금은 네가 먼저 만드는 게 핵심이야."}</p>
           </div>
         </div>
       </div>
@@ -914,8 +914,8 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
           <Ico as={DoodleCalendar} size={20} />
           <div>
             <p className="text-[14px] font-bold text-charcoal">{timingWhen}</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{timingLine}</p>
-            <p className="text-[13px] text-charcoal/50 leading-snug mt-1" style={GAEGU}>피할 때 · {config.timing.avoid}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug">{timingLine}</p>
+            <p className="text-[13px] text-charcoal/50 leading-snug mt-1">피할 때 · {config.timing.avoid}</p>
           </div>
         </div>
       </div>
@@ -967,7 +967,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
             </div>
           ))}
         </div>
-        <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>칩은 각 항목이 어떤 사주를 근거로 했는지 알려줘요.</p>
+        <p className="text-[13px] text-text-muted leading-snug">칩은 각 항목이 어떤 사주를 근거로 했는지 알려줘요.</p>
       </div>
     </div>
   )
@@ -996,7 +996,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
         <div className="px-4 py-1.5 rounded-full flex items-center gap-1.5" style={{ background: "#FFF4E0", border: "1.5px dashed #F0C060" }}>
           <Ico as={arch.D} size={16} /> <p className="text-[15px] text-[#9A7050]" style={BINGGRAE}>{arch.name}</p>
         </div>
-        <p className="text-[15px] text-charcoal/75 leading-relaxed" style={GAEGU}>{arch.vibe}</p>
+        <p className="text-[15px] text-charcoal/75 leading-relaxed">{arch.vibe}</p>
       </div>
 
       {/* [무료] 온도계 — 양 끝에서 두 캐릭터가 끌어당기는 */}
@@ -1012,7 +1012,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
           </div>
           <div className="flex flex-col gap-1.5">
             <span className="self-start px-2.5 py-1 rounded-full text-[13px] font-bold text-white" style={{ background: PINK }}>{stage.label}</span>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{stage.line}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug">{stage.line}</p>
           </div>
         </div>
       </div>
@@ -1024,8 +1024,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
             <div className="blur-[5px] pointer-events-none select-none">{PaidBody}</div>
             <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(255,254,242,0.15), var(--bg-cream,#FFFEF2) 88%)" }} />
           </div>
-          <div className="-mt-7 rounded-2xl bg-white border-2 border-charcoal px-5 py-5 flex flex-col items-center gap-2.5 text-center"
-            style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.10)" }}>
+          <div className="-mt-7 rounded-2xl bg-white border-2 border-charcoal px-5 py-5 flex flex-col items-center gap-2.5 text-center">
             <Ico as={DoodleKey} size={36} />
             <p className="text-[16px] text-charcoal" style={BINGGRAE}>정밀 풀이 잠금 해제</p>
             <div className="flex flex-col gap-1.5 w-full py-1">
