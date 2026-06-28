@@ -153,20 +153,20 @@ const NA_STICKERS: { comp: React.ReactNode; top?: number; left?: number; right?:
 function ElemStrip({ elem }: { elem: Elem }) {
   return <div className="flex-1 flex items-center justify-center pt-2 border-t-2 border-charcoal/20" style={{ background: ELEMENT_STYLE[elem]?.bg ?? "#F1F5F9" }}>{STICKER[elem]}</div>
 }
-export function CelebCard({ name, role, cat, elem, idx }: { name: string; role: string; cat: string; elem: Elem; idx: number }) {
+export function CelebCard({ name, role, cat, elem, idx, roleStyle = GAEGU }: { name: string; role: string; cat: string; elem: Elem; idx: number; roleStyle?: React.CSSProperties }) {
   const tilt = TILTS[idx % TILTS.length], mt = idx % 2 === 0 ? 8 : 0
   return (
     <div className="shrink-0 flex flex-col rounded-2xl overflow-hidden" style={{ width: 108, background: "white", border: "2px solid rgba(45,45,45,0.1)", transform: `rotate(${tilt}deg)`, boxShadow: "2px 2px 0px rgba(45,45,45,0.1)", marginTop: mt }}>
       <div className="flex flex-col items-center px-2.5 pt-2.5 pb-1.5 gap-1">
         <CelebAvatar name={name} cat={cat} size={64} />
         <p className="text-[13px] leading-tight text-charcoal text-center font-bold">{name}</p>
-        <p className="text-[12px] text-text-muted leading-tight text-center" style={GAEGU}>{role}</p>
+        <p className="text-[12px] text-text-muted leading-tight text-center" style={roleStyle}>{role}</p>
       </div>
       <ElemStrip elem={elem} />
     </div>
   )
 }
-export function NaCard({ iljuKey, role, elem, idx }: { iljuKey: string; role: string; elem: Elem; idx: number }) {
+export function NaCard({ iljuKey, role, elem, idx, roleStyle = GAEGU }: { iljuKey: string; role: string; elem: Elem; idx: number; roleStyle?: React.CSSProperties }) {
   const tilt = TILTS[idx % TILTS.length], mt = idx % 2 === 0 ? 8 : 0
   return (
     <div className="shrink-0 flex flex-col rounded-2xl overflow-hidden relative" style={{ width: 108, background: "#FACC15", border: "2px solid rgba(45,45,45,0.1)", transform: `rotate(${tilt}deg)`, boxShadow: "2px 2px 0px rgba(45,45,45,0.1)", marginTop: mt }}>
@@ -176,7 +176,7 @@ export function NaCard({ iljuKey, role, elem, idx }: { iljuKey: string; role: st
           {ILJU_SVG_ICONS[iljuKey]?.()}
         </div>
         <p className="text-[13px] leading-tight text-charcoal text-center font-bold">나</p>
-        <p className="text-[12px] text-charcoal/60 leading-tight text-center" style={GAEGU}>{role}</p>
+        <p className="text-[12px] text-charcoal/60 leading-tight text-center" style={roleStyle}>{role}</p>
       </div>
       <ElemStrip elem={elem} />
     </div>

@@ -32,6 +32,15 @@
   font-display: swap;
 }
 
+/* 온글잎 박다현체 — 감성 포인트 손글씨. 현재는 self v2 리포트에서만 시범 적용(--font-flavor 미교체). */
+@font-face {
+  font-family: 'Ownglyph ParkDaHyun';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* ── 페이지 배경 — 모든 페이지는 이 색을 기준으로 통일 ── */
   --bg-cream: #FDF6EE;        /* 표준 페이지 배경 */
