@@ -8,6 +8,7 @@ import MyIljuCard from "./_components/MyIljuCard"
 import MyongtaeCard from "./_components/MyongtaeCard"
 import MyMyeongsikCard from "./_components/MyMyeongsikCard"
 import OhneulSajuCard from "./_components/OhneulSajuCard"
+import TodaySaju from "./_components/TodaySaju"
 import MonthCalendar from "./_components/MonthCalendar"
 import WeeklyEnergyFlow from "./_components/WeeklyEnergyFlow"
 import SajuInputSheet from "../shop/_components/SajuInputSheet"
@@ -76,6 +77,9 @@ export default function MyPage() {
 
       {/* 오늘의 사주 (일일 운세 위젯) */}
       <OhneulSajuCard />
+
+      {/* 오늘의 사주 상세 (운기달력에서 이전) */}
+      <TodaySaju />
 
       {/* 내 명식 (사주팔자 + 오행 분포) */}
       <MyMyeongsikCard onEdit={() => setEditOpen(true)} />
