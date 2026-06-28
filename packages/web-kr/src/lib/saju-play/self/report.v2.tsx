@@ -77,7 +77,7 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
   return (
     <div className="flex flex-col gap-6">
       {/* 나 정밀 풀이 — AI 요약 히어로(그라디언트 시그니처, 오행 테마) */}
-      <Hero icon={DoodleSparkles} title="나 정밀 풀이" basis="원국 종합" theme={self.dayElem} borderColor={ELEM_COLOR[self.dayElem]} borderWidth={2}>
+      <Hero icon={DoodleSparkles} title="나 정밀 풀이" basis="원국 종합" theme="pink" borderColor="var(--black)" borderWidth={2}>
         {aiLoading ? (
           <div className="flex flex-col gap-2 py-1">
             {[100, 96, 100, 72].map((w, i) => <div key={i} className="h-3 rounded-full bg-charcoal/10 animate-pulse" style={{ width: `${w}%` }} />)}

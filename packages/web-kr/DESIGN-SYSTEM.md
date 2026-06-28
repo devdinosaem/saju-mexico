@@ -71,6 +71,7 @@
 
 - `surface`는 top(옅은 오행 틴트)→bot(따뜻한 아이보리)로 떨어지는 저채도 그라디언트 — 본문 가독성 우선. `bold`는 흰 텍스트 대비를 위해 끝색을 진하게.
 - **적용 컴포넌트**: `<Hero theme>` (배경 surface + glow), `<GradBadge theme>` (bold). 상담탭 말풍선([`consult/page.tsx`](src/app/v3/consult/page.tsx))도 `gradOf(elemKey).surface`로 여기서 파생 — 별도 색 정의 없음.
+- **리포트 AI 정밀 풀이 Hero = 핑크(디폴트) + 검은선 고정** (오행별 X). `theme="pink" borderColor="var(--black)" borderWidth={2}`. 상담 말풍선은 오행별 유지(거긴 캐릭터 정체성). NaCard(내 카드)도 오행별 그라디언트 유지.
 - 새 오행/테마 추가 시 이 6종과 **동일한 밝기·채도 레벨**로 맞출 것.
 
 ### 라인 / 라운드 (섀도우 없음)

@@ -7,8 +7,6 @@
 // 비교: /v3/sinsal/compare
 // ════════════════════════════════════════════════════════════════
 import Link from "next/link"
-import { elemOf } from "../engine"
-import { ELEM_COLOR } from "../flavor"
 import { POS_LABEL, type Pos, type SinsalData } from "./sinsal-adapter"
 import { SINSAL, CAT_STYLE, STAT_LABEL, type SinsalStat } from "./flavor"
 import { deriveSinsal, SinsalBadge, SinsalCard, Radar, Avatar, resolveChar, POS_ORDER, POS_MEAN } from "./report"
@@ -25,13 +23,12 @@ const OWNGLYPH: React.CSSProperties = { fontFamily: "'Ownglyph ParkDaHyun', var(
 
 export function SinsalReportV2({ data, aiText, aiLoading = false }: { data: SinsalData; aiText: string; aiLoading?: boolean }) {
   const x = deriveSinsal(data)
-  const elem = elemOf(data.iljuKey)
   const charKey = resolveChar(data.iljuKey)
 
   return (
     <div className="flex flex-col gap-6">
       {/* 내 신살 정밀 풀이 — AI 요약 히어로(그라디언트 + 오행 테두리) */}
-      <Hero icon={DoodleSparkles} title="내 신살 정밀 풀이" basis="신살 종합" theme={elem} borderColor={ELEM_COLOR[elem]} borderWidth={2}>
+      <Hero icon={DoodleSparkles} title="내 신살 정밀 풀이" basis="신살 종합" theme="pink" borderColor="var(--black)" borderWidth={2}>
         {aiLoading ? (
           <div className="flex flex-col gap-2 py-1">
             {[100, 96, 100, 72].map((w, i) => <div key={i} className="h-3 rounded-full bg-charcoal/10 animate-pulse" style={{ width: `${w}%` }} />)}
