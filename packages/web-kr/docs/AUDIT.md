@@ -188,7 +188,44 @@ app/api/saju-play/sinsal      app/api/saju-play/some      app/api/saju-play/ones
 - ⚠️ 대화 이력 localStorage 저장 → **DB(Supabase) 이관 미완**. 기기간 동기화·영속 불가.
 - ⚠️ `next build` 검증·수동 E2E 미완(메모리 과제).
 
-## Phase 3 — 3탭 운테리어  *(진행 예정)*
+## Phase 3 — 3탭 운테리어
+
+[`/v3/interior/page.tsx`](../src/app/v3/interior/page.tsx). 구성: 스토리 → 미니홈피(MiniRoom) → 방의 기운(오행그래프) → 방명록 → 보관함 → 친구 미니홈피.
+
+### 3.1 기능별 상태
+
+| 기능(사진) | 구현 | 작동 범위 | 비고 |
+|---|---|---|---|
+| 스토리 | `StoryRow` | ✅ UI | 친구 스토리 행 + 친구추가. 사진 정책(활동시 테두리·일간기반 매일문구) 반영 여부 ⏳ |
+| 내 미니홈피 꾸미기 | `MiniRoom`/`/v3/my/room` | ✅ UI | 소품 배치·스킨 |
+| 내 미니홈피 방명록 | `guestbook` | ✅ but ⚠️ | **localStorage만** — 타인이 실제로 남길 수 없음 |
+| 내 미니홈피 오행 그래프 | `RoomElementCard` 외 4종 | ⚠️ **미결** | 시안 5종 동시 노출 |
+| 소품/캐릭터/스킨샵 | `interior/inventory/[type]` | ❌ **구매 미구현** | 보유표시·가격(SSOT)만, 구매=alert |
+| 친구 미니홈피 | `interior/[friend]` | ✅ UI | 친구 목록→방문 |
+
+### 3.2 🔴 시스템적 문제 5 — 샵 구매 미구현 (수익화 확정 결론)
+
+- **앱 전체에서 `spend()` 호출 지점은 상담(consult:530) 단 하나.** ([전역 grep 결과](../src/lib/balance.ts#L30))
+- 보관함 "구매하기" 버튼 = `onClick={() => alert("결제 준비중 🌙")}` ([inventory/page.tsx:586](../src/app/v3/inventory/page.tsx#L586)). 카트는 위시리스트 토글만.
+- 소품/캐릭터/스킨 가격은 SSOT(`ITEM_PRICES`)로 정상 표시되나 **명태 차감·소유 적재 로직 없음.**
+- `inventory.ts`에 `purchase()`(spend+owned 추가) 함수 자체가 부재. 접근 판정(`canAccess`)·소유목록 구조만 존재.
+- → **결론**: 1탭(목업 페이월) + 3탭(alert 구매) 합산 → **상담 외 전 결제가 미배선.** 수익화 = 상담 종량제만 작동.
+
+### 3.3 🔴 시스템적 문제 6 — 소셜 레이어가 전부 단일기기 localStorage
+
+- 방명록(`gbKey` localStorage), 친구(`useFriends`/[friends.ts](../src/lib/friends.ts)), 인벤토리·대표캐릭터 모두 localStorage. **서버 동기화 없음** → 친구가 내 방명록에 실제로 글을 남기거나, 친구의 진짜 미니홈피를 보는 게 불가능(샘플/로컬 데이터).
+- 즉 "운테리어=소셜" 컨셉의 핵심(타인 상호작용)이 **백엔드 미구현**. 사진의 스토리 정책("친구가 방 꾸미거나 방명록 달리면 테두리 생김")은 서버 없이는 성립 불가.
+- → **결정필요 🟦**: 소셜 백엔드(방명록/친구/스토리 활동) 설계 — Supabase 등.
+
+### 3.4 🟠 미완 — 오행 그래프 시안 5종 동시 노출
+
+[interior/page.tsx:121-142](../src/app/v3/interior/page.tsx#L121): "방의 기운"이 `현재/시안A/B/C/D` **5개 카드로 동시 렌더**(주석 "임시·시안 비교"). 프로덕션 화면에 디자인 비교본이 그대로 노출 — **1종 선택 후 나머지 제거 필요.**
+
+### 3.5 접근 등급 레지스트리
+
+- `STICKER_ACCESS`: CrystalBall/MagicWand/Tarot/Crystal=purchase, Crown=subscription, 나머지 free. `CHARACTER_ACCESS={}`(전부 free 판정), 스킨은 `RoomSkin.access` 개별 정의.
+- ⚠️ 구독(`isSubscribed`) 기반 해금 경로는 있으나 구독 결제(Phase 5)가 미배선이라 실효 없음.
+
 ## Phase 4 — 4탭 마이 (캘린더 편입 포함)  *(진행 예정)*
 ## Phase 5 — 상단 액막이샵/충전·구독  *(진행 예정)*
 
