@@ -26,6 +26,16 @@ const HERO_GRADS: { key: string; label: string; top: string; bot: string; accent
   { key: "수", label: "수 · 물빛", top: "#F2F8FE", bot: "#FAFDFF", accent: "#60A5FA", glow: "rgba(96,165,250,0.08)" },
 ];
 
+// C안 — 온도 여정(쿨↔웜 가로지르기)으로 몽환감 이식. 위·아래 hue를 일부러 다르게.
+const HERO_GRADS_C: { key: string; label: string; top: string; bot: string; accent: string; glow: string }[] = [
+  { key: "현재", label: "핑크 · 쿨핑크→웜크림", top: "#FFF6FA", bot: "#FFFDF5", accent: "#E84B6A", glow: "rgba(232,75,106,0.08)" },
+  { key: "목", label: "목 · 민트→피치", top: "#E9FBF1", bot: "#FFF7EC", accent: "#34D399", glow: "rgba(52,211,153,0.10)" },
+  { key: "화", label: "화 · 코랄→라일락", top: "#FFEFEC", bot: "#F6EFFA", accent: "#FB7185", glow: "rgba(251,113,133,0.10)" },
+  { key: "토", label: "토 · 골드→민트", top: "#FFF6DF", bot: "#EFFAF1", accent: "#F59E0B", glow: "rgba(245,158,11,0.10)" },
+  { key: "금", label: "금 · 스틸→아이보리", top: "#ECF3FB", bot: "#FFF8EC", accent: "#7C93AC", glow: "rgba(124,147,172,0.12)" },
+  { key: "수", label: "수 · 블루→웜크림", top: "#E8F2FE", bot: "#FFF6EC", accent: "#3B82F6", glow: "rgba(59,130,246,0.10)" },
+];
+
 function HeroSwatch({ g, border }: { g: (typeof HERO_GRADS)[number]; border: string }) {
   return (
     <div
@@ -97,6 +107,14 @@ export default function PreviewPage() {
         <h3 className="text-base font-bold text-[#2D2D2D] mb-3">B안 — 오행 틴트 보더 <span className="text-xs font-normal text-gray-400">정체성 ↑</span></h3>
         <div className="grid grid-cols-2 gap-3">
           {HERO_GRADS.map(g => <HeroSwatch key={g.key} g={g} border={`2px solid ${g.accent}`} />)}
+        </div>
+      </section>
+
+      <section className="mb-12 max-w-[640px] mx-auto">
+        <h3 className="text-base font-bold text-[#2D2D2D] mb-1">C안 — 온도 여정 (몽환) <span className="text-xs font-normal text-gray-400">위=자기색 · 아래=반대온도</span></h3>
+        <p className="text-[13px] text-gray-500 mb-3">핑크처럼 쿨↔웜을 가로질러 무지갯빛 전이를 만든 버전 · charcoal 보더 고정</p>
+        <div className="grid grid-cols-2 gap-3">
+          {HERO_GRADS_C.map(g => <HeroSwatch key={g.key} g={g} border="2px solid #2D2D2D" />)}
         </div>
       </section>
 
