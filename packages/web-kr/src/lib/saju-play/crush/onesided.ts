@@ -17,7 +17,7 @@ export const ONESIDED_CONFIG: CrushConfig = {
   landing: {
     hi: DoodleMoon,
     line: "그 사람 마음에, 내가 있을까?",
-    sub: "혼자 끙끙 앓던 그 마음 — 사주로 가능성과 다가가는 법을 조심스럽게 짚어줄게.",
+    sub: "혼자 간직한 마음 — 사주로 가능성과 다가가는 법을 짚어줄게.",
     cta: "짝사랑 분석 시작하기",
   },
   gaugeName: "마음 닿을 가능성",
