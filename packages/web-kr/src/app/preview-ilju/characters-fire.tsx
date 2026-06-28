@@ -159,8 +159,6 @@ const _FireChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="46" cy="34" r="2.5" fill="#2D2D2D"/>
               <circle cx="34.8" cy="33.2" r="1" fill="white"/>
               <circle cx="46.8" cy="33.2" r="1" fill="white"/>
-              {/* 콧대 */}
-              <path d="M40 36 Q39 39 41 41" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45"/>
               {/* 입 — 여유있는 볼매 미소 */}
               <path d="M35 43 Q40 47 45 43" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
               {/* 볼터치 — 볼매 */}
@@ -897,8 +895,6 @@ const _FireChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="45" cy="35" r="1.8" fill="white" />
               <circle cx="31.5" cy="35.5" r="0.6" fill="#2D2D2D" />
               <circle cx="45.5" cy="35.5" r="0.6" fill="#2D2D2D" />
-              {/* 콧대 */}
-              <path d="M40 40 Q39 43 41 44" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 이미 다 알고있다는 미소 */}
               <path d="M35 45 Q40 48 45 45" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               {/* 볼터치 */}
@@ -1370,8 +1366,6 @@ const _FireChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="47" cy="33" r="3" fill="#2D2D2D"/>
               <circle cx="34.2" cy="31.8" r="1.2" fill="white"/>
               <circle cx="48.2" cy="31.8" r="1.2" fill="white"/>
-              {/* 콧대 */}
-              <path d="M40 35 Q39 38 41 39.5" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45"/>
               {/* 입 — 몰입한 작은 미소 */}
               <path d="M37 42 Q40 44 43 42" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
               {/* 볼터치 */}

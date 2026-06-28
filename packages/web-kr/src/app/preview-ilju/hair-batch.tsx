@@ -64,8 +64,6 @@ export const HAIR_BATCH: HairItem[] = [
             {/* 눈 — 반달 여유 */}
             <path d="M31 37 Q34 34 37 37" stroke="#2D2D2D" strokeWidth="2.2" fill="none" strokeLinecap="round" />
             <path d="M43 37 Q46 34 49 37" stroke="#2D2D2D" strokeWidth="2.2" fill="none" strokeLinecap="round" />
-            {/* 콧대 */}
-            <path d="M40 37 Q39 40 41 42" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 여유 미소 */}
             <path d="M36 44 Q40 48 44 44" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -288,8 +286,6 @@ export const HAIR_BATCH: HairItem[] = [
             {/* 눈 */}
             <path d="M30 34 Q34 32 37 34" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
             <path d="M43 34 Q46 32 49 34" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
-            {/* 콧대 */}
-            <path d="M40 36 Q39 39 41 41" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 */}
             <path d="M35 43 Q40 46 45 43" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -916,8 +912,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="46" cy="34" r="3.4" fill="#2D2D2D" />
             <circle cx="35.3" cy="32.7" r="1.2" fill="white" />
             <circle cx="47.3" cy="32.7" r="1.2" fill="white" />
-            {/* 콧대 */}
-            <path d="M40 34 Q39 37 41 39" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 자신감 */}
             <path d="M34 43 Q40 47 46 43" stroke="#2D2D2D" strokeWidth="1.8" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -978,8 +972,6 @@ export const HAIR_BATCH: HairItem[] = [
             {/* 눈 — before 무표정 (각진 눈) */}
             <rect x="31" y="35" width="6" height="4" rx="1.5" fill="#2D2D2D" />
             <rect x="43" y="35" width="6" height="4" rx="1.5" fill="#2D2D2D" />
-            {/* 콧대 */}
-            <path d="M40 37 Q39 40 41 42" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 꾹 다문 (직진) */}
             <path d="M35 46 Q40 45 45 46" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
             {/* === 장갑 불도저 차체 === */}
@@ -1053,8 +1045,6 @@ export const HAIR_BATCH: HairItem[] = [
             <line x1="52" y1="37" x2="58" y2="38" stroke="#2D2D2D" strokeWidth="1.2" />
             <path d="M30 37 L33 38" stroke="white" strokeWidth="1" opacity="0.5" strokeLinecap="round" />
             <path d="M44 37 L47 38" stroke="white" strokeWidth="1" opacity="0.5" strokeLinecap="round" />
-            {/* 콧대 (선글라스 밑) */}
-            <path d="M40 43 Q39 45 41 47" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 자신만만 */}
             <path d="M35 48 Q40 51 45 48" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -1113,8 +1103,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="46" cy="37" r="3" fill="#2D2D2D" />
             <circle cx="35.4" cy="35.8" r="1.2" fill="white" />
             <circle cx="47.4" cy="35.8" r="1.2" fill="white" />
-            {/* 콧대 */}
-            <path d="M40 38 Q39 41 41 43" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 우아한 미소 */}
             <path d="M35 45 Q40 49 45 45" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -1180,8 +1168,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="46" cy="40" r="3.2" fill="#2D2D2D" />
             <circle cx="35.4" cy="38.8" r="1.3" fill="white" />
             <circle cx="47.4" cy="38.8" r="1.3" fill="white" />
-            {/* 콧대 */}
-            <path d="M40 40 Q39 43 41 45" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 갑자기! */}
             <path d="M34 47 Q40 52 46 47" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -1262,8 +1248,6 @@ export const HAIR_BATCH: HairItem[] = [
             {/* 눈 — 반개(평온) */}
             <path d="M33 33.5 Q35.5 35.5 38 33.5" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
             <path d="M42 33.5 Q44.5 35.5 47 33.5" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-            {/* 콧대 */}
-            <path d="M40 33 Q39.3 35.5 40.6 36.8" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 잔잔한 미소 */}
             <path d="M36 39 Q40 41.5 44 39" stroke="#2D2D2D" strokeWidth="1.4" fill="none" strokeLinecap="round" />
             {/* 살짝 분노 힘줄 (참다…) */}
@@ -1481,8 +1465,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="34" cy="32" r="2.7" fill="#2D2D2D" />
             <circle cx="35" cy="31" r="1" fill="white" />
             <path d="M43.5 32 Q46 30 48.5 32" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
-            {/* 콧대 */}
-            <path d="M40 34 Q39.3 36 41 37.5" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 활짝 */}
             <path d="M33 39 Q40 45 47 39" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -1534,8 +1516,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="53" cy="32" r="2.7" fill="#2D2D2D" />
             <circle cx="44" cy="31" r="1" fill="white" />
             <circle cx="54" cy="31" r="1" fill="white" />
-            {/* 콧대 — 좌우대칭 */}
-            <path d="M43.5 34.5 Q45 37 46.5 34.5" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 신나서 벌린 */}
             <path d="M42 38 Q46 42 51 38" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -1603,8 +1583,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="47.5" cy="34.5" r="1.5" fill="white" />
             <circle cx="35" cy="34" r="0.6" fill="white" />
             <circle cx="47" cy="34" r="0.6" fill="white" />
-            {/* 콧대 */}
-            <path d="M40 38 Q39.3 40 41 41.5" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 신난 미소 */}
             <path d="M34 43 Q40 48 46 43" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -1663,8 +1641,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="46" cy="38" r="3.6" fill="#2D2D2D" />
             <circle cx="35.5" cy="36.5" r="1.6" fill="white" />
             <circle cx="47.5" cy="36.5" r="1.6" fill="white" />
-            {/* 콧대 */}
-            <path d="M40 40 Q39.3 42 41 43.5" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 활짝 노래 */}
             <path d="M32 47 Q40 54 48 47" stroke="#2D2D2D" strokeWidth="1.8" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}

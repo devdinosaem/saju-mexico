@@ -44,8 +44,6 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="46" cy="36" r="3" fill="#2D2D2D" />
               <circle cx="35.5" cy="35" r="1.2" fill="white" />
               <circle cx="47.5" cy="35" r="1.2" fill="white" />
-              {/* 콧대 */}
-              <path d="M40 38 Q39 41 41 43" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 의지에 찬 */}
               <path d="M35 45 L40 43 L45 45" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
               {/* 볼터치 — 빨간 열정 */}
@@ -168,8 +166,6 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="46" cy="34" r="2.2" fill="#2D2D2D" />
               <circle cx="35" cy="33" r="0.9" fill="white" />
               <circle cx="47" cy="33" r="0.9" fill="white" />
-              {/* 콧대 */}
-              <path d="M40 37 Q39 40 41 42" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 냉소적 미소 */}
               <path d="M35 43 Q39 46 45 42" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               {/* 몸통 — 딥 틸 + 카라 */}
@@ -383,8 +379,6 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
             {/* 눈 — 반달 여유 */}
             <path d="M31 37 Q34 34 37 37" stroke="#2D2D2D" strokeWidth="2.2" fill="none" strokeLinecap="round" />
             <path d="M43 37 Q46 34 49 37" stroke="#2D2D2D" strokeWidth="2.2" fill="none" strokeLinecap="round" />
-            {/* 콧대 */}
-            <path d="M40 37 Q39 40 41 42" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 여유 미소 */}
             <path d="M36 44 Q40 48 44 44" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -510,8 +504,6 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="46" cy="34" r="2.5" fill="#2D2D2D" />
               <circle cx="35.2" cy="33" r="1" fill="white" />
               <circle cx="47.2" cy="33" r="1" fill="white" />
-              {/* 콧대 */}
-              <path d="M40 37 Q39 40 41 42" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 굳은 결의 */}
               <path d="M35 43 Q40 46 45 43" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               {/* 볼터치 */}
@@ -773,8 +765,6 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="46" cy="36" r="3" fill="#2D2D2D" />
               <circle cx="35" cy="35" r="1.2" fill="white" />
               <circle cx="47" cy="35" r="1.2" fill="white" />
-              {/* 콧대 */}
-              <path d="M40 38 Q39 41 41 43" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 흥분한 */}
               <path d="M34 45 Q40 48 46 45" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               {/* 볼터치 */}
@@ -899,8 +889,6 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="33" cy="36" r="3" fill="#2D2D2D" />
               <circle cx="34.2" cy="35" r="1.1" fill="white" />
               <path d="M43 35 L50 34" stroke="#2D2D2D" strokeWidth="3" strokeLinecap="round" />
-              {/* 콧대 */}
-              <path d="M40 38 Q39 41 41 43" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 삐죽 */}
               <path d="M35 45 Q38 43 42 45 Q44 43 47 45" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               {/* 몸통 — 선명한 보라 */}
@@ -1023,8 +1011,6 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               {/* 눈 — 날카로운 직선 */}
               <line x1="30" y1="36" x2="38" y2="36" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" />
               <line x1="42" y1="36" x2="50" y2="36" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" />
-              {/* 콧대 */}
-              <path d="M40 38 Q39 41 41 43" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 자신만만 비꼬는 한쪽 미소 */}
               <path d="M34 45 Q39 48 46 44" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
               {/* 볼터치 */}
@@ -1297,8 +1283,6 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="46" cy="44" r="2.5" fill="#2D2D2D" />
               <circle cx="33" cy="43" r="0.9" fill="white" />
               <circle cx="45" cy="43" r="0.9" fill="white" />
-              {/* 콧대 */}
-              <path d="M40 46 Q39 49 41 50" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 굳게 다문 */}
               <line x1="35" y1="52" x2="45" y2="52" stroke="#2D2D2D" strokeWidth="2" strokeLinecap="round" />
               {/* 갑옷 몸통 — 회색 */}

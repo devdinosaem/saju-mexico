@@ -41,8 +41,6 @@ const _WaterChars: Array<{id: string; node: React.ReactNode}> = [
               <ellipse cx="46" cy="38" rx="3.5" ry="2.5" fill="#2D2D2D" />
               <circle cx="35.2" cy="37" r="1.2" fill="white" />
               <circle cx="47.2" cy="37" r="1.2" fill="white" />
-              {/* 콧대 */}
-              <path d="M40 40 Q39 43 41 45" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 자신감 있는 미소 */}
               <path d="M36 47 Q40 50 44 47" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
               {/* 볼터치 — 선명하게 */}
@@ -562,8 +560,6 @@ const _WaterChars: Array<{id: string; node: React.ReactNode}> = [
               <ellipse cx="46" cy="32" rx="3.5" ry="2.8" fill="#2D2D2D" />
               <circle cx="35.5" cy="31" r="1.2" fill="white" opacity="0.9" />
               <circle cx="47.5" cy="31" r="1.2" fill="white" opacity="0.9" />
-              {/* 콧대 */}
-              <path d="M40 35 Q39 38 41 40" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 볼터치 */}
               <ellipse cx="27" cy="39" rx="4" ry="2.5" fill="#93C5FD" opacity="0.45" />
               <ellipse cx="53" cy="39" rx="4" ry="2.5" fill="#93C5FD" opacity="0.45" />
@@ -840,8 +836,6 @@ const _WaterChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="46" cy="34" r="2.8" fill="#2D2D2D" />
               <circle cx="35.2" cy="32.8" r="1.2" fill="white" />
               <circle cx="47.2" cy="32.8" r="1.2" fill="white" />
-              {/* 콧대 */}
-              <path d="M40 36 Q39 39 41 41" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 신난 미소 */}
               <path d="M35 43 Q40 48 45 43" stroke="#2D2D2D" strokeWidth="1.7" fill="none" strokeLinecap="round" />
               {/* 볼터치 */}
@@ -1166,8 +1160,6 @@ const _WaterChars: Array<{id: string; node: React.ReactNode}> = [
               {/* 눈 — 과묵한 좁은 눈 */}
               <path d="M29 39 L36 39" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" />
               <path d="M44 39 L51 39" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" />
-              {/* 콧대 */}
-              <path d="M40 42 Q39 45 41 47" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 꾹 다문 */}
               <line x1="35" y1="49" x2="45" y2="49" stroke="#2D2D2D" strokeWidth="2" strokeLinecap="round" />
               {/* 볼터치 */}
@@ -1451,8 +1443,6 @@ const _WaterChars: Array<{id: string; node: React.ReactNode}> = [
             {/* 눈 */}
             <path d="M30 34 Q34 32 37 34" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
             <path d="M43 34 Q46 32 49 34" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
-            {/* 콧대 */}
-            <path d="M40 36 Q39 39 41 41" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 */}
             <path d="M35 43 Q40 46 45 43" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}

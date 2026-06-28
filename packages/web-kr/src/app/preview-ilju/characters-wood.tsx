@@ -35,8 +35,6 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
             {/* 눈 — before 무표정 (각진 눈) */}
             <rect x="31" y="35" width="6" height="4" rx="1.5" fill="#2D2D2D" />
             <rect x="43" y="35" width="6" height="4" rx="1.5" fill="#2D2D2D" />
-            {/* 콧대 */}
-            <path d="M40 37 Q39 40 41 42" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 꾹 다문 (직진) */}
             <path d="M35 46 Q40 45 45 46" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
             {/* === 장갑 불도저 차체 === */}
@@ -298,8 +296,6 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
             <circle cx="46" cy="34" r="3.4" fill="#2D2D2D" />
             <circle cx="35.3" cy="32.7" r="1.2" fill="white" />
             <circle cx="47.3" cy="32.7" r="1.2" fill="white" />
-            {/* 콧대 */}
-            <path d="M40 34 Q39 37 41 39" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 자신감 */}
             <path d="M34 43 Q40 47 46 43" stroke="#2D2D2D" strokeWidth="1.8" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -559,8 +555,6 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="46" cy="34" r="2.5" fill="#2D2D2D" />
               <circle cx="35" cy="33" r="1" fill="white" />
               <circle cx="47" cy="33" r="1" fill="white" />
-              {/* 콧대 */}
-              <path d="M40 36 Q39 39 41 41" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 씩 각오 미소 */}
               <path d="M34 43 Q40 47 46 43" stroke="#2D2D2D" strokeWidth="1.7" fill="none" strokeLinecap="round" />
               {/* 몸통 — 나무 줄기 + 나이테 */}
@@ -675,8 +669,6 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="46.5" cy="34.5" r="2.1" fill="#2D2D2D" />
               <circle cx="34.4" cy="33.6" r="0.9" fill="white" />
               <circle cx="47.4" cy="33.6" r="0.9" fill="white" />
-              {/* 콧대 */}
-              <path d="M40 39 Q39 41 41 42.5" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 차분한 자신감 미소 */}
               <path d="M37 45 Q40 47 43 45" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               {/* 볼터치 */}
@@ -797,8 +789,6 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="46" cy="30" r="4" fill="#2D2D2D" />
               <circle cx="35.5" cy="28.5" r="1.5" fill="white" opacity="0.9" />
               <circle cx="47.5" cy="28.5" r="1.5" fill="white" opacity="0.9" />
-              {/* 콧대 */}
-              <path d="M40 32 Q39 35 41 37" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
               {/* 입 — 와아! 입꼬리 위로 */}
               <path d="M30 39 Q40 50 50 39" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" />
               {/* 볼터치 */}
@@ -1136,8 +1126,6 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
             <line x1="52" y1="37" x2="58" y2="38" stroke="#2D2D2D" strokeWidth="1.2" />
             <path d="M30 37 L33 38" stroke="white" strokeWidth="1" opacity="0.5" strokeLinecap="round" />
             <path d="M44 37 L47 38" stroke="white" strokeWidth="1" opacity="0.5" strokeLinecap="round" />
-            {/* 콧대 (선글라스 밑) */}
-            <path d="M40 43 Q39 45 41 47" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 자신만만 */}
             <path d="M35 48 Q40 51 45 48" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
@@ -1384,8 +1372,6 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
             <circle cx="46" cy="37" r="3" fill="#2D2D2D" />
             <circle cx="35.4" cy="35.8" r="1.2" fill="white" />
             <circle cx="47.4" cy="35.8" r="1.2" fill="white" />
-            {/* 콧대 */}
-            <path d="M40 38 Q39 41 41 43" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 우아한 미소 */}
             <path d="M35 45 Q40 49 45 45" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             {/* 볼터치 */}
