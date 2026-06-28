@@ -65,7 +65,7 @@ export function Avatar({ iljuKey, size = 80 }: { iljuKey: string; size?: number 
   return <div className="rounded-full overflow-hidden border-2 border-charcoal/15 shrink-0 flex items-center justify-center" style={{ width: size, height: size, background: ELEM_BG[elemOf(iljuKey)] }}>{ILJU_SVG_ICONS[iljuKey]?.(getIljuProfileViewBox(iljuKey))}</div>
 }
 
-function LifeGraph({ life }: { life: LifePoint[] }) {
+export function LifeGraph({ life }: { life: LifePoint[] }) {
   const W = 320, H = 150, padL = 10, padR = 10, padT = 16, padB = 26
   const n = life.length
   const xs = (i: number) => padL + (n > 1 ? (i / (n - 1)) * (W - padL - padR) : 0)
@@ -92,7 +92,7 @@ function LifeGraph({ life }: { life: LifePoint[] }) {
   )
 }
 
-function Radar({ data }: { data: { label: string; value: number }[] }) {
+export function Radar({ data }: { data: { label: string; value: number }[] }) {
   const size = 200, c = 100, R = 64, n = data.length
   const pt = (i: number, r: number): [number, number] => {
     const a = -Math.PI / 2 + (i * 2 * Math.PI) / n
@@ -153,7 +153,7 @@ const NA_STICKERS: { comp: React.ReactNode; top?: number; left?: number; right?:
 function ElemStrip({ elem }: { elem: Elem }) {
   return <div className="flex-1 flex items-center justify-center pt-2 border-t-2 border-charcoal/20" style={{ background: ELEMENT_STYLE[elem]?.bg ?? "#F1F5F9" }}>{STICKER[elem]}</div>
 }
-function CelebCard({ name, role, cat, elem, idx }: { name: string; role: string; cat: string; elem: Elem; idx: number }) {
+export function CelebCard({ name, role, cat, elem, idx }: { name: string; role: string; cat: string; elem: Elem; idx: number }) {
   const tilt = TILTS[idx % TILTS.length], mt = idx % 2 === 0 ? 8 : 0
   return (
     <div className="shrink-0 flex flex-col rounded-2xl overflow-hidden" style={{ width: 108, background: "white", border: "2px solid rgba(45,45,45,0.1)", transform: `rotate(${tilt}deg)`, boxShadow: "2px 2px 0px rgba(45,45,45,0.1)", marginTop: mt }}>
@@ -166,7 +166,7 @@ function CelebCard({ name, role, cat, elem, idx }: { name: string; role: string;
     </div>
   )
 }
-function NaCard({ iljuKey, role, elem, idx }: { iljuKey: string; role: string; elem: Elem; idx: number }) {
+export function NaCard({ iljuKey, role, elem, idx }: { iljuKey: string; role: string; elem: Elem; idx: number }) {
   const tilt = TILTS[idx % TILTS.length], mt = idx % 2 === 0 ? 8 : 0
   return (
     <div className="shrink-0 flex flex-col rounded-2xl overflow-hidden relative" style={{ width: 108, background: "#FACC15", border: "2px solid rgba(45,45,45,0.1)", transform: `rotate(${tilt}deg)`, boxShadow: "2px 2px 0px rgba(45,45,45,0.1)", marginTop: mt }}>
@@ -191,6 +191,59 @@ export function coverInfo(data: SelfData) {
   const weakElems = ELEMS.filter(e => data.dist[e] === 0)
   const teaser = `${data.dayKr}(${data.dayElem})·${data.yinYang} 일간 — ${data.strongLevel}. 강한 기운은 ${strongElems.join("·") || "고른 편"}, 빠진 건 ${weakElems.join("·") || "없음"}.`
   return { charKey, iljuName: iljuType?.name ?? `${data.dayKr}${data.dayElem} 일간`, teaser }
+}
+
+// ════════════════════════════════════════════════════════════════
+// deriveSelf — SelfData에서 화면에 필요한 파생값 일괄 계산(순수). v1/v2 공용.
+// ════════════════════════════════════════════════════════════════
+export function deriveSelf(self: SelfData) {
+  const charKey = resolveChar(self.iljuKey)
+  const iljuType = ILJU_TYPES.find(t => t.id === self.iljuKey)
+  const bareIlju = self.iljuKey.replace(/-[mf]$/, "")
+  const celeb = ILJU_CELEB_DATA[bareIlju]
+  const weakElems = ELEMS.filter(e => self.dist[e] === 0)
+  const dominantElem = ELEMS.reduce((a, b) => (self.dist[b] > self.dist[a] ? b : a), "목" as Elem)
+  const ego = self.dayElem, persona = dominantElem, sameCore = ego === persona
+  const energyPos = self.strongLevel.includes("극신강") ? 90 : self.strongLevel.includes("신강") ? 72
+    : self.strongLevel.includes("극신약") ? 8 : self.strongLevel.includes("신약") ? 30 : 50
+  const seenLine = `${self.tgGroups.식상 >= 2 ? "표현이 분명하고 끼 있는" : "차분하고 편안한"} 인상${self.tgGroups.관성 >= 2 ? " + 믿음직한 분위기" : ""}${self.dohwa ? " + 묘하게 끌리는 매력" : ""}`
+  const meetingOrder = [...ELEMS].sort((a, b) => self.dist[b] - self.dist[a])
+  const loveAges = self.life.filter(l => tgGroup(l.tenGod) === "관성").map(l => `${l.startAge}세`)
+  const moneyAges = self.life.filter(l => tgGroup(l.tenGod) === "재성").map(l => `${l.startAge}세`)
+  const jae = self.tgGroups.재성
+  const moneyLine = jae >= 3 ? "돈·실리 감각이 타고난 편 — 현실을 굴려 결과로 만드는 그릇이야."
+    : jae >= 1 ? "돈 감각은 무난한 편 — 꾸준히 쌓을수록 그릇이 커져."
+    : "돈보다 전문성·관계가 먼저 와. 그게 결국 돈으로 돌아오는 타입이야."
+  const cur = self.life.find(l => l.current)
+  const curFavorLine = cur ? (cur.favor >= 72 ? "흐름이 트이는 좋은 구간" : cur.favor >= 50 ? "차곡차곡 쌓는 구간" : "눌렸다 펴지기 직전 구간") : "흐름 위"
+  const manual = SELF_MANUAL[self.dayElem]
+  const env = SELF_ENV[self.yong]
+  const burnout = self.isStrong
+    ? "혼자 다 짊어지고 폭주할 때가 방전 신호 — 위임·휴식이 약이야."
+    : "남 신경 쓰다 나를 소진할 때가 방전 신호 — 거절·경계가 약이야."
+  const weakest = ELEMS.reduce((a, b) => (self.dist[b] < self.dist[a] ? b : a), "목" as Elem)
+  const seunGroup = self.seunTenGod ? tgGroup(self.seunTenGod) : null
+  const curIdx = self.life.findIndex(l => l.current)
+  const nextDaeun = curIdx >= 0 ? self.life[curIdx + 1] : undefined
+  const d = self.dist, tg = self.tgGroups
+  const stats = [
+    { label: "추진", value: clampN(34 + d.목 * 13 + tg.비겁 * 8 + (self.isStrong ? 8 : 0)) },
+    { label: "매력", value: clampN(34 + d.화 * 10 + tg.식상 * 7 + (self.dohwa ? 22 : 0)) },
+    { label: "안정", value: clampN(40 + d.토 * 13 + tg.인성 * 5) },
+    { label: "지혜", value: clampN(34 + d.수 * 13 + tg.인성 * 8) },
+    { label: "재력", value: clampN(34 + d.금 * 8 + tg.재성 * 14) },
+  ]
+  const topStat = stats.reduce((a, b) => (b.value > a.value ? b : a))
+  const code = [
+    self.yinYang === "양" ? "E" : "I",
+    (d.목 + d.화) >= (d.금 + d.수) ? "D" : "C",
+    self.isStrong ? "L" : "S",
+    (tg.식상 + d.화 + d.수) >= (tg.재성 + d.토 + d.금) ? "F" : "T",
+  ].join("")
+  const meme = MEME[dominantElem]
+  return { charKey, iljuType, bareIlju, celeb, weakElems, dominantElem, ego, persona, sameCore,
+    energyPos, seenLine, meetingOrder, loveAges, moneyAges, jae, moneyLine, cur, curFavorLine,
+    manual, env, burnout, weakest, seunGroup, curIdx, nextDaeun, d, tg, stats, topStat, code, meme }
 }
 
 // ════════════════════════════════════════════════════════════════

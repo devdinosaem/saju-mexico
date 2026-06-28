@@ -61,6 +61,18 @@ export function SectionTitle({ icon, children, basis }: { icon: DoodleC; childre
   )
 }
 
+/** 섹션 묶음 — 제목(+출처) + 본문을 한 번에. `<div flex-col gap><SectionTitle/>…</div>` 반복 제거.
+ *  card=true면 본문을 표준 카드로 감싼다(가장 흔한 케이스). 그래프/그리드 등은 card=false. */
+export function Section({ icon, title, basis, children, card = false, bodyClass = "" }:
+  { icon: DoodleC; title: ReactNode; basis?: ReactNode; children: ReactNode; card?: boolean; bodyClass?: string }) {
+  return (
+    <div className="flex flex-col gap-2.5">
+      <SectionTitle icon={icon} basis={basis}>{title}</SectionTitle>
+      {card ? <Card className={`px-4 py-4 ${bodyClass}`}>{children}</Card> : <>{children}</>}
+    </div>
+  )
+}
+
 /** 챕터 구분선 — 번호 칩 + 제목 + 가는 선. */
 export function ChapterDivider({ n, title }: { n: number | string; title: string }) {
   return (
