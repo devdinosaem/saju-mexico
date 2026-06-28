@@ -30,4 +30,4 @@
 
 | 컴포넌트 | 원래 위치 | 제거 커밋 | 사유 |
 | --- | --- | --- | --- |
-| _(아직 없음)_ | | | |
+| "내 오행 밸런스" 정적 막대 블록 (사주 오행 분포 pct) | `src/app/v3/calendar/page.tsx` | _(이 커밋)_ | 운기달력 간소화. 정적 목업 위젯(BALANCE 상수)이라 보관 불필요 → 아예 삭제. BALANCE 상수·DoodleSparkle·ElementBadgePill import 함께 정리 |
