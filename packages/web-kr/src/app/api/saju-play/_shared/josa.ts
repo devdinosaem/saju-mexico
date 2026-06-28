@@ -25,5 +25,24 @@ export const hookSinsal = () => `네 사주에 새겨진 타고난 기운부터 
 export const hookSelf = () => `너라는 사람, 사주로 한 장씩 펼쳐볼게.`
 export const hookNextmonth = () => `다음달 네 흐름, 미리 펼쳐볼게.`
 
-// 모델 본문 앞에 훅을 붙인다. 본문이 비면 빈 문자열(클라가 폴백).
-export const withHook = (hook: string, body: string) => (body ? `${hook}\n\n${body}` : "")
+// 한자(CJK) 판정 — codePoint 기반(인코딩 무관). 본문에 샌 한자를 출력 단계에서 제거.
+const isHanja = (cp: number) =>
+  (cp >= 0x4e00 && cp <= 0x9fff) ||   // CJK 통합
+  (cp >= 0x3400 && cp <= 0x4dbf) ||   // 확장 A
+  (cp >= 0xf900 && cp <= 0xfaff) ||   // 호환
+  (cp >= 0x20000 && cp <= 0x2a6df)    // 확장 B+
+
+// 한자 제거 + 한자 빠지며 남는 빈 괄호·중복 공백 정리. 줄바꿈(\n)은 보존.
+export const stripHanja = (s: string): string => {
+  let out = ""
+  for (const ch of s) if (!isHanja(ch.codePointAt(0)!)) out += ch
+  return out
+    .replace(/\([ \t]*\)/g, "")            // 한자 빠진 빈 괄호 "경금()" → "경금"
+    .replace(/（[ \t]*）/g, "")             // 전각 빈 괄호
+    .replace(/[ \t]{2,}/g, " ")            // 중복 공백
+    .replace(/[ \t]+([,.!?·)\]」』])/g, "$1") // 구두점·닫는괄호 앞 공백
+    .replace(/[ \t]+\n/g, "\n")            // 줄끝 공백
+}
+
+// 모델 본문 앞에 훅을 붙이고 한자를 정리해 반환. 본문이 비면 빈 문자열(클라가 폴백).
+export const withHook = (hook: string, body: string) => (body ? stripHanja(`${hook}\n\n${body}`) : "")
