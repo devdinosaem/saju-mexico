@@ -1,12 +1,14 @@
 "use client"
 import React, { useState } from "react"
-import { logoutMockUser } from "@/lib/mockAuth"
+import { logoutMockUser, saveMockIlju } from "@/lib/mockAuth"
+import { calcIlju } from "@/lib/ilju-calc"
 import { useUser } from "@/lib/UserContext"
 import MyHero from "./_components/MyHero"
 import MyIljuCard from "./_components/MyIljuCard"
 import MyongtaeCard from "./_components/MyongtaeCard"
 import MyMyeongsikCard from "./_components/MyMyeongsikCard"
 import MonthCalendar from "./_components/MonthCalendar"
+import SajuInputSheet from "../shop/_components/SajuInputSheet"
 import { PRICES, priceLabel } from "@/lib/prices"
 import { ElementBadgePill } from "@/components/ilju-type-card"
 import { DoodleHeart, DoodleSparkle, DoodleStar, DoodleMoon, DoodleCrystal, DoodleKey, DoodleMagicWand, DoodleCrown } from "@/components/doodles"
@@ -59,6 +61,7 @@ const FRIENDS = [
 
 export default function MyPage() {
   const [activeCat, setActiveCat] = useState<Category>("전체")
+  const [editOpen, setEditOpen] = useState(false)
   const { user, isLoggedIn } = useUser()
   const filtered = PURCHASED.filter(p => activeCat === "전체" || p.cat === activeCat)
 
@@ -71,7 +74,7 @@ export default function MyPage() {
       <MyongtaeCard />
 
       {/* 내 명식 (사주팔자 + 오행 분포) */}
-      <MyMyeongsikCard />
+      <MyMyeongsikCard onEdit={() => setEditOpen(true)} />
 
       {/* 내 보관함 */}
       <div>
@@ -283,6 +286,17 @@ export default function MyPage() {
       >
         {isLoggedIn ? "로그아웃" : "로그인 안 됨"}
       </button>
+
+      {/* 명식 정보 수정 — 저장 시 일주 재계산 */}
+      <SajuInputSheet
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        initialData={user.birthDate ?? undefined}
+        onSuccess={(bd) => {
+          const ij = calcIlju(bd.year, bd.month, bd.day, bd.gender)
+          saveMockIlju(ij.id)
+        }}
+      />
     </div>
   )
 }

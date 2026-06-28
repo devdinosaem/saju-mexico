@@ -61,7 +61,7 @@ function PillarCol({ title, pillar, highlight }: { title: string; pillar: Pillar
   )
 }
 
-export default function MyMyeongsikCard() {
+export default function MyMyeongsikCard({ onEdit }: { onEdit?: () => void }) {
   const { user, ilju } = useUser()
   const bd = user.birthDate
 
@@ -73,7 +73,7 @@ export default function MyMyeongsikCard() {
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-6 flex flex-col items-center gap-3 text-center">
           <Ico as={DoodleTaegeuk} size={36} />
           <p className="text-[14px] text-charcoal/70" style={GAEGU}>생년월일을 입력하면<br />내 사주팔자(명식)를 볼 수 있어요</p>
-          <button className="px-5 h-[44px] rounded-2xl flex items-center justify-center gap-1.5 active:opacity-85 transition-opacity border-2 border-charcoal text-[14px]"
+          <button onClick={onEdit} className="px-5 h-[44px] rounded-2xl flex items-center justify-center gap-1.5 active:opacity-85 transition-opacity border-2 border-charcoal text-[14px]"
             style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
             <Ico as={DoodlePencil} size={16} /> 생년월일 입력하기
           </button>
@@ -91,7 +91,12 @@ export default function MyMyeongsikCard() {
     <div className="flex flex-col gap-2.5">
       <div className="flex items-center justify-between">
         <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleTaegeuk} size={18} /> 내 명식</p>
-        {ilju && <span className="text-[12px] text-text-muted" style={BINGGRAE}>{ilju.ilju}일주 · {ilju.name}</span>}
+        <div className="flex items-center gap-2">
+          {ilju && <span className="text-[12px] text-text-muted" style={BINGGRAE}>{ilju.ilju}일주 · {ilju.name}</span>}
+          <button onClick={onEdit} className="text-[12px] text-charcoal/45 flex items-center gap-0.5 active:opacity-60" style={BINGGRAE}>
+            <Ico as={DoodlePencil} size={12} /> 수정
+          </button>
+        </div>
       </div>
 
       <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-4">
