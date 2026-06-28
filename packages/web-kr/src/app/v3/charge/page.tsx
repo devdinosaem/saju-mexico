@@ -35,8 +35,7 @@ const COSTS = [
   { label: "오늘의 사주",        cost: priceLabel(PRICES.todaySaju),          free: PRICES.todaySaju === 0          },
   { label: "월운 캘린더",        cost: priceLabel(PRICES.monthCalendar),      free: PRICES.monthCalendar === 0      },
   { label: "AI 상담 1턴",        cost: priceLabel(PRICES.aiConsultPerTurn),   free: false                           },
-  { label: "전남친·전여친운",    cost: priceLabel(PRICES.exFortune),          free: false                           },
-  { label: "올해운·부모운",       cost: priceLabel(PRICES.parentFortune),      free: false                           },
+  { label: "올해운",              cost: priceLabel(PRICES.yearFortune),        free: false                           },
   { label: "상세 리포트",         cost: priceLabel(PRICES.detailReport),       free: false                           },
   { label: "유명인 카드 뽑기",    cost: priceLabel(PRICES.celebCard),          free: false                           },
 ]

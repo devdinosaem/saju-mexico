@@ -11,7 +11,7 @@ import {
   DoodleMoon, DoodleLightning, DoodleCrown, DoodleCandy,
   DoodlePlanet, DoodleBalloon, DoodleFlower, DoodleCloud,
   DoodleGhost, DoodleKey, DoodleRocket,
-  DoodleMom, DoodleDad, DoodleExBF, DoodleExGF, DoodleCalendar,
+  DoodleCalendar,
 } from "@/components/doodles"
 
 const CELEBS = [
@@ -67,27 +67,6 @@ export default function ShopPage() {
           <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>0.8명태</span>
         </Link>
 
-        {/* 전남친운 + 전여친운 */}
-        <div className="grid grid-cols-2 gap-2.5">
-          {[
-            { doodle: <DoodleExBF style={{ width: 30, height: 30 }} />, iconBg: "bg-sky-50", title: "전남친운", sub: "어쩌면 벤츠였을지도..", price: priceLabel(PRICES.exFortune) },
-            { doodle: <DoodleExGF style={{ width: 30, height: 30 }} />, iconBg: "bg-pink/15", title: "전여친운", sub: "자니...?", price: priceLabel(PRICES.exFortune) },
-          ].map(c => (
-            <div key={c.title} className="rounded-2xl bg-white border border-charcoal/10 p-3.5 flex flex-col h-[168px]">
-              <div className={`w-10 h-10 rounded-xl ${c.iconBg} border border-charcoal/10 flex items-center justify-center`}>
-                {c.doodle}
-              </div>
-              <div className="mt-2">
-                <p className="text-sm font-bold text-charcoal">{c.title}</p>
-                <p className="text-[11px] text-text-muted mt-0.5 leading-snug">{c.sub}</p>
-              </div>
-              <button className="mt-auto w-full py-2 rounded-xl bg-pink/75 text-cream text-[11px] font-semibold active:opacity-80">
-                {c.price}
-              </button>
-            </div>
-          ))}
-        </div>
-
         {/* 올해운 + 광고 */}
         <div className="grid grid-cols-2 gap-2.5">
           <div className="rounded-2xl bg-white border border-charcoal/10 p-3.5 flex flex-col h-[168px]">
@@ -105,27 +84,6 @@ export default function ShopPage() {
           <div className="rounded-2xl overflow-hidden h-[168px] bg-charcoal/5 border border-charcoal/10 flex items-center justify-center">
             <AdBanner slot="1111111111" format="rectangle" className="w-full h-full" />
           </div>
-        </div>
-
-        {/* 엄마운 + 아빠운 */}
-        <div className="grid grid-cols-2 gap-2.5">
-          {[
-            { doodle: <DoodleMom style={{ width: 30, height: 30 }} />, iconBg: "bg-red-50", title: "엄마운", sub: "내가 엄마 닮은 거였네", price: priceLabel(PRICES.parentFortune) },
-            { doodle: <DoodleDad style={{ width: 30, height: 30 }} />, iconBg: "bg-sky-50", title: "아빠운", sub: "*숙제* 아빠랑 친해지기", price: priceLabel(PRICES.parentFortune) },
-          ].map(c => (
-            <div key={c.title} className="rounded-2xl bg-white border border-charcoal/10 p-3.5 flex flex-col h-[168px]">
-              <div className={`w-10 h-10 rounded-xl ${c.iconBg} border border-charcoal/10 flex items-center justify-center`}>
-                {c.doodle}
-              </div>
-              <div className="mt-2">
-                <p className="text-sm font-bold text-charcoal">{c.title}</p>
-                <p className="text-[11px] text-text-muted mt-0.5 leading-snug">{c.sub}</p>
-              </div>
-              <button className="mt-auto w-full py-2 rounded-xl bg-pink/75 text-cream text-[11px] font-semibold active:opacity-80">
-                {c.price}
-              </button>
-            </div>
-          ))}
         </div>
 
         {/* 썸 궁합 + 짝사랑 궁합 — 미니 마주보기 카드 (랜딩 녹임) */}

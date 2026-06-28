@@ -49,7 +49,6 @@ const PURCHASED = [
   { emoji: "🌿", title: "엄마 궁합 리포트",   sub: "목(木) ↑ 금(金) · 91%",       cat: "궁합" as Category, date: "3일 전",  owned: true  },
   { emoji: "✦",  title: "경진일주 요약",      sub: "나의 일주 핵심 성격 분석",      cat: "요약" as Category, date: "7일 전",  owned: true  },
   { emoji: "🔮", title: "경진일주 상세 리포트", sub: "심층 분석 · 990운기",         cat: "상세" as Category, date: "",       owned: false },
-  { emoji: "💘", title: "전남친운",           sub: "어쩌면 벤츠였을지도.. · 590운기", cat: "운세" as Category, date: "",    owned: false },
 ]
 
 const CATS: Category[] = ["전체", "운세", "요약", "상세", "궁합", "월운"]
