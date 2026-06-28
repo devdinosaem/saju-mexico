@@ -25,6 +25,15 @@ export const ELEMENT_LABEL: Record<ElemKr, string> = {
   목: "나무", 화: "불", 토: "흙", 금: "쇠", 수: "물",
 }
 
+/** 오행 칩(pill) 색상 — 운기달력 "내 오행 밸런스" 디자인과 통일 */
+export const ELEMENT_PILL: Record<ElemKr, { bg: string; border: string; text: string }> = {
+  목: { bg: "#D1FAE5", border: "#4ADE80", text: "#166534" },
+  화: { bg: "#FEE2E2", border: "#F87171", text: "#991B1B" },
+  토: { bg: "#FEF3C7", border: "#FBBF24", text: "#92400E" },
+  금: { bg: "#F1F5F9", border: "#94A3B8", text: "#334155" },
+  수: { bg: "#DBEAFE", border: "#60A5FA", text: "#1E3A8A" },
+}
+
 /** 가중치 (기획 확정값) */
 export const ELEMENT_WEIGHTS = { sticker: 1, character: 3, skin: 2 } as const
 
