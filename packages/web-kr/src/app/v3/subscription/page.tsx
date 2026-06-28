@@ -1,9 +1,10 @@
 "use client"
 import Link from "next/link"
 import {
-  useSubscription, isSubscribed, cancelSubscription,
+  isSubscribed, cancelSubscription,
   activateSubscription, addOneMonth, ensureCustomerKey,
 } from "@/lib/subscription"
+import { useSubscription } from "@/hooks/useSubscription"
 import { requestSubscriptionBilling } from "@/lib/payments/toss"
 import { SUBSCRIPTION_MONTHLY_WON, subscriptionLabel } from "@/lib/prices"
 import { DoodleCrown, DoodleSparkle } from "@/components/doodles"

@@ -18,11 +18,15 @@ export function usePaidReport<T>(opts: {
   fetchAiText: (data: T) => Promise<string | null>
   fallbackText: (data: T) => string
   buildSave: (data: T, aiText: string) => NewReport
+  // 구독 혜택 등 "무료 잠금해제" 경로(선택). available()이 true면 결제 없이 해제 + consume().
+  freeBenefit?: { available: () => boolean; consume: () => void }
 }) {
-  const { data, dedupeKey, price, spendLabel, fetchAiText, fallbackText, buildSave } = opts
+  const { data, dedupeKey, price, spendLabel, fetchAiText, fallbackText, buildSave, freeBenefit } = opts
   const router = useRouter()
   // 재열람 판정 — 같은 dedupeKey 리포트가 보관함에 있으면 페이월·AI 스킵
   const existing = dedupeKey ? findByDedupe(dedupeKey) : null
+  // 이번 잠금해제가 무료(구독 혜택)인지 — CTA 라벨용. 재열람은 이미 unlocked라 무관.
+  const freeUnlock = !existing && !!freeBenefit?.available()
 
   const [step, setStep] = useState<"loading" | "result">(existing ? "result" : "loading")
   const [unlocked, setUnlocked] = useState(!!existing)
@@ -63,9 +67,10 @@ export function usePaidReport<T>(opts: {
 
   const onUnlock = () => {
     if (existing) { setUnlocked(true); return }
+    if (freeBenefit?.available()) { freeBenefit.consume(); setUnlocked(true); return } // 구독 혜택 무료
     if (!spend(price, spendLabel)) { router.push("/v3/charge"); return } // 잔액 부족 → 충전
     setUnlocked(true)
   }
 
-  return { step, unlocked, aiText, aiLoading, onUnlock }
+  return { step, unlocked, aiText, aiLoading, onUnlock, freeUnlock }
 }

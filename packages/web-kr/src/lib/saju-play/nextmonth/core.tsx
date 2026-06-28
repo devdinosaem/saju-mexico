@@ -11,6 +11,7 @@ import { to24h } from "../crush/saju-adapter"
 import { makeBirthKey } from "@/lib/report-archive"
 import BirthGate from "../BirthGate"
 import { usePaidReport } from "../use-paid-report"
+import { nextmonthBenefitAvailable, consumeNextmonthBenefit } from "@/lib/subscription"
 import { NextMonthReport, coverInfo, nextMonthFallback, Ico, Avatar, BINGGRAE, GAEGU, PINK } from "./report"
 import { DoodleCalendar, DoodleKey, DoodleHeart, DoodleLetter } from "@/components/doodles"
 
@@ -28,11 +29,12 @@ export default function NextMonthFunnel() {
   // 대상월별 별도 기록 → dedupeKey에 월 포함
   const dedupeKey = (birth && data) ? `nextmonth|${makeBirthKey(birth)}|${data.ym.year}-${data.ym.month}` : null
 
-  const { step, unlocked, aiText, aiLoading, onUnlock } = usePaidReport<NextMonthData>({
+  const { step, unlocked, aiText, aiLoading, onUnlock, freeUnlock } = usePaidReport<NextMonthData>({
     data,
     dedupeKey,
     price: PRICES.nextMonth,
     spendLabel: "다음달 운 미리보기",
+    freeBenefit: { available: () => nextmonthBenefitAvailable(), consume: consumeNextmonthBenefit },
     fetchAiText: (d) =>
       fetch("/api/saju-play/nextmonth", {
         method: "POST", headers: { "Content-Type": "application/json" },
@@ -110,9 +112,11 @@ export default function NextMonthFunnel() {
               ))}
             </div>
             <button onClick={onUnlock} className="w-full h-[52px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal mt-0.5" style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
-              {PRICE} 내고 전체 보기
+              {freeUnlock ? "구독 혜택 · 무료로 전체 보기" : `${PRICE} 내고 전체 보기`}
             </button>
-            <p className="text-[13px] text-text-muted">매달 새로 갱신돼요 — 다음달도 보러 와</p>
+            <p className="text-[13px] text-text-muted">
+              {freeUnlock ? "구독 중이라 이번 달은 무료예요" : "매달 새로 갱신돼요 — 다음달도 보러 와"}
+            </p>
           </div>
         </div>
       )}

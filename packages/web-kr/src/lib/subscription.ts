@@ -1,12 +1,9 @@
-"use client"
-import { useEffect, useState } from "react"
-
-// 명태 구독 상태 — SSOT. 정책: docs/SUBSCRIPTION-BILLING-PLAN.md.
-// 테스트모드에선 localStorage에 보관(빌링키 포함). 라이브에선 auth+서버 ledger로 교체(P5).
+// 명태 구독 상태 — SSOT (순수 함수, RSC-safe). React 훅은 hooks/useSubscription.ts.
+// 정책: docs/SUBSCRIPTION-BILLING-PLAN.md. 테스트:localStorage / 라이브:서버 ledger(P5).
 // inventory.isSubscribed(단순 bool)와 달리 "만료일(currentPeriodEnd)" 개념을 가진다.
 
 export const SUBSCRIPTION_KEY = "saju-subscription-v1"
-const EVENT = "saju-subscription-change"
+export const SUBSCRIPTION_CHANGE_EVENT = "saju-subscription-change"
 
 export type SubStatus = "active" | "canceled" | "none"
 
@@ -20,26 +17,27 @@ export type Subscription = {
   benefitUsedMonth?: string  // "2026-06" — 혜택① 다음달운 월 1회 사용 판정용
 }
 
-const NONE: Subscription = { status: "none", customerKey: "", startedAt: 0, currentPeriodEnd: 0 }
+export const EMPTY_SUBSCRIPTION: Subscription = {
+  status: "none", customerKey: "", startedAt: 0, currentPeriodEnd: 0,
+}
 
 export function loadSubscription(): Subscription {
-  if (typeof window === "undefined") return NONE
+  if (typeof window === "undefined") return EMPTY_SUBSCRIPTION
   try {
     const raw = localStorage.getItem(SUBSCRIPTION_KEY)
-    if (raw) return { ...NONE, ...JSON.parse(raw) }
+    if (raw) return { ...EMPTY_SUBSCRIPTION, ...JSON.parse(raw) }
   } catch {}
-  return NONE
+  return EMPTY_SUBSCRIPTION
 }
 
 export function saveSubscription(sub: Subscription): void {
   if (typeof window === "undefined") return
   try { localStorage.setItem(SUBSCRIPTION_KEY, JSON.stringify(sub)) } catch {}
-  window.dispatchEvent(new Event(EVENT))
+  window.dispatchEvent(new Event(SUBSCRIPTION_CHANGE_EVENT))
 }
 
 /**
  * 구독 활성 여부(파생). active든 canceled든 "기간 만료 전"이면 혜택 유지(기간 만료형 정책).
- * inventory.isSubscribed / canAccess(구독 스킨)는 P4에서 이 값으로 연결.
  */
 export function isSubscribed(sub: Subscription = loadSubscription()): boolean {
   return sub.status !== "none" && Date.now() < sub.currentPeriodEnd
@@ -81,18 +79,16 @@ export function cancelSubscription(): void {
   saveSubscription({ ...sub, status: "canceled", canceledAt: Date.now() })
 }
 
-/** 구독 상태 실시간 구독 훅. */
-export function useSubscription(): Subscription {
-  const [sub, setSub] = useState<Subscription>(NONE)
-  useEffect(() => {
-    const update = () => setSub(loadSubscription())
-    update()
-    window.addEventListener(EVENT, update)
-    window.addEventListener("storage", update)
-    return () => {
-      window.removeEventListener(EVENT, update)
-      window.removeEventListener("storage", update)
-    }
-  }, [])
-  return sub
+// ── 혜택① 다음달운 월 1회 무료 (캘린더월 기준 — 매월 1일 리셋) ──
+const benefitMonthKey = (d: Date = new Date()) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
+
+/** 구독 중 + 이번 캘린더월에 아직 안 썼으면 true. */
+export function nextmonthBenefitAvailable(sub: Subscription = loadSubscription()): boolean {
+  return isSubscribed(sub) && sub.benefitUsedMonth !== benefitMonthKey()
+}
+
+/** 무료 혜택 사용 처리(이번 달로 마킹). */
+export function consumeNextmonthBenefit(): void {
+  saveSubscription({ ...loadSubscription(), benefitUsedMonth: benefitMonthKey() })
 }

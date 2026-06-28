@@ -1,4 +1,5 @@
 import { spend } from "./balance"
+import { isSubscribed } from "./subscription"
 
 export type AccessType = "free" | "purchase" | "subscription"
 
@@ -54,11 +55,14 @@ export function itemAccess(key: string, registry: Record<string, AccessType>): A
 
 export function loadInventory(): UserInventory {
   if (typeof window === "undefined") return DEFAULT_INVENTORY
+  let inv = DEFAULT_INVENTORY
   try {
     const raw = localStorage.getItem(INVENTORY_KEY)
-    if (raw) return { ...DEFAULT_INVENTORY, ...JSON.parse(raw) }
+    if (raw) inv = { ...DEFAULT_INVENTORY, ...JSON.parse(raw) }
   } catch {}
-  return DEFAULT_INVENTORY
+  // 혜택②: 구독 스킨 해금 — 저장된 bool(테스트 프리셋) 또는 실제 구독상태 파생.
+  // 해지 후 만료되면 isSubscribed()가 false → 구독 스킨 자동 잠김(정책: 구독 중에만).
+  return { ...inv, isSubscribed: inv.isSubscribed || isSubscribed() }
 }
 
 export function saveInventory(inv: UserInventory): void {
