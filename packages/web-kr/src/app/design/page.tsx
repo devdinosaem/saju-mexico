@@ -3,8 +3,8 @@
 // SAJUPLAY 디자인 시스템 — 라이브 쇼케이스 (공유용).
 // 토큰/폰트/섀도우/컴포넌트를 한 화면에서 확인. 문서: DESIGN-SYSTEM.md
 // ════════════════════════════════════════════════════════════════
-import { FONT, ACCENT, type Accent } from "@/lib/ds"
-import { Card, InfoBox, SectionTitle, ChapterDivider, Hero, Prose, Basis, Ico } from "@/components/ds"
+import { FONT, ACCENT, GRADIENT, type Accent, type GradTheme } from "@/lib/ds"
+import { Card, InfoBox, SectionTitle, ChapterDivider, Hero, Prose, Basis, Ico, GradBadge } from "@/components/ds"
 import {
   DoodleSparkles, DoodleHeart, DoodleStar, DoodleLightning, DoodleCrown,
   DoodleSpeechBubble, DoodleMoon, DoodleBook, DoodleKey, DoodleClover,
@@ -93,6 +93,48 @@ export default function DesignSystemPage() {
                     </div>
                     <p className="text-[12px] text-charcoal/80">{a.label}</p>
                   </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 2.5 핵심 그라디언트 */}
+        <section>
+          <ChapterDivider n="✦" title="핵심 그라디언트 — 위계·AI 요약" />
+          <div className="pt-3 flex flex-col gap-4">
+            <p className="text-[13px] text-charcoal/70" style={FONT.flavor}>
+              위계 최상위 블록·AI 요약에만 쓰는 시그니처. 디폴트 핑크, 오행 필요 시 목/화/토/금/수.
+            </p>
+            <div>
+              <Label>테마별 surface / bold / accent</Label>
+              <div className="flex flex-col gap-2">
+                {(["pink", "목", "화", "토", "금", "수"] as GradTheme[]).map(t => (
+                  <div key={t} className="flex items-center gap-2">
+                    <span className="w-6 text-[12px] font-bold text-charcoal shrink-0">{t === "pink" ? "핑" : t}</span>
+                    <div className="flex-1 h-9 rounded-[var(--r-md)]" style={{ background: GRADIENT[t].surface, border: "1px solid var(--line-soft)" }} />
+                    <div className="flex-1 h-9 rounded-[var(--r-md)]" style={{ background: GRADIENT[t].bold }} />
+                    <span className="w-9 h-9 rounded-full shrink-0" style={{ background: GRADIENT[t].accent }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <Label>Hero (AI 요약) — 디폴트 핑크 vs 오행(수) 커스텀</Label>
+              <div className="flex flex-col gap-3">
+                <Hero icon={DoodleSparkles} title="나 정밀 풀이" basis="원국 종합">
+                  <Prose text={"원국 전체를 읽어 **너라는 사람**을 한 장으로 정리했어."} />
+                </Hero>
+                <Hero theme="수" icon={DoodleSparkles} title="나 정밀 풀이" basis="수 일간">
+                  <Prose text={"오행 커스텀이 필요할 땐 **theme**만 바꾸면 돼."} />
+                </Hero>
+              </div>
+            </div>
+            <div>
+              <Label>GradBadge (bold·흰 텍스트) — 대표 수치·핵심 CTA</Label>
+              <div className="flex flex-wrap items-center gap-2">
+                {(["pink", "목", "화", "토", "금", "수"] as GradTheme[]).map(t => (
+                  <GradBadge key={t} theme={t}>{t === "pink" ? "2,900원" : `${t} 92`}</GradBadge>
                 ))}
               </div>
             </div>

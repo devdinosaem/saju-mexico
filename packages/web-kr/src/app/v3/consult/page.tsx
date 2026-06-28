@@ -17,6 +17,7 @@ import {
   analyzeTenGods, analyzeYongShin, analyzeRelations, calculateSamjae,
   TEN_GOD_KOREAN, STRENGTH_KOREAN,
 } from "saju-engine"
+import { gradOf } from "@/lib/ds"
 
 // ── 사주 컨텍스트 빌더 ────────────────────────────────────────────
 const EL_KO: Record<string, string> = {
@@ -124,6 +125,9 @@ function buildSajuContext(user: MockUser, ilju: IljuType): string {
 const ELEM_BG: Record<string, string> = {
   목: "#D1FAE5", 화: "#FEE2E2", 토: "#FEF3C7", 금: "#F1F5F9", 수: "#DBEAFE",
 }
+
+// 캐릭터 말풍선 배경 = DS 핵심 그라디언트(surface). SSOT는 lib/ds.ts 의 GRADIENT.
+// 디폴트=핑크, 사주 결정 후=오행. 여기서 색을 따로 정의하지 않는다(드리프트 방지).
 
 type Msg = { role: "user" | "char" | "system"; text: string; transient?: boolean; t?: number }
 
@@ -400,6 +404,8 @@ export default function ConsultPage() {
       : <img src={DEFAULT_PROFILE_IMG} alt="" className="w-full h-full object-cover" />
   // 아바타 배경: 일주 있으면 오행색, 없으면 서비스 연분홍(--pink-light)
   const avatarBg = ilju ? ELEM_BG[elemKey] : "#FFE4EA"
+  // 캐릭터 말풍선 테마: 일주 있으면 오행 그라디언트, 없으면 핑크(디폴트)
+  const bubble = gradOf(ilju ? elemKey : null)
 
   // 표시는 최근 visibleCount개만(나머지는 위로 스크롤 시 로드). key는 절대 인덱스로 안정화
   const visibleStart = Math.max(0, msgs.length - visibleCount)
@@ -805,7 +811,8 @@ export default function ConsultPage() {
                 {renderAvatar()}
               </div>
               <div
-                className="max-w-[75%] rounded-2xl rounded-bl-sm bg-white border border-charcoal/10 px-3.5 py-2.5 select-none"
+                className="max-w-[75%] rounded-2xl rounded-bl-sm border border-charcoal/10 px-3.5 py-2.5 select-none"
+                style={{ background: bubble.surface }}
                 onTouchStart={() => { if (msg.text) onPressStart(msg.text) }}
                 onTouchEnd={onPressEnd}
                 onTouchMove={onPressEnd}

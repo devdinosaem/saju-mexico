@@ -8,7 +8,7 @@
 //  · 흰색 카드 대신 파스텔 서피스(.ds-card).
 // ════════════════════════════════════════════════════════════════
 import type { ReactNode } from "react"
-import { FONT, ACCENT, type Accent } from "@/lib/ds"
+import { FONT, ACCENT, GRADIENT, type Accent, type GradTheme } from "@/lib/ds"
 
 export type DoodleC = React.FC<{ className?: string }>
 
@@ -73,12 +73,14 @@ export function ChapterDivider({ n, title }: { n: number | string; title: string
   )
 }
 
-/** 히어로 박스 — 결과 상단 강조. 소프트 섀도우(하드 외곽선 금지). */
-export function Hero({ icon, title, basis, children, className = "" }:
-  { icon?: DoodleC; title: ReactNode; basis?: ReactNode; children?: ReactNode; className?: string }) {
+/** 히어로 박스 — 위계 최상위·AI 요약 시그니처. 핵심 그라디언트(surface) 배경 + 소프트 섀도우.
+ *  theme: 디폴트 pink, 오행 커스텀 시 목/화/토/금/수. */
+export function Hero({ icon, title, basis, children, theme = "pink", className = "" }:
+  { icon?: DoodleC; title: ReactNode; basis?: ReactNode; children?: ReactNode; theme?: GradTheme; className?: string }) {
+  const grad = GRADIENT[theme]
   return (
     <div className={`rounded-[var(--r-xl)] px-4 py-4 flex flex-col gap-3 ${className}`}
-      style={{ background: "linear-gradient(160deg,#FFF6FA,#FFFDF5)", border: "1px solid var(--line-soft)", boxShadow: "var(--shadow-md)" }}>
+      style={{ background: grad.surface, border: "1px solid var(--line-soft)", boxShadow: `var(--shadow-md), 0 4px 20px ${grad.glow}` }}>
       <div className="flex items-center gap-2">
         {icon && <Ico as={icon} size={20} />}
         <span className="text-[15px] text-charcoal" style={FONT.title}>{title}</span>
@@ -86,6 +88,17 @@ export function Hero({ icon, title, basis, children, className = "" }:
       </div>
       {children}
     </div>
+  )
+}
+
+/** 핵심 그라디언트 강조 칩/배지/CTA — bold 그라디언트 + 흰 텍스트. 대표 수치·핵심 행동 강조용. */
+export function GradBadge({ children, theme = "pink", className = "", as: Tag = "span" }:
+  { children: ReactNode; theme?: GradTheme; className?: string; as?: "span" | "div" }) {
+  return (
+    <Tag className={`inline-flex items-center justify-center text-white font-bold rounded-full px-3 py-1 ${className}`}
+      style={{ background: GRADIENT[theme].bold, boxShadow: "var(--shadow-sm)" }}>
+      {children}
+    </Tag>
   )
 }
 
