@@ -355,15 +355,18 @@ type Step = "landing" | "input" | "loading" | "result"
 const emptyP = (): Person => ({ name: "", birth: { y: "", m: "", d: "" }, gender: "M" })
 const validP = (p: Person) => p.name.trim() !== "" && p.birth.y.length === 4 && !!p.birth.m && !!p.birth.d
 
-export default function CrushFunnel({ config, replay }: { config: CrushConfig; replay?: { them: Person; aiText: string } }) {
+export type CrushReplay = { them: Person; aiText: string; me?: { myKey: string; myBirth: Birth | null; myGender: Gender } }
+
+export default function CrushFunnel({ config, replay }: { config: CrushConfig; replay?: CrushReplay }) {
   const { user, ilju } = useUser()
   const router = useRouter()
-  const myKey = resolveCharKey(ilju?.id)
   const bd = user.birthDate
-  const myBirth: Birth | null = bd
-    ? { year: +bd.year, month: +bd.month, day: +bd.day, hour: to24h(bd.hour, bd.ampm), minute: parseInt(bd.minute) || 0 }
+  // 재열람: 저장된 me 사용(생일 변경 시 드리프트 방지). 일반: 계정에서.
+  const myKey = replay?.me ? replay.me.myKey : resolveCharKey(ilju?.id)
+  const myBirth: Birth | null = replay?.me ? replay.me.myBirth
+    : bd ? { year: +bd.year, month: +bd.month, day: +bd.day, hour: to24h(bd.hour, bd.ampm), minute: parseInt(bd.minute) || 0 }
     : null
-  const myGender: Gender = bd?.gender === "F" ? "F" : "M"
+  const myGender: Gender = replay?.me ? replay.me.myGender : (bd?.gender === "F" ? "F" : "M")
   // 재열람(replay): 저장된 입력+AI로 결과를 바로 표시 (랜딩·입력·AI호출 스킵)
   const [step, setStep] = useState<Step>(replay ? "result" : "landing")
   const [them, setThem] = useState<Person>(() => (replay ? replay.them : { ...emptyP(), gender: "F" }))
@@ -537,7 +540,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
     ],
     title: `나 × ${them.name || "그 사람"} · ${config.reportType === "some" ? "썸" : "짝사랑"}`,
     highlight: `${score}%`,
-    snapshot: { v: 1, data: { them: { name: them.name, gender: them.gender, birth: them.birth } }, aiText: ai.status === "done" ? ai.text : fallbackProse },
+    snapshot: { v: 1, data: { me: { myKey, myBirth, myGender }, them: { name: them.name, gender: them.gender, birth: them.birth } }, aiText: ai.status === "done" ? ai.text : fallbackProse },
   })
   const onUnlock = () => {
     // 이미 산 상대면 무차감(재열람 무료), 아니면 명태 차감
@@ -1015,7 +1018,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
       </div>
 
       {/* [유료] 페이월 게이트 — 짧은 미리보기 + 잠금 카드 */}
-      {unlocked ? PaidBody : (
+      {(unlocked || existing) ? PaidBody : (
         <div className="flex flex-col">
           <div className="relative overflow-hidden" style={{ maxHeight: 150 }}>
             <div className="blur-[5px] pointer-events-none select-none">{PaidBody}</div>
@@ -1042,16 +1045,18 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
         </div>
       )}
 
-      {/* CTA */}
-      <div className="flex flex-col gap-2 pt-1">
-        <button className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-white text-charcoal active:opacity-70 flex items-center justify-center gap-1.5">
-          <Ico as={DoodlePolaroid} size={18} /> 결과 카드 저장
-        </button>
-        <button onClick={reset}
-          className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-white text-charcoal active:opacity-70 flex items-center justify-center gap-1.5">
-          <Ico as={DoodleSparkle} size={18} /> 다른 사람도 분석하기
-        </button>
-      </div>
+      {/* CTA — 재열람(replay)에선 숨김(저장본에서 입력모드로 새지 않게) */}
+      {!replay && (
+        <div className="flex flex-col gap-2 pt-1">
+          <button className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-white text-charcoal active:opacity-70 flex items-center justify-center gap-1.5">
+            <Ico as={DoodlePolaroid} size={18} /> 결과 카드 저장
+          </button>
+          <button onClick={reset}
+            className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-white text-charcoal active:opacity-70 flex items-center justify-center gap-1.5">
+            <Ico as={DoodleSparkle} size={18} /> 다른 사람도 분석하기
+          </button>
+        </div>
+      )}
     </div>
   )
 }
