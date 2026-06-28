@@ -523,7 +523,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         {(ai.status === "error" || ai.status === "idle") && <Prose text={fallbackProse} />}
       </div>
 
-      <ChapterDivider n={1} title="우리, 이런 사이야" />
+      <ChapterDivider n={1} title="두 기운이 만나면" />
 
       {/* 사주 오행 밸런스 (좌 나 / 우 그 사람) */}
       <div className="flex flex-col gap-2.5">
@@ -579,6 +579,8 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
+      <ChapterDivider n={2} title="이 끌림, 운명일까" />
+
       {/* 운명 신호 — 천간합/일지 합충 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleRedString} basis={{ t: "일간·일지 합충", deep: true }}>운명 신호</SectionTitle>
@@ -619,6 +621,8 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
+      <ChapterDivider n={3} title="그래서 케미는 몇 점" />
+
       {/* 썸 상황별 케미 — % 바 (커플 상황별 패턴) */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleSparkles} basis={{ t: "오행 종합", deep: true }}>썸 상황별 케미</SectionTitle>
@@ -652,7 +656,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      <ChapterDivider n={2} title="그 사람 파헤치기" />
+      <ChapterDivider n={4} title="그 사람 파헤치기" />
 
       {/* 두 사람 프로필 — 일주 캐릭터 */}
       <div className="flex flex-col gap-2.5">
@@ -702,7 +706,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      <ChapterDivider n={3} title="어떻게 다가갈까" />
+      <ChapterDivider n={5} title="어떻게 다가갈까" />
 
       {/* 썸 진행 지도 — 4단계 + 다음 액션 */}
       <div className="flex flex-col gap-2.5">
@@ -775,6 +779,8 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
+      <ChapterDivider n={6} title="밀까, 당길까" />
+
       {/* 밀당 가이드 (썸=밀당 / 짝사랑=현실·위로) */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={config.extra.D} basis={{ t: "일간 오행" }}>{config.extra.title}</SectionTitle>
@@ -811,7 +817,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      <ChapterDivider n={4} title="언제 움직일까" />
+      <ChapterDivider n={7} title="언제 움직일까" />
 
       {/* 매력 발산 지수 — 도화 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
