@@ -3,6 +3,8 @@ import { useState, useRef, useCallback, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { RoomCanvas, STICKER_MAP, STORAGE_KEY, RoomChar, SKINS } from "../_components/MiniRoom"
 import type { PlacedSticker, PlacedChar, RoomData, RoomSkin } from "../_components/MiniRoom"
+import { SOCIAL_BACKEND_ENABLED, ensureDevSession } from "@/lib/supabase/dev-session"
+import { fetchMyRoom, saveMyRoom } from "@/lib/social/rooms"
 import { useInventory } from "@/hooks/useInventory"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
 import { ILJU_SVG_ICONS } from "@/lib/ilju-svg-icons"
@@ -172,23 +174,32 @@ export default function RoomEditPage() {
   const dragRef = useRef<DragState | null>(null)
 
   useEffect(() => {
+    const hydrate = (d: RoomData) => {
+      setStickers((d.stickers ?? []).map(s => ({ ...s, scale: s.scale ?? 1 })))
+      if (d.chars && d.chars.length > 0) {
+        setChars(d.chars.map(c => ({ ...c, scale: c.scale ?? 1 })))
+      } else {
+        // 구버전 호환: charPos → chars 변환
+        const cp = d.charPos ?? DEFAULT.charPos
+        setChars([{ id: "char-legacy", key: "경진-m", x: cp.x, y: cp.y, rotate: cp.rotate ?? 0, scale: cp.scale ?? 1 }])
+      }
+      if (d.skinId) {
+        const found = SKINS.find(sk => sk.id === d.skinId)
+        if (found) setActiveSkin(found)
+      }
+    }
+    if (SOCIAL_BACKEND_ENABLED) {
+      let alive = true
+      ;(async () => {
+        await ensureDevSession()
+        const r = await fetchMyRoom()
+        if (alive && r) hydrate(r)
+      })()
+      return () => { alive = false }
+    }
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
-      if (saved) {
-        const d: RoomData = JSON.parse(saved)
-        setStickers((d.stickers ?? []).map(s => ({ ...s, scale: s.scale ?? 1 })))
-        if (d.chars && d.chars.length > 0) {
-          setChars(d.chars.map(c => ({ ...c, scale: c.scale ?? 1 })))
-        } else {
-          // 구버전 호환: charPos → chars 변환
-          const cp = d.charPos ?? DEFAULT.charPos
-          setChars([{ id: "char-legacy", key: "경진-m", x: cp.x, y: cp.y, rotate: cp.rotate ?? 0, scale: cp.scale ?? 1 }])
-        }
-        if (d.skinId) {
-          const found = SKINS.find(sk => sk.id === d.skinId)
-          if (found) setActiveSkin(found)
-        }
-      }
+      if (saved) hydrate(JSON.parse(saved))
     } catch {}
   }, [])
 
@@ -298,11 +309,13 @@ export default function RoomEditPage() {
     setSelected(null)
   }, [selected])
 
-  const save = useCallback(() => {
+  const save = useCallback(async () => {
     // charPos는 하위 호환용으로 첫 번째 캐릭터 위치 저장
     const firstChar = chars[0]
     const charPos = firstChar ? { x: firstChar.x, y: firstChar.y, rotate: firstChar.rotate, scale: firstChar.scale } : DEFAULT.charPos
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ stickers, chars, charPos, skinId: activeSkin.id }))
+    const roomData: RoomData = { stickers, chars, charPos, skinId: activeSkin.id }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(roomData)) } catch {}
+    if (SOCIAL_BACKEND_ENABLED) await saveMyRoom(roomData)
     router.back()
   }, [stickers, chars, activeSkin, router])
 

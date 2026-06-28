@@ -7,6 +7,10 @@ import { ELEMENT_THEME } from "@/lib/ilju-calc"
 import { useUser } from "@/lib/UserContext"
 import { useFriends } from "@/hooks/useFriends"
 import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
+import { SOCIAL_BACKEND_ENABLED, ensureDevSession } from "@/lib/supabase/dev-session"
+import { fetchGuestbook, addGuestbookEntry, deleteGuestbookEntry } from "@/lib/social/guestbook"
+import { fetchRoom } from "@/lib/social/rooms"
+import type { RoomData } from "../../my/_components/MiniRoom"
 
 const withTime = (date: string) => /오전|오후/.test(date) ? date : date + " 오후 12:00"
 
@@ -15,6 +19,8 @@ type GuestEntry = {
   author: string
   message: string
   date: string
+  iljuKey?: string
+  isMe?: boolean
 }
 
 const guestbookKey = (id: string) => `saju-guestbook-${id}`
@@ -63,8 +69,23 @@ export default function FriendRoomPage() {
 
   const [entries, setEntries] = useState<GuestEntry[]>([])
   const [draft, setDraft] = useState("")
+  const [friendRoom, setFriendRoom] = useState<RoomData | null>(null)
+
+  const mapEntries = (gb: { id: string; authorName: string; message: string; date: string; authorIljuKey: string; isMe: boolean }[]): GuestEntry[] =>
+    gb.map(e => ({ id: e.id, author: e.authorName, message: e.message, date: e.date, iljuKey: e.authorIljuKey, isMe: e.isMe }))
 
   useEffect(() => {
+    if (SOCIAL_BACKEND_ENABLED) {
+      let alive = true
+      ;(async () => {
+        await ensureDevSession()
+        const [r, gb] = await Promise.all([fetchRoom(friendId), fetchGuestbook(friendId)])
+        if (!alive) return
+        setFriendRoom(r)
+        setEntries(mapEntries(gb))
+      })()
+      return () => { alive = false }
+    }
     try {
       const saved = localStorage.getItem(guestbookKey(friendId))
       if (saved) setEntries(JSON.parse(saved))
@@ -79,8 +100,14 @@ export default function FriendRoomPage() {
     try { localStorage.setItem(guestbookKey(friendId), JSON.stringify(next)) } catch {}
   }
 
-  const submit = () => {
+  const submit = async () => {
     if (!draft.trim()) return
+    if (SOCIAL_BACKEND_ENABLED) {
+      const res = await addGuestbookEntry(friendId, draft)
+      setDraft("")
+      if (res.ok) setEntries(mapEntries(await fetchGuestbook(friendId)))
+      return
+    }
     const entry: GuestEntry = {
       id: Date.now().toString(),
       author: meName,
@@ -91,7 +118,14 @@ export default function FriendRoomPage() {
     setDraft("")
   }
 
-  const deleteEntry = (id: string) => persist(entries.filter(e => e.id !== id))
+  const deleteEntry = async (id: string) => {
+    if (SOCIAL_BACKEND_ENABLED) {
+      setEntries(prev => prev.filter(e => e.id !== id))
+      await deleteGuestbookEntry(id)
+      return
+    }
+    persist(entries.filter(e => e.id !== id))
+  }
   const startEdit = (e: GuestEntry) => { setEditingId(e.id); setEditDraft(e.message) }
   const cancelEdit = () => { setEditingId(null); setEditDraft("") }
   const saveEdit = () => {
@@ -106,8 +140,9 @@ export default function FriendRoomPage() {
   const friendName = friend.name
   const colors = cfColors(friend.iljuKey)
   const svgFn = ILJU_SVG_ICONS[friend.iljuKey]
-  const displayStickers = friend.room?.stickers ?? []
-  const displayCharPos = friend.room?.charPos ?? { x: 50, y: 62 }
+  const room = SOCIAL_BACKEND_ENABLED ? friendRoom : (friend.room ?? null)
+  const displayStickers = room?.stickers ?? []
+  const displayCharPos = room?.charPos ?? { x: 50, y: 62 }
 
   return (
     <>
@@ -136,7 +171,7 @@ export default function FriendRoomPage() {
           <RoomCanvas
             stickers={displayStickers}
             charPos={displayCharPos}
-            chars={friend.room?.chars}
+            chars={room?.chars}
             charIcon={svgFn ? <div className="w-full h-full">{svgFn()}</div> : undefined}
           />
           <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
@@ -186,27 +221,21 @@ export default function FriendRoomPage() {
               entries.map((entry, i) => {
                 const color = CARD_COLORS[i % CARD_COLORS.length]
                 const tilt = i % 2 === 0 ? "rotate(-0.4deg)" : "rotate(0.3deg)"
-                const isMe = entry.author === meName
+                const isMe = entry.isMe ?? (entry.author === meName)
                 const isEditing = editingId === entry.id
+                const entryIlju = entry.iljuKey ?? friends.find(f => f.name === entry.author)?.iljuKey
+                const entrySvgFn = isMe ? meSvgFn : (entryIlju ? ILJU_SVG_ICONS[entryIlju] : null)
+                const entryKey = isMe ? meDisplayKey : (entryIlju ?? "")
                 return (
                   <div key={entry.id} className="flex gap-2.5" style={{ transform: tilt }}>
-                    {(() => {
-                      const entryFriend = friends.find(f => f.name === entry.author)
-                      const entrySvgFn = entryFriend ? ILJU_SVG_ICONS[entryFriend.iljuKey] : null
-                      return (
-                        <div
-                          className="shrink-0 w-9 h-9 rounded-full overflow-hidden flex items-center justify-center"
-                          style={{ background: isMe ? meBg : (entryFriend ? cfColors(entryFriend.iljuKey).bg : "#F1F5F9"), border: "1.5px dashed #D4B070" }}
-                        >
-                          {isMe
-                            ? <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meDisplayKey))}</div>
-                            : entrySvgFn
-                              ? <div className="w-full h-full">{entrySvgFn(getIljuProfileViewBox(entryFriend!.iljuKey))}</div>
-                              : <span className="text-[13px] font-bold text-charcoal/60">{entry.author[0]}</span>
-                          }
-                        </div>
-                      )
-                    })()}
+                    <div
+                      className="shrink-0 w-9 h-9 rounded-full overflow-hidden flex items-center justify-center"
+                      style={{ background: isMe ? meBg : (entryIlju ? cfColors(entryIlju).bg : "#F1F5F9"), border: "1.5px dashed #D4B070" }}
+                    >
+                      {entrySvgFn
+                        ? <div className="w-full h-full">{entrySvgFn(getIljuProfileViewBox(entryKey))}</div>
+                        : <span className="text-[13px] font-bold text-charcoal/60">{entry.author[0]}</span>}
+                    </div>
                     <div
                       className="flex-1 rounded-xl rounded-tl-sm px-3 py-1.5"
                       style={{ background: color.bg, border: `1.5px solid ${color.border}`, boxShadow: "2px 2px 0px rgba(0,0,0,0.06)" }}
@@ -236,8 +265,12 @@ export default function FriendRoomPage() {
                           <p className="text-[13px] font-normal text-charcoal/80 leading-snug break-all">{entry.message}</p>
                           {isMe && (
                             <div className="flex gap-2 justify-end mt-1">
-                              <button className="text-[10px] font-bold text-text-muted active:opacity-60" onClick={() => startEdit(entry)}>수정</button>
-                              <span className="text-[10px] text-text-muted/40">·</span>
+                              {!SOCIAL_BACKEND_ENABLED && (
+                                <>
+                                  <button className="text-[10px] font-bold text-text-muted active:opacity-60" onClick={() => startEdit(entry)}>수정</button>
+                                  <span className="text-[10px] text-text-muted/40">·</span>
+                                </>
+                              )}
                               <button className="text-[10px] font-bold text-red-400 active:opacity-60" onClick={() => deleteEntry(entry.id)}>삭제</button>
                             </div>
                           )}
