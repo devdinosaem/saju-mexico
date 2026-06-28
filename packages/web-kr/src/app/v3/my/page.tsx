@@ -13,7 +13,8 @@ import MonthCalendar from "./_components/MonthCalendar"
 import WeeklyEnergyFlow from "./_components/WeeklyEnergyFlow"
 import SajuInputSheet from "../shop/_components/SajuInputSheet"
 import { PRICES, priceLabel, subscriptionLabel } from "@/lib/prices"
-import { DoodleHeart, DoodleSparkle, DoodleStar, DoodleMoon, DoodleCrystal, DoodleCrown } from "@/components/doodles"
+import Link from "next/link"
+import { DoodleHeart, DoodleSparkle, DoodleStar, DoodleMoon, DoodleCrystal, DoodleCrown, DoodleBook } from "@/components/doodles"
 import AdBanner from "@/components/AdBanner"
 import AddToHomeScreen from "@/components/AddToHomeScreen"
 
@@ -68,6 +69,18 @@ export default function MyPage() {
 
       {/* 내 명식 (사주팔자 + 오행 분포) */}
       <MyMyeongsikCard onEdit={() => setEditOpen(true)} />
+
+      {/* 사주 보관함 진입 */}
+      <Link href="/v3/my/archive" className="rounded-2xl bg-white border border-charcoal/10 p-4 flex items-center gap-3 active:opacity-90 transition-opacity">
+        <span className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ background: "#FFF0F5" }}>
+          <DoodleBook className="w-6 h-6" />
+        </span>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-charcoal">사주 보관함</p>
+          <p className="text-[11px] text-text-muted mt-0.5 leading-tight">나·신살·다음달·궁합… 내 분석 모아보기</p>
+        </div>
+        <span className="text-text-muted text-xs">›</span>
+      </Link>
 
       {/* 내 보관함 */}
       <div>
