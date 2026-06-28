@@ -12,6 +12,7 @@ import { useFriends } from "@/hooks/useFriends"
 import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
 import RoomElementCard from "./_components/RoomElementCard"
+import RoomElementCardA from "./_components/RoomElementCardA"
 
 type GuestEntry = { id: string; author: string; message: string; date: string }
 
@@ -114,8 +115,16 @@ export default function InteriorPage() {
       {/* 내 미니홈피 */}
       <MiniRoom />
 
-      {/* 방의 기운 — 오행 밸런스 */}
-      <RoomElementCard />
+      {/* ▼▼▼ 방의 기운 — 컴팩트 시안 비교(임시) ▼▼▼ */}
+      <div className="flex flex-col gap-1">
+        <span className="text-[10px] font-bold text-charcoal/35 px-1">현재 · 개편본</span>
+        <RoomElementCard />
+      </div>
+      <div className="flex flex-col gap-1">
+        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 A · 접이식</span>
+        <RoomElementCardA />
+      </div>
+      {/* ▲▲▲ 방의 기운 — 컴팩트 시안 비교(임시) ▲▲▲ */}
 
       {/* 방명록 인라인 미리보기 */}
       {previewEntries.length > 0 && (
