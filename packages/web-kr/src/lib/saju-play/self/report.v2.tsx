@@ -71,7 +71,7 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
         <div className="flex items-center gap-3">
           <Avatar iljuKey={x.charKey} size={48} />
           <div>
-            <p className="text-[15px] text-charcoal" style={FONT.title}>{x.iljuType?.name ?? `${self.dayKr}${self.dayElem} 일간`}</p>
+            <p className="text-[15px] font-bold text-charcoal">{x.iljuType?.name ?? `${self.dayKr}${self.dayElem} 일간`}</p>
             <p className="text-[13px] text-text-muted">{self.dayKr}({self.dayElem})·{self.yinYang} 일간</p>
           </div>
         </div>
