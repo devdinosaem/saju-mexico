@@ -12,6 +12,9 @@ import { SinsalReport } from "@/lib/saju-play/sinsal/report"
 import type { SinsalData } from "@/lib/saju-play/sinsal/sinsal-adapter"
 import { NextMonthReport } from "@/lib/saju-play/nextmonth/report"
 import type { NextMonthData } from "@/lib/saju-play/nextmonth/nextmonth-adapter"
+import CrushFunnel, { type Person } from "@/lib/saju-play/crush/core"
+import { SOME_CONFIG } from "@/lib/saju-play/crush/some"
+import { ONESIDED_CONFIG } from "@/lib/saju-play/crush/onesided"
 
 function fmtDate(ts: number): string {
   const d = new Date(ts)
@@ -26,6 +29,20 @@ function ReportBody({ record }: { record: ReportRecord }) {
       return <SinsalReport data={record.snapshot.data as SinsalData} aiText={record.snapshot.aiText} />
     case "nextmonth":
       return <NextMonthReport data={record.snapshot.data as NextMonthData} aiText={record.snapshot.aiText} />
+    case "some":
+    case "onesided": {
+      const them = (record.snapshot.data as { them?: Person })?.them
+      if (!them) {
+        // 구 기록/더미(them 없음) → 다시 볼 수 없음
+        return (
+          <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-10 text-center">
+            <p className="text-[14px] text-charcoal/55 leading-relaxed" style={GAEGU}>이 기록은 다시 볼 수 없어요.<br />새로 분석해 주세요.</p>
+          </div>
+        )
+      }
+      const config = record.type === "some" ? SOME_CONFIG : ONESIDED_CONFIG
+      return <CrushFunnel config={config} replay={{ them, aiText: record.snapshot.aiText }} />
+    }
     default:
       return (
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-10 text-center">

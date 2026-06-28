@@ -98,7 +98,7 @@ function resolveCharKey(id?: string | null): string {
   }
   return FALLBACK_ME_KEY
 }
-type Person = { name: string; birth: { y: string; m: string; d: string }; gender: "M" | "F" }
+export type Person = { name: string; birth: { y: string; m: string; d: string }; gender: "M" | "F" }
 function mockIlju(p: Person): string {
   const pool = (p.gender === "M" ? KEYS_M : KEYS_F)
   const base = pool.length ? pool : ICON_KEYS
@@ -355,7 +355,7 @@ type Step = "landing" | "input" | "loading" | "result"
 const emptyP = (): Person => ({ name: "", birth: { y: "", m: "", d: "" }, gender: "M" })
 const validP = (p: Person) => p.name.trim() !== "" && p.birth.y.length === 4 && !!p.birth.m && !!p.birth.d
 
-export default function CrushFunnel({ config }: { config: CrushConfig }) {
+export default function CrushFunnel({ config, replay }: { config: CrushConfig; replay?: { them: Person; aiText: string } }) {
   const { user, ilju } = useUser()
   const router = useRouter()
   const myKey = resolveCharKey(ilju?.id)
@@ -364,10 +364,11 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
     ? { year: +bd.year, month: +bd.month, day: +bd.day, hour: to24h(bd.hour, bd.ampm), minute: parseInt(bd.minute) || 0 }
     : null
   const myGender: Gender = bd?.gender === "F" ? "F" : "M"
-  const [step, setStep] = useState<Step>("landing")
-  const [them, setThem] = useState<Person>(() => ({ ...emptyP(), gender: "F" }))
-  const [unlocked, setUnlocked] = useState(false)
-  const [ai, setAi] = useState<Ai>({ status: "idle", text: "" })
+  // 재열람(replay): 저장된 입력+AI로 결과를 바로 표시 (랜딩·입력·AI호출 스킵)
+  const [step, setStep] = useState<Step>(replay ? "result" : "landing")
+  const [them, setThem] = useState<Person>(() => (replay ? replay.them : { ...emptyP(), gender: "F" }))
+  const [unlocked, setUnlocked] = useState(!!replay)
+  const [ai, setAi] = useState<Ai>(replay ? { status: "done", text: replay.aiText } : { status: "idle", text: "" })
 
   // 연출 단계에서 미리 풀이를 돌린다 → 결과 진입 시 보통 이미 완성
   const start = () => {
