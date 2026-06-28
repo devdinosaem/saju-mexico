@@ -9,13 +9,13 @@ import Link from "next/link"
 import { useUser } from "@/lib/UserContext"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf } from "../engine"
-import { ELEM_BG } from "../flavor"
+import { ELEM_BG, ELEM_DOODLE } from "../flavor"
 import { buildNextMonth, type NextMonthBirth, type Gender } from "./nextmonth-adapter"
-import { WEATHER, MONTH_THEME, AREA } from "./flavor"
+import { WEATHER, MONTH_THEME, AREA, EVENT_COPY } from "./flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleKey, DoodleTaegeuk, DoodleHeart,
-  DoodleCalendar, DoodleLetter, DoodleSpeechBubble,
+  DoodleCalendar, DoodleLetter, DoodleSpeechBubble, DoodleLightning,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -105,7 +105,11 @@ export default function NextMonthFunnel() {
   const weather = WEATHER.find(w => data.favorMonth >= w.min) ?? WEATHER[WEATHER.length - 1]
   const theme = MONTH_THEME[data.monthGroup]
   const topAreaKey = (Object.keys(data.areas) as (keyof typeof data.areas)[]).reduce((a, b) => (data.areas[b] > data.areas[a] ? b : a))
+  const lowAreaKey = (Object.keys(data.areas) as (keyof typeof data.areas)[]).reduce((a, b) => (data.areas[b] < data.areas[a] ? b : a))
   const topAreaLabel = AREA_LABEL[topAreaKey]
+  const elemFavor = data.monthElem === data.yong ? "good" : data.monthElem === data.gi ? "warn" : "neutral"
+  const evtTypes = [...new Set(data.events.map(e => e.type))]
+  const gaugeColor = (v: number) => (v >= 66 ? "#16A34A" : v >= 45 ? PINK : "#94A3B8")
   const letter = `${data.monthLabel}의 너에게 — ${weather.line} ${theme.title}이 기다리고 있어.`
   const fallbackProse =
     `**${data.monthLabel}**, 너에겐 **${weather.label}** 같은 달이 와.\n\n` +
@@ -164,6 +168,63 @@ export default function NextMonthFunnel() {
         <Ico as={theme.D} size={22} />
         <div className="min-w-0"><p className="text-[14px] font-bold text-charcoal">{theme.title} · {data.monthTenGod}결</p>
           <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{theme.line}</p></div>
+      </div>
+
+      {/* 오행 호악 */}
+      <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5"
+        style={elemFavor === "good" ? { background: "#F0FFF4", border: "1.5px solid #86EFAC" } : elemFavor === "warn" ? { background: "#FFF7ED", border: "1.5px solid #FDB877" } : { background: "white", border: "1px solid rgba(45,45,45,0.1)" }}>
+        <Ico as={ELEM_DOODLE[data.monthElem]} size={22} />
+        <div className="min-w-0">
+          <p className="text-[14px] font-bold text-charcoal">다음달은 {data.monthElem} 기운의 달</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>
+            {elemFavor === "good" ? `나를 살리는 ${data.yong} 기운이 들어와 — 흐름이 트이는 달이야. 벌여도 좋아.`
+              : elemFavor === "warn" ? `조심할 ${data.gi} 기운이 도는 달 — 키우기보다 다지기, 큰 결정은 한 박자 쉬어가.`
+                : `용신 ${data.yong}·기신 ${data.gi} 어느 쪽도 아닌 무난한 달 — 내 페이스대로 가면 돼.`}
+          </p>
+        </div>
+      </div>
+
+      {/* 충/합 이벤트 배지 */}
+      {evtTypes.length > 0 && (
+        <div className="flex flex-col gap-2">
+          {evtTypes.map(type => {
+            const c = EVENT_COPY[type]
+            const withList = [...new Set(data.events.filter(e => e.type === type).map(e => e.withLabel))].join(", ")
+            const good = type === "합"
+            return (
+              <div key={type} className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={good ? { background: "#EFF6FF", border: "1.5px solid #93C5FD" } : { background: "#FEF2F2", border: "1.5px solid #FCA5A5" }}>
+                <Ico as={good ? DoodleSparkles : DoodleLightning} size={20} />
+                <div className="min-w-0"><p className="text-[14px] font-bold text-charcoal">{c.title} <span className="text-[12px] text-text-muted font-normal">· {withList} {type}</span></p>
+                  <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{c.line}</p></div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      <ChapterDivider n={2} title="영역별 예보" />
+
+      {/* 5대 영역 게이지 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleTaegeuk} basis="십신·신살">애정·일·돈·건강·관계</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
+          {AREA.map(a => {
+            const v = data.areas[a.key]
+            return (
+              <div key={a.key} className="flex items-center gap-2.5">
+                <Ico as={a.D} size={16} />
+                <span className="w-12 text-[14px] font-bold text-charcoal shrink-0">{a.label}</span>
+                <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
+                  <div className="h-full rounded-full" style={{ width: `${v}%`, background: gaugeColor(v) }} />
+                </div>
+                <span className="w-7 text-[13px] text-text-muted text-right shrink-0">{v}</span>
+              </div>
+            )
+          })}
+          <p className="text-[14px] text-charcoal/70 leading-snug pt-1" style={GAEGU}>
+            다음달은 <span className="font-bold" style={{ color: PINK }}>{topAreaLabel}</span> 쪽으로 바람이 불어{data.areas[lowAreaKey] < 45 ? `, ${AREA_LABEL[lowAreaKey]} 쪽은 살짝 신경 써주면 좋아` : ""}.
+          </p>
+        </div>
       </div>
 
       {/* consult 크로스셀 */}
