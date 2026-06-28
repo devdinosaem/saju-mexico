@@ -17,6 +17,7 @@ import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
   DoodleStar, DoodleSpeechBubble, DoodleQuestionMark, DoodleLightning,
+  DoodleClover, DoodleCalendar,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -197,6 +198,11 @@ export default function SinsalFunnel() {
     .map(s => ({ ...s, power: data.stats[s.a] + data.stats[s.b] }))
     .sort((a, b) => b.power - a.power)
     .slice(0, 4)
+  // Ch5 — 길성 활용 / 흉살 안심
+  const blessUse = data.owned.filter(o => ["귀인·행운", "재능·예술", "매력·인기"].includes(SINSAL[o.name].cat)).slice(0, 4)
+  const scary = data.owned.filter(o => SINSAL[o.name].myth)
+  // Ch6 — 올해의 신살
+  const seunInfo = SINSAL[data.seunSinsal]
   const teaser = `${data.bareIlju} 일주 — 신살 ${data.ownedCount}개를 타고났어. 대표는 «${sigInfo.alias}».`
   const fallbackProse =
     `너에겐 신살이 **${data.ownedCount}개** 있어. 그중 가장 너다운 건 **${sigInfo.alias}**(${sig}) — ${sigInfo.mean}.\n\n` +
@@ -355,6 +361,79 @@ export default function SinsalFunnel() {
           </div>
         )}
       </div>
+
+      <ChapterDivider n={5} title="살릴 건 살리고" />
+
+      {/* 길성 활용 — 이건 키워 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleClover} basis="길성·재능">이건 키워</SectionTitle>
+        {blessUse.length > 0 ? (
+          <div className="rounded-2xl px-4 py-4 flex flex-col gap-3" style={{ background: "#F0FFF4", border: "1.5px solid #86EFAC" }}>
+            {blessUse.map(o => {
+              const info = SINSAL[o.name]
+              return (
+                <div key={o.name} className="flex items-start gap-2.5">
+                  <span className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center shrink-0"><Ico as={info.D} size={18} /></span>
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-bold text-charcoal leading-tight">{info.alias}</p>
+                    <p className="text-[13px] text-charcoal/70 leading-snug" style={GAEGU}>{info.use}</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="rounded-2xl px-4 py-3.5" style={{ background: "#F0FFF4", border: "1.5px solid #86EFAC" }}>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>화려한 길성은 적지만, 그만큼 한 길을 우직하게 파는 힘이 있어 — 꾸준함이 네 무기야.</p>
+          </div>
+        )}
+      </div>
+
+      {/* 흉살 안심 — 겁낼 것 없어 (공포 해소 코너) */}
+      {scary.length > 0 && (
+        <div className="flex flex-col gap-2.5">
+          <SectionTitle icon={DoodleHeart} basis="안심 처방">겁낼 것 없어</SectionTitle>
+          <div className="rounded-2xl px-4 py-4 flex flex-col gap-3" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
+            <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>이름이 무서운 살들, 사실은 다 다룰 수 있는 힘이야. 이렇게만 기억해 둬.</p>
+            {scary.map(o => {
+              const info = SINSAL[o.name]
+              return (
+                <div key={o.name} className="rounded-xl bg-white/70 px-3 py-2.5 flex items-start gap-2.5">
+                  <span className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0"><Ico as={info.D} size={18} /></span>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-bold text-charcoal leading-tight">{info.alias} <span className="text-[12px] text-text-muted font-normal">· {o.name}</span></p>
+                    <p className="text-[13px] text-charcoal/70 leading-snug" style={GAEGU}>{info.caution}</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      <ChapterDivider n={6} title="올해의 신살" />
+
+      {/* 올해 들어오는 신살 (세운) */}
+      {seunInfo && (
+        <div className="flex flex-col gap-2.5">
+          <SectionTitle icon={DoodleCalendar} basis="세운">{data.curYear}년의 기운</SectionTitle>
+          <div className="rounded-2xl border-2 px-4 py-4 flex flex-col gap-3" style={{ background: CAT_STYLE[seunInfo.cat].bg, borderColor: CAT_STYLE[seunInfo.cat].ink }}>
+            <div className="flex items-center gap-3">
+              <span className="w-12 h-12 rounded-full bg-white/80 flex items-center justify-center shrink-0"><Ico as={seunInfo.D} size={26} /></span>
+              <div className="min-w-0">
+                <p className="text-[16px] leading-tight" style={{ ...BINGGRAE, color: CAT_STYLE[seunInfo.cat].ink }}>{seunInfo.alias}</p>
+                <p className="text-[13px] text-charcoal/55" style={GAEGU}>{data.seunSinsal}{data.seunOwned ? " · 원래 가진 기운이 더 세지는 해" : " · 올해 새로 들어오는 기운"}</p>
+              </div>
+            </div>
+            <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{seunInfo.mean}.</p>
+            <div className="rounded-xl bg-white/70 px-3 py-2.5 flex flex-col gap-1.5">
+              <p className="text-[13px] text-charcoal/75 leading-snug" style={GAEGU}><span className="font-bold" style={{ color: PINK }}>이렇게 써 · </span>{seunInfo.use}</p>
+              <p className="text-[13px] text-charcoal/75 leading-snug" style={GAEGU}><span className="font-bold" style={{ color: PINK }}>이건 살짝 · </span>{seunInfo.caution}</p>
+            </div>
+            <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>무리해서 판을 뒤집기보다, 올해 들어온 이 결에 맞춰 한 발씩 가면 돼.</p>
+          </div>
+        </div>
+      )}
 
       {/* consult 크로스셀 */}
       <Link href="/v3/consult" className="rounded-2xl px-4 py-4 flex items-center gap-3 active:opacity-85 transition-opacity" style={{ background: "linear-gradient(160deg,#FFF6FA,#FFFDF5)", border: "2px solid #2D2D2D" }}>

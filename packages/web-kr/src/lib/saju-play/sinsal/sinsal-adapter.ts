@@ -5,8 +5,8 @@
 //    getSpecialStars는 한글 배열. buildSinsalBlock·자리계산은 sinsal-engine(라우트 에이전트 소유)을 호출만.
 // 클라이언트 동작. 실패 시 null → 호출측 폴백.
 // ════════════════════════════════════════════════════════════════
-import { calculateSaju, STEM_KOREAN, BRANCH_KOREAN } from "manseryeok"
-import { analyzeSpiritStars, getSpecialStars, SPIRIT_STAR_KOREAN } from "saju-engine"
+import { calculateSaju, STEM_KOREAN, BRANCH_KOREAN, BRANCHES } from "manseryeok"
+import { analyzeSpiritStars, getSpecialStars, SPIRIT_STAR_KOREAN, getTwelveSpiritStar } from "saju-engine"
 import { buildSinsalBlock, type TwelveByPos, type SpecialByPos } from "./sinsal-engine"
 import { SINSAL, SIG_PRIORITY, type SinsalStat } from "./flavor"
 
@@ -37,6 +37,9 @@ export type SinsalData = {
   ownedCount: number                    // 보유 신살 종류 수
   signature: string                     // 대표(시그니처) 신살명
   stats: Record<SinsalStat, number>     // 5능력치 합산(레이더용)
+  curYear: number                       // 올해 연도
+  seunSinsal: string                    // 올해 세운 신살(12신살 한글)
+  seunOwned: boolean                    // 올해 신살을 원국에도 가졌는지
   sinsalBlock: string                   // AI 프롬프트 데이터 블록
 }
 
@@ -98,13 +101,20 @@ export function buildSinsal(b: SinsalBirth, gender: Gender): SinsalData | null {
     const stats: Record<SinsalStat, number> = { 이동: 0, 매력: 0, 재능: 0, 추진: 0, 복: 0 }
     owned.forEach(o => { stats[SINSAL[o.name].stat] += o.positions.length })
 
+    // 올해 세운 신살 — 올해 지지(세운) ↔ 년지 기준 12신살
+    const curYear = new Date().getFullYear()
+    const seunBranch = BRANCHES[(((curYear - 4) % 12) + 12) % 12]
+    const seunSinsal = SPIRIT_STAR_KOREAN[getTwelveSpiritStar(fp.year.branch, seunBranch)]
+    const seunOwned = Object.values(twelve).includes(seunSinsal)
+
     const sinsalBlock = buildSinsalBlock(twelve, special)
     const iljuKey = `${STEM_KOREAN[fp.day.stem]}${BRANCH_KOREAN[fp.day.branch]}-${gender === "M" ? "m" : "f"}`
     const bareIlju = `${STEM_KOREAN[fp.day.stem]}${BRANCH_KOREAN[fp.day.branch]}`
 
     return {
       iljuKey, dayKr: STEM_KOREAN[fp.day.stem], bareIlju,
-      twelve, special, byPos, owned, ownedCount: owned.length, signature, stats, sinsalBlock,
+      twelve, special, byPos, owned, ownedCount: owned.length, signature, stats,
+      curYear, seunSinsal, seunOwned, sinsalBlock,
     }
   } catch {
     return null
