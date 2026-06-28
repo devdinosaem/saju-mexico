@@ -12,9 +12,11 @@ import { ILJU_TYPES } from "@/lib/ilju-types"
 import { elemOf, ELEMS, type Elem } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
 import { buildSelf, type SelfBirth, type Gender } from "./self-adapter"
+import { TALENT, ELEM_TRAIT, MEETING } from "./flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
+  DoodleLightning, DoodleMedal, DoodleMirror, DoodleSpeechBubble, DoodleStar,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -107,6 +109,13 @@ export default function SelfFunnel() {
   const strongElems = ELEMS.filter(e => self.dist[e] >= 3)
   const weakElems = ELEMS.filter(e => self.dist[e] === 0)
   const teaser = `${self.dayKr}(${self.dayElem})·${self.yinYang} 일간 — ${self.strongLevel}. 강한 기운은 ${strongElems.join("·") || "고른 편"}, 빠진 건 ${weakElems.join("·") || "없음"}.`
+  // 작동 원리 파생
+  const dominantElem = ELEMS.reduce((a, b) => (self.dist[b] > self.dist[a] ? b : a), "목" as Elem)
+  const ego = self.dayElem, persona = dominantElem, sameCore = ego === persona
+  const energyPos = self.strongLevel.includes("극신강") ? 90 : self.strongLevel.includes("신강") ? 72
+    : self.strongLevel.includes("극신약") ? 8 : self.strongLevel.includes("신약") ? 30 : 50
+  const seenLine = `${self.tgGroups.식상 >= 2 ? "표현이 분명하고 끼 있는" : "차분하고 편안한"} 인상${self.tgGroups.관성 >= 2 ? " + 믿음직한 분위기" : ""}${self.dohwa ? " + 묘하게 끌리는 매력" : ""}`
+  const meetingOrder = [...ELEMS].sort((a, b) => self.dist[b] - self.dist[a])
   const fallbackProse =
     `너는 **${self.dayKr}(${self.dayElem})·${self.yinYang}** 일간, ${self.strongLevel}이야.\n\n` +
     `타고난 결은 **${self.topTalent.join("·")}** 쪽 — 여기에 네 무기가 있어. 나를 살리는 기운은 **${self.yong}**, 이걸 채울수록 잘 풀려.\n\n` +
@@ -144,6 +153,39 @@ export default function SelfFunnel() {
 
       <ChapterDivider n={1} title="기본 스펙" />
 
+      {/* 일주 스펙시트 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleStar} basis="일주">내 스펙시트</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <Avatar iljuKey={charKey} size={48} />
+            <div>
+              <p className="text-[15px] text-charcoal" style={BINGGRAE}>{iljuType?.name ?? `${self.dayKr}${self.dayElem} 일간`}</p>
+              <p className="text-[13px] text-text-muted">{self.dayKr}({self.dayElem})·{self.yinYang} 일간</p>
+            </div>
+          </div>
+          {iljuType && (
+            <>
+              <div className="flex flex-wrap gap-1.5">
+                {iljuType.strengths.slice(0, 4).map((s, i) => (
+                  <span key={i} className="px-2 py-0.5 rounded-full text-[12px] font-bold" style={{ background: "#F0FFF4", color: "#16A34A" }}>{s}</span>
+                ))}
+              </div>
+              {iljuType.weaknesses?.length > 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-wrap gap-1.5">
+                    {iljuType.weaknesses.slice(0, 3).map((w, i) => (
+                      <span key={i} className="px-2 py-0.5 rounded-full text-[12px] font-bold" style={{ background: "#F1F5F9", color: "#94A3B8" }}>{w}</span>
+                    ))}
+                  </div>
+                  <p className="text-[13px] text-charcoal/55 leading-snug" style={GAEGU}>이런 면도 있는데, 알아두면 오히려 다루기 쉬워.</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
       {/* 내 오행 밸런스 */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleTaegeuk} basis="오행 분포">내 오행 밸런스</SectionTitle>
@@ -162,12 +204,87 @@ export default function SelfFunnel() {
             )
           })}
           <p className="text-[14px] text-charcoal/70 leading-snug pt-1" style={GAEGU}>
-            나를 살리는 기운은 <span className="font-bold" style={{ color: PINK }}>{self.yong}</span> · 조심할 기운은 {self.gi}. {self.strongLevel}이라 {self.isStrong ? "주도적으로 밀어붙일 때" : "기대고 채우며 갈 때"} 잘 풀려.
+            나를 살리는 기운은 <span className="font-bold" style={{ color: PINK }}>{self.yong}</span> · 조심할 기운은 {self.gi}.
           </p>
         </div>
       </div>
 
-      <p className="text-[13px] text-text-muted text-center" style={GAEGU}>…작동 원리 · 연애 모드 · 일·돈 · 인생 그래프 · 취급법 · 올해의 나 (준비 중)</p>
+      {/* 에너지 운용 (신강신약) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleLightning} basis="신강신약">에너지 운용</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
+          <div className="flex items-center justify-between text-[12px] text-text-muted"><span>기댐·충전형</span><span>주도·추진형</span></div>
+          <div className="relative h-3 rounded-full" style={{ background: "linear-gradient(90deg,#93C5FD,#E5E7EB,#F9A8C4)" }}>
+            <span className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 shadow-sm" style={{ left: `${energyPos}%`, borderColor: PINK }} />
+          </div>
+          <p className="text-[14px] font-bold text-charcoal">{self.strongLevel}</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{self.isStrong ? "에너지 풀충전형 — 내가 키 쥐고 밀어붙일 때 잘 풀려. 가끔 브레이크만 잊지 마." : self.strongLevel.includes("중화") ? "균형형 — 상황 따라 유연하게 가는 게 강점이야." : "섬세·기댐형 — 좋은 환경·사람에 기대고 채울 때 빛나. 무리한 독주는 방전돼."}</p>
+        </div>
+      </div>
+
+      <ChapterDivider n={2} title="작동 원리" />
+
+      {/* 타고난 재능 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleMedal} basis="십신">타고난 재능</SectionTitle>
+        <div className="grid grid-cols-2 gap-2">
+          {self.topTalent.map((gp, i) => {
+            const t = TALENT[gp]; const D = t.D
+            return (
+              <div key={i} className="rounded-2xl bg-white border border-charcoal/10 px-3 py-3.5 flex flex-col gap-1.5">
+                <Ico as={D} size={22} />
+                <p className="text-[14px] font-bold" style={{ color: PINK }}>{t.tag}</p>
+                <p className="text-[13px] text-charcoal/65 leading-snug" style={GAEGU}>{t.line}</p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* 본캐 vs 부캐 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleMirror} basis="일간·오행">본캐 vs 부캐</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
+          {sameCore ? (
+            <p className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>겉과 속이 일관된 사람. 보이는 그대로 — <span className="font-bold text-charcoal">{ELEM_TRAIT[ego]}</span>.</p>
+          ) : (
+            <>
+              <div className="flex items-start gap-2.5"><span className="text-[13px] font-bold w-12 shrink-0" style={{ color: PINK }}>겉(부캐)</span><span className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{ELEM_TRAIT[persona]}</span></div>
+              <div className="flex items-start gap-2.5"><span className="text-[13px] font-bold w-12 shrink-0" style={{ color: PINK }}>속(본캐)</span><span className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{ELEM_TRAIT[ego]}</span></div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* 남들이 보는 나 */}
+      <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={{ background: "#EFF6FF", border: "1.5px solid #93C5FD" }}>
+        <Ico as={DoodleSpeechBubble} size={18} />
+        <div><p className="text-[14px] font-bold text-charcoal">남들이 보는 나</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{seenLine} 쪽으로 비쳐.</p></div>
+      </div>
+
+      {/* 내 안의 오행 회의실 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleSpeechBubble} basis="오행 분포">내 안의 오행 회의실</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-1">
+          {meetingOrder.map(e => {
+            const m = MEETING[e]; const n = self.dist[e]
+            const power = n >= 3 ? "주도권" : n === 0 ? "발언권 없음" : n >= 2 ? "목소리 큼" : "한마디"
+            return (
+              <div key={e} className="flex items-center gap-2.5 py-2.5 border-b border-charcoal/5 last:border-0" style={n === 0 ? { opacity: 0.4 } : undefined}>
+                <Ico as={ELEM_DOODLE[e]} size={18} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-bold text-charcoal">{e} · {m.role} <span className="text-[12px] text-text-muted font-normal">{power}</span></p>
+                  <p className="text-[13px] text-charcoal/60 leading-snug" style={GAEGU}>&ldquo;{m.voice}&rdquo;</p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>제일 목소리 큰 {meetingOrder[0]}({MEETING[meetingOrder[0]].role})이 너를 주로 끌고 가. {weakElems.length ? `빠진 ${weakElems.join("·")}은 의식적으로 챙겨야 균형이 맞아.` : ``}</p>
+      </div>
+
+      <p className="text-[13px] text-text-muted text-center" style={GAEGU}>…연애 모드 · 일·돈 · 인생 그래프 · 취급법 · 올해의 나 (준비 중)</p>
     </div>
   )
 
