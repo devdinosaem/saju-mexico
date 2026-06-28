@@ -7,8 +7,8 @@ import { usePathname } from "next/navigation"
 const TABS = [
   { href: "/v3/shop",     label: "사주상품", icon: "✦", fs: 22, dy: 0 },
   { href: "/v3/consult",  label: "상담",    icon: "✧", fs: 22, dy: 0 },
-  { href: "/v3/interior", label: "운테리어", icon: "⌂", fs: 16, dy: 0 },
-  { href: "/v3/my",       label: "마이",    icon: "☺", fs: 17, dy: 0 },
+  { href: "/v3/interior", label: "운테리어", icon: "⌂", fs: 16, dy: 2 },
+  { href: "/v3/my",       label: "마이",    icon: "☺", fs: 15, dy: 0 },
 ]
 
 export default function BottomNav() {
