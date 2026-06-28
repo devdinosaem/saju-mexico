@@ -35,11 +35,53 @@ const REPORTS = [
   { href: "/v3/nextmonth", title: "다음달 운 미리보기", sub: "운세 날씨·일진 캘린더", icon: DoodleMoon, bg: "var(--info-bg)", price: priceLabel(PRICES.nextMonth) },
 ]
 
-// ── 썸·짝사랑 (사진2 스타일: 마주보기 카드) ──────────────────────
+// ── 썸·짝사랑 (사진2 스타일: 마주보기 카드) — 짝사랑이 위, 썸이 아래 ──
 const COMPAT = [
-  { href: "/v3/some", title: "썸 궁합", sub: "그 사람도 날 좋아할까?", D: DoodleHeart, bg: "var(--love-bg)", price: priceLabel(PRICES.someCompat) },
   { href: "/v3/onesided", title: "짝사랑 궁합", sub: "그 사람, 내 맘 알까?", D: DoodleMoon, bg: "var(--special-bg)", price: priceLabel(PRICES.onesidedCompat) },
+  { href: "/v3/some", title: "썸 궁합", sub: "그 사람도 날 좋아할까?", D: DoodleHeart, bg: "var(--love-bg)", price: priceLabel(PRICES.someCompat) },
 ]
+
+type ReportItem = (typeof REPORTS)[number]
+type CompatItem = (typeof COMPAT)[number]
+
+// 리포트 카드 (사진1 스타일: 아이콘 카드)
+function ReportCard({ r, className = "" }: { r: ReportItem; className?: string }) {
+  return (
+    <Link href={r.href} className={`rounded-[var(--r-lg)] bg-white border border-charcoal/10 p-3.5 flex flex-col gap-2 active:opacity-90 transition-opacity ${className}`}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: r.bg }}>
+        <Ico as={r.icon} size={22} />
+      </div>
+      <div>
+        <p className="text-[13px] font-bold text-charcoal leading-tight">{r.title}</p>
+        <p className="text-[11px] text-text-muted mt-0.5 leading-tight">{r.sub}</p>
+      </div>
+      <span className="mt-auto w-full py-1.5 rounded-lg bg-pink text-cream text-[11px] font-bold text-center">{r.price}</span>
+    </Link>
+  )
+}
+
+// 궁합 카드 (사진2 스타일: 마주보기)
+function CompatCard({ c, className = "" }: { c: CompatItem; className?: string }) {
+  const D = c.D
+  return (
+    <Link href={c.href} className={`rounded-[var(--r-lg)] bg-white border border-charcoal/10 p-3.5 flex flex-col gap-2 active:opacity-90 transition-opacity ${className}`}>
+      <div className="flex items-center gap-1.5">
+        <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-charcoal/15 flex items-center justify-center shrink-0" style={{ background: c.bg }}>
+          {ILJU_SVG_ICONS[ME_KEY]?.(getIljuProfileViewBox(ME_KEY))}
+        </div>
+        <span className="w-4 h-4 inline-flex items-center justify-center shrink-0"><D className="w-full h-full" /></span>
+        <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "#F1F5F9", border: "2px dashed #CBD5E1" }}>
+          <span className="text-[14px] text-charcoal/30">?</span>
+        </div>
+      </div>
+      <div>
+        <p className="text-[13px] font-bold text-charcoal leading-tight">{c.title}</p>
+        <p className="text-[11px] text-text-muted mt-0.5 leading-tight">{c.sub}</p>
+      </div>
+      <span className="mt-auto w-full py-1.5 rounded-lg bg-pink text-cream text-[11px] font-bold text-center">{c.price}</span>
+    </Link>
+  )
+}
 
 export default function ShopV2MockPage() {
   return (
@@ -64,46 +106,25 @@ export default function ShopV2MockPage() {
       <SquadSection />
       <PairsSection />
 
-      {/* ════ 병합 그리드 — 마이 운세 위젯처럼 그라디언트 프레임에 담음 ════ */}
+      {/* ════ 병합 그리드 — 마이 운세 위젯처럼 그라디언트 프레임에 담음 ════
+           좌측 열: 사용설명서/신살 → 다음달 → 짝사랑 → 썸(짝사랑 아래)
+           우측: 다음달 오른쪽부터 세로로 채우는 Google AdSense 박스 */}
       <div className="rounded-[var(--r-xl)] p-3.5" style={{ background: "var(--grad-pink-surface)", border: "1px solid var(--love-line)" }}>
-      <div className="grid grid-cols-2 gap-2.5">
-        {/* 리포트 카드 (사진1 스타일) */}
-        {REPORTS.map(r => (
-          <Link key={r.href} href={r.href} className="rounded-[var(--r-lg)] bg-white border border-charcoal/10 p-3.5 flex flex-col gap-2 active:opacity-90 transition-opacity">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: r.bg }}>
-              <Ico as={r.icon} size={22} />
-            </div>
-            <div>
-              <p className="text-[13px] font-bold text-charcoal leading-tight">{r.title}</p>
-              <p className="text-[11px] text-text-muted mt-0.5 leading-tight">{r.sub}</p>
-            </div>
-            <span className="mt-auto w-full py-1.5 rounded-lg bg-pink text-cream text-[11px] font-bold text-center">{r.price}</span>
-          </Link>
-        ))}
-
-        {/* 썸/짝사랑 카드 (사진2 스타일: 마주보기) */}
-        {COMPAT.map(c => {
-          const D = c.D
-          return (
-            <Link key={c.href} href={c.href} className="rounded-[var(--r-lg)] bg-white border border-charcoal/10 p-3.5 flex flex-col gap-2 active:opacity-90 transition-opacity">
-              <div className="flex items-center gap-1.5">
-                <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-charcoal/15 flex items-center justify-center shrink-0" style={{ background: c.bg }}>
-                  {ILJU_SVG_ICONS[ME_KEY]?.(getIljuProfileViewBox(ME_KEY))}
-                </div>
-                <span className="w-4 h-4 inline-flex items-center justify-center shrink-0"><D className="w-full h-full" /></span>
-                <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "#F1F5F9", border: "2px dashed #CBD5E1" }}>
-                  <span className="text-[14px] text-charcoal/30">?</span>
-                </div>
-              </div>
-              <div>
-                <p className="text-[13px] font-bold text-charcoal leading-tight">{c.title}</p>
-                <p className="text-[11px] text-text-muted mt-0.5 leading-tight">{c.sub}</p>
-              </div>
-              <span className="mt-auto w-full py-1.5 rounded-lg bg-pink text-cream text-[11px] font-bold text-center">{c.price}</span>
-            </Link>
-          )
-        })}
-      </div>
+        <div className="grid grid-cols-2 gap-2.5">
+          {/* R1 */}
+          <ReportCard r={REPORTS[0]} className="col-start-1 row-start-1" />
+          <ReportCard r={REPORTS[1]} className="col-start-2 row-start-1" />
+          {/* 좌측 세로 스택: 다음달 → 짝사랑 → 썸 */}
+          <ReportCard r={REPORTS[2]} className="col-start-1 row-start-2" />
+          <CompatCard c={COMPAT[0]} className="col-start-1 row-start-3" />
+          <CompatCard c={COMPAT[1]} className="col-start-1 row-start-4" />
+          {/* 우측: 다음달 오른쪽부터 아래까지 채우는 광고 박스 (AdSense) */}
+          <div className="col-start-2 row-start-2 row-span-3 rounded-[var(--r-lg)] border border-dashed border-charcoal/25 bg-white/50 flex flex-col items-center justify-center gap-1.5 text-center p-3 min-h-[180px]">
+            <Ico as={DoodleSparkle} size={22} className="opacity-40" />
+            <p className="text-[11px] font-bold text-charcoal/45">광고 자리</p>
+            <p className="text-[9px] text-charcoal/35">Google AdSense</p>
+          </div>
+        </div>
       </div>
 
       {/* ════ 구독 강조 배너 ════ */}
