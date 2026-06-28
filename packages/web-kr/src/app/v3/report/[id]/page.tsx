@@ -10,6 +10,8 @@ import { SelfReport, BINGGRAE, GAEGU } from "@/lib/saju-play/self/report"
 import type { SelfData } from "@/lib/saju-play/self/self-adapter"
 import { SinsalReport } from "@/lib/saju-play/sinsal/report"
 import type { SinsalData } from "@/lib/saju-play/sinsal/sinsal-adapter"
+import { NextMonthReport } from "@/lib/saju-play/nextmonth/report"
+import type { NextMonthData } from "@/lib/saju-play/nextmonth/nextmonth-adapter"
 
 function fmtDate(ts: number): string {
   const d = new Date(ts)
@@ -22,6 +24,8 @@ function ReportBody({ record }: { record: ReportRecord }) {
       return <SelfReport data={record.snapshot.data as SelfData} aiText={record.snapshot.aiText} />
     case "sinsal":
       return <SinsalReport data={record.snapshot.data as SinsalData} aiText={record.snapshot.aiText} />
+    case "nextmonth":
+      return <NextMonthReport data={record.snapshot.data as NextMonthData} aiText={record.snapshot.aiText} />
     default:
       return (
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-10 text-center">
