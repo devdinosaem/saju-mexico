@@ -166,9 +166,14 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
         <div className="relative h-3 rounded-full" style={{ background: "linear-gradient(90deg,#93C5FD,#E5E7EB,#F9A8C4)" }}>
           <span className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white" style={{ left: `${x.energyPos}%`, border: "2px solid var(--pink)" }} />
         </div>
-        <p className="text-[14px] font-bold text-charcoal">{self.strongLevel}</p>
-        {/* [박다현] */}
-        <p className="text-[14px] text-charcoal/70 leading-snug" style={OWNGLYPH}>{self.isStrong ? "에너지 풀충전형 — 내가 키 쥐고 밀어붙일 때 잘 풀려. 가끔 브레이크만 잊지 마." : self.strongLevel.includes("중화") ? "균형형 — 상황 따라 유연하게 가는 게 강점이야." : "섬세·기댐형 — 좋은 환경·사람에 기대고 채울 때 빛나. 무리한 독주는 방전돼."}</p>
+        <div className="flex items-start gap-3 pt-0.5">
+          <Avatar iljuKey={x.charKey} size={44} />
+          <div className="min-w-0 flex-1">
+            <p className="text-[14px] font-bold text-charcoal">{self.strongLevel}</p>
+            {/* [박다현] */}
+            <p className="text-[14px] text-charcoal/70 leading-snug mt-0.5" style={OWNGLYPH}>{self.isStrong ? "에너지 풀충전형 — 내가 키 쥐고 밀어붙일 때 잘 풀려. 가끔 브레이크만 잊지 마." : self.strongLevel.includes("중화") ? "균형형 — 상황 따라 유연하게 가는 게 강점이야." : "섬세·기댐형 — 좋은 환경·사람에 기대고 채울 때 빛나. 무리한 독주는 방전돼."}</p>
+          </div>
+        </div>
       </Section>
 
       <ChapterDivider n={2} title="내 안엔 이런 게" />
@@ -296,6 +301,14 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
       {/* 나 사용설명서 카드 — 값[박다현] */}
       <Section icon={DoodleBook} title="나 사용설명서" basis="일간·용신">
         <Card className="overflow-hidden">
+          {/* 제품 라벨 헤더 — 프로필 */}
+          <div className="px-4 py-3 flex items-center gap-2.5 border-b border-charcoal/5 ds-sunken">
+            <Avatar iljuKey={x.charKey} size={40} />
+            <div className="min-w-0">
+              <p className="text-[11px] text-text-muted">제품명</p>
+              <p className="text-[14px] font-bold text-charcoal leading-tight">나 — {x.iljuType?.name ?? `${self.dayKr}${self.dayElem} 일간`}</p>
+            </div>
+          </div>
           {([["취급주의", x.manual.care], ["충전법", x.manual.charge], ["방전 신호", x.manual.drain], ["셀프 A/S", x.manual.as]] as const).map(([k, v]) => (
             <div key={k} className="px-4 py-2.5 flex gap-3 border-b border-charcoal/5 last:border-0">
               <span className="text-[13px] font-bold shrink-0 w-16 whitespace-nowrap" style={{ color: "var(--pink)" }}>{k}</span>
@@ -310,7 +323,7 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
 
       {/* 나를 살리는 환경 — 보약 한 줄[박다현] / 방향·색·때[프리텐다드] */}
       <Section icon={DoodleClover} title="나를 살리는 환경" basis="용신">
-        <ElemBox elem={self.yong} title={<><span style={{ color: "var(--pink)" }}>{self.yong}</span> 기운을 채우면 잘 풀려</>}>
+        <ElemBox elem={self.yong} icon={ELEM_DOODLE[self.yong]} title={<><span style={{ color: "var(--pink)" }}>{self.yong}</span> 기운을 채우면 잘 풀려</>}>
           <span style={OWNGLYPH}>{x.env.act} 쪽이 보약이야.</span>
           <div className="grid grid-cols-3 gap-2 mt-2.5">
             {[["방향", x.env.dir], ["색", x.env.color], ["때", x.env.season]].map(([k, v]) => (
