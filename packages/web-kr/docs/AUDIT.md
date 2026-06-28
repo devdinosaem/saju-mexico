@@ -156,7 +156,38 @@ app/api/saju-play/sinsal      app/api/saju-play/some      app/api/saju-play/ones
 
 - `IljuDiscovery`/`CelebDiscovery`(shop) → 호기심 후킹. `CelebFunnel`은 나/타인(`target`) 분기 + `SajuInputSheet`(타인은 `skipSave`) ✅ 대상 정책(나/타인) 반영.
 
-## Phase 2 — 2탭 상담  *(진행 예정)*
+## Phase 2 — 2탭 상담
+
+[`/v3/consult/page.tsx`](../src/app/v3/consult/page.tsx) (947줄) — **앱에서 가장 완성된 기능. 1탭이 따라야 할 레퍼런스 구현.**
+
+### 2.1 결제 — ✅ 제대로 배선됨 (1탭과 정반대)
+
+- 턴 전송 시 `spend(CONSULT_COST)` 차감([page:530](../src/app/v3/consult/page.tsx#L530)), AI 응답 실패 시 `refund`([:597,602](../src/app/v3/consult/page.tsx#L597)). ✅ 트랜잭션 안전.
+- `CONSULT_COST = 0.1명태/턴` (`prices.aiConsultPerTurn`).
+- ⚠️ **사진 정책 "1명태"와 불일치** — 실제는 0.1명태/**턴** 종량제. 사진은 회당 1명태처럼 읽힘 → 과금 모델(턴당 vs 회당) 명문화 필요.
+
+### 2.2 게이팅 퍼널 — ✅ 구현 (1탭에 없는 것)
+
+`gate = !hasIlju ? "card" : (balance < CONSULT_COST ? "charge" : null)` ([:417-419](../src/app/v3/consult/page.tsx#L417))
+- 일주카드 없음 → "사주카드 뽑기" 유도 / 잔액 부족 → "명태 충전" 유도(`/v3/charge`).
+- 입력창 placeholder·플로팅 CTA가 상태별로 분기 ✅. 사진 퍼널의 결제 게이트가 여기선 실제 작동.
+
+### 2.3 대화 지속·재접속 — ✅ 구현
+
+- `loadHistory/saveHistory` (localStorage, [consult-history.ts](../src/lib/consult-history.ts))로 대화 영속.
+- **재접속 시 요약+이어받기 그리팅**: `resumeWithSummary` → `/api/consult/summary`로 요약 생성, `getSummaryCache/setSummaryCache`로 캐시. `SUMMARY_WINDOW=40`으로 비용 폭증 방지. ✅ 사진 퍼널 "재접속→AI그리팅" 정합.
+
+### 2.4 AI 백엔드
+
+- `/api/consult/route.ts` — DeepSeek `deepseek-v4-flash` **스트리밍**(SSE), `max_tokens=2100`(2500자 상한). `DEEPSEEK_API_KEY` 필요.
+- 시스템 프롬프트가 매우 정교 — 깊이6동작·일반론 자가검증·시기전망 두 실패모드(절망/공허) 방지·욕설거부 정체성 등. 메모리 [[project-saju-consult-prompt]]와 정합 ✅.
+
+### 2.5 미결/정리 대상
+
+- 🗑️ `/api/consult/greeting/route.ts` — 페이지에서 fetch 호출 없음(요약 경로만 사용). **미사용 의심** → 정리 후보. 메모리 [[project-consult-pending]] 기록과 일치.
+- ⚠️ 대화 이력 localStorage 저장 → **DB(Supabase) 이관 미완**. 기기간 동기화·영속 불가.
+- ⚠️ `next build` 검증·수동 E2E 미완(메모리 과제).
+
 ## Phase 3 — 3탭 운테리어  *(진행 예정)*
 ## Phase 4 — 4탭 마이 (캘린더 편입 포함)  *(진행 예정)*
 ## Phase 5 — 상단 액막이샵/충전·구독  *(진행 예정)*
