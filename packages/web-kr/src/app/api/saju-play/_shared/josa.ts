@@ -44,5 +44,12 @@ export const stripHanja = (s: string): string => {
     .replace(/[ \t]+\n/g, "\n")            // 줄끝 공백
 }
 
-// 모델 본문 앞에 훅을 붙이고 한자를 정리해 반환. 본문이 비면 빈 문자열(클라가 폴백).
-export const withHook = (hook: string, body: string) => (body ? stripHanja(`${hook}\n\n${body}`) : "")
+// 굵게(**) 마커가 홀수면(짝 안 맞는 글리치) 마지막 떠다니는 ** 하나 제거.
+const fixBold = (s: string): string => {
+  if ((s.match(/\*\*/g)?.length ?? 0) % 2 === 0) return s
+  const i = s.lastIndexOf("**")
+  return i < 0 ? s : s.slice(0, i) + s.slice(i + 2)
+}
+
+// 모델 본문 앞에 훅을 붙이고 한자·마크다운 글리치를 정리해 반환. 본문이 비면 빈 문자열(클라가 폴백).
+export const withHook = (hook: string, body: string) => (body ? fixBold(stripHanja(`${hook}\n\n${body}`)) : "")
