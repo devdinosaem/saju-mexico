@@ -14,7 +14,7 @@ import WeeklyEnergyFlow from "./_components/WeeklyEnergyFlow"
 import SajuInputSheet from "../shop/_components/SajuInputSheet"
 import { PRICES, priceLabel, subscriptionLabel } from "@/lib/prices"
 import Link from "next/link"
-import { DoodleHeart, DoodleSparkle, DoodleStar, DoodleMoon, DoodleCrystal, DoodleCrown, DoodleBook } from "@/components/doodles"
+import { DoodleHeart, DoodleCrown, DoodleBook } from "@/components/doodles"
 import AdBanner from "@/components/AdBanner"
 import AddToHomeScreen from "@/components/AddToHomeScreen"
 
@@ -27,31 +27,9 @@ const BINGRAE: React.CSSProperties = {
   fontWeight: 700,
 }
 
-type Category = "전체" | "운세" | "요약" | "상세" | "궁합" | "월운"
-
-const COLLECTION = [
-  { icon: <DoodleStar className="w-5 h-5" />,    label: "운세",  count: "23", locked: false, bg: "bg-yellow-50"     },
-  { icon: <DoodleSparkle className="w-5 h-5" />, label: "요약",  count: "✓",  locked: false, bg: "bg-pink-light/40" },
-  { icon: <DoodleCrystal className="w-5 h-5" />, label: "상세",  count: "🔒", locked: true,  bg: "bg-charcoal/5"    },
-  { icon: <DoodleHeart className="w-5 h-5" />,   label: "궁합",  count: "0",  locked: false, bg: "bg-pink-light/40" },
-  { icon: <DoodleMoon className="w-5 h-5" />,    label: "월운",  count: "🔒", locked: true,  bg: "bg-charcoal/5"    },
-]
-
-const PURCHASED = [
-  { emoji: "⭐", title: "오늘의 사주",        sub: "일일 에너지 흐름 진단",        cat: "운세" as Category, date: "오늘",    owned: true  },
-  { emoji: "📅", title: "월운 캘린더",        sub: "6월 길일·흉일 지도",           cat: "월운" as Category, date: "이번달",  owned: true  },
-  { emoji: "🌿", title: "엄마 궁합 리포트",   sub: "목(木) ↑ 금(金) · 91%",       cat: "궁합" as Category, date: "3일 전",  owned: true  },
-  { emoji: "✦",  title: "경진일주 요약",      sub: "나의 일주 핵심 성격 분석",      cat: "요약" as Category, date: "7일 전",  owned: true  },
-  { emoji: "🔮", title: "경진일주 상세 리포트", sub: "심층 분석 · 990운기",         cat: "상세" as Category, date: "",       owned: false },
-]
-
-const CATS: Category[] = ["전체", "운세", "요약", "상세", "궁합", "월운"]
-
 export default function MyPage() {
-  const [activeCat, setActiveCat] = useState<Category>("전체")
   const [editOpen, setEditOpen] = useState(false)
   const { user, isLoggedIn } = useUser()
-  const filtered = PURCHASED.filter(p => activeCat === "전체" || p.cat === activeCat)
 
   return (
     <div className="flex flex-col gap-4">
@@ -93,79 +71,6 @@ export default function MyPage() {
         </div>
         <span className="text-text-muted text-xs">›</span>
       </Link>
-
-      {/* 내 보관함 */}
-      <div>
-        <div className="flex items-center justify-between mb-2.5">
-          <p className="font-bold text-charcoal text-sm">📁 내 보관함</p>
-          <span className="text-[11px] text-text-muted">구매 4 · 미구매 2</span>
-        </div>
-
-        {/* 카테고리 카드 */}
-        <div className="flex gap-2.5 overflow-x-auto pb-1 -mx-4 px-4 mb-3 scrollbar-hide">
-          {COLLECTION.map((item, i) => (
-            <button
-              key={i}
-              className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border min-w-[72px] shrink-0 transition-all active:scale-95 ${
-                item.locked
-                  ? "bg-charcoal/5 border-charcoal/10 opacity-50"
-                  : `${item.bg} border-charcoal/10`
-              }`}
-            >
-              <span className="leading-none">{item.icon}</span>
-              <span className={`text-sm font-bold leading-none ${item.locked ? "text-text-muted" : "text-charcoal"}`}>
-                {item.count}
-              </span>
-              <span className="text-[11px] text-text-muted">{item.label}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* 카테고리 필터 */}
-        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide -mx-4 px-4 mb-3">
-          {CATS.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCat(cat)}
-              className={`shrink-0 px-3 py-1 rounded-full text-[11px] font-bold transition-all active:scale-95 ${
-                activeCat === cat
-                  ? "bg-charcoal text-cream"
-                  : "bg-charcoal/8 text-text-muted"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* 구매 목록 */}
-        <div className="rounded-2xl bg-white border border-charcoal/10 overflow-hidden">
-          {filtered.map((item, i) => (
-            <button
-              key={item.title}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 active:bg-charcoal/5 transition-colors text-left ${
-                i < filtered.length - 1 ? "border-b border-charcoal/5" : ""
-              } ${!item.owned ? "opacity-50" : ""}`}
-            >
-              <span className="text-xl w-8 text-center shrink-0">{item.emoji}</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-charcoal truncate">{item.title}</p>
-                <p className="text-[11px] text-text-muted truncate">{item.sub}</p>
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                {item.owned ? (
-                  <>
-                    <span className="text-[10px] text-text-muted">{item.date}</span>
-                    <span className="text-text-muted text-xs">›</span>
-                  </>
-                ) : (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-pink/10 text-pink font-bold">구매하기</span>
-                )}
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* 월운 캘린더 */}
       <div>
