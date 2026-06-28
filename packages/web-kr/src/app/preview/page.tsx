@@ -57,6 +57,58 @@ function HeroSwatch({ g, border }: { g: (typeof HERO_GRADS)[number]; border: str
   );
 }
 
+// ── 앱 파스텔 팔레트 정리 (실제 사용 토큰 수집) ──
+const PAL_TOKENS: [string, string, string][] = [
+  ["--bg-cream", "#FDF6EE", "페이지 배경"],
+  ["--bg-minihompi", "#FFFEF2", "미니홈피 표면"],
+  ["--pink", "#E84B6A", "브랜드 핑크"],
+  ["--pink-light", "#FFE4EA", "연핑크"],
+  ["--black", "#2D2D2D", "charcoal"],
+  ["--yellow", "#FACC15", "옐로"],
+  ["--green", "#4ADE80", "그린"],
+  ["--lavender", "#A78BFA", "라벤더"],
+  ["--orange", "#FB923C", "오렌지"],
+];
+const PAL_ELEM: [string, string, string][] = [
+  ["목", "#D1FAE5", "#4ADE80"],
+  ["화", "#FEE2E2", "#F87171"],
+  ["토", "#FEF3C7", "#FBBF24"],
+  ["금", "#F1F5F9", "#94A3B8"],
+  ["수", "#DBEAFE", "#60A5FA"],
+];
+const PAL_SEMANTIC: [string, string, string, string][] = [
+  ["긍정·좋음", "#F0FFF4", "#86EFAC", "#16A34A"],
+  ["주의·따뜻", "#FFF7ED", "#FDB877", "#C2660C"],
+  ["강조 pill", "#FFF4E0", "#F0C060", "#9A7050"],
+  ["정보", "#EFF6FF", "#93C5FD", "#2563EB"],
+  ["위험·주의", "#FEF2F2", "#FCA5A5", "#DC2626"],
+  ["애정·핑크", "#FFF0F5", "#F9A8C4", "#E84B6A"],
+  ["보라·라벤더", "#EFEAFE", "#C4B5FD", "#7C3AED"],
+  ["중립·뮤트", "#F1F5F9", "#E5E7EB", "#475569"],
+];
+const PAL_SINSAL: [string, string, string][] = [
+  ["귀인·행운", "#FEF3C7", "#B45309"],
+  ["재능·예술", "#EDE9FE", "#6D28D9"],
+  ["매력·인기", "#FCE7F3", "#BE185D"],
+  ["권력·카리스마", "#FEE2E2", "#B91C1C"],
+  ["이동·변화", "#DBEAFE", "#1D4ED8"],
+  ["주의·전환", "#E2E8F0", "#475569"],
+];
+const PAL_CREAM: [string, string][] = [
+  ["#FFFBF2", "페이퍼"], ["#FFFDF5", "크림"], ["#FFF9F0", "웜화이트"], ["#FFFDE8", "연노랑"],
+  ["#FFFEF2", "미니홈피"], ["#F1ECE2", "베이지"], ["#EDE4D4", "샌드"], ["#E0D4C0", "보더샌드"], ["#D8C4A0", "딥샌드"],
+];
+
+function Chip({ hex, label }: { hex: string; label?: string }) {
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <div className="w-full h-12 rounded-lg border border-[#2D2D2D]/10" style={{ background: hex }} />
+      {label && <span className="text-[11px] font-bold text-[#2D2D2D] leading-tight text-center">{label}</span>}
+      <span className="text-[9px] font-mono text-gray-400">{hex}</span>
+    </div>
+  );
+}
+
 export default function PreviewPage() {
   const total = DOODLE_CATEGORIES.reduce((s, c) => s + c.stickers.length, 0);
   const classified = DOODLE_CATEGORIES.reduce((s, c) => s + c.stickers.filter(st => st.element).length, 0);
@@ -65,6 +117,60 @@ export default function PreviewPage() {
     <main className="min-h-screen bg-[#FDF6EE] p-8">
       <h1 className="text-2xl font-bold text-center mb-1">두들 스티커 미리보기</h1>
       <p className="text-sm text-center text-gray-500 mb-10">총 {total}종 · {DOODLE_CATEGORIES.length}개 카테고리 · 오행 분류 {classified}/{total}</p>
+
+      {/* ════ 앱 파스텔 팔레트 정리 ════ */}
+      <div className="max-w-[760px] mx-auto mb-16 bg-white rounded-2xl border-2 border-[#2D2D2D]/10 p-6">
+        <h2 className="text-xl font-bold text-center text-[#2D2D2D] mb-1">앱 파스텔 팔레트 정리</h2>
+        <p className="text-xs text-center text-gray-500 mb-8">실제 코드에서 쓰이는 톤 수집 · 빈도 높은 게 사실상 표준</p>
+
+        {/* 1. 코어 토큰 */}
+        <h3 className="text-sm font-bold text-[#2D2D2D] mb-3">1 · 코어 토큰 <span className="font-normal text-gray-400 text-xs">globals.css</span></h3>
+        <div className="grid grid-cols-5 gap-2.5 mb-8">
+          {PAL_TOKENS.map(([name, hex, use]) => <Chip key={name} hex={hex} label={`${name.replace("--", "")} · ${use}`} />)}
+        </div>
+
+        {/* 2. 오행 5색 */}
+        <h3 className="text-sm font-bold text-[#2D2D2D] mb-3">2 · 오행 5색 <span className="font-normal text-gray-400 text-xs">배경 + 액센트</span></h3>
+        <div className="grid grid-cols-5 gap-2.5 mb-8">
+          {PAL_ELEM.map(([el, bg, accent]) => (
+            <div key={el} className="flex flex-col items-center gap-1">
+              <div className="w-full h-12 rounded-lg border border-[#2D2D2D]/10 flex items-center justify-center" style={{ background: bg }}>
+                <span className="w-5 h-5 rounded-full border-2 border-white" style={{ background: accent }} />
+              </div>
+              <span className="text-[11px] font-bold text-[#2D2D2D]">{el}</span>
+              <span className="text-[9px] font-mono text-gray-400 text-center leading-tight">{bg}<br />{accent}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* 3. 의미별 소프트 카드 */}
+        <h3 className="text-sm font-bold text-[#2D2D2D] mb-3">3 · 의미별 소프트 카드 <span className="font-normal text-gray-400 text-xs">배경 / 보더 / 잉크</span></h3>
+        <div className="grid grid-cols-4 gap-2.5 mb-8">
+          {PAL_SEMANTIC.map(([label, bg, border, ink]) => (
+            <div key={label} className="rounded-xl px-2.5 py-2.5 flex flex-col gap-1" style={{ background: bg, border: `1.5px solid ${border}` }}>
+              <span className="text-[12px] font-bold leading-tight" style={{ color: ink }}>{label}</span>
+              <span className="text-[8px] font-mono text-[#2D2D2D]/40 leading-tight">{bg}<br />{border} · {ink}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* 4. 신살 카테고리 */}
+        <h3 className="text-sm font-bold text-[#2D2D2D] mb-3">4 · 신살 카테고리 6색 <span className="font-normal text-gray-400 text-xs">CAT_STYLE</span></h3>
+        <div className="grid grid-cols-3 gap-2.5 mb-8">
+          {PAL_SINSAL.map(([label, bg, ink]) => (
+            <div key={label} className="rounded-xl px-3 py-2.5 flex flex-col gap-0.5" style={{ background: bg }}>
+              <span className="text-[12px] font-bold leading-tight" style={{ color: ink }}>{label}</span>
+              <span className="text-[9px] font-mono leading-tight" style={{ color: ink, opacity: 0.5 }}>{bg} · {ink}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* 5. 크림·베이지 계열 */}
+        <h3 className="text-sm font-bold text-[#2D2D2D] mb-3">5 · 크림·베이지 계열 <span className="font-normal text-gray-400 text-xs">따뜻한 패널·페이퍼</span></h3>
+        <div className="grid grid-cols-5 gap-2.5">
+          {PAL_CREAM.map(([hex, label]) => <Chip key={hex} hex={hex} label={label} />)}
+        </div>
+      </div>
 
       {DOODLE_CATEGORIES.map(cat => (
         <section key={cat.id} className="mb-12 max-w-[640px] mx-auto">
