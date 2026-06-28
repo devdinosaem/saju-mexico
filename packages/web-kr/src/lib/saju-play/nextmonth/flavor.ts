@@ -20,13 +20,13 @@ export const WEATHER: { min: number; key: string; label: string; line: string; D
   { min: 0, key: "천둥주의", label: "천둥·주의", line: "변동 큰 달 — 큰 결정은 한 박자 신중히.", D: DoodleLightning },
 ]
 
-// 월운 십신 그룹 → 이 달의 테마 카드
-export const MONTH_THEME: Record<TGGroup, { title: string; line: string; D: DoodleC }> = {
-  비겁: { title: "내가 나서는 달", line: "주도권·경쟁의 기운 — 내가 판을 만들 때야.", D: DoodleLightning },
-  식상: { title: "펼치는 달", line: "표현·확장의 기운 — 끼를 내고 새로 시작하기 좋아.", D: DoodleColorPalette },
-  재성: { title: "결실의 달", line: "재물·성과의 기운 — 현실 성과가 손에 잡혀.", D: DoodleDiamond },
-  관성: { title: "자리 잡는 달", line: "책임·성취의 기운 — 일·관계가 단단해져.", D: DoodleMedal },
-  인성: { title: "채우는 달", line: "충전·배움의 기운 — 쉬며 안을 채울 때.", D: DoodleBook },
+// 월운 십신 그룹 → 이 달의 테마 카드 (use: 어떻게 쓰면 좋은지)
+export const MONTH_THEME: Record<TGGroup, { title: string; line: string; use: string; D: DoodleC }> = {
+  비겁: { title: "내가 나서는 달", line: "주도권·경쟁의 기운 — 내가 판을 만들 때야.", use: "미뤄둔 일을 내가 직접 밀어붙이기 좋아. 단, 혼자 다 짊어지진 말고.", D: DoodleLightning },
+  식상: { title: "펼치는 달", line: "표현·확장의 기운 — 끼를 내고 새로 시작하기 좋아.", use: "콘텐츠·기획·새 취미를 시작하기 좋은 달. 표현할 자리를 만들어 봐.", D: DoodleColorPalette },
+  재성: { title: "결실의 달", line: "재물·성과의 기운 — 현실 성과가 손에 잡혀.", use: "계약·정산·투자 점검에 유리해. 벌인 걸 돈으로 매듭짓기 좋아.", D: DoodleDiamond },
+  관성: { title: "자리 잡는 달", line: "책임·성취의 기운 — 일·관계가 단단해져.", use: "승진·시험·중요한 약속에 힘이 실려. 책임지는 자리에서 빛나.", D: DoodleMedal },
+  인성: { title: "채우는 달", line: "충전·배움의 기운 — 쉬며 안을 채울 때.", use: "공부·자격·휴식에 좋은 달. 무리한 확장보다 실력·체력 채우기.", D: DoodleBook },
 }
 
 // 영역별 게이지 (Ch2) — 표시 순서·아이콘

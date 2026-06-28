@@ -12,6 +12,7 @@ import { elemOf } from "../engine"
 import { ELEM_BG, ELEM_DOODLE } from "../flavor"
 import { buildNextMonth, type NextMonthBirth, type Gender } from "./nextmonth-adapter"
 import { WEATHER, MONTH_THEME, AREA, EVENT_COPY } from "./flavor"
+import { SINSAL, CAT_STYLE } from "../sinsal/flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleKey, DoodleTaegeuk, DoodleHeart,
@@ -110,6 +111,7 @@ export default function NextMonthFunnel() {
   const elemFavor = data.monthElem === data.yong ? "good" : data.monthElem === data.gi ? "warn" : "neutral"
   const evtTypes = [...new Set(data.events.map(e => e.type))]
   const gaugeColor = (v: number) => (v >= 66 ? "#16A34A" : v >= 45 ? PINK : "#94A3B8")
+  const monthSinsalInfo = SINSAL[data.monthSinsal] // 월지 12신살 → 신살 도감 연동
   const letter = `${data.monthLabel}의 너에게 — ${weather.line} ${theme.title}이 기다리고 있어.`
   const fallbackProse =
     `**${data.monthLabel}**, 너에겐 **${weather.label}** 같은 달이 와.\n\n` +
@@ -224,6 +226,38 @@ export default function NextMonthFunnel() {
           <p className="text-[14px] text-charcoal/70 leading-snug pt-1" style={GAEGU}>
             다음달은 <span className="font-bold" style={{ color: PINK }}>{topAreaLabel}</span> 쪽으로 바람이 불어{data.areas[lowAreaKey] < 45 ? `, ${AREA_LABEL[lowAreaKey]} 쪽은 살짝 신경 써주면 좋아` : ""}.
           </p>
+        </div>
+      </div>
+
+      <ChapterDivider n={3} title="이 달의 결" />
+
+      {/* 이 달 켜지는 신살 — 신살 도감 연동 */}
+      {monthSinsalInfo && (
+        <div className="flex flex-col gap-2.5">
+          <SectionTitle icon={DoodleSparkles} basis="월지 신살">이번 달 켜지는 기운</SectionTitle>
+          <div className="rounded-2xl border-2 px-4 py-4 flex flex-col gap-2.5" style={{ background: CAT_STYLE[monthSinsalInfo.cat].bg, borderColor: CAT_STYLE[monthSinsalInfo.cat].ink }}>
+            <div className="flex items-center gap-3">
+              <span className="w-12 h-12 rounded-full bg-white/80 flex items-center justify-center shrink-0"><Ico as={monthSinsalInfo.D} size={26} /></span>
+              <div className="min-w-0">
+                <p className="text-[16px] leading-tight" style={{ ...BINGGRAE, color: CAT_STYLE[monthSinsalInfo.cat].ink }}>{monthSinsalInfo.alias} <span className="text-[13px] font-normal text-charcoal/50">ON</span></p>
+                <p className="text-[13px] text-charcoal/55" style={GAEGU}>{data.monthSinsal} · {monthSinsalInfo.cat}</p>
+              </div>
+            </div>
+            <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{monthSinsalInfo.mean}.</p>
+            <div className="rounded-xl bg-white/70 px-3 py-2.5">
+              <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{monthSinsalInfo.good}</p>
+            </div>
+            <Link href="/v3/sinsal" className="text-[13px] font-bold text-right active:opacity-70" style={{ color: CAT_STYLE[monthSinsalInfo.cat].ink }}>내 신살 전체 보기 →</Link>
+          </div>
+        </div>
+      )}
+
+      {/* 십신 테마 심화 — 이렇게 써 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={theme.D} basis="월운 십신">이 기운, 이렇게 써</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex flex-col gap-2">
+          <p className="text-[14px] font-bold text-charcoal">{theme.title}</p>
+          <p className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{theme.use}</p>
         </div>
       </div>
 
