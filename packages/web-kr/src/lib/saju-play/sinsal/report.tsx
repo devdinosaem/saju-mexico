@@ -61,7 +61,7 @@ export function Avatar({ iljuKey, size = 80 }: { iljuKey: string; size?: number 
   return <div className="rounded-full overflow-hidden border-2 border-charcoal/15 shrink-0 flex items-center justify-center" style={{ width: size, height: size, background: ELEM_BG[elemOf(iljuKey)] }}>{ILJU_SVG_ICONS[iljuKey]?.(getIljuProfileViewBox(iljuKey))}</div>
 }
 
-function SinsalBadge({ name, sub }: { name: string; sub?: string }) {
+export function SinsalBadge({ name, sub }: { name: string; sub?: string }) {
   const info = SINSAL[name]; if (!info) return null
   const cs = CAT_STYLE[info.cat]
   return (
@@ -75,7 +75,7 @@ function SinsalBadge({ name, sub }: { name: string; sub?: string }) {
   )
 }
 
-function Radar({ data }: { data: { label: string; value: number }[] }) {
+export function Radar({ data }: { data: { label: string; value: number }[] }) {
   const size = 200, c = 100, R = 64, n = data.length
   const pt = (i: number, r: number): [number, number] => {
     const a = -Math.PI / 2 + (i * 2 * Math.PI) / n
@@ -93,7 +93,7 @@ function Radar({ data }: { data: { label: string; value: number }[] }) {
   )
 }
 
-function SinsalCard({ name, positions }: { name: string; positions: Pos[] }) {
+export function SinsalCard({ name, positions }: { name: string; positions: Pos[] }) {
   const info = SINSAL[name]; if (!info) return null
   const cs = CAT_STYLE[info.cat]
   return (
@@ -145,6 +145,39 @@ export function sinsalFallback(data: SinsalData): string {
     `${sigInfo.good}\n\n` +
     `무서운 이름이 섞여 있어도 걱정 마. 살은 흉이 아니라 네가 타고난 특수 속성이야. 하나씩 도감처럼 펼쳐보자.`
   )
+}
+
+// ════════════════════════════════════════════════════════════════
+// deriveSinsal — 화면 파생값 일괄 계산(순수). v1/v2 공용.
+// ════════════════════════════════════════════════════════════════
+export const POS_ORDER: Pos[] = ["year", "month", "day", "hour"]
+export const POS_MEAN: Record<Pos, string> = {
+  year: "뿌리·어린 시절. 집안과 초년의 색이 여기 담겨.",
+  month: "사회·일터. 부모와 바깥 활동의 무대야.",
+  day: "나 자신·배우자. 가장 핵심이 되는 자리.",
+  hour: "노년·자식. 말년의 결실이 모이는 자리.",
+}
+export function deriveSinsal(data: SinsalData) {
+  const sig = data.signature
+  const sigInfo = SINSAL[sig]
+  const sigCs = CAT_STYLE[sigInfo.cat]
+  const statData = (Object.keys(data.stats) as SinsalStat[]).map(k => ({ label: k, value: Math.min(100, data.stats[k] * 22 + 12) }))
+  const topStat = statData.reduce((a, b) => (b.value > a.value ? b : a))
+  const byCat = CAT_ORDER.map(cat => ({ cat, items: data.owned.filter(o => SINSAL[o.name].cat === cat) })).filter(g => g.items.length)
+  const posStars = (p: Pos) => [...new Set([data.byPos[p].twelve, ...data.byPos[p].special])].filter(n => SINSAL[n])
+  const synergies = SYNERGY
+    .filter(s => data.stats[s.a] > 0 && data.stats[s.b] > 0)
+    .map(s => ({ ...s, power: data.stats[s.a] + data.stats[s.b] }))
+    .sort((a, b) => b.power - a.power)
+    .slice(0, 4)
+  const blessUse = data.owned.filter(o => ["귀인·행운", "재능·예술", "매력·인기"].includes(SINSAL[o.name].cat)).slice(0, 4)
+  const scary = data.owned.filter(o => SINSAL[o.name].myth)
+  const seunInfo = SINSAL[data.seunSinsal]
+  const charHead = synergies[0]?.alias ?? sigInfo.alias
+  const charLine = synergies[0]?.line ?? sigInfo.good
+  const meme = STAT_MEME[topStat.label as SinsalStat]
+  const rarity = data.ownedCount >= 8 ? "신살 종합선물세트" : data.ownedCount >= 5 ? "다채로운 멀티플레이어" : data.ownedCount >= 3 ? "개성 뚜렷한 스페셜리스트" : "한 우물 파는 집중형"
+  return { sig, sigInfo, sigCs, statData, topStat, byCat, posStars, synergies, blessUse, scary, seunInfo, charHead, charLine, meme, rarity }
 }
 
 // ════════════════════════════════════════════════════════════════
