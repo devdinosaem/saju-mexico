@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation"
 const TABS = [
   { href: "/v3/shop",     label: "사주상품", icon: "✦", size: "text-xl"     },
   { href: "/v3/consult",  label: "상담",    icon: "✧", size: "text-xl"     },
-  { href: "/v3/calendar", label: "운기달력", icon: "◎", size: "text-xl"     },
   { href: "/v3/interior", label: "운테리어", icon: "⌂", size: "text-[26px]" },
   { href: "/v3/my",       label: "마이",    icon: "☺", size: "text-xl"     },
 ]

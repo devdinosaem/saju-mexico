@@ -31,4 +31,5 @@
 | 컴포넌트 | 원래 위치 | 제거 커밋 | 사유 |
 | --- | --- | --- | --- |
 | "내 오행 밸런스" 정적 막대 블록 (사주 오행 분포 pct) | `src/app/v3/calendar/page.tsx` | `1378db8` | 운기달력 간소화. 정적 목업 위젯(BALANCE 상수)이라 보관 불필요 → 아예 삭제. BALANCE 상수·DoodleSparkle·ElementBadgePill import 함께 정리 |
-| 출석 스트릭 (AttendanceStreak) | `src/app/v3/calendar/_components/AttendanceStreak.tsx` | _(이 커밋)_ | 운기달력 간소화. 출석 기능 완전 삭제(컴포넌트 파일째 제거) |
+| 출석 스트릭 (AttendanceStreak) | `src/app/v3/calendar/_components/AttendanceStreak.tsx` | `d6825aa` | 운기달력 간소화. 출석 기능 완전 삭제(컴포넌트 파일째 제거) |
+| 운기달력 탭 전체 (`/v3/calendar`) | `src/app/v3/calendar/` (page+MyIljuCard+StoryRow) | _(이 커밋)_ | 탭 자체 삭제. 5탭→4탭. BottomNav·TestPanel 링크 제거, APP-UI-PLAN 탭표/섹션 정리. 남은 기능은 이미 마이 이전/백로그/삭제 완료라 폴더는 미사용 잔여물뿐 → 완전 삭제 |

@@ -65,7 +65,6 @@ export default function TestPanel() {
           ["my", "/v3/my"],
           ["interior", "/v3/interior"],
           ["charge", "/v3/charge"],
-          ["calendar", "/v3/calendar"],
           ["consult", "/v3/consult"],
           ["wishlist", "/v3/wishlist"],
         ].map(([label, href]) => (
