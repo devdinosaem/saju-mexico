@@ -10,6 +10,7 @@ import { ILJU_TYPES } from "@/lib/ilju-types"
 import { ILJU_CELEB_DATA } from "@/lib/ilju-celeb-data"
 import { elemOf, ELEMS, type Elem } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
+import { gradOf } from "@/lib/ds"
 import { tgGroup, type SelfData, type LifePoint } from "./self-adapter"
 import { TALENT, ELEM_TRAIT, MEETING, LOVE_STYLE, IDEAL, JOB, SELF_MANUAL, SELF_ENV, ELEM_ORGAN, SEUN_LINE, PAST_LIFE, DARK_HIST, MEME, ELEM_FILL } from "./flavor"
 import {
@@ -119,6 +120,12 @@ const CAT_BG: Record<string, string> = {
   기업인: "#FEF3C7", 정치인: "#DBEAFE", 배우: "#FFE9F0", 위인: "#FEF3C7",
   왕족: "#FEF3C7", 스포츠: "#FEE2E2", 노벨상: "#EFEAFE", 가수: "#FFE9F0",
 }
+// 실제 프로필 사진이 있는 셀럽 (public/images/celebs/*.png 와 동기화 — 파일 추가 시 여기도 추가)
+export const CELEB_PHOTO_NAMES = new Set([
+  "김정은", "만수르", "세종대왕", "스티븐잡스", "아인슈타인", "오드리햅번", "일론머스크", "젠슨황", "코코샤넬", "트럼프",
+])
+export const hasCelebPhoto = (name: string) => CELEB_PHOTO_NAMES.has(name.replace(/\s/g, ""))
+
 function CelebAvatar({ name, cat, size = 52 }: { name: string; cat: string; size?: number }) {
   const [failed, setFailed] = useState(false)
   if (failed) {
@@ -146,8 +153,6 @@ const STICKER: Record<string, React.ReactNode> = {
 }
 const NA_STICKERS: { comp: React.ReactNode; top?: number; left?: number; right?: number; bottom?: number; rotate: number }[] = [
   { comp: <DoodleCrown className="w-4 h-4" />, top: 4, left: 4, rotate: -15 },
-  { comp: <DoodleHeart className="w-3.5 h-3.5" />, top: 6, right: 5, rotate: 12 },
-  { comp: <DoodleStar className="w-3 h-3" />, bottom: 28, left: 5, rotate: -8 },
   { comp: <DoodleSparkle className="w-3 h-3" />, bottom: 30, right: 4, rotate: 10 },
 ]
 function ElemStrip({ elem }: { elem: Elem }) {
@@ -169,7 +174,7 @@ export function CelebCard({ name, role, cat, elem, idx, roleStyle = GAEGU }: { n
 export function NaCard({ iljuKey, role, elem, idx, roleStyle = GAEGU }: { iljuKey: string; role: string; elem: Elem; idx: number; roleStyle?: React.CSSProperties }) {
   const tilt = TILTS[idx % TILTS.length], mt = idx % 2 === 0 ? 8 : 0
   return (
-    <div className="shrink-0 flex flex-col rounded-2xl overflow-hidden relative" style={{ width: 108, background: "#FACC15", border: "2px solid rgba(45,45,45,0.1)", transform: `rotate(${tilt}deg)`, boxShadow: "2px 2px 0px rgba(45,45,45,0.1)", marginTop: mt }}>
+    <div className="shrink-0 flex flex-col rounded-2xl overflow-hidden relative" style={{ width: 108, background: gradOf(elem).surface, border: `2px solid ${ELEM_COLOR[elem]}`, transform: `rotate(${tilt}deg)`, boxShadow: "2px 2px 0px rgba(45,45,45,0.1)", marginTop: mt }}>
       {NA_STICKERS.map((s, i) => <div key={i} className="absolute pointer-events-none" style={{ top: s.top, left: s.left, right: s.right, bottom: s.bottom, transform: `rotate(${s.rotate}deg)` }}>{s.comp}</div>)}
       <div className="flex flex-col items-center px-2.5 pt-2.5 pb-1.5 gap-1">
         <div className="w-16 h-16 rounded-full border-2 border-charcoal/20 shrink-0 overflow-hidden flex items-end justify-center" style={{ background: ELEM_BG[elem] }}>

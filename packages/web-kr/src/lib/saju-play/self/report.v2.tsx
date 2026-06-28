@@ -17,7 +17,7 @@ import {
   TALENT, ELEM_TRAIT, MEETING, LOVE_STYLE, IDEAL, JOB, ELEM_ORGAN,
   SEUN_LINE, PAST_LIFE, DARK_HIST, ELEM_FILL,
 } from "./flavor"
-import { deriveSelf, LifeGraph, Radar, CelebCard, NaCard, Avatar } from "./report"
+import { deriveSelf, LifeGraph, Radar, CelebCard, NaCard, Avatar, hasCelebPhoto } from "./report"
 import { FONT } from "@/lib/ds"
 import {
   Ico, Card, InfoBox, Section, ChapterDivider, Hero, Prose, GradBadge,
@@ -32,6 +32,28 @@ type DoodleC = React.FC<{ className?: string }>
 
 /** 감성 포인트 손글씨 — 온글잎 박다현체. 짧은 어절·감성 한 줄에만. (단일 두께라 bold 금지) */
 const OWNGLYPH: React.CSSProperties = { fontFamily: "'Ownglyph ParkDaHyun', var(--font-pretendard)" }
+
+/** 받침 유무로 조사(이랑/랑) 선택. */
+const hasBatchim = (s: string) => {
+  const c = s.charCodeAt(s.length - 1)
+  return c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 !== 0
+}
+const rang = (n: string) => n + (hasBatchim(n) ? "이랑" : "랑")
+
+/** "사주가 같은 사람" 위트 캡션 고정 풀 — 프로필별 시드로 1개 랜덤 선택. */
+const SAME_SAJU_LINES: ((name: string, ilju: string) => string)[] = [
+  (n, ilju) => `대박. ${rang(n)} 같은 ${ilju} — 될성부른 떡잎이야.`,
+  (n, ilju) => `그 ${n}, 너랑 같은 ${ilju}래 — 어쩐지 범상치 않더라.`,
+  (n, ilju) => `${rang(n)} 같은 ${ilju} 클럽 — 기운부터 한 핏줄이야.`,
+  (n, ilju) => `${n}도 이 기운으로 한 가닥 했지. 너도 같은 ${ilju}야.`,
+  (n, ilju) => `운명 공동체 발견. ${rang(n)} 똑같은 ${ilju}거든.`,
+  (n, ilju) => `${n} 급 ${ilju} — 떡잎부터 남달랐단 소리야.`,
+]
+const pickSameLine = (seed: string, name: string, ilju: string) => {
+  let h = 0
+  for (let i = 0; i < seed.length; i++) h = (h + seed.charCodeAt(i)) % 100003
+  return SAME_SAJU_LINES[h % SAME_SAJU_LINES.length](name, ilju)
+}
 
 /** 오행-틴트 박스 — 의미색이 아닌 오행색으로 칠하는 강조 박스(부족 오행·용신 환경 등).
  *  본문 기본 폰트 = Pretendard. 감성 포인트가 필요하면 children 안에서 개별 지정. */
@@ -109,10 +131,10 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
               </Card>
             )
           }
-          // 선발 셀럽과 엮은 위트 한 줄(박다현)
-          const witLine = cs.length >= 2
-            ? `${cs[0].name}도 ${cs[1].name}도 같은 ${x.bareIlju}일주 — 하는 일은 달라도 타고난 기운은 한 핏줄이야. 그러니까 너도 그 라인.`
-            : `그 ${cs[0].name}이랑 같은 ${x.bareIlju}일주라니 — 될성부른 떡잎은 일주부터 다른 거였어.`
+          // 엮을 셀럽: ①실제 프로필 사진 있는 사람 우선 ②없으면 상단 카드 중 오른쪽(마지막) 사람
+          const subject = cs.find(c => hasCelebPhoto(c.name)) ?? cs[cs.length - 1]
+          // 고정 문구 풀에서 프로필별 시드로 1개 랜덤 선택(박다현)
+          const witLine = pickSameLine(self.iljuKey + subject.name, subject.name, `${x.bareIlju}일주`)
           return (
             <>
               <div className="flex justify-center items-start gap-2 pt-2 pb-1">
