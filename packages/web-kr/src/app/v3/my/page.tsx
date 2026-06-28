@@ -4,6 +4,7 @@ import { logoutMockUser } from "@/lib/mockAuth"
 import { useUser } from "@/lib/UserContext"
 import MyHero from "./_components/MyHero"
 import MyIljuCard from "./_components/MyIljuCard"
+import MyongtaeCard from "./_components/MyongtaeCard"
 import MonthCalendar from "./_components/MonthCalendar"
 import { PRICES, priceLabel } from "@/lib/prices"
 import { ElementBadgePill } from "@/components/ilju-type-card"
@@ -64,6 +65,9 @@ export default function MyPage() {
     <div className="flex flex-col gap-4">
       {/* 프로필 히어로 (공유 시 카드 시트 오픈) */}
       <MyHero />
+
+      {/* 내 명태 (잔액 + 충전 + 내역) */}
+      <MyongtaeCard />
 
       {/* 내 보관함 */}
       <div>
