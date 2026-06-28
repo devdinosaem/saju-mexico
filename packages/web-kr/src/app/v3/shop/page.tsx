@@ -208,7 +208,7 @@ export default function ShopPage() {
               무료
             </button>
           </div>
-          <div className="rounded-2xl bg-charcoal p-3.5 flex flex-col gap-2">
+          <Link href="/v3/subscription" className="rounded-2xl bg-charcoal p-3.5 flex flex-col gap-2 active:opacity-80">
             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
               <DoodleSparkle className="w-6 h-6" />
             </div>
@@ -216,10 +216,10 @@ export default function ShopPage() {
               <p className="text-xs font-bold text-cream">구독 플랜</p>
               <p className="text-[11px] text-cream/60 mt-0.5 leading-tight">모든 기능 무제한</p>
             </div>
-            <button className="mt-auto py-1.5 rounded-lg bg-pink text-cream text-[11px] font-bold active:opacity-80">
+            <div className="mt-auto py-1.5 rounded-lg bg-pink text-cream text-[11px] font-bold text-center">
               {subscriptionLabel()}
-            </button>
-          </div>
+            </div>
+          </Link>
         </div>
       </div>
 

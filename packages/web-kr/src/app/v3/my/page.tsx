@@ -100,7 +100,8 @@ export default function MyPage() {
           </button>
 
           {/* 구독 관리 — 다크 카드 */}
-          <button
+          <Link
+            href="/v3/subscription"
             className="rounded-2xl bg-charcoal p-3.5 flex flex-col gap-2 active:opacity-80 transition-opacity text-left"
             style={{ boxShadow: "2px 2px 0px #2D2D2D" }}
           >
@@ -114,7 +115,7 @@ export default function MyPage() {
             <div className="mt-auto w-full py-1.5 rounded-xl bg-pink text-cream text-[11px] font-bold text-center" style={GAEGU}>
               {subscriptionLabel()}
             </div>
-          </button>
+          </Link>
 
           {/* 알림 설정 */}
           <button
