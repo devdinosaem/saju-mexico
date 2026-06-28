@@ -15,6 +15,7 @@ import SajuInputSheet from "../shop/_components/SajuInputSheet"
 import { PRICES, priceLabel, subscriptionLabel } from "@/lib/prices"
 import { DoodleHeart, DoodleSparkle, DoodleStar, DoodleMoon, DoodleCrystal, DoodleCrown } from "@/components/doodles"
 import AdBanner from "@/components/AdBanner"
+import AddToHomeScreen from "@/components/AddToHomeScreen"
 
 const GAEGU: React.CSSProperties = {
   fontFamily: "'Cafe24Dongdong', var(--font-gaegu), cursive",
@@ -212,6 +213,9 @@ export default function MyPage() {
           </button>
         </div>
       </div>
+
+      {/* 홈 화면 바로가기 등록 */}
+      <AddToHomeScreen />
 
       {/* 이번 주 에너지 흐름 */}
       <WeeklyEnergyFlow />
