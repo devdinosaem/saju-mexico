@@ -143,6 +143,8 @@ export const ONESIDED_CONFIG: CrushConfig = {
     수: { day: "수요일", place: "바다·강가", color: "파랑", colorHex: "#60A5FA" },
   },
   price: priceLabel(PRICES.onesidedCompat),
+  priceMt: PRICES.onesidedCompat,
+  reportType: "onesided",
   apiPath: "/api/saju-play/onesided",
   chapters: ["두 기운이 만나면", "그 사람 마음엔", "그래서 가능성은", "그 사람 파헤치기", "어떻게 닿을까", "다가갈까, 기다릴까", "언제 움직일까"],
   tempTitle: "마음 온도계",

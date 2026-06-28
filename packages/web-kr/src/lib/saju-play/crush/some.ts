@@ -138,6 +138,8 @@ export const SOME_CONFIG: CrushConfig = {
     수: { day: "수요일", place: "바다·강가", color: "파랑", colorHex: "#60A5FA" },
   },
   price: priceLabel(PRICES.someCompat),
+  priceMt: PRICES.someCompat,
+  reportType: "some",
   apiPath: "/api/saju-play/some",
   chapters: ["두 기운이 만나면", "이 끌림, 운명일까", "그래서 케미는 몇 점", "그 사람 파헤치기", "어떻게 다가갈까", "밀까, 당길까", "언제 움직일까"],
   tempTitle: "우리 사이 온도",

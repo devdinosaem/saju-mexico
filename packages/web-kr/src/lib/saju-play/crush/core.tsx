@@ -8,6 +8,9 @@
 // 연출(스켈레톤) 단계에서 풀이를 미리 돌려 결과 진입 시 바로 보이게.
 // ════════════════════════════════════════════════════════════════
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { spend } from "@/lib/balance"
+import { saveReport, findByDedupe, makeBirthKey } from "@/lib/report-archive"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf, relType, ELEMS, SHENG, KE, pairKey, mockDist, clamp, type Elem, type Rel } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
@@ -62,6 +65,8 @@ export type CrushConfig = {
   extra: { title: string; D: DoodleC; a: { k: string; v: string }[] } // 모드 전용(썸=밀당 / 짝사랑=현실·위로)
   lucky: Record<Elem, { day: string; place: string; color: string; colorHex: string }>
   price: string
+  priceMt: number                                   // 결제용 숫자 가격(명태)
+  reportType: "some" | "onesided"                   // 보관함 저장 타입
   // ── 모드별 제목·라벨 (썸/짝사랑) ──
   apiPath: string                                   // 정밀 풀이 호출 경로
   chapters: string[]                                // 7개 챕터명
@@ -352,6 +357,7 @@ const validP = (p: Person) => p.name.trim() !== "" && p.birth.y.length === 4 && 
 
 export default function CrushFunnel({ config }: { config: CrushConfig }) {
   const { user, ilju } = useUser()
+  const router = useRouter()
   const myKey = resolveCharKey(ilju?.id)
   const bd = user.birthDate
   const myBirth: Birth | null = bd
@@ -453,7 +459,8 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   }
 
   // ── 결과 계산 ──
-  const { meK, themK, eMe, eThem, rel, arch, score, stage, signals, myYongKr, myDist, themDist, goodDays } = derive(myKey, myBirth, myGender, them, config)
+  const d = derive(myKey, myBirth, myGender, them, config)
+  const { meK, themK, eMe, eThem, rel, arch, score, stage, signals, myYongKr, myDist, themDist, goodDays } = d
   const realTiming = goodDays.고백 !== undefined || goodDays.만남 !== undefined
   const timingWhen = realTiming ? `${new Date().getMonth() + 1}월, 사주가 가리키는 길일이 있어요` : config.timing.when
   const timingLine = realTiming
@@ -504,6 +511,29 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
     { k: meK, e: eMe, label: "나" },
     { k: themK, e: eThem, label: them.name || "그 사람" },
   ]
+
+  // ── 결제·보관함 ──
+  const meBirthKey = myBirth ? makeBirthKey(myBirth) : "me"
+  const themBirthKey = makeBirthKey({ year: +them.birth.y, month: +them.birth.m, day: +them.birth.d })
+  const crushDedupe = `${config.reportType}|${[meBirthKey, themBirthKey].sort().join(",")}`
+  const existing = findByDedupe(crushDedupe)
+  const onUnlock = () => {
+    // 이미 산 상대면 무차감(재열람 무료), 아니면 명태 차감
+    if (!existing && !spend(config.priceMt, config.reportType === "some" ? "썸 궁합" : "짝사랑 궁합")) {
+      router.push("/v3/charge"); return // 잔액 부족 → 충전
+    }
+    setUnlocked(true)
+    saveReport({
+      type: config.reportType,
+      subjects: [
+        { who: "me", name: "나", birthKey: meBirthKey, iljuKey: meK },
+        { who: "other", name: them.name || "그 사람", birthKey: themBirthKey, iljuKey: themK },
+      ],
+      title: `나 × ${them.name || "그 사람"} · ${config.reportType === "some" ? "썸" : "짝사랑"}`,
+      highlight: `${score}%`,
+      snapshot: { v: 1, data: { them: { name: them.name, gender: them.gender, birth: them.birth }, d }, aiText: ai.status === "done" ? ai.text : fallbackProse },
+    })
+  }
 
   // ── 유료 본문 ──
   const PaidBody = (
@@ -989,10 +1019,10 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
                 </div>
               ))}
             </div>
-            <button onClick={() => setUnlocked(true)}
+            <button onClick={onUnlock}
               className="w-full h-[52px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal mt-0.5"
               style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
-              {config.price} 내고 전체 보기
+              {existing ? "다시 보기 (무료)" : `${config.price} 내고 전체 보기`}
             </button>
             <p className="text-[13px] text-text-muted">같은 상대는 다시 무료로 볼 수 있어요</p>
           </div>
