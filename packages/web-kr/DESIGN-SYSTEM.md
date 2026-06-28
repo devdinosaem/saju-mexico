@@ -44,6 +44,25 @@
 
 오행색(`목화토금수`)은 `lib/saju-play/flavor.ts`의 `ELEM_BG/ELEM_COLOR` 유지.
 
+### 상담탭 AI 말풍선 그라디언트 — `ELEM_HERO` 6종
+> **SSOT**: [`src/app/v3/consult/page.tsx`](src/app/v3/consult/page.tsx) 의 `ELEM_HERO` 상수(현재 ~L129). 상담탭 캐릭터(AI) 말풍선 배경 전용. 일반 의미색/오행색과 **별개**의 테마라 헷갈리지 말 것.
+
+테마 선택: `elemKey = ilju.stemElement.charAt(0)`(목·화·토·금·수) → 해당 테마. **일주 없으면(비로그인/카드 전) `핑크`(디폴트)**. (`const bubble = ilju ? ELEM_HERO[elemKey] ?? ELEM_HERO.핑크 : ELEM_HERO.핑크`)
+
+적용: 말풍선 배경에 **`linear-gradient(160deg, top, bot)`** 만 사용(현재 ~L821). `accent`·`glow`는 같은 테마 팔레트로 정의돼 있으나 말풍선 배경엔 미사용(포인트/글로우 확장용 예약 토큰).
+
+| 테마 | top (그라 시작) | bot (그라 끝) | accent | glow |
+|---|---|---|---|---|
+| `핑크`(디폴트) | `#FFF6FA` | `#FFFDF5` | `#E84B6A` | `rgba(232,75,106,0.08)` |
+| `목` | `#E9FBF1` | `#FFF7EC` | `#34D399` | `rgba(52,211,153,0.10)` |
+| `화` | `#FFEFEC` | `#F6EFFA` | `#FB7185` | `rgba(251,113,133,0.10)` |
+| `토` | `#FFF6DF` | `#EFFAF1` | `#F59E0B` | `rgba(245,158,11,0.10)` |
+| `금` | `#ECF3FB` | `#FFF8EC` | `#7C93AC` | `rgba(124,147,172,0.12)` |
+| `수` | `#E8F2FE` | `#FFF6EC` | `#3B82F6` | `rgba(59,130,246,0.10)` |
+
+- 전부 **160deg 세로 사선**, top(살짝 오행틴트)→bot(따뜻한 아이보리)로 떨어지는 아주 옅은 그라디언트. 텍스트 가독성 위해 채도 낮게 유지.
+- 새 오행/테마 추가 시 이 6종과 **동일한 밝기·채도 레벨**(top은 옅은 틴트, bot은 `#FFF*` 아이보리 계열)로 맞출 것.
+
 ### 라인 / 섀도우 / 라운드
 - 경계: `--line-soft`(기본) · `--line-medium`(구분선)
 - 섀도우: `--shadow-sm`(카드) · `--shadow-md`(떠있는 카드/히어로) · `--shadow-lg`(시트·모달) · `--shadow-pop`(핑크 CTA)
