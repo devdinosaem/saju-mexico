@@ -1,6 +1,7 @@
 import { SajuTILogo } from "@/components/logo"
 import BottomNav from "./_nav/BottomNav"
 import TopBarRight from "./_nav/TopBarRight"
+import TopBarCenter from "./_nav/TopBarCenter"
 import { UserProvider } from "@/lib/UserContext"
 
 export default function V3Layout({ children }: { children: React.ReactNode }) {
@@ -15,8 +16,9 @@ export default function V3Layout({ children }: { children: React.ReactNode }) {
           borderBottom: "1.5px dashed var(--v3-header-border, transparent)",
         }}
       >
-        <div className="max-w-[480px] mx-auto flex items-center justify-between px-4 h-12">
+        <div className="relative max-w-[480px] mx-auto flex items-center justify-between px-4 h-12">
           <SajuTILogo className="h-7 w-7" />
+          <TopBarCenter />
           <TopBarRight />
         </div>
       </header>

@@ -9,6 +9,14 @@
 }
 
 @font-face {
+  font-family: 'Cafe24Meongi';
+  src: url('/fonts/Cafe24Meongi-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'BinggraeTaom';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BinggraeTaom-Bold.woff2') format('woff2');
   font-weight: 700;
