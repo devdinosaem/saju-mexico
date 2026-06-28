@@ -302,7 +302,7 @@ function PullPushSim({ best, pushLine, pullLine }: { best: "push" | "pull"; push
     <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
       <p className="text-[14px] font-bold text-charcoal text-center">지금, 어떻게 할까?</p>
       <div className="flex gap-2">
-        {([["push", "당기기"], ["pull", "풀기"]] as const).map(([k, label]) => (
+        {([["push", "당기기"], ["pull", "밀기"]] as const).map(([k, label]) => (
           <button key={k} onClick={() => setSel(k)}
             className="flex-1 py-3 rounded-xl text-[14px] font-bold border-2 transition-colors"
             style={sel === k ? { background: PINK, color: "#FFF9F0", borderColor: PINK } : { background: "white", color: "#94A3B8", borderColor: "#E0D4C0" }}>
@@ -786,12 +786,12 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         <SectionTitle icon={config.extra.D} basis={{ t: "일간 오행" }}>{config.extra.title}</SectionTitle>
         <div className="rounded-xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
           <Ico as={DoodleLightning} size={16} />
-          <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>이 사람한텐 <span className="font-bold" style={{ color: PINK }}>{config.pushPull[eThem].best === "push" ? "당기기" : "풀기"}</span>가 더 통해요</p>
+          <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>이 사람한텐 <span className="font-bold" style={{ color: PINK }}>{config.pushPull[eThem].best === "push" ? "당기기" : "밀기"}</span>가 더 통해요</p>
         </div>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-1">
           {config.extra.a.map((row, i) => (
             <div key={i} className="flex items-start gap-3 py-2.5 border-b border-charcoal/5 last:border-0">
-              <span className="text-[14px] font-bold text-charcoal shrink-0 w-14">{row.k}</span>
+              <span className="text-[14px] font-bold text-charcoal shrink-0 w-[72px] whitespace-nowrap">{row.k}</span>
               <span className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{row.v}</span>
             </div>
           ))}
