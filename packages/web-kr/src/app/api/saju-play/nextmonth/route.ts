@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server"
+import { hookNextmonth, withHook } from "../_shared/josa"
 
 export const runtime = "edge"
 
@@ -21,6 +22,7 @@ export async function POST(req: NextRequest) {
 ${monthBlock}
 
 # 절대 규칙
+- 응답은 '본문'만 써라. 인사·수신확인("알았어/아 ~구나")·도입·요약·메타("데이터를 보니", 네 톤이나 규칙을 설명하는 말) 전부 빼고 첫 문장부터 곧장 핵심 현상으로. (카드 맨 앞 도입 한 줄은 시스템이 따로 붙으니 너는 본문만.)
 - 두 재료만 써라: 위 monthBlock 데이터 + ${meName}. 그 밖의 현실(구체적 사건·만날 사람·직장 일 등)은 절대 지어내지 마. 데이터로 말할 수 있는 건 흐름·기운·경향까지야. "다음달에 ~한 일이 생긴다"는 사건 단정 금지 — 예보처럼 "~하기 쉬운 흐름이야"로.
 - ★시기 예보는 절대 절망·선고로 가지 마라. 다음달이 눌리는 구간이어도 한 달을 통째로 "나쁨"이라 하지 말고, 반드시 monthBlock의 '좋은 날'·'켜지는 기운'을 근거로 "이때부터/이런 식으로 풀린다"는 호전 창구를 함께 줘. 조심할 흐름은 늘 그 안의 좋은 날과 짝지어 짚어.
 - 강점 프레임: 주의 영역도 "이렇게 다루면 돼"로 풀어. 자기비난을 부르는 결함 단어·단정·훈계 금지.
@@ -54,6 +56,6 @@ ${monthBlock}
 
   if (!res.ok) return new Response(JSON.stringify({ error: "upstream" }), { status: res.status })
   const data = await res.json() as { choices?: { message?: { content?: string } }[] }
-  const text = data.choices?.[0]?.message?.content?.trim() ?? ""
+  const text = withHook(hookNextmonth(), data.choices?.[0]?.message?.content?.trim() ?? "")
   return new Response(JSON.stringify({ text }), { headers: { "Content-Type": "application/json" } })
 }

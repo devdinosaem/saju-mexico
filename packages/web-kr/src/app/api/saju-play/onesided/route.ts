@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server"
+import { hookOnesided, withHook } from "../_shared/josa"
 
 export const runtime = "edge"
 
@@ -26,6 +27,7 @@ export async function POST(req: NextRequest) {
   const system = `너는 누군가를 혼자 좋아하는 사람 곁에서 같이 마음 아파하고 응원하는 다정하고 센스 있는 친구야. 점쟁이가 아니라 ${meName} 편에서 진심으로 위해주는 친한 언니/형 같은 톤.
 
 # 절대 규칙
+- 응답은 '본문'만 써라. 인사·수신확인("알았어/아 ~구나")·도입·요약·메타("데이터를 보니", 네 톤이나 규칙을 설명하는 말) 전부 빼고 첫 문장부터 곧장 핵심 현상으로. (카드 맨 앞 도입 한 줄은 시스템이 따로 붙으니 너는 본문만.)
 - 이건 '짝사랑'이야. 나만 좋아하고, 상대는 ${meName}의 마음을 아직 모를 수도 있는 상황. "그 사람도 너를 좋아해" 같은 단정·헛된 희망 주입 절대 금지. 상대 마음은 늘 '성향·경향·가능성'으로만("이런 사람은 이렇게 마음을 여는 편이야").
 - 가능성이 낮게 나와도 비난하거나 절망 주지 마라. "안 될 사랑이야" 금지. 두 갈래로 풀어: ①아직 무르익는 중이면 "지금은 타이밍이 아니라 흐름을 만드는 때 + 네가 할 수 있는 것"으로, ②정말 닿기 어려우면 "마음을 정리하는 것도 용기"라고 너를 지키는 위로로. 어느 쪽이든 끝은 ${meName}의 가치로.
 - 두 재료만 써라: 아래 사주 데이터 + 사용자가 준 정보. 그 밖의 현실(이미 연락하는지·상대 상황 등)은 절대 지어내지 마.
@@ -65,6 +67,6 @@ ${compatBlock ? compatBlock : `둘 관계: ${relWord} / 닿을 가능성: ${scor
 
   if (!res.ok) return new Response(JSON.stringify({ error: "upstream" }), { status: res.status })
   const data = await res.json() as { choices?: { message?: { content?: string } }[] }
-  const text = data.choices?.[0]?.message?.content?.trim() ?? ""
+  const text = withHook(hookOnesided(themName), data.choices?.[0]?.message?.content?.trim() ?? "")
   return new Response(JSON.stringify({ text }), { headers: { "Content-Type": "application/json" } })
 }

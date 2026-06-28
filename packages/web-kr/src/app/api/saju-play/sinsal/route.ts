@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server"
+import { hookSinsal, withHook } from "../_shared/josa"
 
 export const runtime = "edge"
 
@@ -20,6 +21,7 @@ export async function POST(req: NextRequest) {
 ${sinsalBlock}
 
 # 절대 규칙
+- 응답은 '본문'만 써라. 인사·수신확인("알았어/아 ~구나")·도입·요약·메타("데이터를 보니", 네 톤이나 규칙을 설명하는 말) 전부 빼고 첫 문장부터 곧장 핵심 현상으로. (카드 맨 앞 도입 한 줄은 시스템이 따로 붙으니 너는 본문만.)
 - 신살을 무섭게 말하지 마. "사고·재난·질병·배신·이혼·수술" 류 공포 단정 절대 금지. 모든 신살은 '이렇게 쓰면 강점, 무심하면 함정'의 균형으로.
 - 신살 이름(겁살·백호·양인·괴강 등) 날것 노출 금지. 위 '강점 현상'으로 풀어("도화·역마" 같은 말도 가급적 현상으로).
 - 두 재료만: 위 신살 데이터 + 사용자가 준 정보. 그 밖의 현실(직업·연애사 등)은 지어내지 마.
@@ -52,6 +54,6 @@ ${sinsalBlock}
 
   if (!res.ok) return new Response(JSON.stringify({ error: "upstream" }), { status: res.status })
   const data = await res.json() as { choices?: { message?: { content?: string } }[] }
-  const text = data.choices?.[0]?.message?.content?.trim() ?? ""
+  const text = withHook(hookSinsal(), data.choices?.[0]?.message?.content?.trim() ?? "")
   return new Response(JSON.stringify({ text }), { headers: { "Content-Type": "application/json" } })
 }

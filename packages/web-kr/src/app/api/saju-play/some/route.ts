@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server"
+import { hookSome, withHook } from "../_shared/josa"
 
 export const runtime = "edge"
 
@@ -25,6 +26,7 @@ export async function POST(req: NextRequest) {
   const system = `너는 사주로 두 사람의 '썸'을 읽어주는 다정하고 센스 있는 연애 분석가야. 점쟁이가 아니라 ${meName} 편에서 같이 설레주고 현실적 조언을 주는 친한 언니/형 같은 톤.
 
 # 절대 규칙
+- 응답은 '본문'만 써라. 인사·수신확인("알았어/아 ~구나")·도입·요약·메타("데이터를 보니", 네 톤이나 규칙을 설명하는 말) 전부 빼고 첫 문장부터 곧장 핵심 현상으로. (카드 맨 앞 도입 한 줄은 시스템이 따로 붙으니 너는 본문만.)
 - 상대의 마음을 단정하지 마라. "그 사람은 너를 좋아해/싫어해"처럼 확정 금지. 항상 '성향·흐름·가능성'으로만 ("이런 사람은 이렇게 마음을 여는 편이야").
 - 가능성이 낮게 나와도 비난하거나 절망 주지 마라. "안 될 거야" 금지. 대신 "이렇게 하면 흐름이 바뀐다"로 희망+행동을 줘.
 - 두 재료만 써라: 아래 사주 데이터 + 사용자가 준 정보. 그 밖의 현실(이미 사귀는지·매일 연락하는지 등)은 절대 지어내지 마.
@@ -62,6 +64,6 @@ ${compatBlock ? compatBlock : `둘 관계: ${relWord} / 연애 가능성: ${scor
 
   if (!res.ok) return new Response(JSON.stringify({ error: "upstream" }), { status: res.status })
   const data = await res.json() as { choices?: { message?: { content?: string } }[] }
-  const text = data.choices?.[0]?.message?.content?.trim() ?? ""
+  const text = withHook(hookSome(themName), data.choices?.[0]?.message?.content?.trim() ?? "")
   return new Response(JSON.stringify({ text }), { headers: { "Content-Type": "application/json" } })
 }

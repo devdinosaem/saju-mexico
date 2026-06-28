@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server"
+import { hookSelf, withHook } from "../_shared/josa"
 
 export const runtime = "edge"
 
@@ -23,6 +24,7 @@ export async function POST(req: NextRequest) {
 ${selfBlock}
 ${quick ? `\n(빠른 참조: ${quick})\n` : ""}
 # 절대 규칙
+- 응답은 '본문'만 써라. 인사·수신확인("알았어/아 ~구나")·도입·요약·메타("데이터를 보니", 네 톤이나 규칙을 설명하는 말) 전부 빼고 첫 문장부터 곧장 핵심 현상으로. (카드 맨 앞 도입 한 줄은 시스템이 따로 붙으니 너는 본문만.)
 - 두 재료만 써라: 위 사주 데이터 + 빠른 참조값. 그 밖의 현실(직업·연애사·구체적 사건·감정)은 절대 지어내지 마. 데이터로 말할 수 있는 건 흐름·기운·경향까지야.
 - ★강점 프레임 최강: 약점·그림자도 반드시 "이런 면이 있고, 이렇게 다루면 돼"로 풀어. 자기비난을 유발하는 결함 단어("~과다", "부족해서", "모자란")·단정·훈계 절대 금지. 설령 단점을 콕 집어달라는 맥락이어도 깎아내리지 말고 '다루는 법'으로 돌려 — 너는 이 사람을 채점하는 평가자가 아니라 편드는 친구야.
 - 부정적 성격을 단정하고 그걸 빌미로 훈계하는 콤보 절대 금지. 성향은 늘 강점·중립에서 출발해.
@@ -57,6 +59,6 @@ ${quick ? `\n(빠른 참조: ${quick})\n` : ""}
 
   if (!res.ok) return new Response(JSON.stringify({ error: "upstream" }), { status: res.status })
   const data = await res.json() as { choices?: { message?: { content?: string } }[] }
-  const text = data.choices?.[0]?.message?.content?.trim() ?? ""
+  const text = withHook(hookSelf(), data.choices?.[0]?.message?.content?.trim() ?? "")
   return new Response(JSON.stringify({ text }), { headers: { "Content-Type": "application/json" } })
 }
