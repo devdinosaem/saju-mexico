@@ -5,6 +5,8 @@ dist/
 .env.production
 *.log
 .next/
+next-env.d.ts
+*.tsbuildinfo
 .turbo/
 coverage/
 .DS_Store

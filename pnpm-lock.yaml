@@ -112,9 +112,6 @@ importers:
       saju-engine:
         specifier: workspace:*
         version: link:../saju-engine
-      saju-report-kr:
-        specifier: workspace:*
-        version: link:../saju-report-kr
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4
