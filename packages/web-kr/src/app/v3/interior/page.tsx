@@ -15,6 +15,7 @@ import RoomElementCard from "./_components/RoomElementCard"
 import RoomElementCardA from "./_components/RoomElementCardA"
 import RoomElementCardB from "./_components/RoomElementCardB"
 import RoomElementCardC from "./_components/RoomElementCardC"
+import RoomElementCardD from "./_components/RoomElementCardD"
 
 type GuestEntry = { id: string; author: string; message: string; date: string }
 
@@ -133,6 +134,10 @@ export default function InteriorPage() {
       <div className="flex flex-col gap-1">
         <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 C · 초박형</span>
         <RoomElementCardC />
+      </div>
+      <div className="flex flex-col gap-1">
+        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 D · 칩+개수+설명 (그래프 없음)</span>
+        <RoomElementCardD />
       </div>
       {/* ▲▲▲ 방의 기운 — 컴팩트 시안 비교(임시) ▲▲▲ */}
 

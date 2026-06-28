@@ -174,6 +174,21 @@ export function roomElementBreakdown(
   return out
 }
 
+/** 오행별 "아이템 개수" — 가중치 무시하고 항목 수만 셈(전체=5행 각 +1, 무 제외). */
+export function roomElementCounts(
+  room: Pick<RoomData, "stickers" | "chars" | "skinId">,
+): { counts: ElementScores; total: number } {
+  const counts: ElementScores = { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 }
+  let total = 0
+  for (const it of roomElementBreakdown(room)) {
+    if (it.element === "무") continue
+    if (it.element === "전체") { for (const e of ELEMENTS) counts[e] += 1; total += 1; continue }
+    counts[it.element] += 1
+    total += 1
+  }
+  return { counts, total }
+}
+
 // ─────────────────────────────────────────────────────────────
 // Phase 2: 사주 분포 비교 해석
 // ─────────────────────────────────────────────────────────────
