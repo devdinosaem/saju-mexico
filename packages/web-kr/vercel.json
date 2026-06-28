@@ -1,1 +1,6 @@
-{"buildCommand":"pnpm exec next build --webpack","installCommand":"pnpm install"}
+{
+  "buildCommand": "pnpm exec next build --webpack",
+  "outputDirectory": ".next",
+  "installCommand": "pnpm install"
+}
+
