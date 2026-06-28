@@ -46,16 +46,18 @@ export type RoomSkin = {
   floor: string
   line: string
   access: import("@/lib/inventory").AccessType
+  /** 오행 — 방 오행점수 집계용(가중치 ×2). 색상 기준 매핑(2026-06-28). */
+  element: import("@/lib/day-fortune").ElemKr
 }
 
 export const SKINS: RoomSkin[] = [
-  { id: "default",  name: "기본",      preview: "#FFF7E8", bg: "#FFFEF9", wallL: "#FDF8F0", wallR: "#FFFCF6", floor: "#FFF7E8", line: "#D8CCBA", access: "free" },
-  { id: "pink",     name: "봄 벚꽃",   preview: "#FFE4EF", bg: "#FFF8FA", wallL: "#FFF0F5", wallR: "#FFF5F8", floor: "#FFE4EF", line: "#F0B8CC", access: "free" },
-  { id: "blue",     name: "달빛 하늘", preview: "#D8EEFF", bg: "#F8FCFF", wallL: "#EFF6FF", wallR: "#F3F8FF", floor: "#D8EEFF", line: "#A8C8E8", access: "free" },
-  { id: "lavender", name: "라벤더",    preview: "#E8D8FF", bg: "#FAF8FF", wallL: "#F3EEFF", wallR: "#F6F2FF", floor: "#E8D8FF", line: "#C0A8E0", access: "free" },
-  { id: "mint",     name: "민트 숲",   preview: "#C8F0E0", bg: "#F8FFFC", wallL: "#EDFFF6", wallR: "#F2FFF9", floor: "#C8F0E0", line: "#90D4B8", access: "free" },
-  { id: "lemon",    name: "레몬",      preview: "#F8ECA0", bg: "#FFFEF5", wallL: "#FFFCE8", wallR: "#FFFEF0", floor: "#F8ECA0", line: "#D4C070", access: "subscription" },
-  { id: "ocean",    name: "여름 바다", preview: "#EDD4A0", bg: "#E2F3FB", wallL: "#AACFE8", wallR: "#B5D8EE", floor: "#EDD4A0", line: "#3A9EC8", access: "free" },
+  { id: "default",  name: "기본",      preview: "#FFF7E8", bg: "#FFFEF9", wallL: "#FDF8F0", wallR: "#FFFCF6", floor: "#FFF7E8", line: "#D8CCBA", access: "free", element: "토" },
+  { id: "pink",     name: "봄 벚꽃",   preview: "#FFE4EF", bg: "#FFF8FA", wallL: "#FFF0F5", wallR: "#FFF5F8", floor: "#FFE4EF", line: "#F0B8CC", access: "free", element: "화" },
+  { id: "blue",     name: "달빛 하늘", preview: "#D8EEFF", bg: "#F8FCFF", wallL: "#EFF6FF", wallR: "#F3F8FF", floor: "#D8EEFF", line: "#A8C8E8", access: "free", element: "수" },
+  { id: "lavender", name: "라벤더",    preview: "#E8D8FF", bg: "#FAF8FF", wallL: "#F3EEFF", wallR: "#F6F2FF", floor: "#E8D8FF", line: "#C0A8E0", access: "free", element: "화" },
+  { id: "mint",     name: "민트 숲",   preview: "#C8F0E0", bg: "#F8FFFC", wallL: "#EDFFF6", wallR: "#F2FFF9", floor: "#C8F0E0", line: "#90D4B8", access: "free", element: "목" },
+  { id: "lemon",    name: "레몬",      preview: "#F8ECA0", bg: "#FFFEF5", wallL: "#FFFCE8", wallR: "#FFFEF0", floor: "#F8ECA0", line: "#D4C070", access: "subscription", element: "토" },
+  { id: "ocean",    name: "여름 바다", preview: "#EDD4A0", bg: "#E2F3FB", wallL: "#AACFE8", wallR: "#B5D8EE", floor: "#EDD4A0", line: "#3A9EC8", access: "free", element: "수" },
 ]
 
 export const RoomChar = ({ size = 68 }: { size?: number }) => (

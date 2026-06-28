@@ -11,6 +11,7 @@ import { useInventory } from "@/hooks/useInventory"
 import { useFriends } from "@/hooks/useFriends"
 import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
+import RoomElementCard from "./_components/RoomElementCard"
 
 type GuestEntry = { id: string; author: string; message: string; date: string }
 
@@ -112,6 +113,9 @@ export default function InteriorPage() {
 
       {/* 내 미니홈피 */}
       <MiniRoom />
+
+      {/* 방의 기운 — 오행 밸런스 */}
+      <RoomElementCard />
 
       {/* 방명록 인라인 미리보기 */}
       {previewEntries.length > 0 && (

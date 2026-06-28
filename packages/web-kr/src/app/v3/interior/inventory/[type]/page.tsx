@@ -9,6 +9,14 @@ import { useInventory } from "@/hooks/useInventory"
 import { useUser } from "@/lib/UserContext"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
 import { ITEM_PRICES } from "@/lib/prices"
+import { getStickerElement } from "@/lib/room-element"
+import ElementTag from "../../_components/ElementTag"
+
+const STEM_TO_ELEM: Record<string, "목" | "화" | "토" | "금" | "수"> = {
+  갑: "목", 을: "목", 병: "화", 정: "화",
+  무: "토", 기: "토", 경: "금", 신: "금",
+  임: "수", 계: "수",
+}
 
 const PROP_NAMES: Record<string, string> = {
   Chair: "의자", Sofa: "소파", Lamp: "조명", Mirror: "거울", Clock: "시계",
@@ -85,6 +93,7 @@ function PropsView({ onBack }: { onBack: () => void }) {
         {keys.map(key => {
           const Icon = STICKER_MAP[key]
           const owned = canAccess(key, itemAccess(key, STICKER_ACCESS), "sticker", inv)
+          const el = getStickerElement(key)
           return (
             <button
               key={key}
@@ -105,6 +114,7 @@ function PropsView({ onBack }: { onBack: () => void }) {
               <span className="text-[11px] font-bold text-charcoal text-center mt-2 leading-tight w-full truncate px-1">
                 {PROP_NAMES[key]}
               </span>
+              {el && <ElementTag el={el} className="mt-1" />}
               <span className="text-[10px] mt-0.5" style={{ color: owned ? "#10B981" : "#B8A898" }}>
                 {owned ? "보유 중" : `${ITEM_PRICES.sticker}명태`}
               </span>
@@ -213,7 +223,10 @@ function CharactersView({ onBack }: { onBack: () => void }) {
                     <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ background: "#FEF3C7", color: "#92400E" }}>내 일주</span>
                   )}
                 </div>
-                <p className="text-[11px] text-text-muted">{key.endsWith("-m") ? "남성" : "여성"}</p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-[11px] text-text-muted">{key.endsWith("-m") ? "남성" : "여성"}</p>
+                  {STEM_TO_ELEM[key[0]] && <ElementTag el={STEM_TO_ELEM[key[0]]} />}
+                </div>
               </div>
               <span className="text-[12px] font-bold shrink-0" style={{ color: "#10B981" }}>✓ 보유</span>
             </div>
@@ -235,7 +248,10 @@ function CharactersView({ onBack }: { onBack: () => void }) {
               </div>
               <div className="flex-1">
                 <span className="text-[15px] font-bold" style={{ color: "#C8B8A8" }}>{key.replace(/-[mf]$/, "")}</span>
-                <p className="text-[11px] mt-0.5" style={{ color: "#C8B8A8" }}>{key.endsWith("-m") ? "남성" : "여성"}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <p className="text-[11px]" style={{ color: "#C8B8A8" }}>{key.endsWith("-m") ? "남성" : "여성"}</p>
+                  {STEM_TO_ELEM[key[0]] && <ElementTag el={STEM_TO_ELEM[key[0]]} />}
+                </div>
               </div>
               <span className="text-[12px] font-bold shrink-0" style={{ color: "#C8B8A8" }}>{ITEM_PRICES.character}명태</span>
             </div>
