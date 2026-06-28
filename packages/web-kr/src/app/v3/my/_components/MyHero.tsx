@@ -25,68 +25,6 @@ const AvatarMe = ({ s = 52 }: { s?: number }) => (
   </svg>
 )
 
-const AvatarElon = ({ s = 52 }: { s?: number }) => (
-  <svg viewBox="0 0 36 36" fill="none" width={s} height={s}>
-    <path d="M8 16 Q8 5 18 4 Q28 5 28 16 Q24 12 18 13 Q12 12 8 16Z" fill="#2D2D2D"/>
-    <circle cx="18" cy="23" r="9" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5"/>
-    <path d="M12 20 Q15 18.5 18 20" stroke="#2D2D2D" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
-    <path d="M18 20 Q21 18.5 24 20" stroke="#2D2D2D" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
-    <circle cx="14.5" cy="22" r="1.8" fill="#2D2D2D"/>
-    <circle cx="21.5" cy="22" r="1.8" fill="#2D2D2D"/>
-    <circle cx="15.1" cy="21.4" r="0.7" fill="white"/>
-    <circle cx="22.1" cy="21.4" r="0.7" fill="white"/>
-    <path d="M15 27.5 Q18 29.5 21 27.5" stroke="#2D2D2D" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-  </svg>
-)
-
-
-const AvatarJayZ = ({ s = 52 }: { s?: number }) => (
-  <svg viewBox="0 0 36 36" fill="none" width={s} height={s}>
-    <circle cx="18" cy="9" r="7" fill="#1a1a1a"/>
-    <circle cx="18" cy="23" r="9" fill="#8B5E3C" stroke="#2D2D2D" strokeWidth="1.5"/>
-    <path d="M12 20 Q15 18.5 18 20" stroke="#2D2D2D" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
-    <path d="M18 20 Q21 18.5 24 20" stroke="#2D2D2D" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
-    <circle cx="14.5" cy="22.5" r="1.8" fill="#2D2D2D"/>
-    <circle cx="21.5" cy="22.5" r="1.8" fill="#2D2D2D"/>
-    <circle cx="15.1" cy="21.9" r="0.7" fill="white"/>
-    <circle cx="22.1" cy="21.9" r="0.7" fill="white"/>
-    <path d="M14.5 28 Q18 30.5 21.5 28" stroke="#2D2D2D" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
-  </svg>
-)
-
-const AvatarBill = ({ s = 52 }: { s?: number }) => (
-  <svg viewBox="0 0 36 36" fill="none" width={s} height={s}>
-    <path d="M7 17 Q6 4 18 3 Q30 4 29 17 Q26 13 18 14 Q10 13 7 17Z" fill="#C8A87A"/>
-    <circle cx="18" cy="23" r="9" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5"/>
-    <rect x="8" y="15" width="20" height="3.5" rx="1" fill="#C8A" opacity="0"/>
-    <path d="M11 20 Q14 18.5 17 20" stroke="#2D2D2D" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
-    <path d="M19 20 Q22 18.5 25 20" stroke="#2D2D2D" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
-    <circle cx="14.5" cy="22.5" r="1.8" fill="#2D2D2D"/>
-    <circle cx="21.5" cy="22.5" r="1.8" fill="#2D2D2D"/>
-    <circle cx="15.1" cy="21.9" r="0.7" fill="white"/>
-    <circle cx="22.1" cy="21.9" r="0.7" fill="white"/>
-    <path d="M14.5 28 Q18 31 21.5 28" stroke="#2D2D2D" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-    <rect x="14" y="19" width="8" height="5" rx="1" fill="none" stroke="#94A3B8" strokeWidth="0.8" opacity="0.6"/>
-  </svg>
-)
-
-/* ── 동문 데이터 ─────────────────────────────────────────── */
-
-type Elem = "목" | "화" | "토" | "금" | "수"
-
-const ELEM_RING: Record<Elem, string> = {
-  목: "linear-gradient(135deg, #4ADE80, #86EFAC)",
-  화: "linear-gradient(135deg, #F87171, #FCA5A5)",
-  토: "linear-gradient(135deg, #FBBF24, #FDE68A)",
-  금: "linear-gradient(135deg, #94A3B8, #CBD5E1)",
-  수: "linear-gradient(135deg, #60A5FA, #93C5FD)",
-}
-
-const DONGMUN = [
-  { name: "일론 머스크", sub: "테슬라 CEO",    Face: AvatarElon,  bg: "#F1F5F9", elem: "금" as Elem },
-  { name: "Jay-Z",       sub: "래퍼",          Face: AvatarJayZ,  bg: "#DBEAFE", elem: "수" as Elem },
-  { name: "빌 게이츠",   sub: "마이크로소프트", Face: AvatarBill,  bg: "#D1FAE5", elem: "목" as Elem },
-]
 
 /* ── 컴포넌트 ───────────────────────────────────────────── */
 
@@ -138,27 +76,6 @@ export default function MyHero({ onEdit }: { onEdit?: () => void }) {
         <button onClick={onEdit} className="shrink-0 px-3 py-2 rounded-xl bg-charcoal/5 border border-charcoal/10 text-[12px] font-medium text-charcoal/60 active:opacity-70 transition-opacity">
           수정
         </button>
-      </div>
-
-      {/* 사주 동문 */}
-      <div>
-        <p className="font-bold text-charcoal text-sm mb-3">🎓 사주 동문</p>
-        <div className="flex gap-4 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-          {DONGMUN.map(celeb => (
-            <button key={celeb.name} className="flex flex-col items-center gap-1.5 shrink-0 active:scale-95 transition-transform">
-              <div className="p-[2.5px] rounded-full" style={{ background: ELEM_RING[celeb.elem] }}>
-                <div
-                  className="w-[54px] h-[54px] rounded-full overflow-hidden flex items-center justify-center"
-                  style={{ background: celeb.bg }}
-                >
-                  <celeb.Face s={50} />
-                </div>
-              </div>
-              <p className="text-[10px] font-bold text-charcoal">{celeb.name}</p>
-              <p className="text-[9px] text-text-muted -mt-1">{celeb.sub}</p>
-            </button>
-          ))}
-        </div>
       </div>
 
       <DisplayCharacterSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
