@@ -1,9 +1,11 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ILJU_SVG_ICONS } from "@/lib/ilju-svg-icons"
 import { useFriends } from "@/hooks/useFriends"
 import type { Friend as FriendModel } from "@/lib/friends"
+import { SOCIAL_BACKEND_ENABLED } from "@/lib/supabase/dev-session"
+import { fetchFriendActivity, hasNewActivity, markStorySeen, storyPhrase } from "@/lib/social/stories"
 
 const GAEGU: React.CSSProperties = {
   fontFamily: "'Cafe24Dongdong', var(--font-gaegu), cursive",
@@ -27,14 +29,6 @@ const ELEM_ACCENT: Record<Elem, string> = {
 
 const ELEM_LABEL: Record<Elem, string> = {
   목: "목 기운 🌱", 화: "화 기운 🔥", 토: "토 기운 🌍", 금: "금 기운 💎", 수: "수 기운 🌊",
-}
-
-const ELEM_MSG: Record<Elem, string> = {
-  목: "오늘 뭔가 새로 시작하고 싶어. 아이디어 있으면 말해줘",
-  화: "오늘 좀 뜨거워. 건드리면 타",
-  토: "오늘 차분하게 있을 예정. 큰 변화 없음",
-  금: "오늘 결단 모드야. 쓸데없는 말 하면 잘림",
-  수: "오늘 감수성 폭발 중. 연락해줘",
 }
 
 /* ── 얼굴 SVG ─────────────────────────────────────────── */
@@ -137,7 +131,7 @@ export const FaceAreum = ({ s = 50 }: { s?: number }) => (
 
 /* ── 데이터 ─────────────────────────────────────────────── */
 
-type Friend = { id: string; name: string; Face: ({ s }: { s?: number }) => React.ReactElement; bg: string; elem: Elem; daewun: boolean }
+type Friend = { id: string; name: string; iljuKey: string; Face: ({ s }: { s?: number }) => React.ReactElement; bg: string; elem: Elem; daewun: boolean }
 
 const STEM_TO_ELEM: Record<string, Elem> = {
   갑: "목", 을: "목", 병: "화", 정: "화",
@@ -158,7 +152,7 @@ function makeIljuFace(iljuKey: string): ({ s }: { s?: number }) => React.ReactEl
 
 function toFriend(cf: FriendModel): Friend {
   const elem = STEM_TO_ELEM[cf.iljuKey[0]] ?? "토"
-  return { id: cf.id, name: cf.name, Face: makeIljuFace(cf.iljuKey), bg: ELEM_BG_MAP[elem], elem, daewun: false }
+  return { id: cf.id, name: cf.name, iljuKey: cf.iljuKey, Face: makeIljuFace(cf.iljuKey), bg: ELEM_BG_MAP[elem], elem, daewun: false }
 }
 
 /* ── 컴포넌트 ───────────────────────────────────────────── */
@@ -186,6 +180,17 @@ export default function StoryRow({ onAdd }: { onAdd?: () => void }) {
   const { friends } = useFriends()
   const customFriends = friends.map(toFriend)
   const [active, setActive] = useState<Friend | null>(null)
+  const [activity, setActivity] = useState<Record<string, number>>({})
+  const [, setSeenTick] = useState(0)
+
+  const friendIdsKey = friends.map(f => f.id).join(",")
+  useEffect(() => {
+    if (!SOCIAL_BACKEND_ENABLED || friends.length === 0) return
+    let alive = true
+    fetchFriendActivity(friends.map(f => f.id)).then(a => { if (alive) setActivity(a) })
+    return () => { alive = false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [friendIdsKey])
 
   return (
     <>
@@ -201,17 +206,21 @@ export default function StoryRow({ onAdd }: { onAdd?: () => void }) {
           </div>
           <p className="text-[10px] text-text-muted">친구 초대</p>
         </button>
-        {customFriends.map(f => (
-          <StoryCircle
-            key={f.id}
-            name={f.name}
-            Face={f.Face}
-            bg={f.bg}
-            ring={ELEM_RING[f.elem]}
-            daewun={f.daewun}
-            onClick={() => setActive(f)}
-          />
-        ))}
+        {customFriends.map(f => {
+          const hasNew = SOCIAL_BACKEND_ENABLED && hasNewActivity(f.id, activity[f.id])
+          return (
+            <StoryCircle
+              key={f.id}
+              name={f.name}
+              Face={f.Face}
+              bg={f.bg}
+              ring={hasNew ? RING_ON : ELEM_RING[f.elem]}
+              bold={hasNew}
+              daewun={f.daewun}
+              onClick={() => { markStorySeen(f.id); setSeenTick(t => t + 1); setActive(f) }}
+            />
+          )
+        })}
       </div>
 
       {/* 스토리 바텀시트 */}
@@ -248,7 +257,7 @@ export default function StoryRow({ onAdd }: { onAdd?: () => void }) {
             {/* 메시지 */}
             <div className="px-6 py-4">
               <p className="text-[16px] text-charcoal leading-relaxed text-center" style={GAEGU}>
-                "{ELEM_MSG[active.elem]}"
+                "{storyPhrase(active.iljuKey)}"
               </p>
               <p className="text-[12px] text-text-muted mt-2.5 text-center">
                 사주가 {active.name}의 오늘 에너지를 대신 전해줬어요
