@@ -23,6 +23,7 @@
 | --- | --- | --- | --- | --- |
 | 전남친운·전여친운 / 엄마운·아빠운 상품 카드 (shop 4종) | `src/app/v3/shop/page.tsx` | `backlog/components/v3/shop/ExAndParentFortuneCards.tsx` | `94fb0b6` | shop 페이지 간소화. 연결 참조도 함께 제거: charge 가격표 `전남친·전여친운` 행 삭제·`올해운·부모운`→`올해운` 축소, my 보유샘플 `전남친운` 삭제. 상품 라인업 부활 시 복원 |
 | "오늘 뭐 먹었어?" 음식→오행 트래커 (FoodLogger) | `src/app/v3/calendar/_components/FoodLogger.tsx` | `backlog/components/v3/calendar/FoodLogger.tsx` (+ `FoodLogger.POLICY.md` 정책 명세) | `612f898` | 운기달력 탭 간소화. 음식 분류 규칙·과다/부족 반응·용신 목표선·주간리포트(구독게이트) 등 정의된 정책 전부 POLICY.md에 상세 기록. APP-UI-PLAN `### B. 오행 밸런스 트래커 상세`(UI 기획 포함)도 POLICY.md로 병합. 트래커 부활 시 복원 |
+| 레거시 리포트 결제 흐름 (purchase→generating→result/report) | `src/app/{purchase,result,report,generating}/[id]/page.tsx` | `backlog/app/{purchase,result,report,generating}/[id]/page.tsx` | _(이 커밋)_ | v1/v2 ₩9,900 원화 풀리포트 흐름. v3 saju-play(명태 페이월)로 대체돼 인바운드 링크 0(고아). 결제·리포트 페이지 재설계 시 디자인 참고용으로 보존 |
 
 ---
 
