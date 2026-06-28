@@ -34,8 +34,8 @@ export default function SelfComparePage() {
 
   return (
     <div className="flex flex-col gap-4 pb-6">
-      {/* 토글 */}
-      <div className="sticky top-16 z-10 -mx-1 px-1 py-2" style={{ background: "var(--surface-page)" }}>
+      {/* 토글 — 콘텐츠를 가리지 않게 일반 상단 바(sticky 아님) */}
+      <div className="pt-1">
         <div className="ds-card-flat flex p-1 gap-1">
           {(["v1", "v2"] as const).map(k => (
             <button key={k} onClick={() => setV(k)}
