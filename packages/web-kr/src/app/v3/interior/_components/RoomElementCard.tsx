@@ -4,14 +4,20 @@
  * Phase 1: 분포 표시만 (사주 비교 해석·추천 CTA 는 Phase 2).
  * 기획: docs/plans/interior-element-balance.md
  */
+import { useRouter } from "next/navigation"
 import { useMyRoom } from "@/hooks/useMyRoom"
+import { useSajuDistribution } from "@/hooks/useSajuDistribution"
 import {
-  calcRoomElements, ELEMENTS, ELEMENT_COLORS, ELEMENT_LABEL,
+  calcRoomElements, interpretRoomVsSaju, ELEMENTS, ELEMENT_COLORS, ELEMENT_LABEL,
 } from "@/lib/room-element"
 
 export default function RoomElementCard() {
+  const router = useRouter()
   const room = useMyRoom()
-  const { percent, total, dominant } = calcRoomElements(room)
+  const result = calcRoomElements(room)
+  const { percent, total, dominant } = result
+  const saju = useSajuDistribution()
+  const reading = saju ? interpretRoomVsSaju(result, saju) : null
 
   return (
     <div
@@ -62,6 +68,21 @@ export default function RoomElementCard() {
               </span>
             ))}
           </div>
+
+          {/* 사주 비교 해석 + 보완 추천 (사주 정보 있을 때만) */}
+          {reading && (
+            <div className="mt-3 pt-3" style={{ borderTop: "1px dashed #E0D4C0" }}>
+              <p className="text-[12px] leading-relaxed text-charcoal/80">{reading.message}</p>
+              <button
+                className="mt-2.5 w-full py-2 rounded-xl text-[12px] font-bold active:opacity-80 transition-opacity flex items-center justify-center gap-1.5"
+                style={{ background: `${ELEMENT_COLORS[reading.recommend]}22`, color: "#5C4A3A" }}
+                onClick={() => router.push("/v3/interior/inventory/props")}
+              >
+                <span className="w-2 h-2 rounded-full" style={{ background: ELEMENT_COLORS[reading.recommend] }} />
+                {ELEMENT_LABEL[reading.recommend]} 기운 소품 더하기 →
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>

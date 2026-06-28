@@ -107,3 +107,64 @@ export function calcRoomElements(
 
   return { raw, percent, total, dominant, lacking }
 }
+
+// ─────────────────────────────────────────────────────────────
+// Phase 2: 사주 분포 비교 해석
+// ─────────────────────────────────────────────────────────────
+
+export type ReadingTone = "complement" | "excess" | "suggest"
+
+export type RoomReading = {
+  tone: ReadingTone
+  /** 따뜻한 권유체 한 줄 해석 */
+  message: string
+  /** 보완 추천 오행 (사주에 가장 옅은 기운) */
+  recommend: ElemKr
+}
+
+/** 방 기운이 사주에 부족한 기운을 채워주는 정도로 충분하다고 볼 임계치(%) */
+const COMPLEMENT_THRESHOLD = 20
+
+/**
+ * 방 오행 분포 vs 사주 오행 분포 비교 → 한 줄 해석 + 보완 추천 오행.
+ * 빈 방(total 0)이거나 사주 분포가 없으면 null.
+ */
+export function interpretRoomVsSaju(
+  room: RoomElementResult,
+  saju: ElementScores,
+): RoomReading | null {
+  if (room.total === 0 || !room.dominant) return null
+
+  const weak = ELEMENTS.reduce((a, b) => (saju[b] < saju[a] ? b : a))
+  const strong = ELEMENTS.reduce((a, b) => (saju[b] > saju[a] ? b : a))
+  const wl = ELEMENT_LABEL[weak]
+  const sl = ELEMENT_LABEL[strong]
+  const rl = ELEMENT_LABEL[room.dominant]
+
+  // 1) 방의 대표 기운이 사주가 가장 필요로 하는 기운 → 완벽 보완
+  if (room.dominant === weak) {
+    return {
+      tone: "complement", recommend: weak,
+      message: `사주에 옅은 ${wl} 기운이 이 방엔 가장 가득해요. 머무는 것만으로 균형이 잡히는, 당신과 잘 맞는 공간이에요.`,
+    }
+  }
+  // 2) 부족한 기운을 어느 정도 채워주는 중 → 한 발 더 권유
+  if (room.percent[weak] >= COMPLEMENT_THRESHOLD) {
+    return {
+      tone: "complement", recommend: weak,
+      message: `사주에 부족한 ${wl} 기운을 방이 어느 정도 채워주고 있어요. ${wl} 소품을 조금만 더 더하면 한결 편안해질 거예요.`,
+    }
+  }
+  // 3) 이미 넉넉한 기운이 방에도 가장 강함 → 다른 결 제안
+  if (room.dominant === strong) {
+    return {
+      tone: "excess", recommend: weak,
+      message: `이미 넉넉한 ${sl} 기운이 방에도 가장 강하네요. 가끔은 ${wl} 기운 소품으로 다른 결을 더해보면 균형이 좋아져요.`,
+    }
+  }
+  // 4) 그 외 → 부족 기운 보완 제안
+  return {
+    tone: "suggest", recommend: weak,
+    message: `방은 ${rl} 기운이 강한 편이에요. 사주에 옅은 ${wl} 기운을 조금 더 채워주면 더 잘 어울리는 공간이 될 거예요.`,
+  }
+}
