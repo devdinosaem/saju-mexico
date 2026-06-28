@@ -110,7 +110,52 @@ app/api/saju-play/sinsal      app/api/saju-play/some      app/api/saju-play/ones
 
 ---
 
-## Phase 1 — 1탭 사주상품  *(진행 예정)*
+## Phase 1 — 1탭 사주상품
+
+### 1.1 구조 — "saju-play 키트" 공유 퍼널 프레임워크
+
+[`src/lib/saju-play/`](../src/lib/saju-play/). 상품 5종(self/sinsal/nextmonth/some/onesided)이 공통 셸을 공유:
+`page.tsx(스텁)` → `core.tsx(퍼널 셸)` + `*-adapter.ts(명리 계산)` + `flavor.ts(카피)` + `engine.ts(오행 엔진)`.
+퍼널 단계: **로딩(연출) → 무료 표지(teaser) → 페이월 게이트(blur+잠금카드) → 전체 리포트**.
+썸/짝사랑은 `crush/core.tsx` 1개를 `config`(some.ts/onesided.ts)로 갈아끼움.
+
+### 1.2 상품별 상태
+
+| 상품 | 라우트/구현 | 작동 범위 | AI 백엔드 | 결제 | 정책 정합 |
+|---|---|---|---|---|---|
+| 일주카드 | `IljuDiscovery`(shop) | ✅ 렌더 | - | 무료 | ⏳ 진입만 확인, 상세 흐름 미확인 |
+| 내 사주 분석(유명인) | `CelebFunnel`(shop) | ✅ 나/타인 입력→결과 | 클라계산(`genOhaengAnalysis`) | ❌ **목업** | ⚠️ "차감됩니다" 문구만, 실제 차감X |
+| 친구 궁합 | `/v3/compat` (551줄) | ✅ 실구현 | 클라 추정(API없음) | 무료 ✅ | ⏳ 흐름 정밀확인 P 잔여 |
+| 커플 궁합 | `/v3/couple` (443줄) | ✅ 실구현 | 클라 추정(API없음) | 무료 ✅ | ✅ `coupleCompat=0` 정합 |
+| 나 사용설명서(self) | `saju-play/self` | ✅ 풀 리포트(7챕터+보너스) | ✅ DeepSeek | ❌ **목업** | ⚠️ 0.8 하드코딩·차감X |
+| 다음달 운(nextmonth) | `saju-play/nextmonth` | ✅ | ✅ DeepSeek | ❌ **목업** | ⚠️ 0.7 하드코딩·차감X |
+| 12·18신살(sinsal) | `saju-play/sinsal` | ✅ | ✅ DeepSeek | ❌ **목업** | ⚠️ 0.9 하드코딩·차감X |
+| 썸 궁합(some) | `crush+some config` | ✅ | ✅ DeepSeek(apiPath) | ❌ **목업** | ⚠️ 0.8 하드코딩·차감X |
+| 짝사랑(onesided) | `crush+onesided config` | ✅ | ✅ DeepSeek | ❌ **목업** | ⚠️ 0.8 하드코딩·차감X |
+
+### 1.3 ⚠️ 시스템적 문제 3 — **결제(페이월)가 전부 목업, 명태 미차감** (최중대)
+
+- 모든 saju-play 퍼널의 "결제" 버튼 = `onClick={() => setUnlocked(true)}` 뿐. **`spend()`·잔액확인·잔액부족 처리 전무.** ([self/core.tsx:736](../src/lib/saju-play/self/core.tsx#L736), sinsal:512, nextmonth:450, crush:992)
+- `CelebFunnel`도 CTA가 `setStep("result")` — "명태 잔액에서 차감됩니다"는 **문구만** ([CelebFunnel.tsx:413-417](../src/app/v3/shop/_components/CelebFunnel.tsx#L413))
+- 즉 1탭 **유료 상품 전부가 사실상 무료로 열림.** 명태 잔액 시스템([balance.ts](../src/lib/balance.ts))은 존재하나 상품 결제에 **배선 안 됨** (실제 소모는 상담만으로 추정 → Phase 2 확인).
+- → **결정필요 🟦**: 페이월에 `spend(price)` 연결 + 잔액부족 시 충전 유도 + 재열람 정책(한번 사면 보관함에서 무료 재열람? `unlocked` 영속화?) 설계.
+
+### 1.4 ⚠️ 시스템적 문제 4 — 로그인/생일 게이트 미적용, 폴백 생일 사용
+
+- saju-play 퍼널은 `isLoggedIn`/`hasIlju` **게이트 없음**. 계정 생일 없으면 `FALLBACK_BIRTH`(self=1995-03-15, sinsal/nextmonth=1990-02-14)로 렌더 — dev 폴백이 운영 경로에 노출.
+- 사진 퍼널 `(가입)→(생년월일)→...` 의 앞단(가입·생일 강제)이 **미구현**. self/core.tsx:231 주석도 "지금은 폴백 생일로 렌더(dev)" 인정.
+- → **결정필요 🟦**: 비로그인/생일미등록 시 (a) 입력 시트 강제 vs (b) 게스트 체험 허용 정책 확정.
+
+### 1.5 AI 백엔드
+
+- self/sinsal/nextmonth/some/onesided → `app/api/saju-play/*` (edge). **DeepSeek `deepseek-v4-flash`** 호출, `DEEPSEEK_API_KEY` 필요. 키 없거나 실패 시 **로컬 폴백 줄글**로 graceful degrade. ✅ 견고
+- 프롬프트에 콘텐츠 감수성 규칙(강점 프레임·결함단어 금지·시기전망 절망 금지) 내장 — 메모리 [[feedback-ilju-content-sensitivity]]와 정합 ✅
+- ⚠️ 모델 ID `deepseek-v4-flash` 외부 의존 — 키 미설정 시 전 상품이 폴백 품질로만 동작.
+
+### 1.6 일주카드·유명인 진입
+
+- `IljuDiscovery`/`CelebDiscovery`(shop) → 호기심 후킹. `CelebFunnel`은 나/타인(`target`) 분기 + `SajuInputSheet`(타인은 `skipSave`) ✅ 대상 정책(나/타인) 반영.
+
 ## Phase 2 — 2탭 상담  *(진행 예정)*
 ## Phase 3 — 3탭 운테리어  *(진행 예정)*
 ## Phase 4 — 4탭 마이 (캘린더 편입 포함)  *(진행 예정)*
@@ -120,12 +165,23 @@ app/api/saju-play/sinsal      app/api/saju-play/some      app/api/saju-play/ones
 
 ## 부록 A. 문서→서비스 역행(🆕) 누적
 - 운기달력 독립 탭 (삭제 예정)
-- saju-play API 5종 (self/nextmonth/sinsal/some/onesided) — 사진엔 기능명만, 백엔드 LLM 연동 명시 없음
+- saju-play API 5종 (self/nextmonth/sinsal/some/onesided) — 사진엔 기능명만, DeepSeek LLM 연동 명시 없음
+- 올해운 미리보기(yearFortune 0.6명태) — 사진 미기재 상품
+- 오늘의 사주(무료) — 사진 미기재, 라우트 연결 확인필요
+- saju-play 키트(공유 퍼널 프레임워크) — 문서엔 상품명만, 구조 무명시
 - *(Phase 진행하며 누적)*
 
 ## 부록 B. 미결정(🟦) 누적
 - 운기달력 탭 제거 후 슬롯 처리 (4탭 vs 액막이샵 승격)
 - 가격 SSOT 단일화 + self/sinsal/some/onesided 정식 가격 항목
-- 일괄 1명태 vs 차등가 정책 확정
-- 구독: 명태 결제 vs 원화 결제
+- 일괄 1명태 vs 차등가(0.6~0.9) 정책 확정
+- 구독: 명태 결제 vs 원화 결제(₩2,900)
+- 소품/캐릭터/스킨 가격: 사진(캐릭터2·스킨3) vs 코드(캐릭터3·스킨2) 정정
+- **페이월 실결제 연결**(spend) + 잔액부족 충전유도 + 1회구매 재열람(unlocked 영속) 정책
+- 비로그인/생일미등록: 입력시트 강제 vs 게스트 체험 허용
 - *(Phase 진행하며 누적)*
+
+## 부록 C. 최중대 리스크 TOP (경영 판단용)
+1. 🔴 **수익화 0** — 1탭 유료상품 전부 명태 미차감(목업). 출시 시 매출 발생 불가.
+2. 🔴 **인증 미완성** — 로그인/세션이 사실상 mock localStorage, Supabase 이관 미완.
+3. 🟠 **가격 정책 4중 분산** — 사진/prices.ts/products.ts/UI하드코딩이 제각각.
