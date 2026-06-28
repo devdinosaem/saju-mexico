@@ -172,16 +172,19 @@ function derive(myKey: string, myBirth: Birth | null, myGender: Gender, them: Pe
   const rel = relType(eMe, eThem)
   const seed = [...(myKey + them.name)].reduce((a, c) => a + c.charCodeAt(0), 0)
   let score: number, compatBlock: string | null, signals: CompatSignals, myYongKr: Elem
+  let myDist: Record<string, number>, themDist: Record<string, number>, goodDays: { 연락?: number; 만남?: number; 고백?: number }
   if (real) {
     score = real.score; compatBlock = real.compatBlock; signals = real.signals; myYongKr = real.myYongKr as Elem
+    myDist = real.myDist; themDist = real.themDist; goodDays = real.goodDays
   } else {
     score = clamp(config.scoreOpt[rel] + (seed % 7) - 3, 35, 97)
     compatBlock = null
     const fb = fallbackSignals(eMe, eThem, seed); signals = fb.signals; myYongKr = fb.myYongKr
+    myDist = mockDist(meK); themDist = mockDist(themK); goodDays = {}
   }
   const arch = eMe === eThem ? config.sameArch : (config.archetype[pairKey(eMe, eThem)] ?? config.sameArch)
   const stage = [...config.temp].reverse().find(t => score >= t.min) ?? config.temp[0]
-  return { meK, themK, eMe, eThem, rel, arch, score, stage, compatBlock, signals, myYongKr }
+  return { meK, themK, eMe, eThem, rel, arch, score, stage, compatBlock, signals, myYongKr, myDist, themDist, goodDays }
 }
 
 function Avatar({ iljuKey, size = 72 }: { iljuKey: string; size?: number }) {
@@ -431,7 +434,12 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   }
 
   // ── 결과 계산 ──
-  const { meK, themK, eMe, eThem, rel, arch, score, stage, signals, myYongKr } = derive(myKey, myBirth, myGender, them, config)
+  const { meK, themK, eMe, eThem, rel, arch, score, stage, signals, myYongKr, myDist, themDist, goodDays } = derive(myKey, myBirth, myGender, them, config)
+  const realTiming = goodDays.고백 !== undefined || goodDays.만남 !== undefined
+  const timingWhen = realTiming ? `${new Date().getMonth() + 1}월, 사주가 가리키는 길일이 있어요` : config.timing.when
+  const timingLine = realTiming
+    ? `${[goodDays.고백 && `${goodDays.고백}일 고백`, goodDays.만남 && `${goodDays.만남}일 만남`].filter(Boolean).join(", ")} 타이밍이 좋아요.`
+    : config.timing.line
   const coreCopy = FATE_CORE[signals.core]
   const spouseCopy = FATE_SPOUSE[signals.spouse]
   const bal = BALANCE[signals.role]
@@ -451,7 +459,9 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
     const dim = new Date(y, mo + 1, 0).getDate()
     const s = themK.charCodeAt(0) + score
     const cl = (d: number) => Math.min(dim, Math.max(1, d))
-    const d1 = cl((s % 7) + 4), d2 = cl((s % 6) + 13), d3 = cl((s % 5) + 22)
+    const d1 = goodDays.연락 ?? cl((s % 7) + 4)
+    const d2 = goodDays.만남 ?? cl((s % 6) + 13)
+    const d3 = goodDays.고백 ?? cl((s % 5) + 22)
     const marks: Record<number, string> = { [d1]: "#60A5FA", [d2]: "#FBBF24", [d3]: PINK }
     const legend = [
       { d: d1, label: "연락 좋은 날", color: "#60A5FA" },
@@ -463,7 +473,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   const sortedRank = [...ranking].sort((a, b) => b.score - a.score)
   const curId = recId(them)
   const myRank = sortedRank.findIndex(r => r.id === curId) + 1
-  const md = mockDist(meK), td = mockDist(themK)
+  const md = myDist, td = themDist
   const open = config.openHeart[eThem]
   const lucky = config.lucky[eThem]
   const fallbackProse =
@@ -766,8 +776,8 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={{ background: "#EFF6FF", border: "1.5px solid #93C5FD" }}>
           <Ico as={DoodleCalendar} size={20} />
           <div>
-            <p className="text-[14px] font-bold text-charcoal">{config.timing.when}</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.timing.line}</p>
+            <p className="text-[14px] font-bold text-charcoal">{timingWhen}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{timingLine}</p>
             <p className="text-[13px] text-charcoal/50 leading-snug mt-1" style={GAEGU}>피할 때 · {config.timing.avoid}</p>
           </div>
         </div>
@@ -806,6 +816,10 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
       {/* 모드 전용 (썸=밀당 / 짝사랑=현실·위로) */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={config.extra.D}>{config.extra.title}</SectionTitle>
+        <div className="rounded-xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
+          <Ico as={DoodleLightning} size={16} />
+          <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>이 사람한텐 <span className="font-bold" style={{ color: PINK }}>{config.pushPull[eThem].best === "push" ? "당기기" : "풀기"}</span>가 더 통해요</p>
+        </div>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-1">
           {config.extra.a.map((row, i) => (
             <div key={i} className="flex items-start gap-3 py-2.5 border-b border-charcoal/5 last:border-0">
