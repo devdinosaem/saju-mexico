@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 5 84 84" width="512" height="512" fill="none">
+  <!-- viewBox 중심 (50,47) = 꽃 콘텐츠 실제 중심에 정렬 -->
+  <!-- 오행 꽃잎 5장 (목·화·토·금·수) -->
+  <ellipse cx="50" cy="28" rx="14" ry="20" fill="#4ADE80" stroke="#2D2D2D" stroke-width="2" transform="rotate(0 50 50)"/>
+  <ellipse cx="50" cy="28" rx="14" ry="20" fill="#EF4444" stroke="#2D2D2D" stroke-width="2" transform="rotate(72 50 50)"/>
+  <ellipse cx="50" cy="28" rx="14" ry="20" fill="#FACC15" stroke="#2D2D2D" stroke-width="2" transform="rotate(144 50 50)"/>
+  <ellipse cx="50" cy="28" rx="14" ry="20" fill="#E2E8F0" stroke="#2D2D2D" stroke-width="2" transform="rotate(216 50 50)"/>
+  <ellipse cx="50" cy="28" rx="14" ry="20" fill="#60A5FA" stroke="#2D2D2D" stroke-width="2" transform="rotate(288 50 50)"/>
+  <!-- 중심 (눈 달린 해) -->
+  <circle cx="50" cy="50" r="14" fill="#FACC15" stroke="#2D2D2D" stroke-width="2"/>
+  <circle cx="46" cy="48" r="2" fill="#2D2D2D"/>
+  <circle cx="54" cy="48" r="2" fill="#2D2D2D"/>
+  <path d="M46 54 Q50 58 54 54" stroke="#2D2D2D" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>
