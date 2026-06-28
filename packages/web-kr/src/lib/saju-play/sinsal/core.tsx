@@ -11,12 +11,12 @@ import { useUser } from "@/lib/UserContext"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf, type Elem } from "../engine"
 import { ELEM_BG } from "../flavor"
-import { buildSinsal, type SinsalBirth, type Gender } from "./sinsal-adapter"
-import { SINSAL, CAT_STYLE } from "./flavor"
+import { buildSinsal, POS_LABEL, type SinsalBirth, type Gender, type Pos } from "./sinsal-adapter"
+import { SINSAL, CAT_STYLE, CAT_ORDER, STAT_LABEL, type SinsalStat } from "./flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
-  DoodleStar, DoodleSpeechBubble,
+  DoodleStar, DoodleSpeechBubble, DoodleQuestionMark, DoodleLightning,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -81,6 +81,62 @@ function SinsalBadge({ name, sub }: { name: string; sub?: string }) {
   )
 }
 
+// 신살 능력치 — 5각 레이더
+function Radar({ data }: { data: { label: string; value: number }[] }) {
+  const size = 200, c = 100, R = 64, n = data.length
+  const pt = (i: number, r: number): [number, number] => {
+    const a = -Math.PI / 2 + (i * 2 * Math.PI) / n
+    return [c + r * Math.cos(a), c + r * Math.sin(a)]
+  }
+  const ring = (f: number) => data.map((_, i) => pt(i, R * f).join(",")).join(" ")
+  const poly = data.map((d, i) => pt(i, R * (Math.max(0, Math.min(100, d.value)) / 100)).join(",")).join(" ")
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} className="mx-auto" style={{ width: "100%", maxWidth: 220 }}>
+      {[0.25, 0.5, 0.75, 1].map((f, i) => <polygon key={i} points={ring(f)} fill="none" stroke="#E5E7EB" strokeWidth={1} />)}
+      {data.map((_, i) => { const [x, y] = pt(i, R); return <line key={i} x1={c} y1={c} x2={x} y2={y} stroke="#E5E7EB" strokeWidth={1} /> })}
+      <polygon points={poly} fill="rgba(232,75,106,0.18)" stroke={PINK} strokeWidth={2} strokeLinejoin="round" />
+      {data.map((d, i) => { const [x, y] = pt(i, R + 16); return <text key={i} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize={12} fontWeight={700} fill="#2D2D2D">{d.label}</text> })}
+    </svg>
+  )
+}
+
+// 신살 풀 카드 — 별명·진짜뜻·myth 오해풀기·좋은면·주의·활용
+function SinsalCard({ name, positions }: { name: string; positions: Pos[] }) {
+  const info = SINSAL[name]; if (!info) return null
+  const cs = CAT_STYLE[info.cat]
+  return (
+    <div className="rounded-2xl bg-white border border-charcoal/10 overflow-hidden">
+      {/* 헤더 */}
+      <div className="flex items-center gap-3 px-4 py-3" style={{ background: cs.bg }}>
+        <span className="w-11 h-11 rounded-full bg-white/80 flex items-center justify-center shrink-0"><Ico as={info.D} size={24} /></span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[16px] leading-tight" style={{ ...BINGGRAE, color: cs.ink }}>{info.alias}</p>
+          <p className="text-[12px] text-charcoal/55" style={GAEGU}>{name} · {info.cat}</p>
+        </div>
+        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/70 shrink-0" style={{ color: cs.ink }}>
+          {positions.map(p => POS_LABEL[p].era.split("·")[0]).join("·")}
+        </span>
+      </div>
+      <div className="px-4 py-3.5 flex flex-col gap-2.5">
+        <p className="text-[14px] text-charcoal/85 leading-snug" style={GAEGU}>{info.mean}.</p>
+        {info.myth && (
+          <div className="rounded-xl px-3 py-2.5 flex items-start gap-2" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
+            <Ico as={DoodleQuestionMark} size={16} />
+            <div><span className="text-[13px] font-bold text-charcoal">무서운 이름, 사실은 </span>
+              <span className="text-[13px] text-charcoal/75 leading-snug" style={GAEGU}>{info.myth}</span></div>
+          </div>
+        )}
+        {([["좋은 면", info.good], ["주의", info.caution], ["살릴 곳", info.use]] as const).map(([k, v]) => (
+          <div key={k} className="flex gap-2.5">
+            <span className="text-[12px] font-bold shrink-0 w-12 mt-0.5" style={{ color: PINK }}>{k}</span>
+            <span className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{v}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 const FALLBACK_BIRTH: SinsalBirth = { year: 1990, month: 2, day: 14, hour: 12, minute: 0 }  // 갑신일주(셀럽 풍부) 테스트
 const PRICE = "0.9명태"
@@ -121,6 +177,11 @@ export default function SinsalFunnel() {
   const sig = data.signature
   const sigInfo = SINSAL[sig]
   const sigCs = CAT_STYLE[sigInfo.cat]
+  // 능력치 레이더 (자리 수 기반 스케일)
+  const statData = (Object.keys(data.stats) as SinsalStat[]).map(k => ({ label: k, value: Math.min(100, data.stats[k] * 22 + 12) }))
+  const topStat = statData.reduce((a, b) => (b.value > a.value ? b : a))
+  // 6분류 묶음 (보유한 카테고리만)
+  const byCat = CAT_ORDER.map(cat => ({ cat, items: data.owned.filter(o => SINSAL[o.name].cat === cat) })).filter(g => g.items.length)
   const teaser = `${data.bareIlju} 일주 — 신살 ${data.ownedCount}개를 타고났어. 대표는 «${sigInfo.alias}».`
   const fallbackProse =
     `너에겐 신살이 **${data.ownedCount}개** 있어. 그중 가장 너다운 건 **${sigInfo.alias}**(${sig}) — ${sigInfo.mean}.\n\n` +
@@ -184,6 +245,46 @@ export default function SinsalFunnel() {
           {data.owned.map(o => <SinsalBadge key={o.name} name={o.name} sub={`${o.positions.length}자리`} />)}
         </div>
         <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>무서운 이름도 사실은 다 너의 특수 속성이야. 다음 장에서 하나씩 풀어줄게.</p>
+      </div>
+
+      {/* 신살 능력치 — 레이더 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleLightning} basis="신살 분포">내 신살 능력치</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-1">
+          <Radar data={statData} />
+          <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>
+            제일 센 건 <span className="font-bold" style={{ color: PINK }}>{STAT_LABEL[topStat.label as SinsalStat]}</span> — 여기에 네 무기가 몰려 있어.
+          </p>
+        </div>
+      </div>
+
+      {/* 6분류 묶음 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleTaegeuk} basis="카테고리">신살, 결대로 묶어보면</SectionTitle>
+        <div className="flex flex-col gap-2">
+          {byCat.map(({ cat, items }) => {
+            const cs = CAT_STYLE[cat]
+            return (
+              <div key={cat} className="rounded-2xl px-3.5 py-3 flex items-start gap-2.5" style={{ background: cs.bg }}>
+                <span className="text-[13px] font-bold shrink-0 mt-0.5 px-2 py-0.5 rounded-full bg-white/70" style={{ color: cs.ink }}>{cat}</span>
+                <p className="text-[14px] text-charcoal/75 leading-snug pt-0.5" style={GAEGU}>
+                  {items.map(o => SINSAL[o.name].alias).join(" · ")}
+                </p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      <ChapterDivider n={2} title="무서운 이름, 사실은" />
+
+      {/* 신살 풀 카드 도감 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleBook} basis="신살 풀이">신살 하나씩 펼치기</SectionTitle>
+        <div className="flex flex-col gap-3">
+          {data.owned.map(o => <SinsalCard key={o.name} name={o.name} positions={o.positions} />)}
+        </div>
+        <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>겁주는 이름은 다 옛날식 작명일 뿐 — 네가 가진 건 전부 쓸 수 있는 힘이야.</p>
       </div>
 
       {/* consult 크로스셀 */}
