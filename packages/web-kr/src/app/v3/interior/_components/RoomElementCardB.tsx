@@ -6,7 +6,7 @@
  */
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { DoodleTaegeuk } from "@/components/doodles"
+import { DoodleBox, DoodleTaegeuk } from "@/components/doodles"
 import { useRoomElementSummary } from "@/hooks/useRoomElementSummary"
 import { ELEMENTS, ELEMENT_COLORS, ELEMENT_LABEL, ELEMENT_PILL } from "@/lib/room-element"
 import RoomElementSheet from "./RoomElementSheet"
@@ -51,7 +51,7 @@ export default function RoomElementCardB() {
         onClick={() => total > 0 && setSheet(true)}
       >
         <div className="flex items-center gap-2 mb-1">
-          <DoodleTaegeuk style={{ width: 18, height: 18 }} />
+          <DoodleBox className="w-[18px] h-[18px]"><DoodleTaegeuk /></DoodleBox>
           <p className="text-sm font-bold text-charcoal">이 방의 기운</p>
         </div>
 

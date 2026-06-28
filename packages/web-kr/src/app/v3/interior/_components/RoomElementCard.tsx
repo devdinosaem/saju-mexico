@@ -7,34 +7,15 @@
  */
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { DoodleSprout, DoodleFire, DoodleEarth, DoodleDiamond, DoodleWave, DoodleTaegeuk } from "@/components/doodles"
+import { DoodleBox, DoodleTaegeuk } from "@/components/doodles"
 import { useMyRoom } from "@/hooks/useMyRoom"
 import { useSajuDistribution } from "@/hooks/useSajuDistribution"
 import {
   calcRoomElements, interpretRoomVsSaju,
   ELEMENTS, ELEMENT_COLORS, ELEMENT_LABEL, ELEMENT_PILL,
 } from "@/lib/room-element"
-import type { ElemKr } from "@/lib/day-fortune"
 import RoomElementSheet from "./RoomElementSheet"
-
-type DoodleC = React.FC<{ className?: string; style?: React.CSSProperties }>
-const ELEM_DOODLE: Record<ElemKr, DoodleC> = {
-  목: DoodleSprout, 화: DoodleFire, 토: DoodleEarth, 금: DoodleDiamond, 수: DoodleWave,
-}
-
-function ElementPill({ elem }: { elem: ElemKr }) {
-  const D = ELEM_DOODLE[elem]
-  const p = ELEMENT_PILL[elem]
-  return (
-    <span
-      className="inline-flex items-center justify-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 w-[56px] whitespace-nowrap"
-      style={{ background: p.bg, border: `1.5px solid ${p.border}`, color: p.text }}
-    >
-      <D style={{ width: 13, height: 13 }} />
-      {ELEMENT_LABEL[elem]}
-    </span>
-  )
-}
+import ElementPill from "./ElementPill"
 
 export default function RoomElementCard() {
   const router = useRouter()
@@ -53,7 +34,7 @@ export default function RoomElementCard() {
       >
         {/* 헤더 */}
         <div className="flex items-center gap-2 mb-3">
-          <DoodleTaegeuk style={{ width: 20, height: 20 }} />
+          <DoodleBox className="w-5 h-5"><DoodleTaegeuk /></DoodleBox>
           <p className="text-sm font-bold text-charcoal">이 방의 기운</p>
           {total > 0 && dominant && (
             <span className="ml-auto flex items-center gap-1 text-[11px] font-bold" style={{ color: ELEMENT_PILL[dominant].text }}>

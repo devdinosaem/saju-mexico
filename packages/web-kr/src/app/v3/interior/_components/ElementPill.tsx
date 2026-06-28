@@ -1,7 +1,7 @@
 /**
  * 오행 칩(pill) — 두들 아이콘 + 순한글 라벨. 운기달력 "내 오행 밸런스" 룩.
  */
-import { DoodleSprout, DoodleFire, DoodleEarth, DoodleDiamond, DoodleWave } from "@/components/doodles"
+import { DoodleBox, DoodleSprout, DoodleFire, DoodleEarth, DoodleDiamond, DoodleWave } from "@/components/doodles"
 import { ELEMENT_LABEL, ELEMENT_PILL } from "@/lib/room-element"
 import type { ElemKr } from "@/lib/day-fortune"
 
@@ -27,7 +27,9 @@ export default function ElementPill({
       }`}
       style={{ background: p.bg, border: `1.5px solid ${p.border}`, color: p.text }}
     >
-      <D style={{ width: sm ? 11 : 13, height: sm ? 11 : 13 }} />
+      <DoodleBox className={sm ? "w-3 h-3" : "w-3.5 h-3.5"}>
+        <D />
+      </DoodleBox>
       {ELEMENT_LABEL[elem]}
     </span>
   )
