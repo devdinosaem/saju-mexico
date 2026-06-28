@@ -22,7 +22,7 @@
 | 컴포넌트 | 원래 위치 | backlog 경로 | 제거 커밋 | 왜 뺐나 / 언제 꺼낼까 |
 | --- | --- | --- | --- | --- |
 | 전남친운·전여친운 / 엄마운·아빠운 상품 카드 (shop 4종) | `src/app/v3/shop/page.tsx` | `backlog/components/v3/shop/ExAndParentFortuneCards.tsx` | `94fb0b6` | shop 페이지 간소화. 연결 참조도 함께 제거: charge 가격표 `전남친·전여친운` 행 삭제·`올해운·부모운`→`올해운` 축소, my 보유샘플 `전남친운` 삭제. 상품 라인업 부활 시 복원 |
-| "오늘 뭐 먹었어?" 음식→오행 트래커 (FoodLogger) | `src/app/v3/calendar/_components/FoodLogger.tsx` | `backlog/components/v3/calendar/FoodLogger.tsx` (+ `FoodLogger.POLICY.md` 정책 명세) | _(이 커밋)_ | 운기달력 탭 간소화. 음식 분류 규칙·과다/부족 반응·용신 목표선·주간리포트(구독게이트) 등 정의된 정책 전부 POLICY.md에 상세 기록. 트래커 부활 시 복원 |
+| "오늘 뭐 먹었어?" 음식→오행 트래커 (FoodLogger) | `src/app/v3/calendar/_components/FoodLogger.tsx` | `backlog/components/v3/calendar/FoodLogger.tsx` (+ `FoodLogger.POLICY.md` 정책 명세) | `612f898` | 운기달력 탭 간소화. 음식 분류 규칙·과다/부족 반응·용신 목표선·주간리포트(구독게이트) 등 정의된 정책 전부 POLICY.md에 상세 기록. APP-UI-PLAN `### B. 오행 밸런스 트래커 상세`(UI 기획 포함)도 POLICY.md로 병합. 트래커 부활 시 복원 |
 
 ---
 
