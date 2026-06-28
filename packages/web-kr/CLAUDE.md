@@ -5,6 +5,20 @@
 
 ---
 
+## 🚨 커밋·머지·빌드 안전 규칙 (모든 에이전트 필독)
+
+> 이 레포는 `master`보다 100커밋+ 앞선 장기 작업 브랜치로 개발한다. 미커밋 파일이 쌓이면 **머지 시 main 빌드가 깨진다(실제 발생함).** 아래는 예외 없이 지킨다.
+
+1. **커밋은 체크포인트마다 즉시.** 특히 `lib/`·`components/`·`hooks/`의 **새 파일은 만들자마자 커밋.** committed 코드가 untracked 파일을 import하면 머지 후 `Module not found`로 빌드 실패한다.
+2. **`git add -A` / `git add <폴더>` 같은 광범위 스테이징 금지.** autocrlf=true 환경이라 무관 파일까지 CRLF 재정규화로 쓸려 들어가고, 남의 WIP·untracked가 섞인다. → **내가 수정한 파일만 명시적으로 `git add <경로>`.**
+3. **머지·배포 push 전 반드시 풀빌드 통과 확인:** `pnpm --filter web-kr exec next build --webpack`. `tsc --noEmit`만으론 RSC 경계·라우트 빌드·미커밋 누락을 못 잡고, dev 핫리로드도 안 알려준다.
+4. **`master`에 직접 커밋 금지.** 작업은 feature 브랜치에서만 → master는 항상 fast-forward(충돌 0)로 유지. master에 직접 커밋하면 갈라져서 충돌난다.
+5. **점검 습관:** 작업 끝·머지 전 `git status --short`로 확인. `??`(untracked) 중 src 파일이 있으면 import되는지 보고 커밋. 누락 일괄 확인: `git ls-files packages/web-kr/src --others --exclude-standard`.
+
+> 배포 참고: 소셜 백엔드는 prod에서 비활성(`SOCIAL_BACKEND_ENABLED`이 `.env.local`의 `NEXT_PUBLIC_DEV_LOGIN_*`에 묶임) — 카카오 인증 전까지 localStorage 폴백. 명태 결제·보관함·재열람은 정상.
+
+---
+
 ## 🚨 모바일 퍼스트 — 모든 작업에 적용되는 최우선 규칙
 
 **이 프로젝트의 모든 화면, 컴포넌트, UI 기능은 반드시 모바일(375px) 기준으로 설계·구현한다.**
