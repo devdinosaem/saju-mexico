@@ -13,10 +13,8 @@ import MonthCalendar from "./_components/MonthCalendar"
 import WeeklyEnergyFlow from "./_components/WeeklyEnergyFlow"
 import SajuInputSheet from "../shop/_components/SajuInputSheet"
 import { PRICES, priceLabel, subscriptionLabel } from "@/lib/prices"
-import { ElementBadgePill } from "@/components/ilju-type-card"
-import { DoodleHeart, DoodleSparkle, DoodleStar, DoodleMoon, DoodleCrystal, DoodleKey, DoodleMagicWand, DoodleCrown } from "@/components/doodles"
+import { DoodleHeart, DoodleSparkle, DoodleStar, DoodleMoon, DoodleCrystal, DoodleCrown } from "@/components/doodles"
 import AdBanner from "@/components/AdBanner"
-import CTAButton from "@/components/cta-button"
 
 const GAEGU: React.CSSProperties = {
   fontFamily: "'Cafe24Dongdong', var(--font-gaegu), cursive",
@@ -25,14 +23,6 @@ const GAEGU: React.CSSProperties = {
 const BINGRAE: React.CSSProperties = {
   fontFamily: "'BinggraeTaom', sans-serif",
   fontWeight: 700,
-}
-
-const ELEM_BG: Record<string, string> = {
-  "목(木)": "#D1FAE5",
-  "화(火)": "#FEE2E2",
-  "수(水)": "#DBEAFE",
-  "금(金)": "#F1F5F9",
-  "토(土)": "#FEF3C7",
 }
 
 type Category = "전체" | "운세" | "요약" | "상세" | "궁합" | "월운"
@@ -54,12 +44,6 @@ const PURCHASED = [
 ]
 
 const CATS: Category[] = ["전체", "운세", "요약", "상세", "궁합", "월운"]
-
-const FRIENDS = [
-  { name: "엄마",  element: "목(木)", compat: 91, emoji: "🌱" },
-  { name: "남친",  element: "화(火)", compat: 87, emoji: "🔥" },
-  { name: "친구",  element: "수(水)", compat: 34, emoji: "💧" },
-]
 
 export default function MyPage() {
   const [activeCat, setActiveCat] = useState<Category>("전체")
@@ -161,59 +145,6 @@ export default function MyPage() {
       <div>
         <p className="font-bold text-charcoal text-sm mb-2.5">📅 월운 캘린더</p>
         <MonthCalendar />
-      </div>
-
-      {/* 내 지인 */}
-      <div>
-        <p className="text-[22px] leading-snug text-charcoal mb-2.5" style={BINGRAE}>
-          내 지인, <span className="highlight-pink">오늘 기운은?</span>
-        </p>
-        <div
-          className="rounded-2xl bg-white border-2 border-charcoal px-4 py-4 flex flex-col gap-4"
-          style={{ boxShadow: "2px 2px 0px #2D2D2D" }}
-        >
-          <div className="flex justify-between items-end">
-            {FRIENDS.map(f => (
-              <button key={f.name} className="flex flex-col items-center gap-1.5 active:scale-95 transition-transform">
-                <div
-                  className="w-[52px] h-[52px] rounded-full border-2 border-charcoal/20 flex items-center justify-center text-2xl"
-                  style={{ background: ELEM_BG[f.element] }}
-                >
-                  {f.emoji}
-                </div>
-                <p className="text-[11px] font-bold text-charcoal">{f.name}</p>
-                <ElementBadgePill element={f.element} />
-              </button>
-            ))}
-            <button className="flex flex-col items-center gap-1.5 active:scale-95 transition-transform">
-              <div className="w-[52px] h-[52px] rounded-full border-2 border-dashed border-charcoal/30 bg-charcoal/5 flex items-center justify-center text-xl text-charcoal/30">
-                +
-              </div>
-              <p className="text-[11px] text-text-muted">추가</p>
-            </button>
-          </div>
-
-          <div className="w-full border-t border-charcoal/10" />
-
-          <div className="flex items-center gap-2">
-            <div
-              className="w-[28px] h-[28px] rounded-full border-2 border-charcoal/15 flex items-center justify-center text-sm shrink-0"
-              style={{ background: ELEM_BG["목(木)"] }}
-            >
-              🌱
-            </div>
-            <div className="flex items-center gap-1.5 bg-green-50 border border-green-200 rounded-full px-2.5 py-1">
-              <span className="text-[12px] font-bold text-green-700">엄마와 오늘 궁합 91%</span>
-            </div>
-            <span className="text-[11px] text-text-muted ml-auto shrink-0">목(木)↑</span>
-          </div>
-        </div>
-
-        <CTAButton className="mt-2.5">
-          <DoodleMagicWand className="w-5 h-5 shrink-0" />
-          친구랑 무료 궁합 보기
-          <DoodleMagicWand className="w-5 h-5 shrink-0" />
-        </CTAButton>
       </div>
 
       {/* 운기 관리 */}
