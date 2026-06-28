@@ -342,7 +342,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="46" cy="38" r="3" fill="#2D2D2D" />
             <circle cx="35.2" cy="37" r="1.2" fill="white" />
             <circle cx="47.2" cy="37" r="1.2" fill="white" />
-            <path d="M40 40 Q39 43 41 45" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 외치는 (stroke만) */}
             <path d="M35 47 L40 45 L45 47" stroke="#2D2D2D" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
             <ellipse cx="27" cy="44" rx="3.5" ry="1.8" fill="#F87171" opacity="0.4" />
@@ -447,7 +446,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="46" cy="37" r="2.6" fill="#2D2D2D" />
             <circle cx="35" cy="36" r="1.1" fill="white" />
             <circle cx="47" cy="36" r="1.1" fill="white" />
-            <path d="M40 39 Q39 42 41 44" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 잔잔한 미소 */}
             <path d="M36 45 Q40 48 44 45" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             <ellipse cx="28" cy="43" rx="3.5" ry="2" fill="#FCA5A5" opacity="0.4" />
@@ -501,7 +499,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="46" cy="37" r="2.8" fill="#2D2D2D" />
             <circle cx="35.1" cy="36" r="1.1" fill="white" />
             <circle cx="47.1" cy="36" r="1.1" fill="white" />
-            <path d="M40 39 Q39 42 41 44" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 솔직한 미소 */}
             <path d="M35 45 Q40 49 45 45" stroke="#2D2D2D" strokeWidth="1.7" fill="none" strokeLinecap="round" />
             <ellipse cx="27" cy="43" rx="3.5" ry="2" fill="#F87171" opacity="0.4" />
@@ -660,7 +657,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="46" cy="37" r="2.6" fill="#2D2D2D" />
             <circle cx="35" cy="36" r="1.1" fill="white" />
             <circle cx="47" cy="36" r="1.1" fill="white" />
-            <path d="M40 39 Q39 42 41 44" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 한마디 하는 (살짝 오므림) */}
             <path d="M36 45 Q38 44 40 45 Q42 46 44 45" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             <ellipse cx="28" cy="43" rx="3.5" ry="2" fill="#FCA5A5" opacity="0.4" />
@@ -715,7 +711,6 @@ export const HAIR_BATCH: HairItem[] = [
             <circle cx="35.1" cy="36" r="1.1" fill="white" />
             <circle cx="47.1" cy="36" r="1.1" fill="white" />
             <path d="M33 34 L36 33.5 M44 33.5 L47 34" stroke="#FACC15" strokeWidth="0.6" strokeLinecap="round" opacity="0.7" />
-            <path d="M40 39 Q39 42 41 44" stroke="#2D2D2D" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.45" />
             {/* 입 — 자신만만 스미르크 */}
             <path d="M35 45 Q39 47.5 45 44" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
             <ellipse cx="28" cy="43" rx="3.5" ry="1.8" fill="#F87171" opacity="0.35" />
