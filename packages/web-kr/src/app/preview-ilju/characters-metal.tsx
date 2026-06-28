@@ -194,60 +194,52 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
   {
     id: "신묘-f",
     node: (
-        <div className="flex flex-col items-center gap-3">
-          <div className="bg-gradient-to-b from-[#F1F5F9] to-[#FDF6EE] rounded-2xl p-6 border-2 border-[#2D2D2D]/10 w-full flex justify-center relative overflow-hidden">
-            <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full" fill="none">
-              <rect x="20" y="40" width="60" height="8" rx="4" fill="#94A3B8" opacity="0.1" />
-              <rect x="20" y="54" width="50" height="8" rx="4" fill="#94A3B8" opacity="0.08" />
-              <rect x="20" y="68" width="40" height="8" rx="4" fill="#94A3B8" opacity="0.06" />
-              <path d="M140 140 L160 120 L180 140 L180 180 L140 180 Z" fill="#E2E8F0" opacity="0.1" />
-              <path d="M150 50 L154 38 L158 50 L170 50 L160 57 L164 69 L154 62 L144 69 L148 57 L138 50 Z" fill="#94A3B8" opacity="0.1" />
-            </svg>
-            {SHOW_ELEMENT_BADGE && <ElementBadge element="metal" />}
-            <svg viewBox="0 0 80 90" className="w-[120px] relative z-10" fill="none">
-              {/* 헤어 — 웨이브 펌 단발, 금발 (closed Z) */}
-              <path d="M18 30 Q18 10 40 8 Q62 10 62 30 Q66 38 60 44 Q54 50 62 54 Q66 60 58 64 Q50 68 44 65 Q40 63 36 65 Q30 68 22 64 Q14 60 18 54 Q26 50 20 44 Q14 38 18 30 Z" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.5" />
-              <path d="M22 36 Q26 33 30 36" stroke="#EAB308" strokeWidth="0.9" fill="none" opacity="0.5" />
-              <path d="M50 36 Q54 33 58 36" stroke="#EAB308" strokeWidth="0.9" fill="none" opacity="0.5" />
-              <path d="M21 50 Q25 47 29 50" stroke="#EAB308" strokeWidth="0.9" fill="none" opacity="0.45" />
-              <path d="M51 50 Q55 47 59 50" stroke="#EAB308" strokeWidth="0.9" fill="none" opacity="0.45" />
-              {/* 얼굴 */}
-              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5" />
-              {/* 눈썹 — 단정하게 */}
-              <path d="M30 30 Q34 28.5 37 30" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-              <path d="M43 30 Q46 28.5 50 30" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-              {/* 속눈썹 */}
-              <path d="M31 31.5 Q34 30 37 31.5" stroke="#2D2D2D" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-              <path d="M43 31.5 Q46 30 49 31.5" stroke="#2D2D2D" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-              {/* 눈 */}
-              <circle cx="34" cy="34" r="2.2" fill="#2D2D2D" />
-              <circle cx="46" cy="34" r="2.2" fill="#2D2D2D" />
-              <circle cx="35" cy="33" r="0.9" fill="white" />
-              <circle cx="47" cy="33" r="0.9" fill="white" />
-              {/* 입 — 야무진 미소 */}
-              <path d="M36 42 Q40 45 44 42" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              {/* 볼터치 */}
-              <ellipse cx="29" cy="39" rx="4" ry="2.5" fill="#F9A8D4" opacity="0.6" />
-              <ellipse cx="51" cy="39" rx="4" ry="2.5" fill="#F9A8D4" opacity="0.6" />
-              {/* 머리핀 — 노랑별 */}
-              <path d="M52 16 L53.5 12 L55 16 L59 16 L56 18.5 L57 22 L53.5 20 L50 22 L51 18.5 L48 16 Z" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.8" />
-              {/* 몸통 — 바이올렛 + 깃 */}
-              <path d="M28 50 Q26 54 26 72 L54 72 Q54 54 52 50 Q46 48 40 48 Q34 48 28 50Z" fill="#7C3AED" stroke="#2D2D2D" strokeWidth="1.5" />
-              <path d="M36 49 L40 55 L44 49" stroke="#C4B5FD" strokeWidth="1.2" fill="none" strokeLinejoin="round" />
-              {/* 왼팔 → 스카이블루 자 */}
-              <path d="M28 58 Q20 57 15 58" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-              <rect x="2" y="56" width="14" height="4" rx="1" fill="#38BDF8" stroke="#2D2D2D" strokeWidth="1" />
-              <path d="M4 56 L4 59 M6 56 L6 58 M8 56 L8 59 M10 56 L10 58 M12 56 L12 59 M14 56 L14 58" stroke="#0C4A6E" strokeWidth="0.5" opacity="0.7" />
-              {/* 오른팔 → 정리된 컬러 라벨 (정리정돈) */}
-              <path d="M52 58 Q60 57 64 58" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-              <rect x="64" y="49" width="13" height="5" rx="1" fill="#F87171" stroke="#2D2D2D" strokeWidth="0.9" />
-              <rect x="64" y="55" width="13" height="5" rx="1" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.9" />
-              <rect x="64" y="61" width="13" height="5" rx="1" fill="#4ADE80" stroke="#2D2D2D" strokeWidth="0.9" />
-            </svg>
-          </div>
-          <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("신묘-f")!.emoji} {getIljuType("신묘-f")!.name}</p>
-          <p className="text-xs text-gray-500 text-center">{getIljuType("신묘-f")!.id} · {getIljuType("신묘-f")!.stemElement}</p>
+      <div className="flex flex-col items-center gap-3">
+        <div className="bg-gradient-to-b from-[#F1F5F9] to-[#FDF6EE] rounded-2xl p-6 border-2 border-[#2D2D2D]/10 w-full flex justify-center relative overflow-hidden">
+          <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full" fill="none">
+            <rect x="20" y="40" width="60" height="8" rx="4" fill="#94A3B8" opacity="0.1" />
+            <rect x="20" y="54" width="50" height="8" rx="4" fill="#94A3B8" opacity="0.08" />
+            <path d="M150 50 L154 38 L158 50 L170 50 L160 57 L164 69 L154 62 L144 69 L148 57 L138 50 Z" fill="#94A3B8" opacity="0.1" />
+          </svg>
+          <svg viewBox="0 0 80 90" className="w-[120px] relative z-10" fill="none">
+            {/* 헤어 — 웨이브 펌 단발, 금발 */}
+            <path d="M18 30 Q18 10 40 8 Q62 10 62 30 Q66 38 60 44 Q54 50 62 54 Q66 60 58 64 Q50 68 44 65 Q40 63 36 65 Q30 68 22 64 Q14 60 18 54 Q26 50 20 44 Q14 38 18 30 Z" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.5" />
+            <path d="M22 36 Q26 33 30 36" stroke="#EAB308" strokeWidth="0.9" fill="none" opacity="0.5" />
+            <path d="M50 36 Q54 33 58 36" stroke="#EAB308" strokeWidth="0.9" fill="none" opacity="0.5" />
+            {/* 얼굴 */}
+            <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5" />
+            {/* 눈썹 — 단정하게 (속눈썹 제거됨) */}
+            <path d="M30 30 Q34 28.5 37 30" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+            <path d="M43 30 Q46 28.5 50 30" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+            {/* 눈 */}
+            <circle cx="34" cy="34" r="2.2" fill="#2D2D2D" />
+            <circle cx="46" cy="34" r="2.2" fill="#2D2D2D" />
+            <circle cx="35" cy="33" r="0.9" fill="white" />
+            <circle cx="47" cy="33" r="0.9" fill="white" />
+            {/* 입 — 야무진 미소 */}
+            <path d="M36 42 Q40 45 44 42" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+            {/* 볼터치 */}
+            <ellipse cx="29" cy="39" rx="4" ry="2.5" fill="#F9A8D4" opacity="0.6" />
+            <ellipse cx="51" cy="39" rx="4" ry="2.5" fill="#F9A8D4" opacity="0.6" />
+            {/* 머리핀 — 노랑별 */}
+            <path d="M52 16 L53.5 12 L55 16 L59 16 L56 18.5 L57 22 L53.5 20 L50 22 L51 18.5 L48 16 Z" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.8" />
+            {/* 몸통 — 바이올렛 + 깃 */}
+            <path d="M28 50 Q26 54 26 72 L54 72 Q54 54 52 50 Q46 48 40 48 Q34 48 28 50Z" fill="#7C3AED" stroke="#2D2D2D" strokeWidth="1.5" />
+            <path d="M36 49 L40 55 L44 49" stroke="#C4B5FD" strokeWidth="1.2" fill="none" strokeLinejoin="round" />
+            {/* 왼팔 → 스카이블루 자 */}
+            <path d="M28 58 Q20 57 15 58" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+            <rect x="2" y="56" width="14" height="4" rx="1" fill="#38BDF8" stroke="#2D2D2D" strokeWidth="1" />
+            <path d="M4 56 L4 59 M6 56 L6 58 M8 56 L8 59 M10 56 L10 58 M12 56 L12 59 M14 56 L14 58" stroke="#0C4A6E" strokeWidth="0.5" opacity="0.7" />
+            {/* 오른팔 → 정리된 컬러 라벨 */}
+            <path d="M52 58 Q60 57 64 58" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+            <rect x="64" y="49" width="13" height="5" rx="1" fill="#F87171" stroke="#2D2D2D" strokeWidth="0.9" />
+            <rect x="64" y="55" width="13" height="5" rx="1" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.9" />
+            <rect x="64" y="61" width="13" height="5" rx="1" fill="#4ADE80" stroke="#2D2D2D" strokeWidth="0.9" />
+          </svg>
         </div>
+        <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("신묘-f")!.emoji + " " + getIljuType("신묘-f")!.name}</p>
+        <p className="text-xs text-gray-500 text-center">{getIljuType("신묘-f")!.id + " · " + getIljuType("신묘-f")!.stemElement}</p>
+      </div>
     ),
   },
   {
@@ -911,62 +903,51 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
   {
     id: "신유-f",
     node: (
-        <div className="flex flex-col items-center gap-3">
-          <div className="bg-gradient-to-b from-[#F1F5F9] to-[#FDF6EE] rounded-2xl p-6 border-2 border-[#2D2D2D]/10 w-full flex justify-center relative overflow-hidden">
-            <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full" fill="none">
-              {/* 핸드백 그림자 */}
-              <rect x="140" y="130" width="40" height="30" rx="6" fill="#94A3B8" opacity="0.08" />
-              {/* 체크 */}
-              <path d="M30 60 L38 68 L52 50" stroke="#4ADE80" strokeWidth="2" opacity="0.18" strokeLinecap="round" strokeLinejoin="round" />
-              {/* 엑스 */}
-              <path d="M155 45 L165 55 M165 45 L155 55" stroke="#F87171" strokeWidth="2" opacity="0.18" strokeLinecap="round" />
-              {/* 스파클 */}
-              <path d="M30 140 L32 146 L38 148 L32 150 L30 156 L28 150 L22 148 L28 146 Z" fill="#94A3B8" opacity="0.1" />
-              {/* 다이아 */}
-              <path d="M90 20 L100 35 L90 50 L80 35 Z" fill="#E2E8F0" stroke="#94A3B8" strokeWidth="1" opacity="0.15" />
-            </svg>
-            {SHOW_ELEMENT_BADGE && <ElementBadge element="metal" />}
-            <svg viewBox="0 0 80 90" className="w-[120px] relative z-10" fill="none">
-              {/* 머리카락 — 허니 블론드 단발, closed Z path */}
-              <path d="M20 34 Q20 12 40 9 Q60 12 60 34 L60 60 Q54 68 46 64 Q40 62 34 64 Q26 68 20 60 Z" fill="#E0AC5A" stroke="#2D2D2D" strokeWidth="1.5" />
-              {/* 사이드 파트 결 */}
-              <path d="M44 12 Q39 18 37 28" stroke="#B5821F" strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.6" />
-              {/* 얼굴 */}
-              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5" />
-              {/* 속눈썹 */}
-              <path d="M31 31 Q34 29 37 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              <path d="M43 31 Q46 29 49 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              {/* 눈썹 — 차분한 안목 */}
-              <path d="M30 29 Q34 27.5 38 29" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-              <path d="M43 29 Q47 27.5 51 29" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-              {/* 눈 — 또렷한 안목 */}
-              <circle cx="34" cy="34" r="2.6" fill="#2D2D2D" />
-              <circle cx="46" cy="34" r="2.6" fill="#2D2D2D" />
-              <circle cx="35" cy="33" r="1.1" fill="white" />
-              <circle cx="47" cy="33" r="1.1" fill="white" />
-              {/* 입 — 레드립 차분한 미소 */}
-              <path d="M36 43 Q40 45.5 44 43" stroke="#E11D48" strokeWidth="2" fill="none" strokeLinecap="round" />
-              {/* 볼터치 */}
-              <ellipse cx="28" cy="40" rx="4" ry="2.4" fill="#F9A8D4" opacity="0.45" />
-              <ellipse cx="52" cy="40" rx="4" ry="2.4" fill="#F9A8D4" opacity="0.45" />
-              {/* 몸통 — 차콜 블레이저 + 라펠 */}
-              <path d="M28 50 Q26 54 26 72 L54 72 Q54 54 52 50 Q46 48 40 48 Q34 48 28 50Z" fill="#334155" stroke="#2D2D2D" strokeWidth="1.5" />
-              <path d="M40 49 L34 56 M40 49 L46 56" stroke="#1E293B" strokeWidth="1.2" strokeLinecap="round" />
-              <circle cx="40" cy="62" r="1.2" fill="#FACC15" />
-              {/* 왼팔 → 명품 백 (팔에 걺) */}
-              <path d="M28 56 Q22 58 19 62" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-              <path d="M8 60 Q8 57 18 57 Q22 60 19 62" stroke="#A16207" strokeWidth="1.3" fill="none" strokeLinecap="round" />
-              <rect x="5" y="60" width="16" height="12" rx="2.5" fill="#D97706" stroke="#2D2D2D" strokeWidth="1.4" />
-              <rect x="11" y="62.5" width="4" height="2.5" rx="0.8" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.6" />
-              {/* 오른팔 → 'PICK' 추천 태그 (이거 써봐) */}
-              <path d="M52 54 Q58 52 61 48" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-              <path d="M60 42 L74 42 L77 49 L74 56 L60 56 Z" fill="#FACC15" stroke="#2D2D2D" strokeWidth="1.3" strokeLinejoin="round" />
-              <path d="M67 52 Q67 49 69.5 49 Q72 49 72 51 Q72 53 67 55.5 Q62 53 62 51 Q62 49 64.5 49 Q67 49 67 52Z" fill="#E11D48" stroke="#2D2D2D" strokeWidth="0.7" />
-            </svg>
-          </div>
-          <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("신유-f")!.emoji} {getIljuType("신유-f")!.name}</p>
-          <p className="text-xs text-gray-500 text-center">{getIljuType("신유-f")!.id} · {getIljuType("신유-f")!.stemElement}</p>
+      <div className="flex flex-col items-center gap-3">
+        <div className="bg-gradient-to-b from-[#F1F5F9] to-[#FDF6EE] rounded-2xl p-6 border-2 border-[#2D2D2D]/10 w-full flex justify-center relative overflow-hidden">
+          <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full" fill="none">
+            <rect x="140" y="130" width="40" height="30" rx="6" fill="#94A3B8" opacity="0.08" />
+            <path d="M30 60 L38 68 L52 50" stroke="#4ADE80" strokeWidth="2" opacity="0.18" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M155 45 L165 55 M165 45 L155 55" stroke="#F87171" strokeWidth="2" opacity="0.18" strokeLinecap="round" />
+            <path d="M90 20 L100 35 L90 50 L80 35 Z" fill="#E2E8F0" stroke="#94A3B8" strokeWidth="1" opacity="0.15" />
+          </svg>
+          <svg viewBox="0 0 80 90" className="w-[120px] relative z-10" fill="none">
+            {/* 머리카락 — 허니 블론드 단발 */}
+            <path d="M20 34 Q20 12 40 9 Q60 12 60 34 L60 60 Q54 68 46 64 Q40 62 34 64 Q26 68 20 60 Z" fill="#E0AC5A" stroke="#2D2D2D" strokeWidth="1.5" />
+            <path d="M44 12 Q39 18 37 28" stroke="#B5821F" strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.6" />
+            {/* 얼굴 */}
+            <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5" />
+            {/* 눈썹 — 차분한 안목 (속눈썹 제거됨) */}
+            <path d="M30 29 Q34 27.5 38 29" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+            <path d="M43 29 Q47 27.5 51 29" stroke="#2D2D2D" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+            {/* 눈 */}
+            <circle cx="34" cy="34" r="2.6" fill="#2D2D2D" />
+            <circle cx="46" cy="34" r="2.6" fill="#2D2D2D" />
+            <circle cx="35" cy="33" r="1.1" fill="white" />
+            <circle cx="47" cy="33" r="1.1" fill="white" />
+            {/* 입 — 검은 입술 */}
+            <path d="M36 43 Q40 45.5 44 43" stroke="#1F2937" strokeWidth="2" fill="none" strokeLinecap="round" />
+            {/* 볼터치 */}
+            <ellipse cx="28" cy="40" rx="4" ry="2.4" fill="#F9A8D4" opacity="0.45" />
+            <ellipse cx="52" cy="40" rx="4" ry="2.4" fill="#F9A8D4" opacity="0.45" />
+            {/* 몸통 — 차콜 블레이저 */}
+            <path d="M28 50 Q26 54 26 72 L54 72 Q54 54 52 50 Q46 48 40 48 Q34 48 28 50Z" fill="#334155" stroke="#2D2D2D" strokeWidth="1.5" />
+            <path d="M40 49 L34 56 M40 49 L46 56" stroke="#1E293B" strokeWidth="1.2" strokeLinecap="round" />
+            <circle cx="40" cy="62" r="1.2" fill="#FACC15" />
+            {/* 왼팔 → 명품 백 */}
+            <path d="M28 56 Q22 58 19 62" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+            <path d="M8 60 Q8 57 18 57 Q22 60 19 62" stroke="#A16207" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+            <rect x="5" y="60" width="16" height="12" rx="2.5" fill="#D97706" stroke="#2D2D2D" strokeWidth="1.4" />
+            <rect x="11" y="62.5" width="4" height="2.5" rx="0.8" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.6" />
+            {/* 오른팔 → PICK 추천 태그 */}
+            <path d="M52 54 Q58 52 61 48" stroke="#2D2D2D" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+            <path d="M60 42 L74 42 L77 49 L74 56 L60 56 Z" fill="#FACC15" stroke="#2D2D2D" strokeWidth="1.3" strokeLinejoin="round" />
+            <path d="M67 52 Q67 49 69.5 49 Q72 49 72 51 Q72 53 67 55.5 Q62 53 62 51 Q62 49 64.5 49 Q67 49 67 52Z" fill="#E11D48" stroke="#2D2D2D" strokeWidth="0.7" />
+          </svg>
         </div>
+        <p className="font-bold text-sm text-center" style={{ wordBreak: "keep-all" }}>{getIljuType("신유-f")!.emoji + " " + getIljuType("신유-f")!.name}</p>
+        <p className="text-xs text-gray-500 text-center">{getIljuType("신유-f")!.id + " · " + getIljuType("신유-f")!.stemElement}</p>
+      </div>
     ),
   },
   {
