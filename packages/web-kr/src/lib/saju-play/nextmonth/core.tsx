@@ -11,7 +11,7 @@ import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf } from "../engine"
 import { ELEM_BG, ELEM_DOODLE } from "../flavor"
 import { buildNextMonth, type NextMonthBirth, type Gender, type DayPoint } from "./nextmonth-adapter"
-import { WEATHER, MONTH_THEME, AREA, EVENT_COPY } from "./flavor"
+import { WEATHER, MONTH_THEME, AREA, EVENT_COPY, LUCKY, MISSION } from "./flavor"
 import { SINSAL, CAT_STYLE } from "../sinsal/flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
@@ -139,6 +139,12 @@ export default function NextMonthFunnel() {
   const evtTypes = [...new Set(data.events.map(e => e.type))]
   const gaugeColor = (v: number) => (v >= 66 ? "#16A34A" : v >= 45 ? PINK : "#94A3B8")
   const monthSinsalInfo = SINSAL[data.monthSinsal] // 월지 12신살 → 신살 도감 연동
+  const lucky = LUCKY[data.yong]
+  const mission = MISSION[data.yong]
+  const diff = data.favorMonth - data.thisFavor
+  const trend = diff >= 6 ? { arrow: "↗", line: "이번달보다 흐름이 한 단계 트여 — 미뤘던 걸 움직이기 좋아.", color: "#16A34A" }
+    : diff <= -6 ? { arrow: "↘", line: "이번달보다 살짝 가라앉는 흐름 — 벌이기보다 다지는 달로.", color: "#DC2626" }
+    : { arrow: "→", line: "이번달과 비슷한 결 — 큰 변화 없이 이어가면 돼.", color: "#94A3B8" }
   const letter = `${data.monthLabel}의 너에게 — ${weather.line} ${theme.title}이 기다리고 있어.`
   const fallbackProse =
     `**${data.monthLabel}**, 너에겐 **${weather.label}** 같은 달이 와.\n\n` +
@@ -325,6 +331,69 @@ export default function NextMonthFunnel() {
         </div>
       </div>
       <p className="text-[13px] text-text-muted leading-snug text-center" style={GAEGU}>좋은 날엔 중요한 약속·결정을, 주의할 날엔 큰 선택을 미뤄두면 돼.</p>
+
+      <ChapterDivider n={5} title="다음달 처방" />
+
+      {/* 이 달의 미션 */}
+      <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={{ background: ELEM_BG[data.yong], border: `1.5px solid #F0C060` }}>
+        <Ico as={mission.D} size={22} />
+        <div className="min-w-0"><p className="text-[14px] font-bold text-charcoal">이 달의 미션 ({data.yong} 채우기)</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{mission.act} — 나를 살리는 {data.yong} 기운이 보약이야.</p></div>
+      </div>
+
+      {/* 행운 아이템 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={lucky.D} basis="용신">이 달의 행운 아이템</SectionTitle>
+        <div className="grid grid-cols-4 gap-2">
+          {([["색", lucky.color], ["방향", lucky.dir], ["숫자", lucky.num], ["아이템", lucky.item]] as const).map(([k, v]) => (
+            <div key={k} className="rounded-xl bg-white border border-charcoal/10 px-2 py-2.5 flex flex-col items-center gap-0.5 text-center">
+              <span className="text-[11px] text-text-muted">{k}</span>
+              <span className="text-[12px] font-bold text-charcoal leading-tight">{v}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 할 것 / 하지 말 것 */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="rounded-2xl px-3.5 py-3.5 flex flex-col gap-1" style={{ background: "#F0FFF4", border: "1.5px solid #86EFAC" }}>
+          <p className="text-[13px] font-bold" style={{ color: "#16A34A" }}>이 달엔 이렇게</p>
+          <p className="text-[13px] text-charcoal/75 leading-snug" style={GAEGU}>{theme.use}</p>
+        </div>
+        <div className="rounded-2xl px-3.5 py-3.5 flex flex-col gap-1" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
+          <p className="text-[13px] font-bold" style={{ color: "#C2660C" }}>이건 한 박자 쉬어</p>
+          <p className="text-[13px] text-charcoal/75 leading-snug" style={GAEGU}>{data.chungCount > 0 ? "충 기운이 도는 달 — 큰 계약·이사·결별 같은 결정은 신중히." : data.monthElem === data.gi ? "무리한 확장·새 빚은 다음으로 — 키우기보다 지키기." : "욕심내서 일을 키우기보다, 벌인 것부터 매듭짓기."}</p>
+        </div>
+      </div>
+
+      {/* ── 보너스 ── */}
+      <div className="flex items-center gap-2.5 pt-3">
+        <Ico as={DoodleSparkles} size={20} />
+        <span className="text-[15px] text-charcoal shrink-0" style={BINGGRAE}>재미로 보는 다음달</span>
+        <div className="flex-1 h-px" style={{ background: "#E5E7EB" }} />
+      </div>
+
+      {/* 이번달 vs 다음달 */}
+      <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex items-center gap-3">
+        <div className="flex-1 text-center">
+          <p className="text-[12px] text-text-muted">이번달</p>
+          <p className="text-[20px]" style={{ ...BINGGRAE, color: "#94A3B8" }}>{data.thisFavor}</p>
+        </div>
+        <span className="text-[28px]" style={{ ...BINGGRAE, color: trend.color }}>{trend.arrow}</span>
+        <div className="flex-1 text-center">
+          <p className="text-[12px] text-text-muted">다음달</p>
+          <p className="text-[20px]" style={{ ...BINGGRAE, color: PINK }}>{data.favorMonth}</p>
+        </div>
+      </div>
+      <p className="text-[13px] text-text-muted leading-snug text-center -mt-3" style={GAEGU}>{trend.line}</p>
+
+      {/* 다음달 운세 카드 — 공유용 한 줄 */}
+      <div className="rounded-2xl px-4 py-4 flex flex-col items-center gap-2 text-center border-2 border-dashed border-charcoal/25" style={{ background: "#FFFDF5" }}>
+        <Ico as={weather.D} size={28} />
+        <span className="text-[12px] text-text-muted">{data.monthLabel} 한 줄 운세</span>
+        <p className="text-[17px]" style={{ ...BINGGRAE, color: PINK }}>{weather.label}, {data.keywords[0] ? `#${data.keywords[0]}` : ""}의 달</p>
+        <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{topAreaLabel} 쪽으로 바람이 불어와.</p>
+      </div>
 
       {/* consult 크로스셀 */}
       <Link href="/v3/consult" className="rounded-2xl px-4 py-4 flex items-center gap-3 active:opacity-85 transition-opacity" style={{ background: "linear-gradient(160deg,#FFF6FA,#FFFDF5)", border: "2px solid #2D2D2D" }}>

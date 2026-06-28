@@ -81,6 +81,20 @@ export default function ShopPage() {
           <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>0.9명태</span>
         </Link>
 
+        {/* ★ 다음달 운 미리보기 — 월간 예보 */}
+        <Link href="/v3/nextmonth" className="rounded-2xl bg-white border border-charcoal/10 p-4 flex items-center gap-3.5 active:opacity-90 transition-opacity">
+          <div className="p-[3px] rounded-full shrink-0" style={{ background: "linear-gradient(135deg, #60A5FA, #E84B6A)" }}>
+            <div className="w-[52px] h-[52px] rounded-full overflow-hidden border-2 border-white flex items-center justify-center" style={{ background: "#DBEAFE" }}>
+              {ILJU_SVG_ICONS[ME_KEY]?.(getIljuProfileViewBox(ME_KEY))}
+            </div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[16px] text-charcoal" style={BINGGRAE}>다음달 운 미리보기</p>
+            <p className="text-[13px] text-charcoal/60 leading-snug mt-0.5" style={GAEGU}>운세 날씨·영역별·일진 캘린더(길일까지)</p>
+          </div>
+          <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>0.7명태</span>
+        </Link>
+
         {/* 올해운 + 광고 */}
         <div className="grid grid-cols-2 gap-2.5">
           <div className="rounded-2xl bg-white border border-charcoal/10 p-3.5 flex flex-col h-[168px]">

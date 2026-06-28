@@ -15,7 +15,7 @@ import { SINSAL } from "../sinsal/flavor"
 import type { AreaKey } from "./flavor"
 
 export type Gender = "M" | "F"
-export type MonthBirth = { year: number; month: number; day: number; hour: number; minute: number }
+export type NextMonthBirth = { year: number; month: number; day: number; hour: number; minute: number }
 
 const EL_KO: Record<string, Elem> = { wood: "목", fire: "화", earth: "토", metal: "금", water: "수" }
 const clamp = (n: number, lo = 20, hi = 95) => Math.max(lo, Math.min(hi, Math.round(n)))
@@ -27,7 +27,7 @@ const POS_KR: Record<string, string> = { year: "년주(뿌리)", month: "월주(
 
 export type DayPoint = { day: number; favor: number; good: boolean; warn: boolean; tag?: string }
 export type MonthEvent = { type: "충" | "합"; withLabel: string }
-export type MonthData = {
+export type NextMonthData = {
   iljuKey: string
   dayKr: string
   dayElem: Elem
@@ -41,7 +41,8 @@ export type MonthData = {
   monthTenGod: string                      // 한글 (월간 십신)
   monthGroup: TGGroup
   monthSinsal: string                      // 월지 12신살 (한글, SINSAL 연동)
-  favorMonth: number                       // 종합 점수(날씨용)
+  favorMonth: number                       // 다음달 종합 점수(날씨용)
+  thisFavor: number                        // 이번달 종합 점수(비교용)
   keywords: string[]                       // 키워드 3개
   events: MonthEvent[]
   chungCount: number; hapCount: number
@@ -51,7 +52,23 @@ export type MonthData = {
   monthBlock: string                       // AI 프롬프트 데이터 블록
 }
 
-export function buildMonth(b: MonthBirth, gender: Gender): MonthData | null {
+// 특정 달(solarYear, monthNum)의 종합 점수 — 오행 호악·생산성·충합
+function favorOf(
+  solarYear: number, monthNum: number,
+  dm: Parameters<typeof calculateMonthlyFortunes>[1],
+  yong: Elem, gi: Elem, isStrong: boolean, natalBranches: string[],
+): number {
+  const mf = calculateMonthlyFortunes(solarYear, dm).find(m => m.month === monthNum)
+  if (!mf) return 50
+  const elem = EL_KO[STEM_ELEMENT[mf.ganZhi.stem]] ?? "토"
+  const grp = tgGroup(TEN_GOD_KOREAN[mf.stemTenGod])
+  const prod = isStrong ? ["식상", "재성", "관성"].includes(grp) : ["인성", "비겁"].includes(grp)
+  let hap = 0, chung = 0
+  for (const br of natalBranches) { if (CHUNG[mf.ganZhi.branch] === br) chung++; if (HAP[mf.ganZhi.branch] === br) hap++ }
+  return clamp(52 + (elem === yong ? 18 : elem === gi ? -14 : 0) + (prod ? 10 : -2) + hap * 4 - chung * 6)
+}
+
+export function buildNextMonth(b: NextMonthBirth, gender: Gender): NextMonthData | null {
   try {
     const saju = calculateSaju({ year: b.year, month: b.month, day: b.day, hour: b.hour, minute: b.minute })
     const { fourPillars: fp, fiveElements, dayMaster } = saju
@@ -95,6 +112,10 @@ export function buildMonth(b: MonthBirth, gender: Gender): MonthData | null {
     // 종합 점수 → 날씨
     const productive = isStrong ? ["식상", "재성", "관성"].includes(monthGroup) : ["인성", "비겁"].includes(monthGroup)
     const favorMonth = clamp(52 + (monthElem === yong ? 18 : monthElem === gi ? -14 : 0) + (productive ? 10 : -2) + hapCount * 4 - chungCount * 6)
+    // 이번달 점수 (비교용)
+    const cy = now.getFullYear(), cm = now.getMonth() + 1
+    const natalBranches = natal.map(([, br]) => br)
+    const thisFavor = favorOf(cm === 1 ? cy - 1 : cy, cm, dm, yong, gi, isStrong, natalBranches)
 
     // 영역별 게이지
     const areas: Record<AreaKey, number> = {
@@ -153,7 +174,7 @@ export function buildMonth(b: MonthBirth, gender: Gender): MonthData | null {
       ym: { year: ny, month: nm }, monthLabel,
       monthStemKr: STEM_KOREAN[monthStem], monthBranchKr: BRANCH_KOREAN[monthBranch],
       monthElem, monthTenGod, monthGroup, monthSinsal,
-      favorMonth, keywords, events, chungCount, hapCount, areas,
+      favorMonth, thisFavor, keywords, events, chungCount, hapCount, areas,
       days, goodDays, warnDays, monthBlock,
     }
   } catch {
