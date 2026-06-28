@@ -6,6 +6,7 @@ import { useFriends } from "@/hooks/useFriends"
 import type { Friend as FriendModel } from "@/lib/friends"
 import { SOCIAL_BACKEND_ENABLED } from "@/lib/supabase/dev-session"
 import { fetchFriendActivity, hasNewActivity, markStorySeen, storyPhrase } from "@/lib/social/stories"
+import { fetchMyFriendCode } from "@/lib/social/friends"
 
 const GAEGU: React.CSSProperties = {
   fontFamily: "'Cafe24Dongdong', var(--font-gaegu), cursive",
@@ -192,12 +193,30 @@ export default function StoryRow({ onAdd }: { onAdd?: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendIdsKey])
 
+  const [myCode, setMyCode] = useState<string | null>(null)
+  useEffect(() => {
+    if (SOCIAL_BACKEND_ENABLED) fetchMyFriendCode().then(setMyCode)
+  }, [])
+
+  const shareInvite = async () => {
+    if (!myCode) return
+    const url = `${window.location.origin}/v3/add/${myCode}`
+    if (navigator.share) {
+      try { await navigator.share({ title: "SAJUPLAY", text: "나랑 SAJUPLAY에서 친구하자!", url }) } catch { /* 취소 */ }
+    } else {
+      try { await navigator.clipboard.writeText(url); alert("초대 링크를 복사했어요!") } catch { /* noop */ }
+    }
+  }
+
   return (
     <>
       <div className="flex gap-4 overflow-x-auto" style={{ scrollbarWidth: "none", paddingBottom: 2 }}>
         <button
           className="flex flex-col items-center gap-1.5 shrink-0 active:scale-95 transition-transform"
-          onClick={() => onAdd ? onAdd() : navigator.share?.({ title: "SAJUPLAY", text: "나랑 같이 SAJUPLAY 해봐!", url: window.location.origin })}
+          onClick={() => {
+            if (SOCIAL_BACKEND_ENABLED) { void shareInvite(); return }
+            onAdd ? onAdd() : navigator.share?.({ title: "SAJUPLAY", text: "나랑 같이 SAJUPLAY 해봐!", url: window.location.origin })
+          }}
         >
           <div className="p-[2.5px] rounded-full" style={{ background: "#E2E8F0" }}>
             <div className="w-[42px] h-[42px] rounded-full overflow-hidden flex items-center justify-center bg-[#F1F5F9]">

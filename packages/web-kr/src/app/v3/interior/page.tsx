@@ -11,6 +11,7 @@ import { useInventory } from "@/hooks/useInventory"
 import { useFriends } from "@/hooks/useFriends"
 import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
+import FriendRequests from "./_components/FriendRequests"
 import RoomElementStrip from "./_components/RoomElementStrip"
 import RoomElementMini from "./_components/RoomElementMini"
 import RoomElementChips from "./_components/RoomElementChips"
@@ -112,6 +113,9 @@ export default function InteriorPage() {
   return (
     <div className="flex flex-col gap-4">
       <StoryRow onAdd={() => setShowAddFriend(true)} />
+
+      {/* 받은 친구 요청 (백엔드 모드) */}
+      <FriendRequests />
 
       {/* 내 미니홈피 */}
       <MiniRoom />

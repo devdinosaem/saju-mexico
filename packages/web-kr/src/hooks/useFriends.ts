@@ -9,7 +9,7 @@ import {
   sortByActivity,
 } from "@/lib/friends"
 import { SOCIAL_BACKEND_ENABLED, ensureDevSession } from "@/lib/supabase/dev-session"
-import { fetchFriends, addFriendByCode, removeFriendLink } from "@/lib/social/friends"
+import { fetchFriends, sendFriendRequest, removeFriendLink } from "@/lib/social/friends"
 
 /** 친구 단일 소스 접근 훅.
  *  - 백엔드 모드(SOCIAL_BACKEND_ENABLED): Supabase friendships 실연동.
@@ -39,7 +39,7 @@ export function useFriends() {
   // 백엔드 모드: nameOrCode = friend_code / 로컬 모드: name(+iljuKey)
   const addFriend = useCallback(async (nameOrCode: string, iljuKey?: string) => {
     if (SOCIAL_BACKEND_ENABLED) {
-      await addFriendByCode(nameOrCode)
+      await sendFriendRequest(nameOrCode) // nameOrCode = friend_code → 요청 전송(pending)
       notifyFriendsChange()
       return
     }
