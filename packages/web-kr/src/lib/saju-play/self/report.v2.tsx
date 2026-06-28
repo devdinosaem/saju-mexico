@@ -230,10 +230,13 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
 
       <ChapterDivider n={3} title="사랑할 때 나는" />
 
-      {/* 내 연애 스타일 — line[박다현] */}
-      <Section icon={DoodleHeart} title="내 연애 스타일" basis="일간·도화" card bodyClass="flex flex-col gap-1.5">
-        <p className="text-[14px] font-bold" style={{ color: "var(--pink)" }}>{LOVE_STYLE[self.dayElem].tag}</p>
-        <p className="text-[14px] text-charcoal/70 leading-snug" style={OWNGLYPH}>{LOVE_STYLE[self.dayElem].line}.{self.dohwa ? " 매력(도화) 기운이 있어 끌어당기는 힘도 있어." : ""}</p>
+      {/* 내 연애 스타일 — 일주 프로필 + line[박다현] */}
+      <Section icon={DoodleHeart} title="내 연애 스타일" basis="일간·도화" card bodyClass="flex items-center gap-3">
+        <Avatar iljuKey={x.charKey} size={52} />
+        <div className="min-w-0 flex-1 flex flex-col gap-1">
+          <p className="text-[14px] font-bold" style={{ color: "var(--pink)" }}>{LOVE_STYLE[self.dayElem].tag}</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={OWNGLYPH}>{LOVE_STYLE[self.dayElem].line}.{self.dohwa ? " 매력(도화) 기운이 있어 끌어당기는 힘도 있어." : ""}</p>
+        </div>
       </Section>
 
       {/* 나를 채워주는 사람 — [프리텐다드] */}
@@ -325,11 +328,11 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
 
       <ChapterDivider n={7} title="올해의 나" />
 
-      {/* 올해 흐름 — 두들스티커(다음 전환점 카드처럼) + 한 줄[박다현] */}
-      <Section icon={DoodleCalendar} title="올해 흐름" basis="세운" card bodyClass="flex flex-col gap-2">
-        <p className="text-[14px] font-bold text-charcoal">{x.seunGroup ? SEUN_LINE[x.seunGroup] : "잔잔히 흐르는 해 — 네 페이스대로"}</p>
-        <div className="flex items-start gap-2.5">
-          <Ico as={DoodleStar} size={18} />
+      {/* 올해 흐름 — 두들이 타이틀을 리드, 서브는 타이틀에 맞춰 정렬 / 한 줄[박다현] */}
+      <Section icon={DoodleCalendar} title="올해 흐름" basis="세운" card bodyClass="flex items-start gap-2.5">
+        <Ico as={DoodleStar} size={18} />
+        <div className="min-w-0 flex-1 flex flex-col gap-1">
+          <p className="text-[14px] font-bold text-charcoal">{x.seunGroup ? SEUN_LINE[x.seunGroup] : "잔잔히 흐르는 해 — 네 페이스대로"}</p>
           <p className="text-[14px] text-charcoal/70 leading-snug" style={OWNGLYPH}>무리해서 판을 뒤집기보다, 이 흐름에 맞춰 한 발씩 가면 돼.</p>
         </div>
       </Section>
