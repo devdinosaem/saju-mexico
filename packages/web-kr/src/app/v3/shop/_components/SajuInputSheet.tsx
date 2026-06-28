@@ -49,8 +49,8 @@ export default function SajuInputSheet({ open, onClose, onSuccess, initialData, 
   const minuteRef = useRef<HTMLInputElement>(null)
 
   // 현재 state를 ref로 가져오는 헬퍼 (blur 핸들러 closure 문제 방지)
-  const stateRef = useRef({ year, month, day })
-  useEffect(() => { stateRef.current = { year, month, day } }, [year, month, day])
+  const stateRef = useRef({ year, month, day, hour, minute })
+  useEffect(() => { stateRef.current = { year, month, day, hour, minute } }, [year, month, day, hour, minute])
 
   useEffect(() => {
     if (!open) { setKbHeight(0); return }
@@ -107,7 +107,8 @@ export default function SajuInputSheet({ open, onClose, onSuccess, initialData, 
     const y = stateRef.current.year
     if (!y || y.length < 4) { setYearError(""); return }
     const yi = parseInt(y)
-    if (yi < 0 || yi > 9999) setYearError("0~9999년 사이로 입력해줘")
+    const thisYear = new Date().getFullYear()
+    if (yi < 1000 || yi > thisYear) setYearError(`1000~${thisYear}년 사이로 입력해줘`)
     else { setYearError(""); checkDay(y, stateRef.current.month, stateRef.current.day) }
   }
 
@@ -124,7 +125,7 @@ export default function SajuInputSheet({ open, onClose, onSuccess, initialData, 
   }
 
   function onBlurHour() {
-    const h = hour
+    const h = stateRef.current.hour
     if (!h) { setHourError(""); return }
     const hi = parseInt(h)
     if (hi < 1 || hi > 12) setHourError("1~12 사이로 입력해줘")
@@ -132,7 +133,7 @@ export default function SajuInputSheet({ open, onClose, onSuccess, initialData, 
   }
 
   function onBlurMinute() {
-    const m = minute
+    const m = stateRef.current.minute
     if (!m) { setMinuteError(""); return }
     const mi = parseInt(m)
     if (mi < 0 || mi > 59) setMinuteError("0~59분 사이로 입력해줘")
@@ -165,8 +166,16 @@ export default function SajuInputSheet({ open, onClose, onSuccess, initialData, 
 
   function handleHour(v: string) {
     const d = onlyDigits(v, 2)
-    setHour(d); setHourError("")
+    setHour(d)
+    // 시간은 선택값: 비어 있으면 통과, 값이 있을 때만 1~12 검증 (blur 타이밍 의존 X)
+    setHourError(d && (+d < 1 || +d > 12) ? "1~12 사이로 입력해줘" : "")
     if (d.length === 2) minuteRef.current?.focus()
+  }
+
+  function handleMinute(v: string) {
+    const d = onlyDigits(v, 2)
+    setMinute(d)
+    setMinuteError(d && +d > 59 ? "0~59분 사이로 입력해줘" : "")
   }
 
   // ---
@@ -174,6 +183,7 @@ export default function SajuInputSheet({ open, onClose, onSuccess, initialData, 
   const isValid =
     name.trim().length > 0 &&
     !yearError && !monthError && !dayError &&
+    !hourError && !minuteError &&
     year.length === 4 && +month >= 1 && +month <= 12 && +day >= 1 &&
     gender !== null
 
@@ -310,7 +320,7 @@ export default function SajuInputSheet({ open, onClose, onSuccess, initialData, 
                 <input
                   ref={minuteRef}
                   type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2}
-                  value={minute} onChange={e => setMinute(onlyDigits(e.target.value, 2))}
+                  value={minute} onChange={e => handleMinute(e.target.value)}
                   onBlur={onBlurMinute}
                   placeholder="30"
                   className={INPUT_CLS + " flex-1"}
