@@ -6,16 +6,18 @@
 // AI는 /api/saju-play/self 호출, 없으면 폴백 줄글.
 // ════════════════════════════════════════════════════════════════
 import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { useUser } from "@/lib/UserContext"
 import { PRICES, priceLabel } from "@/lib/prices"
+import { spend } from "@/lib/balance"
 import { buildSelf, type SelfBirth, type Gender, type SelfData } from "./self-adapter"
 import { to24h } from "../crush/saju-adapter"
-import { saveReport, makeBirthKey } from "@/lib/report-archive"
+import { saveReport, makeBirthKey, findByDedupe } from "@/lib/report-archive"
+import BirthGate from "../BirthGate"
 import { SelfReport, coverInfo, Ico, Avatar, BINGGRAE, GAEGU, PINK } from "./report"
 import { DoodleBook, DoodleKey, DoodleHeart } from "@/components/doodles"
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
-const FALLBACK_BIRTH: SelfBirth = { year: 1995, month: 3, day: 15, hour: 12, minute: 0 }
 const PRICE = priceLabel(PRICES.selfManual)
 
 // 폴백 줄글 (AI 미응답 시) — 표시·저장 공용
@@ -30,19 +32,23 @@ function buildFallback(s: SelfData): string {
 export default function SelfFunnel() {
   const { user } = useUser()
   const bd = user.birthDate
-  const birth: SelfBirth = bd
+  const router = useRouter()
+  const birth: SelfBirth | null = bd
     ? { year: +bd.year, month: +bd.month, day: +bd.day, hour: to24h(bd.hour, bd.ampm), minute: parseInt(bd.minute) || 0 }
-    : FALLBACK_BIRTH
+    : null
   const gender: Gender = bd?.gender === "F" ? "F" : "M"
-  const self = buildSelf(birth, gender)
+  const self = birth ? buildSelf(birth, gender) : null
 
-  const [step, setStep] = useState<"loading" | "result">("loading")
-  const [unlocked, setUnlocked] = useState(false)
-  const [ai, setAi] = useState<Ai>({ status: "idle", text: "" })
-  const savedRef = useRef(false)
+  // 재열람 판정 — 같은 생일 리포트가 보관함에 있으면 페이월·AI 스킵
+  const existing = birth ? findByDedupe(`self|${makeBirthKey(birth)}`) : null
+
+  const [step, setStep] = useState<"loading" | "result">(existing ? "result" : "loading")
+  const [unlocked, setUnlocked] = useState(!!existing)
+  const [ai, setAi] = useState<Ai>(existing ? { status: "done", text: existing.snapshot.aiText } : { status: "idle", text: "" })
+  const savedRef = useRef(!!existing)
 
   useEffect(() => {
-    if (!self) return
+    if (!self || existing) return // 재열람이면 AI 호출 안 함(스냅샷 사용)
     setAi({ status: "loading", text: "" })
     fetch("/api/saju-play/self", {
       method: "POST", headers: { "Content-Type": "application/json" },
@@ -64,7 +70,7 @@ export default function SelfFunnel() {
     const aiText = ai.status === "done" ? ai.text : buildFallback(self)
     saveReport({
       type: "self",
-      subjects: [{ who: "me", name: bd?.name || "나", birthKey: makeBirthKey(birth), iljuKey: self.iljuKey }],
+      subjects: [{ who: "me", name: bd?.name || "나", birthKey: makeBirthKey(birth!), iljuKey: self.iljuKey }],
       title: "나 사용설명서",
       highlight: `${self.dayKr}(${self.dayElem})·${self.yinYang} · ${self.strongLevel}`,
       snapshot: { v: 1, data: self, aiText },
@@ -72,6 +78,7 @@ export default function SelfFunnel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unlocked, ai.status])
 
+  if (!bd) return <BirthGate title="생일을 알려주면 나 사용설명서를 펼쳐줄게" />
   if (!self) {
     return <div className="pt-24 text-center text-[15px] text-charcoal" style={BINGGRAE}>사주를 불러올 수 없어요. 생일을 등록해 주세요.</div>
   }
@@ -79,6 +86,10 @@ export default function SelfFunnel() {
   const { charKey, iljuName, teaser } = coverInfo(self)
   const aiText = ai.status === "done" ? ai.text : buildFallback(self)
   const aiLoading = ai.status === "loading"
+  const onUnlock = () => {
+    if (!spend(PRICES.selfManual, "나 사용설명서")) { router.push("/v3/charge"); return }
+    setUnlocked(true)
+  }
 
   if (step === "loading") {
     return (
@@ -120,7 +131,7 @@ export default function SelfFunnel() {
                 <div key={i} className="flex items-center gap-2 text-[13px] text-charcoal/70"><Ico as={DoodleHeart} size={13} /> {t}</div>
               ))}
             </div>
-            <button onClick={() => setUnlocked(true)} className="w-full h-[52px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal mt-0.5" style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
+            <button onClick={onUnlock} className="w-full h-[52px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal mt-0.5" style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
               {PRICE} 내고 전체 보기
             </button>
             <p className="text-[13px] text-text-muted">내 생일 그대로, 언제든 다시 볼 수 있어요</p>

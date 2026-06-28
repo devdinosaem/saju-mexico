@@ -5,34 +5,40 @@
 // dedupeKey에 대상월 포함 → 매달 별도 기록. AI는 /api/saju-play/nextmonth.
 // ════════════════════════════════════════════════════════════════
 import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { useUser } from "@/lib/UserContext"
 import { PRICES, priceLabel } from "@/lib/prices"
+import { spend } from "@/lib/balance"
 import { buildNextMonth, type NextMonthBirth, type Gender } from "./nextmonth-adapter"
 import { to24h } from "../crush/saju-adapter"
-import { saveReport, makeBirthKey } from "@/lib/report-archive"
+import { saveReport, makeBirthKey, findByDedupe } from "@/lib/report-archive"
+import BirthGate from "../BirthGate"
 import { NextMonthReport, coverInfo, nextMonthFallback, Ico, Avatar, BINGGRAE, GAEGU, PINK } from "./report"
 import { DoodleCalendar, DoodleKey, DoodleHeart, DoodleLetter } from "@/components/doodles"
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
-const FALLBACK_BIRTH: NextMonthBirth = { year: 1990, month: 2, day: 14, hour: 12, minute: 0 }
 const PRICE = priceLabel(PRICES.nextMonth)
 
 export default function NextMonthFunnel() {
   const { user } = useUser()
   const bd = user.birthDate
-  const birth: NextMonthBirth = bd
+  const router = useRouter()
+  const birth: NextMonthBirth | null = bd
     ? { year: +bd.year, month: +bd.month, day: +bd.day, hour: to24h(bd.hour, bd.ampm), minute: parseInt(bd.minute) || 0 }
-    : FALLBACK_BIRTH
+    : null
   const gender: Gender = bd?.gender === "F" ? "F" : "M"
-  const data = buildNextMonth(birth, gender)
+  const data = birth ? buildNextMonth(birth, gender) : null
 
-  const [step, setStep] = useState<"loading" | "result">("loading")
-  const [unlocked, setUnlocked] = useState(false)
-  const [ai, setAi] = useState<Ai>({ status: "idle", text: "" })
-  const savedRef = useRef(false)
+  // 재열람 판정 — 같은 생일·대상월 리포트가 보관함에 있으면 페이월·AI 스킵
+  const existing = (birth && data) ? findByDedupe(`nextmonth|${makeBirthKey(birth)}|${data.ym.year}-${data.ym.month}`) : null
+
+  const [step, setStep] = useState<"loading" | "result">(existing ? "result" : "loading")
+  const [unlocked, setUnlocked] = useState(!!existing)
+  const [ai, setAi] = useState<Ai>(existing ? { status: "done", text: existing.snapshot.aiText } : { status: "idle", text: "" })
+  const savedRef = useRef(!!existing)
 
   useEffect(() => {
-    if (!data) return
+    if (!data || existing) return // 재열람이면 AI 호출 안 함(스냅샷 사용)
     setAi({ status: "loading", text: "" })
     fetch("/api/saju-play/nextmonth", {
       method: "POST", headers: { "Content-Type": "application/json" },
@@ -53,7 +59,7 @@ export default function NextMonthFunnel() {
     savedRef.current = true
     const aiText = ai.status === "done" ? ai.text : nextMonthFallback(data)
     const { weather } = coverInfo(data)
-    const birthKey = makeBirthKey(birth)
+    const birthKey = makeBirthKey(birth!)
     saveReport({
       type: "nextmonth",
       dedupeKey: `nextmonth|${birthKey}|${data.ym.year}-${data.ym.month}`,
@@ -65,6 +71,7 @@ export default function NextMonthFunnel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unlocked, ai.status])
 
+  if (!bd) return <BirthGate title="생일을 알려주면 다음달 운을 펼쳐줄게" />
   if (!data) {
     return <div className="pt-24 text-center text-[15px] text-charcoal" style={BINGGRAE}>사주를 불러올 수 없어요. 생일을 등록해 주세요.</div>
   }
@@ -72,6 +79,10 @@ export default function NextMonthFunnel() {
   const { charKey, weather, letter } = coverInfo(data)
   const aiText = ai.status === "done" ? ai.text : nextMonthFallback(data)
   const aiLoading = ai.status === "loading"
+  const onUnlock = () => {
+    if (!spend(PRICES.nextMonth, "다음달 운 미리보기")) { router.push("/v3/charge"); return }
+    setUnlocked(true)
+  }
 
   if (step === "loading") {
     return (
@@ -121,7 +132,7 @@ export default function NextMonthFunnel() {
                 <div key={i} className="flex items-center gap-2 text-[13px] text-charcoal/70"><Ico as={DoodleHeart} size={13} /> {t}</div>
               ))}
             </div>
-            <button onClick={() => setUnlocked(true)} className="w-full h-[52px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal mt-0.5" style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
+            <button onClick={onUnlock} className="w-full h-[52px] rounded-2xl text-[15px] active:opacity-85 transition-opacity border-2 border-charcoal mt-0.5" style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
               {PRICE} 내고 전체 보기
             </button>
             <p className="text-[13px] text-text-muted">매달 새로 갱신돼요 — 다음달도 보러 와</p>

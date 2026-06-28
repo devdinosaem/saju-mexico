@@ -81,6 +81,11 @@ export function getReport(id: string): ReportRecord | null {
   return readAll().find(r => r.id === id) ?? null
 }
 
+/** 같은 dedupeKey의 기존 리포트(재열람 판정용). 펀널이 saveReport에 쓰는 키 그대로 조회. */
+export function findByDedupe(dedupeKey: string): ReportRecord | null {
+  return readAll().find(r => r.dedupeKey === dedupeKey) ?? null
+}
+
 /** 저장(같은 dedupeKey 있으면 갱신: 기존 제거 후 새로 추가, id 승계) */
 export function saveReport(input: NewReport): ReportRecord {
   const records = readAll()

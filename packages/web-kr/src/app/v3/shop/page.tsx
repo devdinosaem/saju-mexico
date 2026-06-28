@@ -11,7 +11,6 @@ import {
   DoodleMoon, DoodleLightning, DoodleCrown, DoodleCandy,
   DoodlePlanet, DoodleBalloon, DoodleFlower, DoodleCloud,
   DoodleGhost, DoodleKey, DoodleRocket,
-  DoodleCalendar,
 } from "@/components/doodles"
 
 const CELEBS = [
@@ -30,7 +29,6 @@ const COMPAT_HINTS = [
 ]
 
 export default function ShopPage() {
-  const nextMonth = (new Date().getMonth() + 2) % 12 || 12
   return (
     <div className="flex flex-col gap-10">
       {/* 일주 디스커버리 — 첫 방문자용 호기심 촉발 */}
@@ -95,23 +93,9 @@ export default function ShopPage() {
           <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>{priceLabel(PRICES.nextMonth)}</span>
         </Link>
 
-        {/* 올해운 + 광고 */}
-        <div className="grid grid-cols-2 gap-2.5">
-          <div className="rounded-2xl bg-white border border-charcoal/10 p-3.5 flex flex-col h-[168px]">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 border border-charcoal/10 flex items-center justify-center">
-              <DoodleCalendar style={{ width: 28, height: 28 }} />
-            </div>
-            <div className="mt-2">
-              <p className="text-sm font-bold text-charcoal">{nextMonth}월운 미리보기</p>
-              <p className="text-[11px] text-text-muted mt-0.5 leading-snug">준비됐든 안 됐든 오긴 온다</p>
-            </div>
-            <button className="mt-auto w-full py-2 rounded-xl bg-pink/75 text-cream text-[11px] font-semibold active:opacity-80">
-              {priceLabel(PRICES.yearFortune)}
-            </button>
-          </div>
-          <div className="rounded-2xl overflow-hidden h-[168px] bg-charcoal/5 border border-charcoal/10 flex items-center justify-center">
-            <AdBanner slot="1111111111" format="rectangle" className="w-full h-full" />
-          </div>
+        {/* 광고 (올해운 카드는 미구현 상품이라 제거) */}
+        <div className="rounded-2xl overflow-hidden h-[168px] bg-charcoal/5 border border-charcoal/10 flex items-center justify-center">
+          <AdBanner slot="1111111111" format="rectangle" className="w-full h-full" />
         </div>
 
         {/* 썸 궁합 + 짝사랑 궁합 — 미니 마주보기 카드 (랜딩 녹임) */}
