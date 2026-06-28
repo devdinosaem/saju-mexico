@@ -527,7 +527,7 @@ export default function ConsultPage() {
 
   async function send() {
     if (!input.trim() || isLoading || !ilju) return
-    if (!spend(CONSULT_COST)) { router.push("/v3/charge"); return } // 잔액 부족 → 충전(게이팅으로 도달 안 하지만 안전)
+    if (!spend(CONSULT_COST, "AI 상담 1턴")) { router.push("/v3/charge"); return } // 잔액 부족 → 충전(게이팅으로 도달 안 하지만 안전)
     setSpendKey(k => k + 1) // 차감 −0.1 피드백
     const userText = input.trim()
     setInput("")

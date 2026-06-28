@@ -1,10 +1,10 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React from "react"
 import Link from "next/link"
 import { PRICES, priceLabel } from "@/lib/prices"
 import { DoodleSparkle, DoodleHeart, DoodleCrown } from "@/components/doodles"
 import { DoodleMyeongtae, DoodleMyeongtaePink } from "@/components/doodle-myeongtae"
-import { BALANCE_MOCK_KEY } from "@/lib/balance"
+import { useBalance, useHistory } from "@/lib/balance"
 
 const GAEGU: React.CSSProperties = {
   fontFamily: "'Cafe24Dongdong', var(--font-gaegu), cursive",
@@ -40,24 +40,13 @@ const COSTS = [
   { label: "유명인 카드 뽑기",    cost: priceLabel(PRICES.celebCard),          free: false                           },
 ]
 
-const HISTORY = [
-  { date: "06.23", label: "AI 상담 3턴", delta: -0.6 },
-  { date: "06.22", label: "큰명태 충전",  delta: +10  },
-  { date: "06.20", label: "유명인 카드 뽑기", delta: -2 },
-]
-
 export default function ChargePage() {
-  const [balance, setBalance] = useState(5.2)
-  useEffect(() => {
-    const raw = localStorage.getItem(BALANCE_MOCK_KEY)
-    if (raw !== null) setBalance(parseFloat(raw) || 0)
-    const handler = () => {
-      const r = localStorage.getItem(BALANCE_MOCK_KEY)
-      if (r !== null) setBalance(parseFloat(r) || 0)
-    }
-    window.addEventListener("saju-balance-change", handler)
-    return () => window.removeEventListener("saju-balance-change", handler)
-  }, [])
+  const balance = useBalance()
+  const history = useHistory()
+  const fmtDate = (ts: number) => {
+    const d = new Date(ts)
+    return `${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -158,11 +147,13 @@ export default function ChargePage() {
           이용 내역
         </p>
         <div className="rounded-2xl bg-white border-2 border-charcoal overflow-hidden divide-y divide-charcoal/8">
-          {HISTORY.map((h, i) => (
+          {history.length === 0 ? (
+            <div className="px-4 py-6 text-center text-[12px] text-text-muted">아직 이용 내역이 없어요</div>
+          ) : history.map((h, i) => (
             <div key={i} className="flex items-center justify-between px-4 py-3">
               <div>
                 <p className="text-[13px] text-charcoal">{h.label}</p>
-                <p className="text-[11px] text-text-muted mt-0.5">{h.date}</p>
+                <p className="text-[11px] text-text-muted mt-0.5">{fmtDate(h.ts)}</p>
               </div>
               <span className={`text-[14px] font-bold ${h.delta > 0 ? "text-pink" : "text-charcoal"}`}>
                 {h.delta > 0 ? "+" : ""}{h.delta}명태
