@@ -124,6 +124,27 @@ const CAT_DOODLE: Record<string, DoodleC> = {
 }
 // 받침 유무로 조사 선택 (기업인'이' / 배우'가')
 const josa = (w: string, a: string, b: string) => (w && (w.charCodeAt(w.length - 1) - 0xAC00) % 28 !== 0 ? a : b)
+// 분야 → 폴백 파스텔 배경
+const CAT_BG: Record<string, string> = {
+  기업인: "#FEF3C7", 정치인: "#DBEAFE", 배우: "#FFE9F0", 위인: "#FEF3C7",
+  왕족: "#FEF3C7", 스포츠: "#FEE2E2", 노벨상: "#EFEAFE", 가수: "#FFE9F0",
+}
+// 셀럽 아바타 — 사진 있으면 사진, 없거나 실패하면 분야 두들 (동적)
+function CelebAvatar({ name, cat, size = 52 }: { name: string; cat: string; size?: number }) {
+  const [failed, setFailed] = useState(false)
+  if (failed) {
+    return (
+      <div className="rounded-full flex items-center justify-center border-2 border-charcoal/10 shrink-0" style={{ width: size, height: size, background: CAT_BG[cat] ?? "#FFF0F5" }}>
+        <Ico as={CAT_DOODLE[cat] ?? DoodleSparkles} size={Math.round(size * 0.5)} />
+      </div>
+    )
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={`/images/celebs/${name.replace(/\s/g, "")}.png`} alt={name} width={size} height={size} onError={() => setFailed(true)}
+      className="rounded-full object-cover border-2 border-charcoal/10 shrink-0" style={{ width: size, height: size }} />
+  )
+}
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 const FALLBACK_BIRTH: SelfBirth = { year: 1995, month: 3, day: 15, hour: 12, minute: 0 }
@@ -282,31 +303,29 @@ export default function SelfFunnel() {
         </div>
       </div>
 
-      {/* 명예의 전당 — 같은 일주 유명인 (수익가능·남여합산, 동적 조회) */}
+      {/* 나와 같은 일주 유명인 — shop 카드 스타일, 사진 적응형 (수익가능·남여합산, 동적) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleMedal} basis="일주">명예의 전당</SectionTitle>
+        <SectionTitle icon={DoodleCrown} basis="일주">나와 같은 일주 유명인</SectionTitle>
         {celeb ? (() => {
           const shown = celeb.persons.slice(0, 3)
           const extra = Math.min(celeb.count - shown.length, 5)
           return (
-            <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
-              <p className="text-[14px] text-charcoal leading-snug" style={GAEGU}>
+            <div className="rounded-2xl bg-white border border-charcoal/10 overflow-hidden">
+              <p className="px-4 pt-3 pb-2 text-[13px] text-charcoal/70" style={GAEGU}>
                 <span className="font-bold" style={{ color: PINK }}>{bareIlju}일주</span>엔 <span className="font-bold text-charcoal">{celeb.topCat}</span>{josa(celeb.topCat, "이", "가")} 많아 · 같은 기운 {celeb.count}명
               </p>
-              <div className="flex flex-col gap-2">
-                {shown.map((p, i) => {
-                  const D = CAT_DOODLE[p.cat] ?? DoodleSparkles
-                  return (
-                    <div key={i} className="flex items-center gap-2.5 min-w-0">
-                      <Ico as={D} size={18} />
-                      <span className="text-[14px] font-bold text-charcoal shrink-0">{p.name}</span>
-                      <span className="text-[13px] text-text-muted truncate">· {p.role}</span>
+              <div className="flex border-t border-charcoal/5">
+                {shown.map((p, i) => (
+                  <div key={i} className={`flex-1 flex flex-col items-center gap-1.5 py-3.5 px-1 ${i < shown.length - 1 ? "border-r border-charcoal/5" : ""}`}>
+                    <CelebAvatar name={p.name} cat={p.cat} size={52} />
+                    <div className="text-center px-0.5">
+                      <p className="text-[12px] font-bold text-charcoal leading-tight">{p.name}</p>
+                      <p className="text-[10px] text-text-muted leading-tight">{p.role}</p>
                     </div>
-                  )
-                })}
+                  </div>
+                ))}
               </div>
-              {extra > 0 && <p className="text-[13px] text-text-muted text-right">외 {extra}명 더</p>}
-              <p className="text-[13px] text-charcoal/55 leading-snug" style={GAEGU}>너도 이 기운을 타고났어.</p>
+              {extra > 0 && <p className="text-[12px] text-text-muted text-center py-2 border-t border-charcoal/5">외 {extra}명 더</p>}
             </div>
           )
         })() : (
@@ -314,6 +333,7 @@ export default function SelfFunnel() {
             <p className="text-[14px] text-charcoal/60 leading-snug" style={GAEGU}>{bareIlju}일주는 아직 등록된 유명인이 없어 — 네가 1호일지도?</p>
           </div>
         )}
+        <p className="text-[13px] text-text-muted text-center" style={GAEGU}>너도 이 기운을 타고났어.</p>
       </div>
 
       {/* 내 오행 밸런스 */}
