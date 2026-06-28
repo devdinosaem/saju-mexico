@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import {
   DoodleSprout, DoodleFire, DoodleEarth, DoodleDiamond, DoodleWave,
+  DoodleWood, DoodleFlameFive, DoodleMetal, DoodleWater,
   DoodleHeart, DoodleSparkle, DoodleSpeechBubble, DoodlePencil, DoodlePolaroid,
   DoodleMirror, DoodleLightning, DoodleRing, DoodleCalendar, DoodleTaegeuk,
   DoodleBackpack, DoodleBamboo, DoodlePottedPlant, DoodleRamen, DoodleMusicNote,
@@ -33,7 +34,8 @@ function Ico({ as: D, size = 18 }: { as: DoodleC; size?: number }) {
 type Elem = "목" | "화" | "토" | "금" | "수"
 const ELEM_BG: Record<string, string> = { 목: "#D1FAE5", 화: "#FEE2E2", 토: "#FEF3C7", 금: "#F1F5F9", 수: "#DBEAFE" }
 const ELEM_COLOR: Record<string, string> = { 목: "#4ADE80", 화: "#F87171", 토: "#FBBF24", 금: "#94A3B8", 수: "#60A5FA" }
-const ELEM_DOODLE: Record<Elem, DoodleC> = { 목: DoodleSprout, 화: DoodleFire, 토: DoodleEarth, 금: DoodleDiamond, 수: DoodleWave }
+// 오행 표준 두들(preview-ilju 기준). 커플타입·데이트코스 D는 별개(맥락 아이콘)라 유지.
+const ELEM_DOODLE: Record<Elem, DoodleC> = { 목: DoodleWood, 화: DoodleFlameFive, 토: DoodleEarth, 금: DoodleMetal, 수: DoodleWater }
 const ELEMS: Elem[] = ["목", "화", "토", "금", "수"]
 const STEM_TO_ELEM: Record<string, Elem> = { 갑: "목", 을: "목", 병: "화", 정: "화", 무: "토", 기: "토", 경: "금", 신: "금", 임: "수", 계: "수" }
 const elemOf = (key: string): Elem => STEM_TO_ELEM[key[0]] ?? "토"
@@ -136,7 +138,7 @@ function ChapterDivider({ n, title }: { n: number; title: string }) {
     <div className="flex items-center gap-2.5 pt-1">
       <span className="w-6 h-6 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: PINK }}>{n}</span>
       <span className="text-[15px] text-charcoal shrink-0" style={BINGGRAE}>{title}</span>
-      <div className="flex-1 h-px" style={{ background: "#E5E7EB" }} />
+      <div className="flex-1 h-px" style={{ background: "var(--line-medium)" }} />
     </div>
   )
 }
@@ -175,7 +177,7 @@ export default function CoupleFunnelPage() {
           </div>
         </div>
         <div className="w-full rounded-2xl bg-white border border-charcoal/10 px-4 py-4">
-          <p className="text-[14px] text-charcoal flex items-center justify-center gap-1.5" style={GAEGU}>둘이 입력하면 우리 커플 궁합이 나와요 <Ico as={DoodleSparkle} size={16} /></p>
+          <p className="text-[14px] text-charcoal flex items-center justify-center gap-1.5">둘이 입력하면 우리 커플 궁합이 나와요 <Ico as={DoodleSparkle} size={16} /></p>
         </div>
         <button onClick={() => setStep("input")}
           className="w-full h-[54px] rounded-2xl flex items-center justify-center gap-2 active:opacity-85 transition-opacity border-2 border-charcoal text-[15px]"
@@ -266,7 +268,7 @@ export default function CoupleFunnelPage() {
         <div className="px-4 py-1.5 rounded-full flex items-center gap-1.5" style={{ background: "#FFF4E0", border: "1.5px dashed #F0C060" }}>
           <Ico as={c.D} size={16} /> <p className="text-[15px] text-[#9A7050]" style={BINGGRAE}>{c.name}</p>
         </div>
-        <p className="text-[14px] text-charcoal/70 leading-relaxed" style={GAEGU}>{c.vibe}</p>
+        <p className="text-[14px] text-charcoal/70 leading-relaxed">{c.vibe}</p>
       </div>
 
       <ChapterDivider n={1} title="우리, 이런 사이야" />
@@ -310,7 +312,7 @@ export default function CoupleFunnelPage() {
                   <span className="text-[14px] font-bold text-charcoal">{p.me ? "나" : p.name}</span>
                 </div>
                 <p className="text-[14px] font-bold" style={{ color: PINK }}>{ls.label}</p>
-                <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{ls.line}</p>
+                <p className="text-[14px] text-charcoal/70 leading-snug">{ls.line}</p>
               </div>
             )
           })}
@@ -326,7 +328,7 @@ export default function CoupleFunnelPage() {
               <Avatar p={p} size={36} />
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-bold text-charcoal">{p.me ? "나" : p.name} <span className="text-text-muted font-normal">· {LOVE_STYLE[elemOf(p.iljuKey)].label}</span></p>
-                <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{COUPLE_PERSONAL[elemOf(p.iljuKey)]}</p>
+                <p className="text-[14px] text-charcoal/70 leading-snug">{COUPLE_PERSONAL[elemOf(p.iljuKey)]}</p>
               </div>
             </div>
           ))}
@@ -341,14 +343,14 @@ export default function CoupleFunnelPage() {
           <Ico as={DoodleHeart} size={18} />
           <div>
             <p className="text-[14px] font-bold text-charcoal">이런 점이 잘 맞아요</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{fit.good}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug">{fit.good}</p>
           </div>
         </div>
         <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
           <Ico as={DoodleLightning} size={18} />
           <div>
             <p className="text-[14px] font-bold text-charcoal">이런 건 조심해요</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{fit.care}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug">{fit.care}</p>
           </div>
         </div>
       </div>
@@ -366,7 +368,7 @@ export default function CoupleFunnelPage() {
               <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
                 <div className="h-full rounded-full" style={{ width: `${s.score}%`, background: s.score >= 80 ? PINK : s.score >= 65 ? "#FBBF24" : "#94A3B8" }} />
               </div>
-              <p className="text-[14px] text-text-muted" style={GAEGU}>{s.line}</p>
+              <p className="text-[14px] text-text-muted">{s.line}</p>
             </div>
           ))}
         </div>
@@ -381,7 +383,7 @@ export default function CoupleFunnelPage() {
           {REMEDY[t].map((r, i) => (
             <div key={i} className="flex items-start gap-2">
               <span className="text-[14px] font-bold shrink-0" style={{ color: PINK }}>{i + 1}</span>
-              <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{r}</p>
+              <p className="text-[14px] text-charcoal/80 leading-snug">{r}</p>
             </div>
           ))}
         </div>
@@ -434,7 +436,7 @@ export default function CoupleFunnelPage() {
           style={{ background: PINK, color: "#FFF9F0", ...BINGGRAE }}>
           내 미니홈피로 →
         </button>
-        <button className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-white text-charcoal active:opacity-70 flex items-center justify-center gap-1.5" style={GAEGU}>
+        <button className="w-full h-[50px] rounded-2xl text-[14px] border-2 border-charcoal/15 bg-white text-charcoal active:opacity-70 flex items-center justify-center gap-1.5">
           <Ico as={DoodlePolaroid} size={18} /> 커플 결과 카드 공유
         </button>
       </div>
