@@ -7,7 +7,7 @@
 // 폰트 정책(친구·커플 동일): 제목=BINGGRAE, 따뜻한 설명줄=GAEGU(손글씨), 줄글 본문=고딕.
 // 연출(스켈레톤) 단계에서 풀이를 미리 돌려 결과 진입 시 바로 보이게.
 // ════════════════════════════════════════════════════════════════
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf, relType, ELEMS, SHENG, KE, pairKey, mockDist, clamp, type Elem, type Rel } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
@@ -17,7 +17,7 @@ import type { CompatSignals } from "./compat-engine"
 import {
   DoodleHeart, DoodleSparkle, DoodleSparkles, DoodleSpeechBubble, DoodlePencil, DoodlePolaroid,
   DoodleLightning, DoodleKey, DoodleHourglass, DoodleCalendar, DoodleTaegeuk,
-  DoodleRedString, DoodleClover, DoodleQuestionMark, DoodleBook, DoodleTrophy,
+  DoodleRedString, DoodleClover, DoodleQuestionMark, DoodleBook,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -341,8 +341,6 @@ function MonthCalendar({ year, month, marks }: { year: number; month: number; ma
 }
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
-type CrushRec = { id: string; name: string; themKey: string; elem: Elem; score: number; ts: number }
-const recId = (p: Person) => `${p.name}|${p.birth.y}-${p.birth.m}-${p.birth.d}`
 type Step = "landing" | "input" | "loading" | "result"
 const emptyP = (): Person => ({ name: "", birth: { y: "", m: "", d: "" }, gender: "M" })
 const validP = (p: Person) => p.name.trim() !== "" && p.birth.y.length === 4 && !!p.birth.m && !!p.birth.d
@@ -359,24 +357,6 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
   const [them, setThem] = useState<Person>(() => ({ ...emptyP(), gender: "F" }))
   const [unlocked, setUnlocked] = useState(false)
   const [ai, setAi] = useState<Ai>({ status: "idle", text: "" })
-  const [ranking, setRanking] = useState<CrushRec[]>([])
-
-  const RANK_KEY = `saju-crush-ranking:${config.mode}`
-  useEffect(() => {
-    try { const r = JSON.parse(localStorage.getItem(RANK_KEY) || "[]"); if (Array.isArray(r)) setRanking(r) } catch { /* ignore */ }
-  }, [RANK_KEY])
-  // 결과 진입 시 현재 상대를 랭킹에 upsert
-  useEffect(() => {
-    if (step !== "result" || !validP(them)) return
-    const d = derive(myKey, myBirth, myGender, them, config)
-    const rec: CrushRec = { id: recId(them), name: them.name || "그 사람", themKey: d.themK, elem: d.eThem, score: d.score, ts: Date.now() }
-    setRanking(prev => {
-      const next = [rec, ...prev.filter(p => p.id !== rec.id)].slice(0, 30)
-      try { localStorage.setItem(RANK_KEY, JSON.stringify(next)) } catch { /* ignore */ }
-      return next
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step])
 
   // 연출 단계에서 미리 풀이를 돌린다 → 결과 진입 시 보통 이미 완성
   const start = () => {
@@ -487,7 +467,6 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
     { label: "주도권", value: clamp(110 - bal.pos, 30, 95) },
   ]
   const topCell = radar.reduce((a, b) => (b.value > a.value ? b : a))
-  const meme = signals.core === "천간합" ? "운명 캐치" : ([...config.memes].reverse().find(m => score >= m.min)?.label ?? config.memes[0].label)
   const cal = (() => {
     const now = new Date(), y = now.getFullYear(), mo = now.getMonth()
     const dim = new Date(y, mo + 1, 0).getDate()
@@ -504,10 +483,8 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
     ]
     return { y, mo, marks, legend }
   })()
-  const sortedRank = [...ranking].sort((a, b) => b.score - a.score)
-  const curId = recId(them)
-  const myRank = sortedRank.findIndex(r => r.id === curId) + 1
   const md = myDist, td = themDist
+  const minElem = ELEMS.reduce((a, b) => (md[b] + td[b] < md[a] + td[a] ? b : a), ELEMS[0])
   const open = config.openHeart[eThem]
   const lucky = config.lucky[eThem]
   const fallbackProse =
@@ -547,6 +524,51 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
       </div>
 
       <ChapterDivider n={1} title="우리, 이런 사이야" />
+
+      {/* 사주 오행 밸런스 (좌 나 / 우 그 사람) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleTaegeuk} basis={{ t: "원국 오행", deep: true }}>사주 오행 밸런스</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
+          <div className="flex items-center justify-end gap-3">
+            <span className="flex items-center gap-1 text-[14px] text-charcoal/70"><span className="w-2.5 h-2.5 rounded-full" style={{ background: PINK }} />{"나"}</span>
+            <span className="flex items-center gap-1 text-[14px] text-charcoal/70"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#60A5FA" }} />{them.name || "그 사람"}</span>
+          </div>
+          {ELEMS.map(e => {
+            const a = md[e], b = td[e], tot = a + b
+            return (
+              <div key={e} className="flex items-center gap-2">
+                <Ico as={ELEM_DOODLE[e]} size={16} />
+                <span className="w-4 text-[14px] font-bold text-charcoal shrink-0">{e}</span>
+                <span className="w-4 text-[14px] font-bold text-right shrink-0" style={{ color: PINK }}>{a}</span>
+                <div className="flex-1 h-3.5 rounded-full overflow-hidden flex" style={{ background: "#F1F5F9" }}>
+                  <div style={{ width: `${tot ? (a / tot) * 100 : 0}%`, background: PINK }} />
+                  <div style={{ width: `${tot ? (b / tot) * 100 : 0}%`, background: "#60A5FA" }} />
+                </div>
+                <span className="w-4 text-[14px] font-bold shrink-0" style={{ color: "#60A5FA" }}>{b}</span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* 부족 오행 채우는 활동 (친구 사주 동일) */}
+      <div className="rounded-2xl px-4 py-4 flex flex-col gap-3" style={{ background: ELEM_BG[minElem], border: `1.5px solid ${ELEM_COLOR[minElem]}` }}>
+        <div className="flex items-center gap-2">
+          <Ico as={ELEM_DOODLE[minElem]} size={22} />
+          <div className="flex-1 min-w-0">
+            <p className="text-[14px] font-bold text-charcoal leading-tight">둘에겐 {minElem}({minElem}) 기운이 없어요</p>
+            <p className="text-[14px] text-charcoal/60">{minElem}({minElem}) 기운을 채우는 활동을 같이 해봐요</p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          {config.dateCourse[minElem].map((a, i) => (
+            <div key={i} className="flex items-center gap-2.5 rounded-xl px-3 py-2" style={{ background: "rgba(255,255,255,0.7)" }}>
+              <Ico as={a.D} size={18} />
+              <span className="text-[14px] font-bold text-charcoal">{a.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* 운명 신호 — 천간합/일지 합충 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
@@ -594,32 +616,6 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         <div className="min-w-0">
           <p className="text-[14px] font-bold text-charcoal flex items-center gap-1.5 flex-wrap">네 부족한 {myYongKr} 기운을 채워주는 사람 <Basis t="용신" deep /></p>
           <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{them.name || "그 사람"}은 네게 부족한 {myYongKr}을 {YONG_LV[signals.yongFulfill]} 채워줘. 옆에 있으면 숨통 트이는 결이야.</p>
-        </div>
-      </div>
-
-      {/* 사주 오행 밸런스 (좌 나 / 우 그 사람) */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleTaegeuk} basis={{ t: "원국 오행", deep: true }}>사주 오행 밸런스</SectionTitle>
-        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
-          <div className="flex items-center justify-end gap-3">
-            <span className="flex items-center gap-1 text-[14px] text-charcoal/70"><span className="w-2.5 h-2.5 rounded-full" style={{ background: PINK }} />{"나"}</span>
-            <span className="flex items-center gap-1 text-[14px] text-charcoal/70"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#60A5FA" }} />{them.name || "그 사람"}</span>
-          </div>
-          {ELEMS.map(e => {
-            const a = md[e], b = td[e], tot = a + b
-            return (
-              <div key={e} className="flex items-center gap-2">
-                <Ico as={ELEM_DOODLE[e]} size={16} />
-                <span className="w-4 text-[14px] font-bold text-charcoal shrink-0">{e}</span>
-                <span className="w-4 text-[14px] font-bold text-right shrink-0" style={{ color: PINK }}>{a}</span>
-                <div className="flex-1 h-3.5 rounded-full overflow-hidden flex" style={{ background: "#F1F5F9" }}>
-                  <div style={{ width: `${tot ? (a / tot) * 100 : 0}%`, background: PINK }} />
-                  <div style={{ width: `${tot ? (b / tot) * 100 : 0}%`, background: "#60A5FA" }} />
-                </div>
-                <span className="w-4 text-[14px] font-bold shrink-0" style={{ color: "#60A5FA" }}>{b}</span>
-              </div>
-            )
-          })}
         </div>
       </div>
 
@@ -896,43 +892,6 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
             </div>
           ))}
         </div>
-      </div>
-
-      <ChapterDivider n={5} title="더 보기" />
-
-      {/* 내 썸 랭킹 — 분석한 상대들 순위 */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleTrophy} basis={{ t: "오행 종합", deep: true }}>내 썸 랭킹</SectionTitle>
-        {sortedRank.length <= 1 ? (
-          <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 text-center">
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>지금은 {them.name || "그 사람"}이 1순위! 다른 사람도 분석하면 여기 순위가 매겨져요.</p>
-          </div>
-        ) : (
-          <>
-            <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-1 flex flex-col">
-              {sortedRank.slice(0, 5).map((r, i) => {
-                const cur = r.id === curId
-                return (
-                  <div key={r.id} className="flex items-center gap-2.5 py-2.5 border-b border-charcoal/5 last:border-0 rounded-lg px-1"
-                    style={cur ? { background: "#FFF0F5" } : undefined}>
-                    <span className="w-5 text-center text-[15px] font-bold shrink-0" style={{ color: i === 0 ? PINK : "#94A3B8" }}>{i + 1}</span>
-                    <Avatar iljuKey={r.themKey} size={34} />
-                    <span className="flex-1 min-w-0 text-[14px] font-bold text-charcoal truncate">{r.name}{cur && <span className="text-[12px] text-text-muted font-normal"> · 방금</span>}</span>
-                    <span className="text-[15px] font-bold shrink-0" style={{ color: i === 0 ? PINK : "#2D2D2D" }}>{r.score}%</span>
-                  </div>
-                )
-              })}
-            </div>
-            <p className="text-[13px] text-text-muted text-center" style={GAEGU}>{them.name || "그 사람"}은 지금 {myRank}순위{myRank === 1 ? " — 최고 케미예요!" : ""}</p>
-          </>
-        )}
-      </div>
-
-      {/* 썸 밈 스티커 — 공유용 한 단어 */}
-      <div className="rounded-2xl px-4 py-5 flex flex-col items-center gap-2 text-center border-2 border-dashed border-charcoal/25" style={{ background: "#FFFDF5" }}>
-        <span className="text-[13px] text-text-muted">이 썸을 한 단어로</span>
-        <p className="text-[26px]" style={{ ...BINGGRAE, color: PINK }}>{meme}</p>
-        <div className="flex items-center gap-1.5 text-[13px] text-text-muted"><Ico as={DoodleSparkles} size={14} /> 캡처해서 공유하기 좋아요</div>
       </div>
 
       {/* 사주 근거 한눈에 — 글로서리 */}
