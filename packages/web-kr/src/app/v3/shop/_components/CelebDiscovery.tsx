@@ -263,7 +263,7 @@ export default function CelebDiscovery() {
       <div>
         <p className="text-[22px] leading-snug text-charcoal" style={{ fontFamily: "'BinggraeTaom', sans-serif", fontWeight: 700 }}>
           젠슨황, 일론머스크랑<br />
-          SAJUPLAY가 같은 사람이 <span className="highlight-pink">나일지도..?</span>
+          사주카드가 같은 사람이 <span className="highlight-pink">나일지도..?</span>
         </p>
       </div>
 
