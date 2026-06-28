@@ -9,6 +9,7 @@ import MyongtaeCard from "./_components/MyongtaeCard"
 import MyMyeongsikCard from "./_components/MyMyeongsikCard"
 import OhneulSajuCard from "./_components/OhneulSajuCard"
 import MonthCalendar from "./_components/MonthCalendar"
+import WeeklyEnergyFlow from "./_components/WeeklyEnergyFlow"
 import SajuInputSheet from "../shop/_components/SajuInputSheet"
 import { PRICES, priceLabel } from "@/lib/prices"
 import { ElementBadgePill } from "@/components/ilju-type-card"
@@ -276,6 +277,9 @@ export default function MyPage() {
           </button>
         </div>
       </div>
+
+      {/* 이번 주 에너지 흐름 (운기달력에서 이전) */}
+      <WeeklyEnergyFlow />
 
       {/* 광고 배너 */}
       <div className="rounded-xl overflow-hidden">

@@ -1,4 +1,4 @@
-import { DoodleMoon, DoodleSparkle } from "@/components/doodles"
+import { DoodleSparkle } from "@/components/doodles"
 import AdBanner from "@/components/AdBanner"
 import { ElementBadgePill } from "@/components/ilju-type-card"
 import TodaySaju from "./_components/TodaySaju"
@@ -27,34 +27,6 @@ export default function CalendarPage() {
 
       {/* 오늘의 사주 */}
       <TodaySaju />
-
-      {/* 이달 에너지 흐름 (주간) */}
-      <div className="rounded-2xl bg-white border border-charcoal/10 p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <DoodleMoon style={{ width: 20, height: 20 }} />
-          <p className="text-sm font-bold text-charcoal">이달 에너지 흐름</p>
-        </div>
-        <div className="flex items-end justify-between gap-1 h-20">
-          {[
-            { week: "1주", height: 40, ohaeng: "목" },
-            { week: "2주", height: 60, ohaeng: "화" },
-            { week: "3주", height: 85, ohaeng: "금" },
-            { week: "4주", height: 70, ohaeng: "금" },
-            { week: "5주", height: 45, ohaeng: "수" },
-          ].map(w => {
-            const b = BALANCE.find(b => b.key === w.ohaeng)!
-            return (
-              <div key={w.week} className="flex-1 flex flex-col items-center gap-1">
-                <div
-                  className="w-full rounded-t-lg"
-                  style={{ height: `${w.height}%`, backgroundColor: b.bar + "66", border: `1px solid ${b.bar}` }}
-                />
-                <span className="text-[10px] text-text-muted">{w.week}</span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
 
       {/* 오행 밸런스 트래커 */}
       <div className="rounded-2xl bg-white border border-charcoal/10 p-4">
