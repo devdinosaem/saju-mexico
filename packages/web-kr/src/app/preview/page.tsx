@@ -99,6 +99,66 @@ const PAL_CREAM: [string, string][] = [
   ["#FFFEF2", "미니홈피"], ["#F1ECE2", "베이지"], ["#EDE4D4", "샌드"], ["#E0D4C0", "보더샌드"], ["#D8C4A0", "딥샌드"],
 ];
 
+// ── 파스텔만 모은 다양한 팔레트 (색상환 전체) · app:앱사용 ──
+type Pastel = { hex: string; name: string; app?: boolean };
+const PASTEL_FAMILIES: { family: string; dot: string; items: Pastel[] }[] = [
+  {
+    family: "핑크·로즈", dot: "#F9A8C4", items: [
+      { hex: "#FFF0F5", name: "연핑크", app: true }, { hex: "#FFE4EA", name: "핑크라이트", app: true },
+      { hex: "#FCE7F3", name: "매력핑크", app: true }, { hex: "#FBD5E0", name: "로즈", app: true },
+      { hex: "#FFDCE5", name: "블러시" }, { hex: "#F7CAD9", name: "더스티로즈" },
+    ],
+  },
+  {
+    family: "코랄·피치", dot: "#FDB877", items: [
+      { hex: "#FFF1EC", name: "소프트피치" }, { hex: "#FFE6DA", name: "피치" },
+      { hex: "#FFD9C7", name: "코랄파스텔" }, { hex: "#FFDCC2", name: "애프리콧" },
+      { hex: "#FFF7ED", name: "연주황", app: true },
+    ],
+  },
+  {
+    family: "옐로·크림", dot: "#FBBF24", items: [
+      { hex: "#FEF3C7", name: "토·귀인", app: true }, { hex: "#FFFDE8", name: "연노랑", app: true },
+      { hex: "#FFF8D6", name: "레몬" }, { hex: "#FBF3D3", name: "바닐라" },
+      { hex: "#FDF6EE", name: "크림배경", app: true }, { hex: "#F1ECE2", name: "베이지", app: true },
+    ],
+  },
+  {
+    family: "그린·민트·세이지", dot: "#4ADE80", items: [
+      { hex: "#D1FAE5", name: "목·민트", app: true }, { hex: "#F0FFF4", name: "긍정연두", app: true },
+      { hex: "#DCFCE7", name: "스프링" }, { hex: "#E6F4DF", name: "세이지" },
+      { hex: "#CFF0DC", name: "민트딥" }, { hex: "#EAF6E3", name: "라임크림" },
+    ],
+  },
+  {
+    family: "틸·아쿠아", dot: "#5EEAD4", items: [
+      { hex: "#D5F3EF", name: "아쿠아" }, { hex: "#CDEEEA", name: "틸파스텔" },
+      { hex: "#E0F5F2", name: "씨폼" }, { hex: "#D9F2F0", name: "민트워터" },
+    ],
+  },
+  {
+    family: "블루·스카이", dot: "#60A5FA", items: [
+      { hex: "#DBEAFE", name: "수·스카이", app: true }, { hex: "#EFF6FF", name: "정보연파랑", app: true },
+      { hex: "#D6E8FF", name: "스카이" }, { hex: "#E0F2FE", name: "시안" },
+      { hex: "#CFE0FA", name: "데님파스텔" },
+    ],
+  },
+  {
+    family: "퍼플·라벤더·페리윙클", dot: "#A78BFA", items: [
+      { hex: "#EFEAFE", name: "보라", app: true }, { hex: "#EDE9FE", name: "재능라벤더", app: true },
+      { hex: "#E5DEFF", name: "라벤더" }, { hex: "#DDD6FE", name: "페리윙클" },
+      { hex: "#F3E8FF", name: "라일락" }, { hex: "#EAE0F5", name: "모브" },
+    ],
+  },
+  {
+    family: "뉴트럴·그레이·샌드", dot: "#94A3B8", items: [
+      { hex: "#F1F5F9", name: "금·중립", app: true }, { hex: "#E2E8F0", name: "쿨그레이", app: true },
+      { hex: "#EDE4D4", name: "샌드", app: true }, { hex: "#F5F0E8", name: "오트" },
+      { hex: "#ECE8E1", name: "그레이지" }, { hex: "#FFFEF2", name: "미니홈피", app: true },
+    ],
+  },
+];
+
 function Chip({ hex, label }: { hex: string; label?: string }) {
   return (
     <div className="flex flex-col items-center gap-1">
@@ -169,6 +229,36 @@ export default function PreviewPage() {
         <h3 className="text-sm font-bold text-[#2D2D2D] mb-3">5 · 크림·베이지 계열 <span className="font-normal text-gray-400 text-xs">따뜻한 패널·페이퍼</span></h3>
         <div className="grid grid-cols-5 gap-2.5">
           {PAL_CREAM.map(([hex, label]) => <Chip key={hex} hex={hex} label={label} />)}
+        </div>
+      </div>
+
+      {/* ════ 파스텔 팔레트 (다양·색상환 전체) ════ */}
+      <div className="max-w-[760px] mx-auto mb-16 bg-white rounded-2xl border-2 border-[#2D2D2D]/10 p-6">
+        <h2 className="text-xl font-bold text-center text-[#2D2D2D] mb-1">파스텔 팔레트 · 다양</h2>
+        <p className="text-xs text-center text-gray-500 mb-8">
+          부드러운 틴트만 모음 · 색상환 전체로 확장 ·
+          <span className="inline-flex items-center gap-1 ml-1"><span className="w-3 h-3 rounded-full bg-[#FFF0F5] border border-[#2D2D2D]/15 align-middle" /> 앱 = 이미 사용 중</span>
+        </p>
+        <div className="flex flex-col gap-6">
+          {PASTEL_FAMILIES.map(({ family, dot, items }) => (
+            <div key={family}>
+              <h3 className="text-sm font-bold text-[#2D2D2D] mb-2.5 flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-full" style={{ background: dot }} /> {family}
+                <span className="text-xs font-normal text-gray-400">{items.length}</span>
+              </h3>
+              <div className="grid grid-cols-6 gap-2.5">
+                {items.map(p => (
+                  <div key={p.hex} className="flex flex-col items-center gap-1">
+                    <div className="relative w-full h-14 rounded-lg border border-[#2D2D2D]/10" style={{ background: p.hex }}>
+                      {p.app && <span className="absolute top-1 right-1 px-1 py-0.5 rounded-md text-[8px] font-bold bg-white/80 text-[#2D2D2D]/60 leading-none">앱</span>}
+                    </div>
+                    <span className="text-[10px] font-bold text-[#2D2D2D] leading-tight text-center">{p.name}</span>
+                    <span className="text-[9px] font-mono text-gray-400">{p.hex}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
