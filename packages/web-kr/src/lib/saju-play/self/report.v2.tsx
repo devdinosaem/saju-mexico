@@ -97,34 +97,43 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
         )}
       </Section>
 
-      {/* 사주가 같은 사람 — 카드 role 라벨[박다현] */}
+      {/* 사주가 같은 사람 — 카드 role 라벨[박다현] + 셀럽 엮은 위트 캡션 */}
       <Section icon={DoodleCrown} title="사주가 같은 사람" basis="일주">
-        {x.celeb && x.celeb.persons.length > 0 ? (() => {
-          const cs = x.celeb.persons.slice(0, 2)
+        {(() => {
+          const cs = x.celeb?.persons?.slice(0, 2) ?? []
           const naRole = `${x.bareIlju}일주`
+          if (cs.length === 0) {
+            return (
+              <Card className="px-4 py-4 text-center">
+                <p className="text-[14px] text-charcoal/60 leading-snug">{x.bareIlju}일주는 아직 등록된 유명인이 없어. 그럼 1호, 네가 찜.</p>
+              </Card>
+            )
+          }
+          // 선발 셀럽과 엮은 위트 한 줄(박다현)
+          const witLine = cs.length >= 2
+            ? `${cs[0].name}도 ${cs[1].name}도 같은 ${x.bareIlju}일주 — 하는 일은 달라도 타고난 기운은 한 핏줄이야. 그러니까 너도 그 라인.`
+            : `그 ${cs[0].name}이랑 같은 ${x.bareIlju}일주라니 — 될성부른 떡잎은 일주부터 다른 거였어.`
           return (
-            <div className="flex justify-center items-start gap-2 pt-2 pb-1">
-              {cs.length >= 2 ? (
-                <>
-                  <CelebCard name={cs[0].name} role={cs[0].role} cat={cs[0].cat} elem={self.dayElem} idx={0} roleStyle={OWNGLYPH} />
-                  <NaCard iljuKey={x.charKey} role={naRole} elem={self.dayElem} idx={1} roleStyle={OWNGLYPH} />
-                  <CelebCard name={cs[1].name} role={cs[1].role} cat={cs[1].cat} elem={self.dayElem} idx={2} roleStyle={OWNGLYPH} />
-                </>
-              ) : (
-                <>
-                  <NaCard iljuKey={x.charKey} role={naRole} elem={self.dayElem} idx={0} roleStyle={OWNGLYPH} />
-                  <CelebCard name={cs[0].name} role={cs[0].role} cat={cs[0].cat} elem={self.dayElem} idx={1} roleStyle={OWNGLYPH} />
-                </>
-              )}
-            </div>
+            <>
+              <div className="flex justify-center items-start gap-2 pt-2 pb-1">
+                {cs.length >= 2 ? (
+                  <>
+                    <CelebCard name={cs[0].name} role={cs[0].role} cat={cs[0].cat} elem={self.dayElem} idx={0} roleStyle={OWNGLYPH} />
+                    <NaCard iljuKey={x.charKey} role={naRole} elem={self.dayElem} idx={1} roleStyle={OWNGLYPH} />
+                    <CelebCard name={cs[1].name} role={cs[1].role} cat={cs[1].cat} elem={self.dayElem} idx={2} roleStyle={OWNGLYPH} />
+                  </>
+                ) : (
+                  <>
+                    <NaCard iljuKey={x.charKey} role={naRole} elem={self.dayElem} idx={0} roleStyle={OWNGLYPH} />
+                    <CelebCard name={cs[0].name} role={cs[0].role} cat={cs[0].cat} elem={self.dayElem} idx={1} roleStyle={OWNGLYPH} />
+                  </>
+                )}
+              </div>
+              {/* [박다현] */}
+              <p className="text-[14px] text-charcoal/60 leading-snug text-center" style={OWNGLYPH}>{witLine}</p>
+            </>
           )
-        })() : (
-          <Card className="px-4 py-4 text-center">
-            <p className="text-[14px] text-charcoal/60 leading-snug">{x.bareIlju}일주는 아직 등록된 유명인이 없어 — 네가 1호일지도?</p>
-          </Card>
-        )}
-        {/* [박다현] */}
-        <p className="text-[14px] text-charcoal/55 text-center" style={OWNGLYPH}>너도 이 기운을 타고났어.</p>
+        })()}
       </Section>
 
       {/* 내 오행 밸런스 */}
