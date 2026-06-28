@@ -67,6 +67,6 @@ ${compatBlock ? compatBlock : `둘 관계: ${relWord} / 닿을 가능성: ${scor
 
   if (!res.ok) return new Response(JSON.stringify({ error: "upstream" }), { status: res.status })
   const data = await res.json() as { choices?: { message?: { content?: string } }[] }
-  const text = withHook(hookOnesided(themName), data.choices?.[0]?.message?.content?.trim() ?? "")
+  const text = withHook(hookOnesided(them.name), data.choices?.[0]?.message?.content?.trim() ?? "")
   return new Response(JSON.stringify({ text }), { headers: { "Content-Type": "application/json" } })
 }
