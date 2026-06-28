@@ -105,3 +105,10 @@ export function deleteReport(id: string): void {
 export function clearReports(): void {
   writeAll([])
 }
+
+/** dev 전용 — 더미 레코드 일괄 주입(중복 id 제외). */
+export function devSeedReports(records: ReportRecord[]): void {
+  const existing = readAll()
+  const ids = new Set(existing.map(r => r.id))
+  writeAll([...records.filter(r => !ids.has(r.id)), ...existing])
+}
