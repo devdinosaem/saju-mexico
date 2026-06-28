@@ -13,6 +13,7 @@ import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
 import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/inventory"
 import RoomElementCard from "./_components/RoomElementCard"
 import RoomElementCardA from "./_components/RoomElementCardA"
+import RoomElementCardB from "./_components/RoomElementCardB"
 
 type GuestEntry = { id: string; author: string; message: string; date: string }
 
@@ -123,6 +124,10 @@ export default function InteriorPage() {
       <div className="flex flex-col gap-1">
         <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 A · 접이식</span>
         <RoomElementCardA />
+      </div>
+      <div className="flex flex-col gap-1">
+        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 B · 미니 레이더</span>
+        <RoomElementCardB />
       </div>
       {/* ▲▲▲ 방의 기운 — 컴팩트 시안 비교(임시) ▲▲▲ */}
 
