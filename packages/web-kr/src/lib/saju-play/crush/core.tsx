@@ -7,7 +7,7 @@
 // 폰트 정책(친구·커플 동일): 제목=BINGGRAE, 따뜻한 설명줄=GAEGU(손글씨), 줄글 본문=고딕.
 // 연출(스켈레톤) 단계에서 풀이를 미리 돌려 결과 진입 시 바로 보이게.
 // ════════════════════════════════════════════════════════════════
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { spend } from "@/lib/balance"
 import { saveReport, findByDedupe, makeBirthKey } from "@/lib/report-archive"
@@ -370,6 +370,17 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
   const [unlocked, setUnlocked] = useState(!!replay)
   const [ai, setAi] = useState<Ai>(replay ? { status: "done", text: replay.aiText } : { status: "idle", text: "" })
 
+  // 보관함 저장 — 클릭 즉시 말고 AI 확정(done/error) 후 1회 (느린 AI 폴백 박제 방지)
+  const savedRef = useRef(false)
+  const [wantSave, setWantSave] = useState(false)
+  const saveFnRef = useRef<() => void>(() => {})
+  useEffect(() => {
+    if (!wantSave || savedRef.current) return
+    if (ai.status !== "done" && ai.status !== "error") return
+    savedRef.current = true
+    saveFnRef.current()
+  }, [wantSave, ai.status])
+
   // 연출 단계에서 미리 풀이를 돌린다 → 결과 진입 시 보통 이미 완성
   const start = () => {
     setStep("loading")
@@ -460,8 +471,7 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
   }
 
   // ── 결과 계산 ──
-  const d = derive(myKey, myBirth, myGender, them, config)
-  const { meK, themK, eMe, eThem, rel, arch, score, stage, signals, myYongKr, myDist, themDist, goodDays } = d
+  const { meK, themK, eMe, eThem, rel, arch, score, stage, signals, myYongKr, myDist, themDist, goodDays } = derive(myKey, myBirth, myGender, them, config)
   const realTiming = goodDays.고백 !== undefined || goodDays.만남 !== undefined
   const timingWhen = realTiming ? `${new Date().getMonth() + 1}월, 사주가 가리키는 길일이 있어요` : config.timing.when
   const timingLine = realTiming
@@ -518,22 +528,24 @@ export default function CrushFunnel({ config, replay }: { config: CrushConfig; r
   const themBirthKey = makeBirthKey({ year: +them.birth.y, month: +them.birth.m, day: +them.birth.d })
   const crushDedupe = `${config.reportType}|${[meBirthKey, themBirthKey].sort().join(",")}`
   const existing = findByDedupe(crushDedupe)
+  // 저장 클로저(매 렌더 최신 ai·them 반영) — 실제 호출은 위 effect가 AI 확정 후 1회.
+  saveFnRef.current = () => saveReport({
+    type: config.reportType,
+    subjects: [
+      { who: "me", name: "나", birthKey: meBirthKey, iljuKey: meK },
+      { who: "other", name: them.name || "그 사람", birthKey: themBirthKey, iljuKey: themK },
+    ],
+    title: `나 × ${them.name || "그 사람"} · ${config.reportType === "some" ? "썸" : "짝사랑"}`,
+    highlight: `${score}%`,
+    snapshot: { v: 1, data: { them: { name: them.name, gender: them.gender, birth: them.birth } }, aiText: ai.status === "done" ? ai.text : fallbackProse },
+  })
   const onUnlock = () => {
     // 이미 산 상대면 무차감(재열람 무료), 아니면 명태 차감
     if (!existing && !spend(config.priceMt, config.reportType === "some" ? "썸 궁합" : "짝사랑 궁합")) {
       router.push("/v3/charge"); return // 잔액 부족 → 충전
     }
     setUnlocked(true)
-    saveReport({
-      type: config.reportType,
-      subjects: [
-        { who: "me", name: "나", birthKey: meBirthKey, iljuKey: meK },
-        { who: "other", name: them.name || "그 사람", birthKey: themBirthKey, iljuKey: themK },
-      ],
-      title: `나 × ${them.name || "그 사람"} · ${config.reportType === "some" ? "썸" : "짝사랑"}`,
-      highlight: `${score}%`,
-      snapshot: { v: 1, data: { them: { name: them.name, gender: them.gender, birth: them.birth }, d }, aiText: ai.status === "done" ? ai.text : fallbackProse },
-    })
+    setWantSave(true) // 저장은 effect가 AI 확정 후 처리
   }
 
   // ── 유료 본문 ──
