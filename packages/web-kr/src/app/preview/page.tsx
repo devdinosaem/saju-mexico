@@ -15,6 +15,38 @@ const ELEM_BADGE: Record<string, { bg: string; fg: string }> = {
 // 배지에 표시할 짧은 글자 (전체는 "올")
 const BADGE_TXT: Record<string, string> = { 전체: "올" };
 
+// ── AI 히어로 박스 오행별 그라디언트 변주 (비교용) ──
+// 구조 고정(160°·크림 앵커·그림자 8%룰), 위 틴트+그림자만 변주.
+const HERO_GRADS: { key: string; label: string; top: string; bot: string; accent: string; glow: string }[] = [
+  { key: "현재", label: "현재(핑크)", top: "#FFF6FA", bot: "#FFFDF5", accent: "#E84B6A", glow: "rgba(232,75,106,0.08)" },
+  { key: "목", label: "목 · 새싹빛", top: "#F2FCF7", bot: "#FBFEF8", accent: "#4ADE80", glow: "rgba(74,222,128,0.08)" },
+  { key: "화", label: "화 · 노을빛", top: "#FFF6F4", bot: "#FFFDF7", accent: "#F87171", glow: "rgba(248,113,113,0.08)" },
+  { key: "토", label: "토 · 크림옐로", top: "#FFFBEF", bot: "#FFFEF5", accent: "#FBBF24", glow: "rgba(251,191,36,0.09)" },
+  { key: "금", label: "금 · 쿨화이트", top: "#F7FAFC", bot: "#FDFDFB", accent: "#94A3B8", glow: "rgba(148,163,184,0.10)" },
+  { key: "수", label: "수 · 물빛", top: "#F2F8FE", bot: "#FAFDFF", accent: "#60A5FA", glow: "rgba(96,165,250,0.08)" },
+];
+
+function HeroSwatch({ g, border }: { g: (typeof HERO_GRADS)[number]; border: string }) {
+  return (
+    <div
+      className="rounded-2xl px-4 py-3.5 flex flex-col gap-2.5"
+      style={{ background: `linear-gradient(160deg, ${g.top}, ${g.bot})`, border, boxShadow: `0 4px 16px ${g.glow}` }}
+    >
+      <div className="flex items-center gap-2">
+        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: g.accent }} />
+        <DoodleSparkle className="!w-4 !h-4" />
+        <span className="text-[14px] font-bold text-[#2D2D2D]">정밀 예보</span>
+        <span className="ml-auto px-2 py-0.5 rounded-full text-[11px] font-bold" style={{ background: g.accent + "22", color: g.accent }}>{g.label}</span>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <p className="text-[12px] text-[#2D2D2D]/75 leading-snug">알았어, 친구야. 다음달 네 운을 일기예보처럼 펼쳐볼게.</p>
+        <p className="text-[12px] text-[#2D2D2D]/55 leading-snug">무난하면서도 돈이 움직이는 흐름이야. 들어오고 나가는 게 눈에 띄게 느껴질 거야.</p>
+      </div>
+      <p className="text-[9px] font-mono text-gray-400">{g.top} → {g.bot}</p>
+    </div>
+  );
+}
+
 export default function PreviewPage() {
   const total = DOODLE_CATEGORIES.reduce((s, c) => s + c.stickers.length, 0);
   const classified = DOODLE_CATEGORIES.reduce((s, c) => s + c.stickers.filter(st => st.element).length, 0);
@@ -49,6 +81,24 @@ export default function PreviewPage() {
           </div>
         </section>
       ))}
+
+      {/* ── AI 히어로 박스 오행 그라디언트 변주 (비교용) ── */}
+      <h2 className="text-xl font-bold text-center mt-12 mb-1 max-w-[640px] mx-auto">AI 히어로 그라디언트 · 오행 변주</h2>
+      <p className="text-sm text-center text-gray-500 mb-6 max-w-[640px] mx-auto">현재 핑크안 + 목화토금수 5변주 · A안(charcoal 보더) / B안(오행 틴트 보더)</p>
+
+      <section className="mb-10 max-w-[640px] mx-auto">
+        <h3 className="text-base font-bold text-[#2D2D2D] mb-3">A안 — charcoal 보더 고정 <span className="text-xs font-normal text-gray-400">통일감</span></h3>
+        <div className="grid grid-cols-2 gap-3">
+          {HERO_GRADS.map(g => <HeroSwatch key={g.key} g={g} border="2px solid #2D2D2D" />)}
+        </div>
+      </section>
+
+      <section className="mb-12 max-w-[640px] mx-auto">
+        <h3 className="text-base font-bold text-[#2D2D2D] mb-3">B안 — 오행 틴트 보더 <span className="text-xs font-normal text-gray-400">정체성 ↑</span></h3>
+        <div className="grid grid-cols-2 gap-3">
+          {HERO_GRADS.map(g => <HeroSwatch key={g.key} g={g} border={`2px solid ${g.accent}`} />)}
+        </div>
+      </section>
 
       <h2 className="text-xl font-bold text-center mt-12 mb-6 max-w-[640px] mx-auto">조합 예시</h2>
       <div className="relative max-w-[400px] mx-auto bg-white rounded-2xl p-8 border-2 border-[#2D2D2D]/10 min-h-[300px]">
