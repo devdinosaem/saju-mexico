@@ -14,6 +14,7 @@ import { canAccess, itemAccess, STICKER_ACCESS, CHARACTER_ACCESS } from "@/lib/i
 import RoomElementCard from "./_components/RoomElementCard"
 import RoomElementCardA from "./_components/RoomElementCardA"
 import RoomElementCardB from "./_components/RoomElementCardB"
+import RoomElementCardC from "./_components/RoomElementCardC"
 
 type GuestEntry = { id: string; author: string; message: string; date: string }
 
@@ -128,6 +129,10 @@ export default function InteriorPage() {
       <div className="flex flex-col gap-1">
         <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 B · 미니 레이더</span>
         <RoomElementCardB />
+      </div>
+      <div className="flex flex-col gap-1">
+        <span className="text-[10px] font-bold text-charcoal/35 px-1">시안 C · 초박형</span>
+        <RoomElementCardC />
       </div>
       {/* ▲▲▲ 방의 기운 — 컴팩트 시안 비교(임시) ▲▲▲ */}
 
