@@ -41,6 +41,10 @@ export const metadata: Metadata = {
     description: "MBTI는 16개, SAJUPLAY는 120개. 태어난 순간이 정한 내 유형.",
     locale: "ko_KR",
   },
+  // 프로토타입(데모모드) 배포는 검색엔진 색인 차단 — 실제 런칭(플래그 없음)엔 영향 없음.
+  ...(process.env.NEXT_PUBLIC_SAMPLE_FRIENDS === "1"
+    ? { robots: { index: false, follow: false } }
+    : {}),
 };
 
 export default function RootLayout({
