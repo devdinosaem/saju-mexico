@@ -87,12 +87,12 @@ export function ChapterDivider({ n, title }: { n: number | string; title: string
 
 /** 히어로 박스 — 위계 최상위·AI 요약 시그니처. 핵심 그라디언트(surface) 배경 + 소프트 섀도우.
  *  theme: 디폴트 pink, 오행 커스텀 시 목/화/토/금/수. */
-export function Hero({ icon, title, basis, children, theme = "pink", className = "" }:
-  { icon?: DoodleC; title: ReactNode; basis?: ReactNode; children?: ReactNode; theme?: GradTheme; className?: string }) {
+export function Hero({ icon, title, basis, children, theme = "pink", borderColor = "var(--line-soft)", borderWidth = 1, className = "" }:
+  { icon?: DoodleC; title: ReactNode; basis?: ReactNode; children?: ReactNode; theme?: GradTheme; borderColor?: string; borderWidth?: number; className?: string }) {
   const grad = GRADIENT[theme]
   return (
     <div className={`rounded-[var(--r-xl)] px-4 py-4 flex flex-col gap-3 ${className}`}
-      style={{ background: grad.surface, border: "1px solid var(--line-soft)" }}>
+      style={{ background: grad.surface, border: `${borderWidth}px solid ${borderColor}` }}>
       <div className="flex items-center gap-2">
         {icon && <Ico as={icon} size={20} />}
         <span className="text-[15px] text-charcoal" style={FONT.title}>{title}</span>
