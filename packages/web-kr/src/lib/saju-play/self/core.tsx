@@ -237,7 +237,7 @@ export default function SelfFunnel() {
         {(ai.status === "error" || ai.status === "idle") && <Prose text={fallbackProse} />}
       </div>
 
-      <ChapterDivider n={1} title="기본 스펙" />
+      <ChapterDivider n={1} title="나는 이런 사람" />
 
       {/* 일주 스펙시트 */}
       <div className="flex flex-col gap-2.5">
@@ -308,7 +308,7 @@ export default function SelfFunnel() {
         </div>
       </div>
 
-      <ChapterDivider n={2} title="작동 원리" />
+      <ChapterDivider n={2} title="내 안엔 이런 게" />
 
       {/* 타고난 재능 */}
       <div className="flex flex-col gap-2.5">
@@ -370,7 +370,7 @@ export default function SelfFunnel() {
         <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>제일 목소리 큰 {meetingOrder[0]}({MEETING[meetingOrder[0]].role})이 너를 주로 끌고 가. {weakElems.length ? `빠진 ${weakElems.join("·")}은 의식적으로 챙겨야 균형이 맞아.` : ``}</p>
       </div>
 
-      <ChapterDivider n={3} title="연애 모드" />
+      <ChapterDivider n={3} title="사랑할 때 나는" />
 
       {/* 내 연애 스타일 */}
       <div className="flex flex-col gap-2.5">
@@ -402,7 +402,7 @@ export default function SelfFunnel() {
         </Link>
       </div>
 
-      <ChapterDivider n={4} title="성능 (일·돈)" />
+      <ChapterDivider n={4} title="일·돈 앞에서 나는" />
 
       {/* 어울리는 일 */}
       <div className="flex flex-col gap-2.5">
@@ -429,7 +429,7 @@ export default function SelfFunnel() {
         </div>
       </div>
 
-      <ChapterDivider n={5} title="현재 상태" />
+      <ChapterDivider n={5} title="나, 지금 어디쯤" />
 
       {/* 내 인생 그래프 */}
       <div className="flex flex-col gap-2.5">
@@ -444,7 +444,7 @@ export default function SelfFunnel() {
         </div>
       </div>
 
-      <ChapterDivider n={6} title="취급·관리법" />
+      <ChapterDivider n={6} title="나 다루는 법" />
 
       {/* 나 사용설명서 카드 — 제품명 시그니처 */}
       <div className="flex flex-col gap-2.5">
@@ -599,7 +599,7 @@ export default function SelfFunnel() {
             <Ico as={DoodleKey} size={36} />
             <p className="text-[16px] text-charcoal" style={BINGGRAE}>나 사용설명서 전체 펼치기</p>
             <div className="flex flex-col gap-1.5 w-full py-1">
-              {["원국 전체를 읽은 정밀 풀이", "재능·연애·일·돈 · 인생 그래프", "취급·관리법 · 올해의 나"].map((t, i) => (
+              {["원국 전체를 읽은 정밀 풀이", "재능·연애·일·돈 · 인생 그래프", "나 다루는 법 · 올해의 나"].map((t, i) => (
                 <div key={i} className="flex items-center gap-2 text-[13px] text-charcoal/70"><Ico as={DoodleHeart} size={13} /> {t}</div>
               ))}
             </div>
