@@ -1,6 +1,7 @@
 # 기능 정합성 매트릭스 (사진 표 + 실제 상태)
 
 > **해결 로그**
+> - 2026-06-29 ✅ **충전 PG 테스트모드 풀연동 (토스페이먼츠)**: 결제창→리다이렉트→**서버 confirm(시크릿키 위변조검증)**→명태 적립 전체 흐름. plans.ts(SSOT)·toss.ts·api/payments/confirm·charge/success·fail. 적립은 확정금액 역매핑(URL 신뢰X)+orderId 중복적립 방지. 🔴 §5.4 충전(원화→명태) **테스트 경로** 해소. ⚠️ **라이브(실매출)는 사업자등록+PG계약+라이브키 필요**(비즈니스 단계). ⚠️ 적립이 localStorage라 **auth+서버 원장(ledger)이 진짜 선행조건** — 인증(#3) 후 `charge()` 한 줄을 서버 호출로 교체.
 > - 2026-06-29 ✅ **페이월 실결제 배선 (1탭 saju-play 5종)**: self/sinsal/nextmonth/some/onesided를 `usePaidReport`로 통일 — `spend(가격)` 실차감 + 잔액부족 시 충전 유도 + **재열람 영속**(report-archive `findByDedupe`: 한번 사면 무료 재열람, AI 재호출·재차감 없음) + AI 실패 시 환불. **폴백 생일 제거**(`BirthGate`로 입력 강제, dev `FALLBACK_BIRTH` 운영경로 차단). 🔴 감사 부록C #1(결제 미배선) 1탭 분 + 1.3·1.4 해소. ⚠️ **CelebFunnel(유명인 1명태)만 미배선 잔존**(`setStep("result")` 목업).
 > - 2026-06-29 ✅ **샵 구매 배선 (3탭)**: 보관함 구매=`purchaseItems`(spend+소유적재), `alert("결제 준비중")` 제거, 잔액부족 시 `/v3/charge` 유도. 소품/캐릭터/스킨 실구매 동작. 3.2 해소.
 > - 2026-06-29 ✅ **마이 사주보관함 실연동 (4탭)**: 하드코딩 COLLECTION/PURCHASED 제거 → `/v3/my/archive`가 `report-archive`(실구매 리포트) 사용. 4.1 보관함 해소(⚠️ dev 시드 버튼 잔존 — 출시 전 정리).
