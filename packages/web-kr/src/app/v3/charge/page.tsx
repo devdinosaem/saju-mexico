@@ -176,7 +176,7 @@ export default function ChargePage() {
       <div className="rounded-xl bg-charcoal/5 px-4 py-3 flex items-start gap-2">
         <DoodleCrown className="w-4 h-4 shrink-0 mt-0.5 opacity-40" />
         <p className="text-[11px] text-text-muted leading-snug">
-          명태는 사주TI 서비스 전용 재화입니다. 법정화폐와 교환되지 않으며, 결제 후 환불은 미사용분에 한해 가능합니다.
+          명태는 SAJUPLAY 서비스 전용 재화입니다. 법정화폐와 교환되지 않으며, 결제 후 환불은 미사용분에 한해 가능합니다.
         </p>
       </div>
     </div>

@@ -192,7 +192,7 @@ export default function StoryRow({ onAdd }: { onAdd?: () => void }) {
       <div className="flex gap-4 overflow-x-auto" style={{ scrollbarWidth: "none", paddingBottom: 2 }}>
         <button
           className="flex flex-col items-center gap-1.5 shrink-0 active:scale-95 transition-transform"
-          onClick={() => onAdd ? onAdd() : navigator.share?.({ title: "사주TI", text: "나랑 같이 사주TI 해봐!", url: window.location.origin })}
+          onClick={() => onAdd ? onAdd() : navigator.share?.({ title: "SAJUPLAY", text: "나랑 같이 SAJUPLAY 해봐!", url: window.location.origin })}
         >
           <div className="p-[2.5px] rounded-full" style={{ background: "#E2E8F0" }}>
             <div className="w-[42px] h-[42px] rounded-full overflow-hidden flex items-center justify-center bg-[#F1F5F9]">

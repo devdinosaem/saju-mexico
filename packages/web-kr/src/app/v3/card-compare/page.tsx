@@ -65,7 +65,7 @@ export default function CardComparePage() {
             <div className="flex items-center justify-between px-3 shrink-0" style={{ background: theme.bg, height: 52 }}>
               <div className="flex items-center gap-1">
                 <SajuTILogo className="w-4 h-4" />
-                <span className="text-[10px] font-bold text-charcoal/50" style={BINGGRAE}>사주TI</span>
+                <span className="text-[10px] font-bold text-charcoal/50" style={BINGGRAE}>SAJUPLAY</span>
               </div>
               <p className="text-[14px] text-charcoal leading-tight text-center" style={BINGGRAE}>
                 {name}<span className="text-[11px] text-charcoal/60 ml-0.5">({ilju.ilju}일주)</span>
@@ -106,7 +106,7 @@ export default function CardComparePage() {
                 </div>
               ))}
               <div className="flex items-center justify-between mt-1 pt-1 border-t border-charcoal/8">
-                <p className="text-[9px] text-charcoal/35" style={BINGGRAE}>사주TI</p>
+                <p className="text-[9px] text-charcoal/35" style={BINGGRAE}>SAJUPLAY</p>
                 <p className="text-[9px] text-charcoal/35" style={BINGGRAE}>{ilju.ilju} · {cardNo}/120</p>
               </div>
             </div>
@@ -192,7 +192,7 @@ export default function CardComparePage() {
               <div className="flex items-center justify-between mt-0.5 pt-1 border-t border-charcoal/8">
                 <span className="flex items-center gap-0.5">
                   <SajuTILogo className="w-3 h-3" />
-                  <p className="text-[9px] text-charcoal/35" style={BINGGRAE}>Illus. 사주TI</p>
+                  <p className="text-[9px] text-charcoal/35" style={BINGGRAE}>Illus. SAJUPLAY</p>
                 </span>
                 <p className="text-[9px] text-charcoal/35" style={BINGGRAE}>{ilju.ilju} · {cardNo}/120</p>
               </div>

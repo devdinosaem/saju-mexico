@@ -339,7 +339,7 @@ export default function IljuDiscovery() {
       {/* 헤드라인 */}
       <div>
         <p className="text-[28px] leading-tight text-charcoal" style={{ fontFamily: "'BinggraeTaom', sans-serif", fontWeight: 700 }}>
-          내 사주TI는 뭘까?
+          내 SAJUPLAY는 뭘까?
         </p>
         <p className="text-[12px] text-text-muted mt-0.5">
           120가지 캐릭터 중 딱 하나가 내 거야

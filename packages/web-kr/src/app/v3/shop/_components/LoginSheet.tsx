@@ -50,7 +50,7 @@ export default function LoginSheet({ open, onClose, onSuccess }: Props) {
               className="text-[22px] font-bold text-charcoal"
               style={{ fontFamily: "'BinggraeTaom', sans-serif" }}
             >
-              내 사주TI 시작하기 ✦
+              내 SAJUPLAY 시작하기 ✦
             </p>
             <p className="text-[13px] text-text-muted">
               로그인하면 사주카드 저장하고 언제든 다시 볼 수 있어
