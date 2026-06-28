@@ -1,75 +1,58 @@
 "use client"
 // ════════════════════════════════════════════════════════════════
 // "다음달 운 미리보기" 펀널 — 1인·입력 0. 예고편 → 페이월 → NextMonthReport.
-// 리포트 완성 순간 보관함에 자동 저장(스냅샷 = NextMonthData + AI원문).
-// dedupeKey에 대상월 포함 → 매달 별도 기록. AI는 /api/saju-play/nextmonth.
+// dedupeKey에 대상월 포함 → 매달 별도 기록. 결제·AI·보관함은 usePaidReport.
+// AI는 /api/saju-play/nextmonth.
 // ════════════════════════════════════════════════════════════════
-import { useState, useEffect, useRef } from "react"
-import { useRouter } from "next/navigation"
 import { useUser } from "@/lib/UserContext"
 import { PRICES, priceLabel } from "@/lib/prices"
-import { spend } from "@/lib/balance"
-import { buildNextMonth, type NextMonthBirth, type Gender } from "./nextmonth-adapter"
+import { buildNextMonth, type NextMonthBirth, type Gender, type NextMonthData } from "./nextmonth-adapter"
 import { to24h } from "../crush/saju-adapter"
-import { saveReport, makeBirthKey, findByDedupe } from "@/lib/report-archive"
+import { makeBirthKey } from "@/lib/report-archive"
 import BirthGate from "../BirthGate"
+import { usePaidReport } from "../use-paid-report"
 import { NextMonthReport, coverInfo, nextMonthFallback, Ico, Avatar, BINGGRAE, GAEGU, PINK } from "./report"
 import { DoodleCalendar, DoodleKey, DoodleHeart, DoodleLetter } from "@/components/doodles"
 
-type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 const PRICE = priceLabel(PRICES.nextMonth)
 
 export default function NextMonthFunnel() {
   const { user } = useUser()
   const bd = user.birthDate
-  const router = useRouter()
   const birth: NextMonthBirth | null = bd
     ? { year: +bd.year, month: +bd.month, day: +bd.day, hour: to24h(bd.hour, bd.ampm), minute: parseInt(bd.minute) || 0 }
     : null
   const gender: Gender = bd?.gender === "F" ? "F" : "M"
   const data = birth ? buildNextMonth(birth, gender) : null
 
-  // 재열람 판정 — 같은 생일·대상월 리포트가 보관함에 있으면 페이월·AI 스킵
-  const existing = (birth && data) ? findByDedupe(`nextmonth|${makeBirthKey(birth)}|${data.ym.year}-${data.ym.month}`) : null
+  // 대상월별 별도 기록 → dedupeKey에 월 포함
+  const dedupeKey = (birth && data) ? `nextmonth|${makeBirthKey(birth)}|${data.ym.year}-${data.ym.month}` : null
 
-  const [step, setStep] = useState<"loading" | "result">(existing ? "result" : "loading")
-  const [unlocked, setUnlocked] = useState(!!existing)
-  const [ai, setAi] = useState<Ai>(existing ? { status: "done", text: existing.snapshot.aiText } : { status: "idle", text: "" })
-  const savedRef = useRef(!!existing)
-
-  useEffect(() => {
-    if (!data || existing) return // 재열람이면 AI 호출 안 함(스냅샷 사용)
-    setAi({ status: "loading", text: "" })
-    fetch("/api/saju-play/nextmonth", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: bd?.name || "너", monthBlock: data.monthBlock }),
-    })
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then((d: { text?: string }) => d.text ? setAi({ status: "done", text: d.text }) : Promise.reject())
-      .catch(() => setAi({ status: "error", text: "" }))
-    const t = setTimeout(() => setStep("result"), 1600)
-    return () => clearTimeout(t)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // 리포트 완성 순간 보관함에 1회 저장 (대상월별 별도 기록)
-  useEffect(() => {
-    if (savedRef.current || !data || !unlocked) return
-    if (ai.status !== "done" && ai.status !== "error") return
-    savedRef.current = true
-    const aiText = ai.status === "done" ? ai.text : nextMonthFallback(data)
-    const { weather } = coverInfo(data)
-    const birthKey = makeBirthKey(birth!)
-    saveReport({
-      type: "nextmonth",
-      dedupeKey: `nextmonth|${birthKey}|${data.ym.year}-${data.ym.month}`,
-      subjects: [{ who: "me", name: bd?.name || "나", birthKey, iljuKey: data.iljuKey }],
-      title: `${data.monthLabel} 운 미리보기`,
-      highlight: `${weather.label} · ${data.keywords[0] ? `#${data.keywords[0]}` : "잔잔"}`,
-      snapshot: { v: 1, data, aiText },
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unlocked, ai.status])
+  const { step, unlocked, aiText, aiLoading, onUnlock } = usePaidReport<NextMonthData>({
+    data,
+    dedupeKey,
+    price: PRICES.nextMonth,
+    spendLabel: "다음달 운 미리보기",
+    fetchAiText: (d) =>
+      fetch("/api/saju-play/nextmonth", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: bd?.name || "너", monthBlock: d.monthBlock }),
+      })
+        .then(r => (r.ok ? r.json() : null))
+        .then((j: { text?: string } | null) => j?.text ?? null),
+    fallbackText: nextMonthFallback,
+    buildSave: (d, ai) => {
+      const birthKey = makeBirthKey(birth!)
+      return {
+        type: "nextmonth",
+        dedupeKey: `nextmonth|${birthKey}|${d.ym.year}-${d.ym.month}`,
+        subjects: [{ who: "me", name: bd?.name || "나", birthKey, iljuKey: d.iljuKey }],
+        title: `${d.monthLabel} 운 미리보기`,
+        highlight: `${coverInfo(d).weather.label} · ${d.keywords[0] ? `#${d.keywords[0]}` : "잔잔"}`,
+        snapshot: { v: 1, data: d, aiText: ai },
+      }
+    },
+  })
 
   if (!bd) return <BirthGate title="생일을 알려주면 다음달 운을 펼쳐줄게" />
   if (!data) {
@@ -77,12 +60,6 @@ export default function NextMonthFunnel() {
   }
 
   const { charKey, weather, letter } = coverInfo(data)
-  const aiText = ai.status === "done" ? ai.text : nextMonthFallback(data)
-  const aiLoading = ai.status === "loading"
-  const onUnlock = () => {
-    if (!spend(PRICES.nextMonth, "다음달 운 미리보기")) { router.push("/v3/charge"); return }
-    setUnlocked(true)
-  }
 
   if (step === "loading") {
     return (

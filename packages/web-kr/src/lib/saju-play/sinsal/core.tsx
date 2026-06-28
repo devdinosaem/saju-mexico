@@ -1,72 +1,50 @@
 "use client"
 // ════════════════════════════════════════════════════════════════
 // "내 신살 도감" 펀널 — 1인·입력 0. 표지 → 페이월 → SinsalReport(본문 순수).
-// 리포트 완성 순간 보관함에 자동 저장(스냅샷 = SinsalData + AI원문).
-// AI는 /api/saju-play/sinsal 호출, 없으면 폴백 줄글.
+// 결제·AI·보관함·재열람은 usePaidReport 공용 훅. AI는 /api/saju-play/sinsal.
 // ════════════════════════════════════════════════════════════════
-import { useState, useEffect, useRef } from "react"
-import { useRouter } from "next/navigation"
 import { useUser } from "@/lib/UserContext"
 import { PRICES, priceLabel } from "@/lib/prices"
-import { spend } from "@/lib/balance"
-import { buildSinsal, type SinsalBirth, type Gender } from "./sinsal-adapter"
+import { buildSinsal, type SinsalBirth, type Gender, type SinsalData } from "./sinsal-adapter"
 import { to24h } from "../crush/saju-adapter"
-import { saveReport, makeBirthKey, findByDedupe } from "@/lib/report-archive"
+import { makeBirthKey } from "@/lib/report-archive"
 import BirthGate from "../BirthGate"
+import { usePaidReport } from "../use-paid-report"
 import { SinsalReport, coverInfo, sinsalFallback, Ico, Avatar, BINGGRAE, GAEGU, PINK } from "./report"
 import { DoodleBook, DoodleKey, DoodleHeart } from "@/components/doodles"
 
-type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 const PRICE = priceLabel(PRICES.sinsal)
 
 export default function SinsalFunnel() {
   const { user } = useUser()
   const bd = user.birthDate
-  const router = useRouter()
   const birth: SinsalBirth | null = bd
     ? { year: +bd.year, month: +bd.month, day: +bd.day, hour: to24h(bd.hour, bd.ampm), minute: parseInt(bd.minute) || 0 }
     : null
   const gender: Gender = bd?.gender === "F" ? "F" : "M"
   const data = birth ? buildSinsal(birth, gender) : null
 
-  // 재열람 판정 — 같은 생일 리포트가 보관함에 있으면 페이월·AI 스킵
-  const existing = birth ? findByDedupe(`sinsal|${makeBirthKey(birth)}`) : null
-
-  const [step, setStep] = useState<"loading" | "result">(existing ? "result" : "loading")
-  const [unlocked, setUnlocked] = useState(!!existing)
-  const [ai, setAi] = useState<Ai>(existing ? { status: "done", text: existing.snapshot.aiText } : { status: "idle", text: "" })
-  const savedRef = useRef(!!existing)
-
-  useEffect(() => {
-    if (!data || existing) return // 재열람이면 AI 호출 안 함(스냅샷 사용)
-    setAi({ status: "loading", text: "" })
-    fetch("/api/saju-play/sinsal", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: bd?.name || "너", sinsalBlock: data.sinsalBlock }),
-    })
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then((d: { text?: string }) => d.text ? setAi({ status: "done", text: d.text }) : Promise.reject())
-      .catch(() => setAi({ status: "error", text: "" }))
-    const t = setTimeout(() => setStep("result"), 1600)
-    return () => clearTimeout(t)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // 리포트 완성 순간 보관함에 1회 저장
-  useEffect(() => {
-    if (savedRef.current || !data || !unlocked) return
-    if (ai.status !== "done" && ai.status !== "error") return
-    savedRef.current = true
-    const aiText = ai.status === "done" ? ai.text : sinsalFallback(data)
-    saveReport({
+  const { step, unlocked, aiText, aiLoading, onUnlock } = usePaidReport<SinsalData>({
+    data,
+    dedupeKey: birth ? `sinsal|${makeBirthKey(birth)}` : null,
+    price: PRICES.sinsal,
+    spendLabel: "내 신살 도감",
+    fetchAiText: (d) =>
+      fetch("/api/saju-play/sinsal", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: bd?.name || "너", sinsalBlock: d.sinsalBlock }),
+      })
+        .then(r => (r.ok ? r.json() : null))
+        .then((j: { text?: string } | null) => j?.text ?? null),
+    fallbackText: sinsalFallback,
+    buildSave: (d, ai) => ({
       type: "sinsal",
-      subjects: [{ who: "me", name: bd?.name || "나", birthKey: makeBirthKey(birth!), iljuKey: data.iljuKey }],
+      subjects: [{ who: "me", name: bd?.name || "나", birthKey: makeBirthKey(birth!), iljuKey: d.iljuKey }],
       title: "내 신살 도감",
-      highlight: `시그니처 · ${coverInfo(data).sigInfo.alias}`,
-      snapshot: { v: 1, data, aiText },
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unlocked, ai.status])
+      highlight: `시그니처 · ${coverInfo(d).sigInfo.alias}`,
+      snapshot: { v: 1, data: d, aiText: ai },
+    }),
+  })
 
   if (!bd) return <BirthGate title="생일을 알려주면 내 신살 도감을 펼쳐줄게" />
   if (!data) {
@@ -74,12 +52,6 @@ export default function SinsalFunnel() {
   }
 
   const { charKey, sigInfo, sigCs, teaser } = coverInfo(data)
-  const aiText = ai.status === "done" ? ai.text : sinsalFallback(data)
-  const aiLoading = ai.status === "loading"
-  const onUnlock = () => {
-    if (!spend(PRICES.sinsal, "내 신살 도감")) { router.push("/v3/charge"); return }
-    setUnlocked(true)
-  }
 
   if (step === "loading") {
     return (
