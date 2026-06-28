@@ -68,9 +68,9 @@ const COMPAT: CompatItem[] = [
 
 // ── 친구 궁합 3종 ──────────────────────────────────────────────
 const FRIENDS_COMPAT = [
-  { key: "임오-m", emoji: "🌡️", label: "온도 조절 실패", elem: "수" },
-  { key: "병오-f", emoji: "🌟", label: "인간 비타민",    elem: "화" },
-  { key: "병자-m", emoji: "🔥", label: "회복력 치트키",  elem: "화" },
+  { key: "임오-m", elem: "수" },
+  { key: "병자-m", elem: "화" },
+  { key: "을미-m", elem: "목" },
 ]
 
 // ── 무물 상담 캐릭터 ───────────────────────────────────────────
@@ -130,7 +130,7 @@ function FriendCompatCard({ className = "" }: { className?: string }) {
       <div className="flex justify-around gap-2">
         {FRIENDS_COMPAT.map(f => {
           const svgFn = ILJU_SVG_ICONS[f.key]
-          const bg = ELEM_BG[f.elem] ?? "#F1F5F9"
+          const bg = ELEM_BG[f.elem as string] ?? "#F1F5F9"
           return (
             <div key={f.key} className="flex flex-col items-center gap-1.5 min-w-0 flex-1">
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-charcoal/10 flex items-center justify-center"
