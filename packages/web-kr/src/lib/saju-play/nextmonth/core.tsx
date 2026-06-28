@@ -10,7 +10,7 @@ import { useUser } from "@/lib/UserContext"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf } from "../engine"
 import { ELEM_BG, ELEM_DOODLE } from "../flavor"
-import { buildNextMonth, type NextMonthBirth, type Gender } from "./nextmonth-adapter"
+import { buildNextMonth, type NextMonthBirth, type Gender, type DayPoint } from "./nextmonth-adapter"
 import { WEATHER, MONTH_THEME, AREA, EVENT_COPY } from "./flavor"
 import { SINSAL, CAT_STYLE } from "../sinsal/flavor"
 import { to24h } from "../crush/saju-adapter"
@@ -63,6 +63,33 @@ function resolveChar(id: string): string {
 }
 function Avatar({ iljuKey, size = 80 }: { iljuKey: string; size?: number }) {
   return <div className="rounded-full overflow-hidden border-2 border-charcoal/15 shrink-0 flex items-center justify-center" style={{ width: size, height: size, background: ELEM_BG[elemOf(iljuKey)] }}>{ILJU_SVG_ICONS[iljuKey]?.(getIljuProfileViewBox(iljuKey))}</div>
+}
+
+// 일진 달력 — 다음달 길일/주의일 마킹
+const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"]
+function CalendarGrid({ days, year, month }: { days: DayPoint[]; year: number; month: number }) {
+  const firstDow = new Date(year, month - 1, 1).getDay()
+  const cells: (DayPoint | null)[] = [...Array(firstDow).fill(null), ...days]
+  const cellBg = (c: DayPoint) => (c.good ? "#ECFDF5" : c.warn ? "#FEF2F2" : "transparent")
+  const numColor = (c: DayPoint) => (c.good ? "#16A34A" : c.warn ? "#DC2626" : "#2D2D2D")
+  const dotColor = (c: DayPoint) => (c.good ? "#16A34A" : c.warn ? "#DC2626" : "transparent")
+  return (
+    <div>
+      <div className="grid grid-cols-7 gap-1 mb-1.5">
+        {WEEKDAYS.map((w, i) => (
+          <div key={w} className="text-center text-[12px] font-bold" style={{ color: i === 0 ? "#DC2626" : i === 6 ? "#2563EB" : "#94A3B8" }}>{w}</div>
+        ))}
+      </div>
+      <div className="grid grid-cols-7 gap-1">
+        {cells.map((c, i) => c === null ? <div key={i} /> : (
+          <div key={i} className="aspect-square rounded-lg flex flex-col items-center justify-center gap-0.5" style={{ background: cellBg(c), border: c.good || c.warn ? "1px solid rgba(45,45,45,0.06)" : "none" }}>
+            <span className="text-[13px] font-bold" style={{ color: numColor(c) }}>{c.day}</span>
+            <span className="w-1 h-1 rounded-full" style={{ background: dotColor(c) }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
@@ -260,6 +287,44 @@ export default function NextMonthFunnel() {
           <p className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{theme.use}</p>
         </div>
       </div>
+
+      <ChapterDivider n={4} title="일진 캘린더" />
+
+      {/* 다음달 달력 — 길일/주의일 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleCalendar} basis="일진">{data.monthLabel} 좋은 날·주의할 날</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-3.5 py-4 flex flex-col gap-3">
+          <CalendarGrid days={data.days} year={data.ym.year} month={data.ym.month} />
+          <div className="flex items-center justify-center gap-4 text-[12px] text-text-muted pt-1 border-t border-charcoal/5">
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#16A34A" }} />좋은 날</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#DC2626" }} />주의할 날</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 좋은 날 / 조심할 날 요약 */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="rounded-2xl px-3.5 py-3.5 flex flex-col gap-2" style={{ background: "#F0FFF4", border: "1.5px solid #86EFAC" }}>
+          <p className="text-[13px] font-bold" style={{ color: "#16A34A" }}>이런 날 움직여</p>
+          {data.goodDays.length ? (
+            <div className="flex flex-wrap gap-1.5">
+              {data.goodDays.map(d => {
+                const tag = data.days.find(x => x.day === d)?.tag
+                return <span key={d} className="px-2 py-0.5 rounded-full text-[12px] font-bold bg-white/70" style={{ color: "#16A34A" }}>{d}일{tag ? `·${tag}` : ""}</span>
+              })}
+            </div>
+          ) : <p className="text-[13px] text-charcoal/60" style={GAEGU}>특별히 튀는 날 없이 고른 편이야.</p>}
+        </div>
+        <div className="rounded-2xl px-3.5 py-3.5 flex flex-col gap-2" style={{ background: "#FEF2F2", border: "1.5px solid #FCA5A5" }}>
+          <p className="text-[13px] font-bold" style={{ color: "#DC2626" }}>이런 날 한 박자 쉬어</p>
+          {data.warnDays.length ? (
+            <div className="flex flex-wrap gap-1.5">
+              {data.warnDays.map(d => <span key={d} className="px-2 py-0.5 rounded-full text-[12px] font-bold bg-white/70" style={{ color: "#DC2626" }}>{d}일</span>)}
+            </div>
+          ) : <p className="text-[13px] text-charcoal/60" style={GAEGU}>크게 조심할 날은 없어 — 무난해.</p>}
+        </div>
+      </div>
+      <p className="text-[13px] text-text-muted leading-snug text-center" style={GAEGU}>좋은 날엔 중요한 약속·결정을, 주의할 날엔 큰 선택을 미뤄두면 돼.</p>
 
       {/* consult 크로스셀 */}
       <Link href="/v3/consult" className="rounded-2xl px-4 py-4 flex items-center gap-3 active:opacity-85 transition-opacity" style={{ background: "linear-gradient(160deg,#FFF6FA,#FFFDF5)", border: "2px solid #2D2D2D" }}>
