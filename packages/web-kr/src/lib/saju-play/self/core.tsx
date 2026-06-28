@@ -14,7 +14,7 @@ import { ILJU_CELEB_DATA } from "@/lib/ilju-celeb-data"
 import { elemOf, ELEMS, type Elem } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
 import { buildSelf, tgGroup, type SelfBirth, type Gender, type LifePoint } from "./self-adapter"
-import { TALENT, ELEM_TRAIT, MEETING, LOVE_STYLE, IDEAL, JOB, SELF_MANUAL, SELF_ENV, ELEM_ORGAN, SEUN_LINE, PAST_LIFE, DARK_HIST, MEME } from "./flavor"
+import { TALENT, ELEM_TRAIT, MEETING, LOVE_STYLE, IDEAL, JOB, SELF_MANUAL, SELF_ENV, ELEM_ORGAN, SEUN_LINE, PAST_LIFE, DARK_HIST, MEME, ELEM_FILL } from "./flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
@@ -366,6 +366,25 @@ export default function SelfFunnel() {
           <p className="text-[14px] text-charcoal/70 leading-snug pt-1" style={GAEGU}>
             나를 살리는 기운은 <span className="font-bold" style={{ color: PINK }}>{self.yong}</span> · 조심할 기운은 {self.gi}.
           </p>
+        </div>
+      </div>
+
+      {/* 부족 오행 채우는 것들 (다른 분석기와 동일) */}
+      <div className="rounded-2xl px-4 py-4 flex flex-col gap-3" style={{ background: ELEM_BG[weakest], border: `1.5px solid ${ELEM_COLOR[weakest]}` }}>
+        <div className="flex items-center gap-2">
+          <Ico as={ELEM_DOODLE[weakest]} size={22} />
+          <div className="flex-1 min-w-0">
+            <p className="text-[14px] font-bold text-charcoal leading-tight">너에겐 {weakest}({weakest}) 기운이 부족해</p>
+            <p className="text-[14px] text-charcoal/60">{weakest}({weakest}) 기운을 채우는 걸 해봐</p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          {ELEM_FILL[weakest].map((a, i) => (
+            <div key={i} className="flex items-center gap-2.5 rounded-xl px-3 py-2" style={{ background: "rgba(255,255,255,0.7)" }}>
+              <Ico as={a.D} size={18} />
+              <span className="text-[14px] font-bold text-charcoal">{a.label}</span>
+            </div>
+          ))}
         </div>
       </div>
 

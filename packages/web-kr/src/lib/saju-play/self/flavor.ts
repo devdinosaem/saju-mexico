@@ -2,6 +2,8 @@
 import type { Elem } from "../engine"
 import {
   DoodleLightning, DoodleColorPalette, DoodleDiamond, DoodleMedal, DoodleBook,
+  DoodlePottedPlant, DoodleBamboo, DoodleSun, DoodleFire, DoodleMusicNote,
+  DoodleOnggiJar, DoodleCoffee, DoodlePictureFrame, DoodleWave, DoodleSparkles,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -14,6 +16,15 @@ export const TALENT: Record<TGGroup, { tag: string; line: string; D: DoodleC }> 
   재성: { tag: "현실·수완", line: "돈·실리 감각, 현실을 굴려 결과로 만드는", D: DoodleDiamond },
   관성: { tag: "책임·성취", line: "조직·규율에서 빛나는, 끝까지 해내는 뚝심", D: DoodleMedal },
   인성: { tag: "학습·내공", line: "받아들이고 깊어지는, 전문성으로 쌓는", D: DoodleBook },
+}
+
+// 부족 오행 채우는 것들 (혼자 self-care)
+export const ELEM_FILL: Record<Elem, { label: string; D: DoodleC }[]> = {
+  목: [{ label: "식물원·숲길 산책", D: DoodlePottedPlant }, { label: "새 취미 배우기", D: DoodleBook }, { label: "화분 키우기", D: DoodleBamboo }],
+  화: [{ label: "햇빛·운동", D: DoodleSun }, { label: "사람들과 어울리기", D: DoodleFire }, { label: "노래·표현하기", D: DoodleMusicNote }],
+  토: [{ label: "집밥·정리정돈", D: DoodleOnggiJar }, { label: "규칙적인 루틴", D: DoodleCoffee }, { label: "짧은 명상", D: DoodleColorPalette }],
+  금: [{ label: "미술관·전시 관람", D: DoodlePictureFrame }, { label: "미니멀 정리", D: DoodleDiamond }, { label: "드라이브", D: DoodleSparkles }],
+  수: [{ label: "바다·물가 산책", D: DoodleWave }, { label: "독서·사색", D: DoodleBook }, { label: "음악·휴식", D: DoodleMusicNote }],
 }
 
 // 오행 → 기질 한 줄 (본캐/부캐용)
