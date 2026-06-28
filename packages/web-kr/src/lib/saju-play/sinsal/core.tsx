@@ -12,7 +12,7 @@ import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { elemOf, type Elem } from "../engine"
 import { ELEM_BG } from "../flavor"
 import { buildSinsal, POS_LABEL, type SinsalBirth, type Gender, type Pos } from "./sinsal-adapter"
-import { SINSAL, CAT_STYLE, CAT_ORDER, STAT_LABEL, SYNERGY, type SinsalStat } from "./flavor"
+import { SINSAL, CAT_STYLE, CAT_ORDER, STAT_LABEL, STAT_MEME, SYNERGY, type SinsalStat } from "./flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
@@ -203,6 +203,11 @@ export default function SinsalFunnel() {
   const scary = data.owned.filter(o => SINSAL[o.name].myth)
   // Ch6 — 올해의 신살
   const seunInfo = SINSAL[data.seunSinsal]
+  // 보너스 — 한 줄 캐릭터 / 밈 / 희귀도
+  const charHead = synergies[0]?.alias ?? sigInfo.alias
+  const charLine = synergies[0]?.line ?? sigInfo.good
+  const meme = STAT_MEME[topStat.label as SinsalStat]
+  const rarity = data.ownedCount >= 8 ? "신살 종합선물세트" : data.ownedCount >= 5 ? "다채로운 멀티플레이어" : data.ownedCount >= 3 ? "개성 뚜렷한 스페셜리스트" : "한 우물 파는 집중형"
   const teaser = `${data.bareIlju} 일주 — 신살 ${data.ownedCount}개를 타고났어. 대표는 «${sigInfo.alias}».`
   const fallbackProse =
     `너에겐 신살이 **${data.ownedCount}개** 있어. 그중 가장 너다운 건 **${sigInfo.alias}**(${sig}) — ${sigInfo.mean}.\n\n` +
@@ -434,6 +439,33 @@ export default function SinsalFunnel() {
           </div>
         </div>
       )}
+
+      {/* ── 보너스 · 재미로 보는 신살 ── */}
+      <div className="flex items-center gap-2.5 pt-3">
+        <Ico as={DoodleSparkles} size={20} />
+        <span className="text-[15px] text-charcoal shrink-0" style={BINGGRAE}>재미로 보는 신살</span>
+        <div className="flex-1 h-px" style={{ background: "#E5E7EB" }} />
+      </div>
+
+      {/* 신살 한 줄 캐릭터 */}
+      <div className="rounded-2xl px-4 py-4 flex flex-col items-center gap-2 text-center border-2 border-dashed border-charcoal/25" style={{ background: "#FFFDF5" }}>
+        <span className="text-[12px] text-text-muted">내 신살을 한 줄로</span>
+        <p className="text-[20px]" style={{ ...BINGGRAE, color: PINK }}>{charHead}</p>
+        <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{charLine}</p>
+      </div>
+
+      {/* 희귀도 + 한 줄 밈 */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-3 py-3.5 flex flex-col items-center gap-1 text-center">
+          <Ico as={DoodleKey} size={18} />
+          <span className="text-[12px] text-text-muted">도감 희귀도</span>
+          <span className="text-[15px]" style={{ ...BINGGRAE, color: PINK }}>{rarity}</span>
+        </div>
+        <div className="rounded-2xl px-3 py-3.5 flex flex-col items-center justify-center gap-1 text-center border-2 border-dashed border-charcoal/25" style={{ background: "#FFFDF5" }}>
+          <span className="text-[12px] text-text-muted">한 줄 요약</span>
+          <span className="text-[15px]" style={{ ...BINGGRAE, color: PINK }}>{meme}</span>
+        </div>
+      </div>
 
       {/* consult 크로스셀 */}
       <Link href="/v3/consult" className="rounded-2xl px-4 py-4 flex items-center gap-3 active:opacity-85 transition-opacity" style={{ background: "linear-gradient(160deg,#FFF6FA,#FFFDF5)", border: "2px solid #2D2D2D" }}>

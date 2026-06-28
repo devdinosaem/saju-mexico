@@ -67,6 +67,20 @@ export default function ShopPage() {
           <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>0.8명태</span>
         </Link>
 
+        {/* ★ 내 신살 도감 — 신살 리포트 */}
+        <Link href="/v3/sinsal" className="rounded-2xl bg-white border border-charcoal/10 p-4 flex items-center gap-3.5 active:opacity-90 transition-opacity">
+          <div className="p-[3px] rounded-full shrink-0" style={{ background: "linear-gradient(135deg, #FBBF24, #E84B6A)" }}>
+            <div className="w-[52px] h-[52px] rounded-full overflow-hidden border-2 border-white flex items-center justify-center" style={{ background: "#FEF3C7" }}>
+              {ILJU_SVG_ICONS[ME_KEY]?.(getIljuProfileViewBox(ME_KEY))}
+            </div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[16px] text-charcoal" style={BINGGRAE}>내 신살 도감</p>
+            <p className="text-[13px] text-charcoal/60 leading-snug mt-0.5" style={GAEGU}>무서운 살의 진짜 뜻 — 능력치·시너지·올해 운까지</p>
+          </div>
+          <span className="px-3 py-2 rounded-xl text-cream text-[12px] text-center shrink-0" style={{ background: PINK, ...BINGGRAE }}>0.9명태</span>
+        </Link>
+
         {/* 올해운 + 광고 */}
         <div className="grid grid-cols-2 gap-2.5">
           <div className="rounded-2xl bg-white border border-charcoal/10 p-3.5 flex flex-col h-[168px]">

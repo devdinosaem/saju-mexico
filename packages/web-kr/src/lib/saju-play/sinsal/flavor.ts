@@ -250,6 +250,15 @@ export const SINSAL: Record<string, SinsalInfo> = {
   },
 }
 
+// 시그니처 능력치 → 한 줄 밈 (공유용)
+export const STAT_MEME: Record<SinsalStat, string> = {
+  이동: "가만 못 있는 자유로운 영혼",
+  매력: "어딜 가나 시선 강탈러",
+  재능: "타고난 재주꾼",
+  추진: "한번 가면 끝장 보는 불도저",
+  복: "은근 운 좋은 럭키가이",
+}
+
 // 신살 시너지 — 능력치 축 2개가 함께 있을 때의 조합 캐릭터
 export type Synergy = { a: SinsalStat; b: SinsalStat; alias: string; line: string }
 export const SYNERGY: Synergy[] = [
