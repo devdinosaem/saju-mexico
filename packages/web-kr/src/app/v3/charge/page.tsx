@@ -5,30 +5,15 @@ import { PRICES, priceLabel } from "@/lib/prices"
 import { DoodleSparkle, DoodleHeart, DoodleCrown } from "@/components/doodles"
 import { DoodleMyeongtae, DoodleMyeongtaePink } from "@/components/doodle-myeongtae"
 import { useBalance, useHistory } from "@/lib/balance"
+import { CHARGE_PLANS } from "@/lib/payments/plans"
+import { requestTossCharge } from "@/lib/payments/toss"
 
 const GAEGU: React.CSSProperties = {
   fontFamily: "'Cafe24Dongdong', var(--font-gaegu), cursive",
   letterSpacing: "normal",
 }
 
-const PLANS = [
-  {
-    key: "small",
-    label: "작은 명태",
-    amount: 1,
-    price: "₩980",
-    desc: "딱 한 마리",
-    highlight: false,
-  },
-  {
-    key: "big",
-    label: "큰 명태",
-    amount: 10,
-    price: "₩9,500",
-    desc: "3% 할인",
-    highlight: true,
-  },
-]
+const PLANS = CHARGE_PLANS
 
 const COSTS = [
   { label: "커플 궁합 분석",     cost: priceLabel(PRICES.coupleCompat),       free: PRICES.coupleCompat === 0       },
@@ -83,6 +68,7 @@ export default function ChargePage() {
           {PLANS.map(plan => (
             <button
               key={plan.key}
+              onClick={() => requestTossCharge(plan)}
               className={`rounded-2xl border-2 p-4 flex flex-col items-center gap-2 active:scale-[0.98] transition-transform text-left ${
                 plan.highlight
                   ? "bg-pink/8 border-pink"
@@ -103,7 +89,7 @@ export default function ChargePage() {
               }
               <div className="text-center">
                 <p className="text-[13px] font-bold text-charcoal">{plan.label}</p>
-                <p className="text-[11px] text-text-muted mt-0.5">명태 {plan.amount}개</p>
+                <p className="text-[11px] text-text-muted mt-0.5">명태 {plan.myeongtae}개</p>
                 {plan.desc && (
                   <p className={`text-[10px] mt-0.5 ${plan.highlight ? "text-pink font-bold" : "text-text-muted"}`}>{plan.desc}</p>
                 )}
@@ -111,7 +97,7 @@ export default function ChargePage() {
               <div className={`w-full py-2 rounded-xl text-[13px] font-black text-center ${
                 plan.highlight ? "bg-pink text-cream" : "bg-charcoal text-cream"
               }`} style={GAEGU}>
-                {plan.price}
+                ₩{plan.krw.toLocaleString()}
               </div>
             </button>
           ))}

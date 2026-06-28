@@ -1,5 +1,5 @@
 {
-  "name": "saju-mexico",
+  "name": "saju",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -7,8 +7,9 @@
     "test:engine": "pnpm --filter saju-engine test",
     "test:report": "pnpm --filter saju-report test",
     "test:all": "pnpm -r test",
-    "dev": "pnpm --filter web dev",
-    "build": "pnpm -r build"
+    "dev": "pnpm --filter web-mx dev",
+    "build": "pnpm -r build",
+    "generate:preview": "pnpm --filter web-kr generate:preview"
   },
   "devDependencies": {
     "next": "^16.2.0",
