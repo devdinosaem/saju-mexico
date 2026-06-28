@@ -771,96 +771,6 @@ export function DoodleMushroom({ className = "" }: { className?: string; style?:
   );
 }
 
-export function DoodleDarkFish({ className = "" }: { className?: string; style?: React.CSSProperties }) {
-  return (
-    <svg viewBox="0 0 52 26" className={`w-11 h-6 ${className}`} fill="none">
-      {/* 꼬리 */}
-      <path d="M9 13 L2 7 L5 13 L2 19Z" fill="#374151" stroke="#2D2D2D" strokeWidth="1.2" strokeLinejoin="round"/>
-      {/* 몸체 */}
-      <path d="M9 13 Q14 4 36 13 Q14 22 9 13Z" fill="#374151" stroke="#2D2D2D" strokeWidth="1.3"/>
-      {/* 등지느러미 */}
-      <path d="M20 7 Q25 2 30 7" fill="#4B5563" stroke="#2D2D2D" strokeWidth="0.9" strokeLinecap="round"/>
-      {/* 눈 */}
-      <circle cx="33" cy="11.5" r="2" fill="#E5E7EB"/>
-      <circle cx="33.3" cy="11.5" r="0.8" fill="#1F2937"/>
-      <circle cx="33.5" cy="11" r="0.4" fill="white"/>
-      {/* 점 무늬 (비늘) */}
-      <circle cx="16" cy="12" r="0.8" fill="#9CA3AF" opacity="0.5"/>
-      <circle cx="22" cy="10" r="0.7" fill="#9CA3AF" opacity="0.45"/>
-      <circle cx="22" cy="16" r="0.7" fill="#9CA3AF" opacity="0.45"/>
-      <circle cx="14" cy="15" r="0.6" fill="#9CA3AF" opacity="0.35"/>
-      <circle cx="28" cy="9.5" r="0.6" fill="#9CA3AF" opacity="0.35"/>
-      <circle cx="18" cy="8.5" r="0.5" fill="#9CA3AF" opacity="0.3"/>
-    </svg>
-  );
-}
-
-export function DoodleFishRope({ className = "" }: { className?: string; style?: React.CSSProperties }) {
-  return (
-    <svg viewBox="0 0 36 56" className={`w-8 h-12 ${className}`} fill="none">
-      {/* 끈 베이스 — 크림색 */}
-      <path d="M18 2 L18 40" stroke="#EDE0D0" strokeWidth="7" fill="none" strokeLinecap="round"/>
-      {/* 꼬임 줄무늬 — 대각선 교차 */}
-      {[3,7,11,15,19,23,27,31,35].map((y) => (
-        <line key={`a${y}`} x1="14" y1={y} x2="22" y2={y+4} stroke="#C4AD96" strokeWidth="1.2" opacity="0.65"/>
-      ))}
-      {[5,9,13,17,21,25,29,33,37].map((y) => (
-        <line key={`b${y}`} x1="22" y1={y} x2="14" y2={y+4} stroke="#D4C0AA" strokeWidth="0.8" opacity="0.4"/>
-      ))}
-      {/* 하이라이트 */}
-      <path d="M16 2 Q15 14 16 28 Q15 34 16 40" stroke="#F5EDE0" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.7"/>
-      {/* 매듭 */}
-      <ellipse cx="18" cy="41.5" rx="5.5" ry="3" fill="#EDE0D0" stroke="#2D2D2D" strokeWidth="1"/>
-      <path d="M13 41.5 Q18 39 23 41.5" stroke="#C4AD96" strokeWidth="0.9" fill="none"/>
-      {/* 꼬리 */}
-      <path d="M8 46 L3 41 L7 46 L3 51Z" fill="#374151" stroke="#2D2D2D" strokeWidth="1.1" strokeLinejoin="round"/>
-      {/* 물고기 몸체 */}
-      <path d="M8 46 Q13 40 28 46 Q13 52 8 46Z" fill="#374151" stroke="#2D2D2D" strokeWidth="1.3"/>
-      {/* 등지느러미 */}
-      <path d="M15 42.5 Q19 38 23 42.5" fill="#4B5563" stroke="#2D2D2D" strokeWidth="0.8" strokeLinecap="round"/>
-      {/* 눈 */}
-      <circle cx="25" cy="44.5" r="1.8" fill="#E5E7EB"/>
-      <circle cx="25.2" cy="44.5" r="0.7" fill="#1F2937"/>
-      <circle cx="25.4" cy="44.1" r="0.3" fill="white"/>
-      {/* 점 무늬 */}
-      <circle cx="15" cy="45" r="0.7" fill="#9CA3AF" opacity="0.5"/>
-      <circle cx="19" cy="43.5" r="0.6" fill="#9CA3AF" opacity="0.45"/>
-      <circle cx="19" cy="48.5" r="0.6" fill="#9CA3AF" opacity="0.45"/>
-    </svg>
-  );
-}
-
-export function DoodleAnchorWish({ className = "" }: { className?: string; style?: React.CSSProperties }) {
-  return (
-    <svg viewBox="0 0 60 76" className={`w-10 h-12 ${className}`} fill="none">
-      {/* 닻 아랫부분 flukes */}
-      <path d="M8 52 Q3 62 9 68 Q20 76 30 62 Q40 76 51 68 Q57 62 52 52 L30 48 Z" fill="#1F2937" stroke="#2D2D2D" strokeWidth="1.5" strokeLinejoin="round"/>
-      {/* 닻 세로봉 shank */}
-      <rect x="27" y="20" width="6" height="30" rx="3" fill="#1F2937" stroke="#2D2D2D" strokeWidth="1.5"/>
-      {/* 닻 가로봉 stock */}
-      <rect x="9" y="17" width="42" height="6" rx="3" fill="#1F2937" stroke="#2D2D2D" strokeWidth="1.5"/>
-      {/* 링 */}
-      <circle cx="30" cy="9" r="7" stroke="#2D2D2D" strokeWidth="2.5" fill="none"/>
-      {/* 밧줄 베이스 — 세로 */}
-      <line x1="30" y1="14" x2="30" y2="48" stroke="#EDE0D0" strokeWidth="7" strokeLinecap="round"/>
-      {/* 밧줄 꼬임 A */}
-      {[14,18,22,26,30,34,38,42,46].map((y) => (
-        <line key={`a${y}`} x1="26" y1={y} x2="34" y2={y+4} stroke="#C4AD96" strokeWidth="1.2" opacity="0.65"/>
-      ))}
-      {/* 밧줄 꼬임 B */}
-      {[16,20,24,28,32,36,40,44].map((y) => (
-        <line key={`b${y}`} x1="34" y1={y} x2="26" y2={y+4} stroke="#D4C0AA" strokeWidth="0.9" opacity="0.4"/>
-      ))}
-      {/* 밧줄 하이라이트 */}
-      <path d="M28 14 Q27 26 28 38 Q27 44 28 48" stroke="#F5EDE0" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.7"/>
-      {/* 밧줄 링 위 호 */}
-      <path d="M23 9 Q23 2 30 2 Q37 2 37 9" stroke="#EDE0D0" strokeWidth="6" fill="none" strokeLinecap="round"/>
-      {/* WISH LUCK */}
-      <text x="30" y="65" textAnchor="middle" fontSize="5.5" fill="white" fontWeight="bold">WISH LUCK</text>
-    </svg>
-  );
-}
-
 // ── 가구 / 소품 ──────────────────────────────────────────────
 export function DoodleChair({ className = "" }: { className?: string; style?: React.CSSProperties }) {
   return (
@@ -4552,6 +4462,107 @@ export function DoodleTropicalDrink({ className = "" }: { className?: string; st
       <path d="M10 10 L12 34 Q14 36 20 36 Q26 36 28 34 L30 10 Z" fill="none" stroke="#2D2D2D" strokeWidth="1.5" strokeLinejoin="round"/>
       <circle cx="10" cy="10" r="4" fill="#FBBF24" stroke="#2D2D2D" strokeWidth="1"/>
       <path d="M8 10 L10 8 L12 10 L10 12 Z" fill="#F87171" stroke="#2D2D2D" strokeWidth="0.6"/>
+    </svg>
+  );
+}
+
+// ── 관계 & 심리 개념 6종 ──
+
+// 매력 — 윙크하는 매력적인 얼굴 + 떠다니는 하트
+export function DoodleCharm({ className = "" }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg viewBox="0 0 40 40" className={`w-8 h-8 ${className}`} fill="none">
+      {/* 얼굴 */}
+      <circle cx="19" cy="21" r="14" fill="#FACC15" stroke="#2D2D2D" strokeWidth="1.5" />
+      {/* 왼쪽 눈 — 윙크 */}
+      <path d="M11 19 Q14 16 17 19" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      {/* 오른쪽 눈 */}
+      <circle cx="25" cy="19" r="1.8" fill="#2D2D2D" />
+      {/* 볼터치 */}
+      <ellipse cx="11" cy="25" rx="2.5" ry="1.5" fill="#FB923C" opacity="0.4" />
+      <ellipse cx="27" cy="25" rx="2.5" ry="1.5" fill="#FB923C" opacity="0.4" />
+      {/* 미소 */}
+      <path d="M14 26 Q19 31 24 26" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      {/* 떠 있는 하트 */}
+      <path d="M32 12.5 C32 12.5 28 9.5 28 7.2 A2.3 2.3 0 0 1 32 6 A2.3 2.3 0 0 1 36 7.2 C36 9.5 32 12.5 32 12.5Z" fill="#E84B6A" stroke="#2D2D2D" strokeWidth="0.8" />
+    </svg>
+  );
+}
+
+// 당기다 — 말굽 자석 + 끌어당기는 방향선
+export function DoodlePull({ className = "" }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg viewBox="0 0 36 36" className={`w-7 h-7 ${className}`} fill="none">
+      {/* 자석 본체 */}
+      <path d="M7 9 L15 9 L15 22 A3 3 0 0 0 21 22 L21 9 L29 9 L29 22 A11 11 0 0 1 7 22 Z" fill="#EF4444" stroke="#2D2D2D" strokeWidth="1.5" strokeLinejoin="round" />
+      {/* 흰 단자 */}
+      <rect x="6.5" y="7" width="9" height="5" rx="1.5" fill="#FFFFFF" stroke="#2D2D2D" strokeWidth="1.2" />
+      <rect x="20.5" y="7" width="9" height="5" rx="1.5" fill="#FFFFFF" stroke="#2D2D2D" strokeWidth="1.2" />
+    </svg>
+  );
+}
+
+// 밀다 — 손바닥 + 미는 방향선
+export function DoodlePush({ className = "" }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg viewBox="0 0 36 36" className={`w-7 h-7 ${className}`} fill="none">
+      {/* 손바닥 */}
+      <rect x="15" y="11" width="14" height="16" rx="6" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.5" />
+      {/* 손가락 4개 */}
+      <rect x="16.5" y="5" width="2.6" height="9" rx="1.3" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.2" />
+      <rect x="19.6" y="4" width="2.6" height="10" rx="1.3" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.2" />
+      <rect x="22.7" y="5" width="2.6" height="9" rx="1.3" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.2" />
+      <rect x="25.8" y="7" width="2.6" height="7" rx="1.3" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.2" />
+      {/* 엄지 */}
+      <path d="M15 16 Q11 16 11 20 Q11 23 15 23" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.2" />
+      {/* 미는 방향선 */}
+      <path d="M3 14 L8 14" stroke="#2D2D2D" strokeWidth="1.4" strokeLinecap="round" opacity="0.7" />
+      <path d="M2 19 L7 19" stroke="#2D2D2D" strokeWidth="1.4" strokeLinecap="round" opacity="0.7" />
+      <path d="M3 24 L8 24" stroke="#2D2D2D" strokeWidth="1.4" strokeLinecap="round" opacity="0.7" />
+    </svg>
+  );
+}
+
+// 역효과 — 되돌아와 꽂히는 화살 + 빨강 충격 스파크
+export function DoodleBackfire({ className = "" }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg viewBox="0 0 36 36" className={`w-7 h-7 ${className}`} fill="none">
+      {/* 되돌아오는 화살 곡선 */}
+      <path d="M7 26 C5 8 31 8 27 24" stroke="#FB923C" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      {/* 화살촉 (아래로 꽂힘) */}
+      <path d="M23 22 L27 28 L31 22 Z" fill="#FB923C" stroke="#2D2D2D" strokeWidth="1" strokeLinejoin="round" />
+      {/* 충격 스파크 */}
+      <path d="M27 30 L25 34 M27 30 L31 34 M27 29 L27 34" stroke="#EF4444" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// 확신 — 초록 인장 + 흰 체크
+export function DoodleConfidence({ className = "" }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg viewBox="0 0 36 36" className={`w-7 h-7 ${className}`} fill="none">
+      {/* 인장 본체 */}
+      <circle cx="18" cy="17" r="13" fill="#4ADE80" stroke="#2D2D2D" strokeWidth="1.5" />
+      {/* 안쪽 링 */}
+      <circle cx="18" cy="17" r="9.5" fill="none" stroke="#FFFFFF" strokeWidth="1.2" opacity="0.6" />
+      {/* 체크 */}
+      <path d="M11 17 L16 22 L25 11" stroke="#FFFFFF" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      {/* 반짝임 */}
+      <path d="M31 8 L32 11 L35 12 L32 13 L31 16 L30 13 L27 12 L30 11 Z" fill="#FACC15" stroke="#2D2D2D" strokeWidth="0.5" />
+    </svg>
+  );
+}
+
+// 장소 — 지도 핀
+export function DoodleLocation({ className = "" }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg viewBox="0 0 36 36" className={`w-7 h-7 ${className}`} fill="none">
+      {/* 그림자 */}
+      <ellipse cx="18" cy="32" rx="6" ry="1.8" fill="#2D2D2D" opacity="0.15" />
+      {/* 핀 본체 */}
+      <path d="M18 3 A11 11 0 0 1 29 14 C29 22 18 31 18 31 C18 31 7 22 7 14 A11 11 0 0 1 18 3 Z" fill="#E84B6A" stroke="#2D2D2D" strokeWidth="1.5" strokeLinejoin="round" />
+      {/* 안쪽 원 */}
+      <circle cx="18" cy="14" r="4.5" fill="#FFFFFF" stroke="#2D2D2D" strokeWidth="1.2" />
     </svg>
   );
 }

@@ -1,0 +1,114 @@
+﻿import { describe, it } from 'vitest';
+import { calculateSaju, STEM_KOREAN, BRANCH_KOREAN } from '../src/index.js';
+
+function getIlju(year: number, month: number, day: number, city?: string): string {
+  const saju = calculateSaju({ year, month, day, hour: 12, minute: 0, city });
+  return STEM_KOREAN[saju.fourPillars.day.stem] + BRANCH_KOREAN[saju.fourPillars.day.branch];
+}
+
+const candidates = [
+  { name: '아브라함 링컨', birth: [1809,2,12], city: 'Hodgenville' },
+  { name: '마하트마 간디', birth: [1869,10,2], city: 'Porbandar' },
+  { name: '윈스턴 처칠', birth: [1874,11,30], city: 'Woodstock' },
+  { name: '마틴 루터 킹', birth: [1929,1,15], city: 'Atlanta' },
+  { name: '넬슨 만델라', birth: [1918,7,18], city: 'Mthatha' },
+  { name: '블라디미르 푸틴', birth: [1952,10,7], city: 'Saint Petersburg' },
+  { name: '빌 클린턴', birth: [1946,8,19], city: 'Hope' },
+  { name: '조지 워싱턴', birth: [1732,2,22], city: 'Philadelphia' },
+  { name: '존 F 케네디', birth: [1917,5,29], city: 'Brookline' },
+  { name: '스티브 잡스', birth: [1955,2,24], city: 'San Francisco' },
+  { name: '빌 게이츠', birth: [1955,10,28], city: 'Seattle' },
+  { name: '워렌 버핏', birth: [1930,8,30], city: 'Omaha' },
+  { name: '제프 베이조스', birth: [1964,1,12], city: 'Albuquerque' },
+  { name: '마크 저커버그', birth: [1984,5,14], city: 'White Plains' },
+  { name: '잭 마', birth: [1964,9,10], city: 'Hangzhou' },
+  { name: '팀 쿡', birth: [1960,11,1], city: 'Mobile' },
+  { name: '알버트 아인슈타인', birth: [1879,3,14], city: 'Ulm' },
+  { name: '스티븐 호킹', birth: [1942,1,8], city: 'Oxford' },
+  { name: '찰리 채플린', birth: [1889,4,16], city: 'London' },
+  { name: '피카소', birth: [1881,10,25], city: 'Malaga' },
+  { name: '모차르트', birth: [1756,1,27], city: 'Salzburg' },
+  { name: '베토벤', birth: [1770,12,17], city: 'Bonn' },
+  { name: '마이클 펠프스', birth: [1985,6,30], city: 'Baltimore' },
+  { name: '타이거 우즈', birth: [1975,12,30], city: 'Cypress' },
+  { name: '세레나 윌리엄스', birth: [1981,9,26], city: 'Saginaw' },
+  { name: '로저 페더러', birth: [1981,8,8], city: 'Basel' },
+  { name: '존 레논', birth: [1940,10,9], city: 'Liverpool' },
+  { name: '프레디 머큐리', birth: [1946,9,5], city: 'Stone Town' },
+  { name: '엘비스 프레슬리', birth: [1935,1,8], city: 'Tupelo' },
+  { name: '비욘세', birth: [1981,9,4], city: 'Houston' },
+  { name: '에미넴', birth: [1972,10,17], city: 'Saint Joseph' },
+  { name: '드레이크', birth: [1986,10,24], city: 'Toronto' },
+  { name: '저스틴 비버', birth: [1994,3,1], city: 'London' },
+  { name: '아리아나 그란데', birth: [1993,6,26], city: 'Boca Raton' },
+  { name: '셀레나 고메즈', birth: [1992,7,22], city: 'Grand Prairie' },
+  { name: '두아 리파', birth: [1995,8,22], city: 'London' },
+  { name: '해리 스타일스', birth: [1994,2,1], city: 'Redditch' },
+  { name: '에드 시런', birth: [1991,2,17], city: 'Halifax' },
+  { name: '아델', birth: [1988,5,5], city: 'London' },
+  { name: '빌리 아일리시', birth: [2001,12,18], city: 'Los Angeles' },
+  { name: '폴 매카트니', birth: [1942,6,18], city: 'Liverpool' },
+  { name: '리한나', birth: [1988,2,20], city: 'Bridgetown' },
+  { name: '태종', birth: [1367,5,16], city: 'Seoul' },
+  { name: '문종', birth: [1414,11,15], city: 'Seoul' },
+  { name: '단종', birth: [1441,8,9], city: 'Seoul' },
+  { name: '연산군', birth: [1476,11,23], city: 'Seoul' },
+  { name: '광해군', birth: [1575,6,4], city: 'Seoul' },
+  { name: '명종', birth: [1534,7,3], city: 'Seoul' },
+  { name: '현종', birth: [1641,3,14], city: 'Seoul' },
+  { name: '경종', birth: [1688,10,28], city: 'Seoul' },
+  { name: '순조', birth: [1790,7,29], city: 'Seoul' },
+  { name: '헌종', birth: [1827,9,8], city: 'Seoul' },
+  { name: '철종', birth: [1831,7,25], city: 'Seoul' },
+  { name: '순종', birth: [1874,3,25], city: 'Seoul' },
+  { name: '셰익스피어', birth: [1564,4,23], city: 'Stratford-upon-Avon' },
+  { name: '레오나르도 다빈치', birth: [1452,4,15], city: 'Vinci' },
+  { name: '마리 퀴리', birth: [1867,11,7], city: 'Warsaw' },
+  { name: '니콜라 테슬라', birth: [1856,7,10], city: 'Smiljan' },
+  { name: '칼 마르크스', birth: [1818,5,5], city: 'Trier' },
+  { name: '나탈리 포트만', birth: [1981,6,9], city: 'Jerusalem' },
+  { name: '안젤리나 졸리', birth: [1975,6,4], city: 'Los Angeles' },
+  { name: '윌 스미스', birth: [1968,9,25], city: 'Philadelphia' },
+  { name: '에마 스톤', birth: [1988,11,6], city: 'Scottsdale' },
+  { name: '마고 로비', birth: [1990,7,2], city: 'Dalby' },
+  { name: '라이언 고슬링', birth: [1980,11,12], city: 'London' },
+  { name: '제니퍼 로렌스', birth: [1990,8,15], city: 'Louisville' },
+  { name: '젠데이아', birth: [1996,9,1], city: 'Oakland' },
+  { name: '톰 크루즈', birth: [1962,7,3], city: 'Syracuse' },
+  { name: '키아누 리브스', birth: [1964,9,2], city: 'Beirut' },
+  { name: '엠마 왓슨', birth: [1990,4,15], city: 'Paris' },
+  { name: '로버트 다우니 주니어', birth: [1965,4,4], city: 'Manhattan' },
+  { name: '크리스 헴스워스', birth: [1983,8,11], city: 'Melbourne' },
+  { name: '크리스 에반스', birth: [1981,6,13], city: 'Boston' },
+  { name: '갈 가돗', birth: [1985,4,30], city: 'Petah Tikva' },
+  { name: '레오나르도 디카프리오', birth: [1974,11,11], city: 'Los Angeles' },
+  { name: '조니 뎁', birth: [1963,6,9], city: 'Owensboro' },
+  { name: '라나 델 레이', birth: [1985,6,21], city: 'New York' },
+  { name: '스칼렛 요한슨', birth: [1984,11,22], city: 'New York' },
+  { name: '앤 해서웨이', birth: [1982,11,12], city: 'Brooklyn' },
+  { name: '브래드 피트', birth: [1963,12,18], city: 'Shawnee' },
+  { name: '티모시 샬라메', birth: [1995,12,27], city: 'New York' },
+  { name: '밀리 바비 브라운', birth: [2004,2,19], city: 'Marbella' },
+  { name: '톰 홀랜드', birth: [1996,6,1], city: 'Kingston upon Thames' },
+  { name: '닐 암스트롱', birth: [1930,8,5], city: 'Wapakoneta' },
+  { name: '스티브 발머', birth: [1956,3,24], city: 'Detroit' },
+  { name: '닐 암스트롱', birth: [1930,8,5], city: 'Wapakoneta' },
+  { name: '오프라 윈프리', birth: [1954,1,29], city: 'Kosciusko' },
+  { name: '엘론 머스크', birth: [1971,6,28], city: 'Pretoria' },
+];
+
+const target = new Set(['갑인','갑자','무술','무자','무진','병오','을사','을유','을축','정사']);
+
+describe('일주 후보 탐색', () => {
+  it('matches', () => {
+    for (const c of candidates) {
+      try {
+        const ilju = getIlju(c.birth[0], c.birth[1], c.birth[2], c.city);
+        if (target.has(ilju)) {
+          console.log(ilju + '\t' + c.name + '\t' + c.birth.join('.'));
+        }
+      } catch(e) {}
+    }
+    expect(true).toBe(true);
+  });
+});

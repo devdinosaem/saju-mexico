@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Black_Han_Sans, Noto_Sans_KR } from "next/font/google";
+import { Black_Han_Sans, Noto_Sans_KR, Jua, Gaegu } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const notoSansKR = Noto_Sans_KR({
@@ -10,6 +11,18 @@ const notoSansKR = Noto_Sans_KR({
 
 const blackHanSans = Black_Han_Sans({
   variable: "--font-black-han-sans",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const jua = Jua({
+  variable: "--font-jua",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const gaegu = Gaegu({
+  variable: "--font-gaegu",
   subsets: ["latin"],
   weight: "400",
 });
@@ -42,9 +55,14 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${notoSansKR.variable} ${blackHanSans.variable} h-full antialiased`}
+      className={`${notoSansKR.variable} ${blackHanSans.variable} ${jua.variable} ${gaegu.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+        />
         {children}
       </body>
     </html>

@@ -1,0 +1,11 @@
+User-agent: *
+Content-Signal: search=yes,ai-train=no
+Allow: /
+
+Disallow: /api/
+Disallow: /auth/
+Disallow: /admin/
+Disallow: /test/
+Disallow: /payment/
+
+Sitemap: https://sajuti.com/sitemap.xml

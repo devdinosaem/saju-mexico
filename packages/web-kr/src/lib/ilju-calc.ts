@@ -1,16 +1,12 @@
 import { ILJU_TYPES, type IljuType } from "./ilju-types"
-
-// SVG가 준비된 일주 ID 풀 (mock 계산 시 이 범위 내에서만 반환)
-const SVG_POOL_M = ["갑자-m", "갑오-m", "병오-m", "병인-m", "경진-m", "무인-m", "임신-m"]
-const SVG_POOL_F = ["갑자-f", "을미-f", "병자-f", "병인-f", "계묘-f"]
+import { dayPillar, STEM_KOREAN, BRANCH_KOREAN } from "manseryeok"
 
 export function calcIlju(year: string, month: string, day: string, gender: "M" | "F"): IljuType {
   const y = parseInt(year) || 0
   const m = parseInt(month) || 0
   const d = parseInt(day) || 0
-  const hash = y * 13 + m * 31 + d * 7
-  const pool = gender === "M" ? SVG_POOL_M : SVG_POOL_F
-  const id = pool[hash % pool.length]
+  const gz = dayPillar(y, m, d)
+  const id = STEM_KOREAN[gz.stem] + BRANCH_KOREAN[gz.branch] + (gender === "M" ? "-m" : "-f")
   return ILJU_TYPES.find(t => t.id === id) ?? ILJU_TYPES[0]
 }
 

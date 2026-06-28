@@ -1,69 +1,23 @@
 "use client"
 import { useState, useMemo } from "react"
 import { getSonEopsDays, buildMonthDays } from "@/lib/lunar-utils"
-import { dayPillar, STEM_ELEMENT } from "manseryeok"
+import { getDayElem, getDayFortune, type ElemKr } from "@/lib/day-fortune"
+import { useUser } from "@/lib/UserContext"
 
 const now = new Date()
 const YEAR = now.getFullYear()
 const MONTH = now.getMonth() + 1
 const TODAY = now.getDate()
 
-type Elem = "목" | "화" | "토" | "금" | "수"
-
-const ELEM_COLOR: Record<Elem, string> = {
+const ELEM_COLOR: Record<ElemKr, string> = {
   목: "#4ADE80", 화: "#F87171", 토: "#FBBF24", 금: "#94A3B8", 수: "#60A5FA",
 }
 
-const FIVEELEMENT_KR: Record<string, Elem> = {
-  wood: "목", fire: "화", earth: "토", metal: "금", water: "수",
+const ELEM_HANJA: Record<ElemKr, string> = {
+  목: "木", 화: "火", 토: "土", 금: "金", 수: "水",
 }
 
-function getDayElem(day: number): Elem {
-  const gz = dayPillar(YEAR, MONTH, day)
-  return FIVEELEMENT_KR[STEM_ELEMENT[gz.stem]]
-}
-
-type DayFortune = {
-  overall: number
-  money: number
-  love: number
-  health: number
-  advice: string
-  lucky: string
-}
-
-const ADVICE_POOL = [
-  "오늘은 새로운 시도보다 기존 일에 집중하는 게 좋아.",
-  "작은 결단이 큰 흐름을 바꿀 수 있어. 망설이지 마.",
-  "관계에서 먼저 손 내밀면 뜻밖의 기쁨이 생겨.",
-  "재물 관련 결정은 오늘 피하는 게 나아. 내일이 더 좋아.",
-  "에너지가 넘치는 날. 오늘 시작한 것은 잘 마무리돼.",
-  "조용히 있어도 좋아. 충전이 필요한 날이야.",
-  "뜻하지 않은 만남에서 기회가 올 수 있어.",
-  "오늘 한 약속은 꼭 지켜. 신뢰가 쌓이는 날.",
-  "창의적인 생각이 폭발하는 날. 메모해 둬.",
-  "몸 컨디션 체크. 오늘은 무리하지 않는 게 최선.",
-]
-
-const LUCKY_THINGS = [
-  "행운색 빨강 · 방향 남쪽 · 숫자 9",
-  "행운색 파랑 · 방향 북쪽 · 숫자 1",
-  "행운색 초록 · 방향 동쪽 · 숫자 3",
-  "행운색 흰색 · 방향 서쪽 · 숫자 7",
-  "행운색 노랑 · 방향 중앙 · 숫자 5",
-]
-
-function getDayFortune(day: number): DayFortune {
-  const s = day * 7 + 3
-  return {
-    overall: ((s * 1) % 3) + 3,
-    money:   ((s * 2) % 4) + 2,
-    love:    ((s * 3) % 4) + 2,
-    health:  ((s * 4) % 3) + 3,
-    advice:  ADVICE_POOL[s % ADVICE_POOL.length],
-    lucky:   LUCKY_THINGS[s % LUCKY_THINGS.length],
-  }
-}
+const elemOf = (day: number): ElemKr => getDayElem(YEAR, MONTH, day)
 
 function Stars({ count }: { count: number }) {
   return (
@@ -75,7 +29,9 @@ function Stars({ count }: { count: number }) {
 
 export default function MonthCalendar() {
   const [selected, setSelected] = useState<number>(TODAY)
-  const fortune = getDayFortune(selected)
+  const { ilju } = useUser()
+  const iljuHanja = ilju?.hanja ?? "甲子"
+  const fortune = getDayFortune(iljuHanja, YEAR, MONTH, selected)
   const DAYS = useMemo(() => buildMonthDays(YEAR, MONTH), [])
   const LUCKY_DAYS = useMemo(() => getSonEopsDays(YEAR, MONTH), [])
 
@@ -108,7 +64,7 @@ export default function MonthCalendar() {
         <div className="grid grid-cols-7 gap-y-1">
           {DAYS.map((day, i) => {
             if (!day) return <div key={`e-${i}`} />
-            const elem = getDayElem(day)
+            const elem = elemOf(day)
             const isToday = day === TODAY
             const isLucky = LUCKY_DAYS.includes(day)
             const isSel = day === selected
@@ -146,26 +102,34 @@ export default function MonthCalendar() {
       <div className="rounded-2xl bg-white border border-charcoal/10 overflow-hidden">
         <div
           className="px-4 py-3 flex items-center justify-between"
-          style={{ background: `${ELEM_COLOR[getDayElem(selected)]}22` }}
+          style={{ background: `${ELEM_COLOR[fortune.element]}22` }}
         >
           <div>
             <p className="text-xs font-bold text-charcoal">
-              {MONTH}/{selected} {selected === TODAY ? "(오늘)" : ""}
+              {MONTH}/{selected} {selected === TODAY ? "(오늘)" : ""} · {fortune.ganji}일
             </p>
-            <p className="text-[11px] mt-0.5" style={{ color: ELEM_COLOR[getDayElem(selected)] }}>
-              {getDayElem(selected)}(
-              {getDayElem(selected) === "목" ? "木" : getDayElem(selected) === "화" ? "火" : getDayElem(selected) === "토" ? "土" : getDayElem(selected) === "금" ? "金" : "水"}
-              )의 기운
+            <p className="text-[11px] mt-0.5" style={{ color: ELEM_COLOR[fortune.element] }}>
+              {fortune.element}({ELEM_HANJA[fortune.element]})의 기운
             </p>
           </div>
           {LUCKY_DAYS.includes(selected) && (
             <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#92400E] border border-[#FBBF24]">
-              길일 ✦
+              손없는 날 ✦
             </span>
           )}
         </div>
 
-        <div className="px-4 py-3.5 space-y-2">
+        {/* 메인 문구 */}
+        <div className="px-4 pt-3.5 pb-3">
+          <p className="text-[15px] font-bold text-charcoal leading-snug">{fortune.main}</p>
+          <div className="flex items-start gap-1.5 mt-2">
+            <span className="text-sm leading-none mt-px">💬</span>
+            <p className="text-[12px] text-text-sub leading-relaxed flex-1">{fortune.subtext}</p>
+          </div>
+        </div>
+
+        {/* 별점 */}
+        <div className="px-4 py-3 space-y-2 border-t border-charcoal/5">
           {[
             { label: "전체운", val: fortune.overall },
             { label: "재물운", val: fortune.money },
@@ -179,9 +143,11 @@ export default function MonthCalendar() {
           ))}
         </div>
 
-        <div className="px-4 pb-3 space-y-1.5">
-          <p className="text-[12px] text-charcoal leading-relaxed">"{fortune.advice}"</p>
-          <p className="text-[11px] text-text-muted">{fortune.lucky}</p>
+        {/* 사주 근거 */}
+        <div className="px-4 py-2.5 border-t border-charcoal/5 flex items-center gap-1.5 flex-wrap">
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-charcoal/5 text-text-sub font-medium">{fortune.tenGodKr}</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-charcoal/5 text-text-sub font-medium">{fortune.phaseKr}</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-charcoal/5 text-text-sub font-medium">{fortune.spiritKr}</span>
         </div>
       </div>
     </div>

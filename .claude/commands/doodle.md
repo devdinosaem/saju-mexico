@@ -14,6 +14,23 @@
 5. 추가 후 export 확인
 6. `DOODLE-STYLE-GUIDE.md`의 "기존 스티커 목록" 테이블에 새 항목을 추가한다
 
+## 미리보기 페이지 관리
+
+- **두들 미리보기**: `preview/page.tsx` — 두들 스티커 전체 그리드
+- **로고 미리보기**: `preview-logo/page.tsx` — 로고 심볼 시안
+- **이 2개 페이지만 사용한다.** 별도 preview 페이지를 새로 만들지 않는다.
+- 새 두들 추가 시 `preview/page.tsx`의 ALL_DOODLES 배열에 추가하고, import도 추가한다.
+
+## ⚠️ preview 페이지에 섹션 추가 시 주의 (반복 에러 방지)
+
+preview-logo/page.tsx 등에 새 시안을 추가할 때 **wrapper `<div>` 닫힘 위치** 때문에 500 에러가 반복됨.
+
+**반드시 지킬 것:**
+1. 새 섹션 추가 전에 `</div>` depth를 확인한다
+2. 마지막 `</div>` (wrapper `max-w-[700px]` 닫기) 바로 **앞에** 새 섹션을 삽입한다
+3. 추가 후 `npx tsc --noEmit`으로 구조 에러 확인한다 (jsx 에러는 무시, closing tag 에러만 확인)
+4. 500 에러 발생 시: `taskkill //f //im node.exe` → `rm -rf .next` → 재시작
+
 ## 입력
 
 $ARGUMENTS — 생성할 두들의 단어/문구 (예: "커피", "왕관", "무지개", "선글라스 낀 곰")

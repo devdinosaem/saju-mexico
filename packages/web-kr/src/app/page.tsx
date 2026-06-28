@@ -16,61 +16,26 @@ import {
   DoodleLeaf,
   DoodleSmiley,
 } from "@/components/doodles";
+import { SajuTILogo } from "@/components/logo";
+import { SajuTILogoAnimated } from "@/components/logo-animated";
+import { getIljuType } from "@/lib/ilju-types";
 
-const SAMPLE_CARDS = [
-  {
-    id: "gyeongjin",
-    hanja: "庚辰",
-    name: "인간 탱크",
-    element: "금(金)",
-    yinyang: "양(陽)",
-    color: "bg-charcoal text-white",
-    tagColor: "bg-charcoal",
-    strengths: ["결단력", "리더십", "책임감"],
-    weaknesses: ["고집", "융통성 부족"],
-    quote: "벽이 있으면 부숨",
-    emoji: "🛡️",
-  },
-  {
-    id: "eulbyo",
-    hanja: "乙卯",
-    name: "감성 예술가",
-    element: "목(木)",
-    yinyang: "음(陰)",
-    color: "bg-lavender text-charcoal",
-    tagColor: "bg-lavender",
-    strengths: ["창의력", "공감력", "직관"],
-    weaknesses: ["우유부단", "감정 기복"],
-    quote: "느낌으로 해결함",
-    emoji: "🌸",
-  },
-  {
-    id: "imo",
-    hanja: "壬午",
-    name: "자유 영혼",
-    element: "수(水)",
-    yinyang: "양(陽)",
-    color: "bg-pink text-white",
-    tagColor: "bg-pink",
-    strengths: ["열정", "모험심", "적응력"],
-    weaknesses: ["산만함", "충동적"],
-    quote: "Plan A 실패? Plan F까지 있음",
-    emoji: "🔥",
-  },
-  {
-    id: "mujin",
-    hanja: "戊辰",
-    name: "인간 중장비",
-    element: "토(土)",
-    yinyang: "양(陽)",
-    color: "bg-mustard text-charcoal",
-    tagColor: "bg-mustard",
-    strengths: ["안정감", "신뢰", "끈기"],
-    weaknesses: ["느린 결정", "변화 거부"],
-    quote: "나는 안 움직여. 전진해.",
-    emoji: "⛰️",
-  },
-];
+const SAMPLE_CARDS = (["경진-m", "을묘-m", "임오-m", "무진-m"] as const).map(id => {
+  const t = getIljuType(id)!;
+  return {
+    id: t.id,
+    hanja: t.hanja,
+    name: t.name,
+    element: t.stemElement,
+    yinyang: t.yinyang,
+    tagColor: t.tagColor,
+    strengths: t.strengths,
+    weaknesses: t.weaknesses,
+    quote: t.quote,
+    emoji: t.emoji,
+  };
+});
+
 
 const REPORT_SECTIONS = [
   { icon: "💕", title: "연애운", preview: "당신이 끌리는 유형은" },
@@ -82,9 +47,9 @@ const REPORT_SECTIONS = [
 ];
 
 const CELEBRITIES = [
-  { emoji: "🎤", name: "아이유", ilju: "을묘(乙卯)", desc: "감성 예술가" },
-  { emoji: "⚽", name: "손흥민", ilju: "경인(庚寅)", desc: "금속 전사" },
-  { emoji: "🎬", name: "마동석", ilju: "무진(戊辰)", desc: "인간 중장비" },
+  { emoji: "🎤", name: "아이유", ilju: "을묘(乙卯)", desc: getIljuType("을묘-f")!.name },
+  { emoji: "⚽", name: "손흥민", ilju: "경인(庚寅)", desc: getIljuType("경인-m")!.name },
+  { emoji: "🎬", name: "마동석", ilju: "무진(戊辰)", desc: getIljuType("무진-m")!.name },
 ];
 
 const REVIEWS = [
@@ -101,91 +66,55 @@ export default function LandingPage() {
       <div className="w-full max-w-[440px] mx-auto overflow-hidden">
 
         {/* ═══ HERO ═══ */}
-        <section className="relative px-6 pt-14 pb-12 text-center">
+        <section className="relative px-6 pt-16 pb-14 text-center">
           <ScatteredDoodles />
 
-          <p className="font-display text-lg tracking-wider text-pink mb-6 relative">
-            ✦ 사주TI ✦
-          </p>
-
-          <h1 className="relative text-3xl font-extrabold leading-snug mb-4 text-charcoal">
-            MBTI는 질문에 답한 &apos;나&apos;
-            <br />
-            사주TI는{" "}
-            <span className="highlight-pink">태어난 순간</span>의 &apos;나&apos;
-          </h1>
-
-          {/* 비교 태그 */}
-          <div className="relative flex justify-center gap-3 mb-8 text-sm">
-            <div className="bg-white border-2 border-charcoal rounded-full px-4 py-1.5 tilt-left sticker-shadow">
-              MBTI <span className="font-bold">16</span>개
-            </div>
-            <span className="self-center text-pink font-bold text-lg">vs</span>
-            <div className="bg-pink text-white border-2 border-charcoal rounded-full px-4 py-1.5 tilt-right sticker-shadow">
-              사주TI <span className="font-bold">120</span>개
-            </div>
+          <div className="relative flex flex-col items-center mb-6">
+            <SajuTILogo className="w-16 h-16 mb-2" />
+            <p className="font-display text-sm tracking-[0.3em] text-pink">
+              ✦ 사주TI ✦
+            </p>
           </div>
 
-          {/* 비교 포인트 */}
-          <div className="relative space-y-2 text-sm text-text-sub mb-10 max-w-[280px] mx-auto">
-            <div className="flex items-center gap-2">
-              <span className="text-text-muted">MBTI</span>
-              <span className="text-text-muted">기분따라 변함</span>
-              <span className="ml-auto text-pink font-semibold">→ 절대 안 변함</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-text-muted">MBTI</span>
-              <span className="text-text-muted">성격만</span>
-              <span className="ml-auto text-pink font-semibold">→ 성격+운+궁합</span>
-            </div>
+          <h1 className="relative font-display text-[2.2rem] leading-[1.15] mb-3 text-charcoal">
+            태어날 때 정해진
+            <br />
+            <span className="highlight-pink">&apos;나&apos;</span>의 사주TI는?
+          </h1>
+
+          <p className="relative text-text-sub text-sm mb-8 leading-relaxed">
+            바뀌지 않는 120개 유형 중<br />
+            나는 어디에 있을까
+          </p>
+
+          {/* 미니 태그 */}
+          <div className="relative flex justify-center gap-2 mb-8 text-xs">
+            <span className="bg-white border-2 border-charcoal rounded-full px-3 py-1 sticker-shadow font-semibold">
+              🎯 120개 유형
+            </span>
+            <span className="bg-white border-2 border-charcoal rounded-full px-3 py-1 sticker-shadow font-semibold">
+              🔒 절대 안 변함
+            </span>
+            <span className="bg-white border-2 border-charcoal rounded-full px-3 py-1 sticker-shadow font-semibold">
+              ⚡ 10초
+            </span>
           </div>
 
           <button
             onClick={() => setShowForm(true)}
-            className="relative bg-pink text-white font-bold text-base px-8 py-4 rounded-2xl border-2 border-charcoal sticker-shadow active:scale-95 transition-transform"
+            className="relative bg-pink text-white font-bold text-base px-10 py-4 rounded-2xl border-2 border-charcoal sticker-shadow active:scale-95 transition-transform"
           >
             ✦ 내 사주TI 확인하기 ✦
           </button>
           <p className="relative text-text-muted text-xs mt-3">
-            생년월일시만 입력 · 10초 · 무료
+            생년월일시만 입력 · 무료
           </p>
         </section>
 
-        {/* ═══ MBTI 브릿지 + 실시간 카운터 ═══ */}
+        {/* ═══ 실시간 카운터 ═══ */}
         <section className="px-6 py-10 relative">
           <DoodleSmiley className="absolute top-6 right-8 animate-wiggle" />
-          <DoodleBow className="absolute bottom-8 left-6 animate-float tilt-left" />
 
-          <h2 className="font-display text-2xl text-center text-charcoal mb-2">
-            너의 MBTI가
-          </h2>
-          <p className="text-center text-text-sub text-sm mb-6">사주TI로는 뭘까? 🤔</p>
-
-          <div className="space-y-2.5 mb-8">
-            {[
-              { mbti: "ENFP", arrow: "→", result: "???일주", desc: "자유 영혼? 아니면...", color: "bg-lavender" },
-              { mbti: "ISTJ", arrow: "→", result: "???일주", desc: "인간 탱크? 글쎄...", color: "bg-mustard" },
-              { mbti: "INFJ", arrow: "→", result: "???일주", desc: "의외의 반전이 있을지도", color: "bg-pink" },
-            ].map((item) => (
-              <div
-                key={item.mbti}
-                className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border-2 border-charcoal sticker-shadow"
-              >
-                <span className="font-bold text-sm text-charcoal w-12">{item.mbti}</span>
-                <span className="text-pink font-bold">{item.arrow}</span>
-                <span className={`text-xs px-2.5 py-1 rounded-full ${item.color} text-white border border-charcoal font-bold`}>
-                  {item.result}
-                </span>
-                <span className="text-text-muted text-xs ml-auto">{item.desc}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="speech-bubble text-sm text-center text-text-sub mb-6 max-w-[300px] mx-auto">
-            &ldquo;ENFP인 줄 알았는데<br />사주TI로 보니까 완전 달랐음...&rdquo;
-          </div>
-
-          {/* 실시간 카운터 */}
           <div className="bg-white rounded-2xl p-4 border-2 border-charcoal sticker-shadow text-center">
             <p className="text-text-muted text-xs mb-1">지금까지</p>
             <p className="font-display text-3xl text-pink">12,847<span className="text-sm text-text-muted font-sans">명</span></p>
@@ -193,9 +122,9 @@ export default function LandingPage() {
 
             <div className="space-y-1.5">
               {[
-                { time: "3분 전", city: "서울", age: "28세", type: "감성 예술가", emoji: "🌸" },
-                { time: "5분 전", city: "부산", age: "24세", type: "인간 탱크", emoji: "🛡️" },
-                { time: "8분 전", city: "대구", age: "31세", type: "자유 영혼", emoji: "🔥" },
+                { time: "3분 전", city: "서울", age: "28세", type: getIljuType("을묘-f")!.name, emoji: getIljuType("을묘-f")!.emoji },
+                { time: "5분 전", city: "부산", age: "24세", type: getIljuType("경진-m")!.name, emoji: getIljuType("경진-m")!.emoji },
+                { time: "8분 전", city: "대구", age: "31세", type: getIljuType("임오-m")!.name, emoji: getIljuType("임오-m")!.emoji },
               ].map((feed) => (
                 <div key={feed.time} className="flex items-center gap-2 text-xs text-text-sub">
                   <span className="w-1.5 h-1.5 rounded-full bg-neon-green shrink-0" />
@@ -215,7 +144,7 @@ export default function LandingPage() {
           </h2>
           <p className="text-center text-text-sub text-sm mb-6">나는 어떤 유형일까 👀</p>
 
-          <div className="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6 snap-x scrollbar-hide">
+          <div className="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6 pt-2 snap-x scrollbar-hide">
             {SAMPLE_CARDS.map((card, i) => (
               <div
                 key={card.id}
@@ -281,19 +210,19 @@ export default function LandingPage() {
           <p className="text-center text-text-sub text-sm mb-6">사주TI 궁합 💕</p>
 
           <div className="space-y-4">
-            {/* 궁합 1 — 좋은 궁합 */}
+            {/* 궁합 1 — 좋은 궁합 (경진-m ↔ 을묘-f: bestMatch 실제 쌍) */}
             <div className="bg-white rounded-2xl p-5 border-2 border-charcoal sticker-shadow">
               <div className="flex items-center justify-center gap-3 mb-3">
                 <div className="text-center">
-                  <span className="text-2xl">🛡️</span>
-                  <p className="text-xs font-bold mt-1">인간 탱크</p>
+                  <span className="text-2xl">{getIljuType("경진-m")!.emoji}</span>
+                  <p className="text-xs font-bold mt-1">{getIljuType("경진-m")!.name}</p>
                 </div>
                 <div className="bg-pink text-white text-xs font-bold px-3 py-1 rounded-full border border-charcoal">
                   ♥ 92%
                 </div>
                 <div className="text-center">
-                  <span className="text-2xl">🌸</span>
-                  <p className="text-xs font-bold mt-1">감성 예술가</p>
+                  <span className="text-2xl">{getIljuType("을묘-f")!.emoji}</span>
+                  <p className="text-xs font-bold mt-1">{getIljuType("을묘-f")!.name}</p>
                 </div>
               </div>
               <p className="text-center text-sm text-text-sub">
@@ -301,19 +230,19 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* 궁합 2 — 묘한 궁합 */}
+            {/* 궁합 2 — 묘한 궁합 (임오-m ↔ 무진-f: worstMatch 실제 쌍) */}
             <div className="bg-white rounded-2xl p-5 border-2 border-charcoal sticker-shadow tilt-slight">
               <div className="flex items-center justify-center gap-3 mb-3">
                 <div className="text-center">
-                  <span className="text-2xl">🔥</span>
-                  <p className="text-xs font-bold mt-1">자유 영혼</p>
+                  <span className="text-2xl">{getIljuType("임오-m")!.emoji}</span>
+                  <p className="text-xs font-bold mt-1">{getIljuType("임오-m")!.name}</p>
                 </div>
                 <div className="bg-mustard text-charcoal text-xs font-bold px-3 py-1 rounded-full border border-charcoal">
                   ⚡ 41%
                 </div>
                 <div className="text-center">
-                  <span className="text-2xl">⛰️</span>
-                  <p className="text-xs font-bold mt-1">인간 중장비</p>
+                  <span className="text-2xl">{getIljuType("무진-f")!.emoji}</span>
+                  <p className="text-xs font-bold mt-1">{getIljuType("무진-f")!.name}</p>
                 </div>
               </div>
               <p className="text-center text-sm text-text-sub">
@@ -565,9 +494,9 @@ export default function LandingPage() {
           </h2>
 
           <div className="bg-white rounded-2xl p-5 border-2 border-charcoal sticker-shadow text-center mb-4">
-            <span className="text-4xl">🛡️</span>
+            <span className="text-4xl">{getIljuType("경진-m")!.emoji}</span>
             <p className="font-display text-xl text-charcoal mt-2">경진일주(庚辰)</p>
-            <p className="text-text-muted text-xs mt-1 mb-4">인간 탱크</p>
+            <p className="text-text-muted text-xs mt-1 mb-4">{getIljuType("경진-m")!.name}</p>
 
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="bg-cream rounded-xl py-3 border border-charcoal/10">
