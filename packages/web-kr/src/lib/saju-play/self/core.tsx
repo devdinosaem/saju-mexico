@@ -13,12 +13,12 @@ import { ILJU_TYPES } from "@/lib/ilju-types"
 import { elemOf, ELEMS, type Elem } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
 import { buildSelf, tgGroup, type SelfBirth, type Gender, type LifePoint } from "./self-adapter"
-import { TALENT, ELEM_TRAIT, MEETING, LOVE_STYLE, IDEAL, JOB } from "./flavor"
+import { TALENT, ELEM_TRAIT, MEETING, LOVE_STYLE, IDEAL, JOB, SELF_MANUAL, SELF_ENV, ELEM_ORGAN, SEUN_LINE } from "./flavor"
 import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
   DoodleLightning, DoodleMedal, DoodleMirror, DoodleSpeechBubble, DoodleStar,
-  DoodleDiamond, DoodleCalendar,
+  DoodleDiamond, DoodleCalendar, DoodleClover, DoodleQuestionMark,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -155,6 +155,16 @@ export default function SelfFunnel() {
     : "돈보다 전문성·관계가 먼저 와. 그게 결국 돈으로 돌아오는 타입이야."
   const cur = self.life.find(l => l.current)
   const curFavorLine = cur ? (cur.favor >= 72 ? "흐름이 트이는 좋은 구간" : cur.favor >= 50 ? "차곡차곡 쌓는 구간" : "눌렸다 펴지기 직전 구간") : "흐름 위"
+  // 취급·관리 + 올해 파생
+  const manual = SELF_MANUAL[self.dayElem]
+  const env = SELF_ENV[self.yong]
+  const burnout = self.isStrong
+    ? "혼자 다 짊어지고 폭주할 때가 방전 신호 — 위임·휴식이 약이야."
+    : "남 신경 쓰다 나를 소진할 때가 방전 신호 — 거절·경계가 약이야."
+  const weakest = ELEMS.reduce((a, b) => (self.dist[b] < self.dist[a] ? b : a), "목" as Elem)
+  const seunGroup = self.seunTenGod ? tgGroup(self.seunTenGod) : null
+  const curIdx = self.life.findIndex(l => l.current)
+  const nextDaeun = curIdx >= 0 ? self.life[curIdx + 1] : undefined
   const fallbackProse =
     `너는 **${self.dayKr}(${self.dayElem})·${self.yinYang}** 일간, ${self.strongLevel}이야.\n\n` +
     `타고난 결은 **${self.topTalent.join("·")}** 쪽 — 여기에 네 무기가 있어. 나를 살리는 기운은 **${self.yong}**, 이걸 채울수록 잘 풀려.\n\n` +
@@ -397,7 +407,89 @@ export default function SelfFunnel() {
         </div>
       </div>
 
-      <p className="text-[13px] text-text-muted text-center" style={GAEGU}>…취급·관리법 · 올해의 나 (준비 중)</p>
+      <ChapterDivider n={6} title="취급·관리법" />
+
+      {/* 나 사용설명서 카드 — 제품명 시그니처 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleBook} basis="일간·용신">나 사용설명서</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 overflow-hidden">
+          {([["취급주의", manual.care], ["충전법", manual.charge], ["방전 신호", manual.drain], ["셀프 A/S", manual.as]] as const).map(([k, v]) => (
+            <div key={k} className="px-4 py-2.5 flex gap-3 border-b border-charcoal/5 last:border-0">
+              <span className="text-[13px] font-bold shrink-0 w-16 whitespace-nowrap" style={{ color: PINK }}>{k}</span>
+              <span className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{v}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 번아웃 신호 */}
+      <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
+        <Ico as={DoodleLightning} size={18} />
+        <div><p className="text-[14px] font-bold text-charcoal">번아웃 신호</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{burnout}</p></div>
+      </div>
+
+      {/* 나를 살리는 환경 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleClover} basis="용신">나를 살리는 환경</SectionTitle>
+        <div className="rounded-2xl px-4 py-3.5 flex flex-col gap-2.5" style={{ background: ELEM_BG[self.yong], border: `1.5px solid ${ELEM_COLOR[self.yong]}` }}>
+          <p className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}><span className="font-bold text-charcoal">{self.yong}</span> 기운을 채우면 잘 풀려 — {env.act} 쪽이 보약이야.</p>
+          <div className="grid grid-cols-3 gap-2">
+            {[["방향", env.dir], ["색", env.color], ["때", env.season]].map(([k, v]) => (
+              <div key={k} className="rounded-xl bg-white/70 px-2 py-2 flex flex-col items-center gap-0.5 text-center">
+                <span className="text-[12px] text-text-muted">{k}</span>
+                <span className="text-[13px] font-bold text-charcoal">{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 건강 신호등 */}
+      <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#F0FFF4", border: "1.5px solid #86EFAC" }}>
+        <Ico as={DoodleHeart} size={18} />
+        <div><p className="text-[14px] font-bold text-charcoal">건강 신호등</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>가장 약한 {weakest} 기운 — {ELEM_ORGAN[weakest]}. 단정은 아니고, 이 기운만 챙겨주면 컨디션이 좋아져.</p></div>
+      </div>
+
+      <ChapterDivider n={7} title="올해의 나" />
+
+      {/* 올해 흐름 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleCalendar} basis="세운">올해 흐름</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex flex-col gap-2">
+          <p className="text-[14px] font-bold text-charcoal">{seunGroup ? SEUN_LINE[seunGroup] : "잔잔히 흐르는 해 — 네 페이스대로"}</p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>무리해서 판을 뒤집기보다, 이 흐름에 맞춰 한 발씩 가면 돼.</p>
+        </div>
+      </div>
+
+      {/* 인생 전환점 */}
+      {nextDaeun && (
+        <div className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5" style={{ background: "#EFF6FF", border: "1.5px solid #93C5FD" }}>
+          <Ico as={DoodleStar} size={18} />
+          <div><p className="text-[14px] font-bold text-charcoal">다음 전환점 · {nextDaeun.startAge}세</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{nextDaeun.startAge}세부터 결이 바뀌어{nextDaeun.favor >= (cur?.favor ?? 50) ? " — 흐름이 한 단계 트여." : " — 새로운 색으로 갈아타는 시기야."}</p></div>
+        </div>
+      )}
+
+      {/* 삼재 (있을 때만) */}
+      {self.samjae && (
+        <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#FEF2F2", border: "1.5px solid #FCA5A5" }}>
+          <Ico as={DoodleQuestionMark} size={18} />
+          <div><p className="text-[14px] font-bold text-charcoal">삼재 구간</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>너무 겁먹지 마 — 큰 결정만 한 박자 신중히, 평소처럼 살면 무탈하게 지나가.</p></div>
+        </div>
+      )}
+
+      {/* consult 크로스셀 */}
+      <Link href="/v3/consult" className="rounded-2xl px-4 py-4 flex items-center gap-3 active:opacity-85 transition-opacity" style={{ background: "linear-gradient(160deg,#FFF6FA,#FFFDF5)", border: "2px solid #2D2D2D" }}>
+        <Ico as={DoodleSpeechBubble} size={24} />
+        <div className="flex-1 min-w-0">
+          <p className="text-[15px] text-charcoal" style={BINGGRAE}>더 궁금한 건 대화로 물어봐</p>
+          <p className="text-[13px] text-charcoal/60 leading-snug" style={GAEGU}>내 사주 캐릭터한테 직접 — 연애·일·고민 뭐든</p>
+        </div>
+        <span className="text-[18px]" style={{ color: PINK }}>→</span>
+      </Link>
     </div>
   )
 
