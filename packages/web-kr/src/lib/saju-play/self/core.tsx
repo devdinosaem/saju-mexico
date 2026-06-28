@@ -20,6 +20,7 @@ import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
   DoodleLightning, DoodleMedal, DoodleMirror, DoodleSpeechBubble, DoodleStar,
   DoodleDiamond, DoodleCalendar, DoodleClover, DoodleQuestionMark, DoodleMoon, DoodleCrown,
+  DoodleWood, DoodleFlameFive, DoodleEarth, DoodleMetal, DoodleWater, DoodleSparkle,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -143,6 +144,55 @@ function CelebAvatar({ name, cat, size = 52 }: { name: string; cat: string; size
     // eslint-disable-next-line @next/next/no-img-element
     <img src={`/images/celebs/${name.replace(/\s/g, "")}.png`} alt={name} width={size} height={size} onError={() => setFailed(true)}
       className="rounded-full object-cover border-2 border-charcoal/10 shrink-0" style={{ width: size, height: size }} />
+  )
+}
+
+// ── 셀럽/나 카드 디자인 복붙 (shop CelebDiscovery와 동일) ──
+const TILTS = [-3, 2, -1.5, 3.5, -2.5, 1, -3.5, 2.5, -2, 3, 1.5, -4]
+const ELEMENT_STYLE: Record<string, { bg: string; border: string }> = {
+  목: { bg: "#D1FAE5", border: "#4ADE80" }, 화: { bg: "#FEE2E2", border: "#F87171" },
+  토: { bg: "#FEF3C7", border: "#FBBF24" }, 금: { bg: "#F1F5F9", border: "#94A3B8" }, 수: { bg: "#DBEAFE", border: "#60A5FA" },
+}
+const STICKER: Record<string, React.ReactNode> = {
+  목: <DoodleWood className="w-8 h-8" />, 화: <DoodleFlameFive className="w-8 h-8" />, 토: <DoodleEarth className="w-8 h-8" />,
+  금: <DoodleMetal className="w-8 h-8" />, 수: <DoodleWater className="w-8 h-8" />,
+}
+const NA_STICKERS: { comp: React.ReactNode; top?: number; left?: number; right?: number; bottom?: number; rotate: number }[] = [
+  { comp: <DoodleCrown className="w-4 h-4" />, top: 4, left: 4, rotate: -15 },
+  { comp: <DoodleHeart className="w-3.5 h-3.5" />, top: 6, right: 5, rotate: 12 },
+  { comp: <DoodleStar className="w-3 h-3" />, bottom: 28, left: 5, rotate: -8 },
+  { comp: <DoodleSparkle className="w-3 h-3" />, bottom: 30, right: 4, rotate: 10 },
+]
+function ElemStrip({ elem }: { elem: Elem }) {
+  return <div className="flex-1 flex items-center justify-center pt-2 border-t-2 border-charcoal/20" style={{ background: ELEMENT_STYLE[elem]?.bg ?? "#F1F5F9" }}>{STICKER[elem]}</div>
+}
+function CelebCard({ name, role, cat, elem, idx }: { name: string; role: string; cat: string; elem: Elem; idx: number }) {
+  const tilt = TILTS[idx % TILTS.length], mt = idx % 2 === 0 ? 8 : 0
+  return (
+    <div className="shrink-0 flex flex-col rounded-2xl overflow-hidden" style={{ width: 108, background: "white", border: "2px solid rgba(45,45,45,0.1)", transform: `rotate(${tilt}deg)`, boxShadow: "2px 2px 0px rgba(45,45,45,0.1)", marginTop: mt }}>
+      <div className="flex flex-col items-center px-2.5 pt-2.5 pb-1.5 gap-1">
+        <CelebAvatar name={name} cat={cat} size={64} />
+        <p className="text-[13px] leading-tight text-charcoal text-center font-bold">{name}</p>
+        <p className="text-[12px] text-text-muted leading-tight text-center" style={GAEGU}>{role}</p>
+      </div>
+      <ElemStrip elem={elem} />
+    </div>
+  )
+}
+function NaCard({ iljuKey, role, elem, idx }: { iljuKey: string; role: string; elem: Elem; idx: number }) {
+  const tilt = TILTS[idx % TILTS.length], mt = idx % 2 === 0 ? 8 : 0
+  return (
+    <div className="shrink-0 flex flex-col rounded-2xl overflow-hidden relative" style={{ width: 108, background: "#FACC15", border: "2px solid rgba(45,45,45,0.1)", transform: `rotate(${tilt}deg)`, boxShadow: "2px 2px 0px rgba(45,45,45,0.1)", marginTop: mt }}>
+      {NA_STICKERS.map((s, i) => <div key={i} className="absolute pointer-events-none" style={{ top: s.top, left: s.left, right: s.right, bottom: s.bottom, transform: `rotate(${s.rotate}deg)` }}>{s.comp}</div>)}
+      <div className="flex flex-col items-center px-2.5 pt-2.5 pb-1.5 gap-1">
+        <div className="w-16 h-16 rounded-full border-2 border-charcoal/20 shrink-0 overflow-hidden flex items-end justify-center" style={{ background: ELEM_BG[elem] }}>
+          {ILJU_SVG_ICONS[iljuKey]?.()}
+        </div>
+        <p className="text-[13px] leading-tight text-charcoal text-center font-bold">나</p>
+        <p className="text-[12px] text-charcoal/60 leading-tight text-center" style={GAEGU}>{role}</p>
+      </div>
+      <ElemStrip elem={elem} />
+    </div>
   )
 }
 
@@ -303,38 +353,25 @@ export default function SelfFunnel() {
         </div>
       </div>
 
-      {/* 사주가 같은 사람 — 나 + 같은 일주 셀럽 카드 가로 스크롤 (사진 적응형, 동적) */}
+      {/* 사주가 같은 사람 — 나 가운데 + 셀럽 양옆 (CelebDiscovery 카드 복붙) */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleCrown} basis="일주">사주가 같은 사람</SectionTitle>
-        {celeb ? (() => {
-          const shown = celeb.persons.slice(0, 3)
-          const extra = Math.min(celeb.count - shown.length, 3)
+        {celeb && celeb.persons.length > 0 ? (() => {
+          const cs = celeb.persons.slice(0, 2)
+          const naRole = `${bareIlju}일주`
           return (
-            <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4">
-              {/* 나 카드 */}
-              <div className="relative shrink-0 w-[94px] rounded-2xl bg-white px-2.5 pt-3 pb-2.5 flex flex-col items-center gap-1.5 border-2" style={{ borderColor: PINK }}>
-                <span className="absolute top-1 right-1.5"><Ico as={DoodleCrown} size={18} /></span>
-                <div className="p-[2px] rounded-full" style={{ background: "linear-gradient(135deg,#E84B6A,#FBBF24)" }}><Avatar iljuKey={charKey} size={44} /></div>
-                <p className="text-[13px] font-bold text-charcoal" style={BINGGRAE}>나</p>
-                <p className="text-[10px] text-text-muted text-center leading-tight">{bareIlju}일주</p>
-                <Ico as={ELEM_DOODLE[self.dayElem]} size={15} />
-              </div>
-              {/* 셀럽 카드 */}
-              {shown.map((p, i) => (
-                <div key={i} className="relative shrink-0 w-[94px] rounded-2xl bg-white border border-charcoal/10 px-2.5 pt-3 pb-2.5 flex flex-col items-center gap-1.5">
-                  <span className="absolute top-1 right-1.5"><Ico as={DoodleHeart} size={14} /></span>
-                  <CelebAvatar name={p.name} cat={p.cat} size={44} />
-                  <p className="text-[12px] font-bold text-charcoal text-center leading-tight">{p.name}</p>
-                  <p className="text-[10px] text-text-muted text-center leading-tight truncate w-full">{p.role}</p>
-                  <Ico as={ELEM_DOODLE[self.dayElem]} size={15} />
-                </div>
-              ))}
-              {/* 외 N명 카드 */}
-              {extra > 0 && (
-                <div className="shrink-0 w-[66px] rounded-2xl border border-dashed border-charcoal/20 flex flex-col items-center justify-center gap-0.5 text-center" style={{ background: "rgba(45,45,45,0.03)" }}>
-                  <span className="text-[18px]" style={{ ...BINGGRAE, color: PINK }}>+{extra}</span>
-                  <span className="text-[11px] text-text-muted">명 더</span>
-                </div>
+            <div className="flex justify-center items-start gap-2 pt-2 pb-1">
+              {cs.length >= 2 ? (
+                <>
+                  <CelebCard name={cs[0].name} role={cs[0].role} cat={cs[0].cat} elem={self.dayElem} idx={0} />
+                  <NaCard iljuKey={charKey} role={naRole} elem={self.dayElem} idx={1} />
+                  <CelebCard name={cs[1].name} role={cs[1].role} cat={cs[1].cat} elem={self.dayElem} idx={2} />
+                </>
+              ) : (
+                <>
+                  <NaCard iljuKey={charKey} role={naRole} elem={self.dayElem} idx={0} />
+                  <CelebCard name={cs[0].name} role={cs[0].role} cat={cs[0].cat} elem={self.dayElem} idx={1} />
+                </>
               )}
             </div>
           )
