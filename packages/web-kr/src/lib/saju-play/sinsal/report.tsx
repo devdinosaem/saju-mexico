@@ -69,7 +69,7 @@ export function SinsalBadge({ name, sub }: { name: string; sub?: string }) {
       <span className="w-9 h-9 rounded-full bg-white/70 flex items-center justify-center shrink-0"><Ico as={info.D} size={20} /></span>
       <div className="min-w-0">
         <p className="text-[14px] font-bold leading-tight truncate" style={{ color: cs.ink }}>{info.alias}</p>
-        <p className="text-[12px] text-charcoal/55 leading-tight truncate" style={GAEGU}>{name}{sub ? ` · ${sub}` : ""}</p>
+        <p className="text-[12px] text-charcoal/55 leading-tight truncate">{name}{sub ? ` · ${sub}` : ""}</p>
       </div>
     </div>
   )
@@ -102,25 +102,25 @@ export function SinsalCard({ name, positions }: { name: string; positions: Pos[]
         <span className="w-11 h-11 rounded-full bg-white/80 flex items-center justify-center shrink-0"><Ico as={info.D} size={24} /></span>
         <div className="min-w-0 flex-1">
           <p className="text-[16px] leading-tight" style={{ ...BINGGRAE, color: cs.ink }}>{info.alias}</p>
-          <p className="text-[12px] text-charcoal/55" style={GAEGU}>{name} · {info.cat}</p>
+          <p className="text-[12px] text-charcoal/55">{name} · {info.cat}</p>
         </div>
         <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/70 shrink-0" style={{ color: cs.ink }}>
           {positions.map(p => POS_LABEL[p].era.split("·")[0]).join("·")}
         </span>
       </div>
       <div className="px-4 py-3.5 flex flex-col gap-2.5">
-        <p className="text-[14px] text-charcoal/85 leading-snug" style={GAEGU}>{info.mean}.</p>
+        <p className="text-[14px] text-charcoal/85 leading-snug">{info.mean}.</p>
         {info.myth && (
           <div className="rounded-xl px-3 py-2.5 flex items-start gap-2" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
             <Ico as={DoodleQuestionMark} size={16} />
             <div><span className="text-[13px] font-bold text-charcoal">무서운 이름, 사실은 </span>
-              <span className="text-[13px] text-charcoal/75 leading-snug" style={GAEGU}>{info.myth}</span></div>
+              <span className="text-[13px] text-charcoal/75 leading-snug">{info.myth}</span></div>
           </div>
         )}
         {([["좋은 면", info.good], ["주의", info.caution], ["살릴 곳", info.use]] as const).map(([k, v]) => (
           <div key={k} className="flex gap-2.5">
             <span className="text-[12px] font-bold shrink-0 w-12 mt-0.5" style={{ color: PINK }}>{k}</span>
-            <span className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{v}</span>
+            <span className="text-[14px] text-charcoal/75 leading-snug">{v}</span>
           </div>
         ))}
       </div>
