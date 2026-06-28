@@ -100,13 +100,31 @@
 
 ---
 
-## 11. 미결 결정 요약 (🟦)
-1. 소셜 기능 로그인 강제 여부 (권장: 강제)
-2. **"사주 볼 타인" = 신규 saved_profiles 테이블 / 친구통합 / 보류**
-3. 방명록 신고·수정 v1 포함 여부 (권장: 삭제만)
-4. **스토리 일간 문구 생성 방식 (클라 결정적 / 서버·LLM / 정적확장)**
-5. 스토리 정렬·만료
-6. **profiles 디스커버리 공개범위 (전체공개 유지 / 친구만)**
-7. **로컬 데이터 마이그레이션 (폐기 / 이관)**
-8. 실시간 방식 (refetch / Realtime)
-9. **시퀀싱: 인증부터(권장) / 데이터부터**
+## 11. 확정 결정 (2026-06-28)
+
+| # | 결정 | 확정값 | 영향 |
+|---|---|---|---|
+| 1 | 시퀀싱 | **데이터부터(고정 테스트 유저)** | 카카오 OAuth UI는 후순위. 테스트 계정(Supabase 이메일 유저)으로 로그인해 RLS 충족하며 데이터층 먼저 구축 |
+| 2 | "사주 볼 타인" | **별도 `saved_profiles` 테이블** | 친구(friendships)와 분리. 내가 저장한 타인 사주(앱유저 무관). 본인만 접근 |
+| 3 | 스토리 문구 | **클라이언트 결정적 생성** | 일간×날짜 시드 → 풀에서 선택. 무비용·오프라인·매일 변함. 테이블 불필요 |
+| 4 | 프로필 공개범위 | **기본 친구만 + `is_public` 플래그** | profiles_select RLS 변경: self OR 친구 OR is_public. 향후 일부 유저 공개 대비 |
+| 5 | 소셜 로그인 강제 | 강제(소셜 기능 한정) | 1탭 사주분석은 게스트 체험 유지 |
+| 6 | 방명록 신고·수정 | v1 삭제만 | 신고/수정 후순위 |
+| 7 | 스토리 정렬·만료 | 최근 활동순, 만료 없음(v1) | last-seen으로 활동링 점등 |
+| 8 | 로컬 데이터 마이그레이션 | **폐기(fresh start)** | 기존 localStorage 친구/방명록은 테스트 더미 → 이관 안 함 |
+| 9 | 실시간 | refetch(진입 시)·수동 새로고침 | Realtime 후순위 |
+| 10 | 스토리 last-seen | 클라 localStorage(per-friend) | 읽음 상태는 기기 로컬로 충분(v1) |
+
+### 데이터 모델 추가 (결정 반영)
+- 🆕 `saved_profiles` — 결정 #2. `{ id, owner_id(본인), name, ilju_key, birth_info jsonb, created_at }`. RLS: 본인만 CRUD.
+- 🆕 `profiles.is_public boolean default false` — 결정 #4. `profiles_select` RLS를 self/친구/is_public로 교체.
+- 스토리는 테이블 없음(결정 #3·#10): 활동링 = 친구 `rooms.updated_at`/`guestbook.created_at` vs 로컬 last-seen, 문구 = 클라 결정적.
+
+### 수정된 구현 시퀀스 (데이터부터)
+1. **마이그레이션 0002** — saved_profiles + profiles.is_public + RLS 갱신.
+2. **테스트 유저 셋업** — Supabase 이메일 테스트 계정 + 시드 profiles/friendships(테스트 친구).
+3. **데이터 접근 레이어**(`lib/social/*`) — friendships·rooms·guestbook·saved_profiles CRUD(supabase client).
+4. **UI 실연동** — useFriends/방명록/MiniRoom/StoryRow를 localStorage→supabase로 교체.
+5. **스토리** — 활동링(updated_at/last-seen) + 일간 결정적 문구.
+6. **인증(Phase 2)** — 카카오 OAuth로 테스트유저 대체.
+7. **정리** — 샘플·localStorage 친구모델 제거.
