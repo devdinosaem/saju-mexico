@@ -224,7 +224,7 @@ export function SinsalReportV2({ data, aiText, aiLoading = false }: { data: Sins
       </div>
 
       {/* 신살 한 줄 캐릭터 — 프로필 */}
-      <div className="ds-card px-4 py-4 flex items-center gap-3" style={{ background: "var(--grad-pink-surface)" }}>
+      <div className="ds-card px-4 py-4 flex items-center gap-3" style={{ background: "var(--surface-card)" }}>
         <Avatar iljuKey={charKey} size={52} />
         <div className="min-w-0 flex-1">
           <span className="text-[12px] text-text-muted">내 신살을 한 줄로</span>
@@ -240,7 +240,7 @@ export function SinsalReportV2({ data, aiText, aiLoading = false }: { data: Sins
           <span className="text-[12px] text-text-muted">도감 희귀도</span>
           <span className="text-[15px]" style={{ ...FONT.title, color: "var(--pink)" }}>{x.rarity}</span>
         </Card>
-        <div className="ds-card flex flex-col items-center justify-center gap-1 text-center px-3 py-3.5" style={{ background: "var(--grad-pink-surface)" }}>
+        <div className="ds-card flex flex-col items-center justify-center gap-1 text-center px-3 py-3.5" style={{ background: "var(--surface-card)" }}>
           <span className="text-[12px] text-text-muted">한 줄 요약</span>
           <span className="text-[15px]" style={{ ...FONT.title, color: "var(--pink)" }}>{x.meme}</span>
         </div>
@@ -248,7 +248,7 @@ export function SinsalReportV2({ data, aiText, aiLoading = false }: { data: Sins
 
       {/* consult 크로스셀 */}
       <Link href="/v3/consult" className="rounded-[var(--r-xl)] px-4 py-4 flex items-center gap-3 active:opacity-90 transition-opacity"
-        style={{ background: "var(--grad-pink-surface)", border: "1px solid var(--line-soft)" }}>
+        style={{ background: "var(--surface-card)", border: "1px solid var(--line-soft)" }}>
         <Ico as={DoodleSpeechBubble} size={24} />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] text-charcoal" style={FONT.title}>더 궁금한 건 대화로 물어봐</p>

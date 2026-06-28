@@ -222,7 +222,7 @@ export function NextMonthReportV2({ data, aiText, aiLoading = false }: { data: N
       <p className="text-[13px] text-text-muted leading-snug text-center -mt-3" style={OWNGLYPH}>{x.trend.line}</p>
 
       {/* 다음달 운세 카드 */}
-      <div className="ds-card px-4 py-4 flex flex-col items-center gap-2 text-center" style={{ background: "var(--grad-pink-surface)" }}>
+      <div className="ds-card px-4 py-4 flex flex-col items-center gap-2 text-center" style={{ background: "var(--surface-card)" }}>
         <Ico as={x.weather.D} size={28} />
         <span className="text-[12px] text-text-muted">{data.monthLabel} 한 줄 운세</span>
         <p className="text-[17px]" style={{ ...FONT.title, color: "var(--pink)" }}>{x.weather.label}, {data.keywords[0] ? `#${data.keywords[0]}` : ""}의 달</p>
@@ -231,7 +231,7 @@ export function NextMonthReportV2({ data, aiText, aiLoading = false }: { data: N
 
       {/* consult 크로스셀 */}
       <Link href="/v3/consult" className="rounded-[var(--r-xl)] px-4 py-4 flex items-center gap-3 active:opacity-90 transition-opacity"
-        style={{ background: "var(--grad-pink-surface)", border: "1px solid var(--line-soft)" }}>
+        style={{ background: "var(--surface-card)", border: "1px solid var(--line-soft)" }}>
         <Ico as={DoodleSpeechBubble} size={24} />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] text-charcoal" style={FONT.title}>다음달, 더 궁금한 건 물어봐</p>

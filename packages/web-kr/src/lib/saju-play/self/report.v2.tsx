@@ -413,7 +413,7 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
           <span className="text-[12px] text-text-muted">나 코드</span>
           <span className="text-[20px]" style={{ ...FONT.title, color: "var(--pink)", letterSpacing: "0.05em" }}>{x.code}</span>
         </Card>
-        <div className="ds-card flex flex-col items-center justify-center gap-1 text-center px-3 py-3.5" style={{ background: "var(--grad-pink-surface)" }}>
+        <div className="ds-card flex flex-col items-center justify-center gap-1 text-center px-3 py-3.5" style={{ background: "var(--surface-card)" }}>
           <span className="text-[12px] text-text-muted">한 줄 요약</span>
           <span className="text-[16px]" style={{ ...FONT.title, color: "var(--pink)" }}>{x.meme}</span>
         </div>
@@ -427,7 +427,7 @@ export function SelfReportV2({ data: self, aiText, aiLoading = false }: { data: 
 
       {/* consult 크로스셀 — 서브[박다현] */}
       <Link href="/v3/consult" className="rounded-[var(--r-xl)] px-4 py-4 flex items-center gap-3 active:opacity-90 transition-opacity"
-        style={{ background: "var(--grad-pink-surface)", border: "1px solid var(--line-soft)" }}>
+        style={{ background: "var(--surface-card)", border: "1px solid var(--line-soft)" }}>
         <Ico as={DoodleSpeechBubble} size={24} />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] text-charcoal" style={FONT.title}>더 궁금한 건 대화로 물어봐</p>
