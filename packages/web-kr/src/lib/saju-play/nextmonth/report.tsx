@@ -63,7 +63,7 @@ export function Avatar({ iljuKey, size = 80 }: { iljuKey: string; size?: number 
 }
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"]
-function CalendarGrid({ days, year, month }: { days: DayPoint[]; year: number; month: number }) {
+export function CalendarGrid({ days, year, month }: { days: DayPoint[]; year: number; month: number }) {
   const firstDow = new Date(year, month - 1, 1).getDay()
   const cells: (DayPoint | null)[] = [...Array(firstDow).fill(null), ...days]
   const cellBg = (c: DayPoint) => (c.good ? "#ECFDF5" : c.warn ? "#FEF2F2" : "transparent")
@@ -88,7 +88,7 @@ function CalendarGrid({ days, year, month }: { days: DayPoint[]; year: number; m
   )
 }
 
-const gaugeColor = (v: number) => (v >= 66 ? "#16A34A" : v >= 45 ? PINK : "#94A3B8")
+export const gaugeColor = (v: number) => (v >= 66 ? "#16A34A" : v >= 45 ? PINK : "#94A3B8")
 
 /** 무료 예고편용 파생 */
 export function coverInfo(data: NextMonthData) {
@@ -109,6 +109,28 @@ export function nextMonthFallback(data: NextMonthData): string {
     `${theme.line} ${data.monthElem === data.yong ? "나를 살리는 기운이 들어와서 흐름이 트여." : data.monthElem === data.gi ? "살짝 눌리는 구간이라, 키우기보다 다지기가 맞아." : "무난하게 흘러가는 달이야."}\n\n` +
     `특히 **${AREA_LABEL[topAreaKey]}** 쪽으로 바람이 불어. 좋은 날은 ${data.goodDays.slice(0, 3).join(", ") || "고른 편"}일${data.warnDays.length ? `, 조심할 날은 ${data.warnDays.join(", ")}일` : ""} 정도야.`
   )
+}
+
+// ════════════════════════════════════════════════════════════════
+// deriveNextMonth — 화면 파생값 일괄(순수). v1/v2 공용.
+// ════════════════════════════════════════════════════════════════
+export { AREA_LABEL }
+export function deriveNextMonth(data: NextMonthData) {
+  const weather = WEATHER.find(w => data.favorMonth >= w.min) ?? WEATHER[WEATHER.length - 1]
+  const theme = MONTH_THEME[data.monthGroup]
+  const topAreaKey = (Object.keys(data.areas) as (keyof typeof data.areas)[]).reduce((a, b) => (data.areas[b] > data.areas[a] ? b : a))
+  const lowAreaKey = (Object.keys(data.areas) as (keyof typeof data.areas)[]).reduce((a, b) => (data.areas[b] < data.areas[a] ? b : a))
+  const topAreaLabel = AREA_LABEL[topAreaKey]
+  const elemFavor = data.monthElem === data.yong ? "good" : data.monthElem === data.gi ? "warn" : "neutral"
+  const evtTypes = [...new Set(data.events.map(e => e.type))]
+  const monthSinsalInfo = SINSAL[data.monthSinsal]
+  const lucky = LUCKY[data.yong]
+  const mission = MISSION[data.yong]
+  const diff = data.favorMonth - data.thisFavor
+  const trend = diff >= 6 ? { arrow: "↗", line: "이번달보다 흐름이 한 단계 트여 — 미뤘던 걸 움직이기 좋아.", color: "#16A34A" }
+    : diff <= -6 ? { arrow: "↘", line: "이번달보다 살짝 가라앉는 흐름 — 벌이기보다 다지는 달로.", color: "#DC2626" }
+    : { arrow: "→", line: "이번달과 비슷한 결 — 큰 변화 없이 이어가면 돼.", color: "#94A3B8" }
+  return { weather, theme, topAreaKey, lowAreaKey, topAreaLabel, elemFavor, evtTypes, monthSinsalInfo, lucky, mission, diff, trend }
 }
 
 // ════════════════════════════════════════════════════════════════
