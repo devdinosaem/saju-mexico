@@ -10,6 +10,7 @@ import Link from "next/link"
 import { useUser } from "@/lib/UserContext"
 import { ILJU_SVG_ICONS, getIljuProfileViewBox } from "@/lib/ilju-svg-icons"
 import { ILJU_TYPES } from "@/lib/ilju-types"
+import { ILJU_CELEB_DATA } from "@/lib/ilju-celeb-data"
 import { elemOf, ELEMS, type Elem } from "../engine"
 import { ELEM_BG, ELEM_COLOR, ELEM_DOODLE } from "../flavor"
 import { buildSelf, tgGroup, type SelfBirth, type Gender, type LifePoint } from "./self-adapter"
@@ -18,7 +19,7 @@ import { to24h } from "../crush/saju-adapter"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
   DoodleLightning, DoodleMedal, DoodleMirror, DoodleSpeechBubble, DoodleStar,
-  DoodleDiamond, DoodleCalendar, DoodleClover, DoodleQuestionMark, DoodleMoon,
+  DoodleDiamond, DoodleCalendar, DoodleClover, DoodleQuestionMark, DoodleMoon, DoodleCrown,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -116,6 +117,13 @@ function Radar({ data }: { data: { label: string; value: number }[] }) {
   )
 }
 const clampN = (n: number) => Math.max(22, Math.min(96, Math.round(n)))
+// 셀럽 분야 → 두들 (사진 공백 채움)
+const CAT_DOODLE: Record<string, DoodleC> = {
+  기업인: DoodleDiamond, 정치인: DoodleSpeechBubble, 배우: DoodleStar, 위인: DoodleCrown,
+  왕족: DoodleCrown, 스포츠: DoodleLightning, 노벨상: DoodleMedal, 가수: DoodleSparkles,
+}
+// 받침 유무로 조사 선택 (기업인'이' / 배우'가')
+const josa = (w: string, a: string, b: string) => (w && (w.charCodeAt(w.length - 1) - 0xAC00) % 28 !== 0 ? a : b)
 
 type Ai = { status: "idle" | "loading" | "done" | "error"; text: string }
 const FALLBACK_BIRTH: SelfBirth = { year: 1995, month: 3, day: 15, hour: 12, minute: 0 }
@@ -156,6 +164,8 @@ export default function SelfFunnel() {
 
   const charKey = resolveChar(self.iljuKey)
   const iljuType = ILJU_TYPES.find(t => t.id === self.iljuKey)
+  const bareIlju = self.iljuKey.replace(/-[mf]$/, "")        // 성별 제거 → 60일주 키
+  const celeb = ILJU_CELEB_DATA[bareIlju]                    // 수익가능·남여합산 (데이터 자체가 정제됨)
   const strongElems = ELEMS.filter(e => self.dist[e] >= 3)
   const weakElems = ELEMS.filter(e => self.dist[e] === 0)
   const teaser = `${self.dayKr}(${self.dayElem})·${self.yinYang} 일간 — ${self.strongLevel}. 강한 기운은 ${strongElems.join("·") || "고른 편"}, 빠진 건 ${weakElems.join("·") || "없음"}.`
@@ -270,6 +280,40 @@ export default function SelfFunnel() {
             </>
           )}
         </div>
+      </div>
+
+      {/* 명예의 전당 — 같은 일주 유명인 (수익가능·남여합산, 동적 조회) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleMedal} basis="일주">명예의 전당</SectionTitle>
+        {celeb ? (() => {
+          const shown = celeb.persons.slice(0, 3)
+          const extra = Math.min(celeb.count - shown.length, 5)
+          return (
+            <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
+              <p className="text-[14px] text-charcoal leading-snug" style={GAEGU}>
+                <span className="font-bold" style={{ color: PINK }}>{bareIlju}일주</span>엔 <span className="font-bold text-charcoal">{celeb.topCat}</span>{josa(celeb.topCat, "이", "가")} 많아 · 같은 기운 {celeb.count}명
+              </p>
+              <div className="flex flex-col gap-2">
+                {shown.map((p, i) => {
+                  const D = CAT_DOODLE[p.cat] ?? DoodleSparkles
+                  return (
+                    <div key={i} className="flex items-center gap-2.5 min-w-0">
+                      <Ico as={D} size={18} />
+                      <span className="text-[14px] font-bold text-charcoal shrink-0">{p.name}</span>
+                      <span className="text-[13px] text-text-muted truncate">· {p.role}</span>
+                    </div>
+                  )
+                })}
+              </div>
+              {extra > 0 && <p className="text-[13px] text-text-muted text-right">외 {extra}명 더</p>}
+              <p className="text-[13px] text-charcoal/55 leading-snug" style={GAEGU}>너도 이 기운을 타고났어.</p>
+            </div>
+          )
+        })() : (
+          <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 text-center">
+            <p className="text-[14px] text-charcoal/60 leading-snug" style={GAEGU}>{bareIlju}일주는 아직 등록된 유명인이 없어 — 네가 1호일지도?</p>
+          </div>
+        )}
       </div>
 
       {/* 내 오행 밸런스 */}
