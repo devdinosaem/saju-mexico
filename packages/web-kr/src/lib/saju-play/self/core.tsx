@@ -303,29 +303,39 @@ export default function SelfFunnel() {
         </div>
       </div>
 
-      {/* 나와 같은 일주 유명인 — shop 카드 스타일, 사진 적응형 (수익가능·남여합산, 동적) */}
+      {/* 사주가 같은 사람 — 나 + 같은 일주 셀럽 카드 가로 스크롤 (사진 적응형, 동적) */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleCrown} basis="일주">나와 같은 일주 유명인</SectionTitle>
+        <SectionTitle icon={DoodleCrown} basis="일주">사주가 같은 사람</SectionTitle>
         {celeb ? (() => {
           const shown = celeb.persons.slice(0, 3)
-          const extra = Math.min(celeb.count - shown.length, 5)
+          const extra = Math.min(celeb.count - shown.length, 3)
           return (
-            <div className="rounded-2xl bg-white border border-charcoal/10 overflow-hidden">
-              <p className="px-4 pt-3 pb-2 text-[13px] text-charcoal/70" style={GAEGU}>
-                <span className="font-bold" style={{ color: PINK }}>{bareIlju}일주</span>엔 <span className="font-bold text-charcoal">{celeb.topCat}</span>{josa(celeb.topCat, "이", "가")} 많아 · 같은 기운 {celeb.count}명
-              </p>
-              <div className="flex border-t border-charcoal/5">
-                {shown.map((p, i) => (
-                  <div key={i} className={`flex-1 flex flex-col items-center gap-1.5 py-3.5 px-1 ${i < shown.length - 1 ? "border-r border-charcoal/5" : ""}`}>
-                    <CelebAvatar name={p.name} cat={p.cat} size={52} />
-                    <div className="text-center px-0.5">
-                      <p className="text-[12px] font-bold text-charcoal leading-tight">{p.name}</p>
-                      <p className="text-[10px] text-text-muted leading-tight">{p.role}</p>
-                    </div>
-                  </div>
-                ))}
+            <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4">
+              {/* 나 카드 */}
+              <div className="relative shrink-0 w-[94px] rounded-2xl bg-white px-2.5 pt-3 pb-2.5 flex flex-col items-center gap-1.5 border-2" style={{ borderColor: PINK }}>
+                <span className="absolute top-1 right-1.5"><Ico as={DoodleCrown} size={18} /></span>
+                <div className="p-[2px] rounded-full" style={{ background: "linear-gradient(135deg,#E84B6A,#FBBF24)" }}><Avatar iljuKey={charKey} size={44} /></div>
+                <p className="text-[13px] font-bold text-charcoal" style={BINGGRAE}>나</p>
+                <p className="text-[10px] text-text-muted text-center leading-tight">{bareIlju}일주</p>
+                <Ico as={ELEM_DOODLE[self.dayElem]} size={15} />
               </div>
-              {extra > 0 && <p className="text-[12px] text-text-muted text-center py-2 border-t border-charcoal/5">외 {extra}명 더</p>}
+              {/* 셀럽 카드 */}
+              {shown.map((p, i) => (
+                <div key={i} className="relative shrink-0 w-[94px] rounded-2xl bg-white border border-charcoal/10 px-2.5 pt-3 pb-2.5 flex flex-col items-center gap-1.5">
+                  <span className="absolute top-1 right-1.5"><Ico as={DoodleHeart} size={14} /></span>
+                  <CelebAvatar name={p.name} cat={p.cat} size={44} />
+                  <p className="text-[12px] font-bold text-charcoal text-center leading-tight">{p.name}</p>
+                  <p className="text-[10px] text-text-muted text-center leading-tight truncate w-full">{p.role}</p>
+                  <Ico as={ELEM_DOODLE[self.dayElem]} size={15} />
+                </div>
+              ))}
+              {/* 외 N명 카드 */}
+              {extra > 0 && (
+                <div className="shrink-0 w-[66px] rounded-2xl border border-dashed border-charcoal/20 flex flex-col items-center justify-center gap-0.5 text-center" style={{ background: "rgba(45,45,45,0.03)" }}>
+                  <span className="text-[18px]" style={{ ...BINGGRAE, color: PINK }}>+{extra}</span>
+                  <span className="text-[11px] text-text-muted">명 더</span>
+                </div>
+              )}
             </div>
           )
         })() : (
