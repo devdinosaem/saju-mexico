@@ -11,7 +11,7 @@ import { POS_LABEL, type SinsalData, type Pos } from "./sinsal-adapter"
 import { SINSAL, CAT_STYLE, CAT_ORDER, STAT_LABEL, STAT_MEME, SYNERGY, type SinsalStat } from "./flavor"
 import {
   DoodleSparkles, DoodleBook, DoodleKey, DoodleTaegeuk, DoodleHeart,
-  DoodleStar, DoodleSpeechBubble, DoodleQuestionMark, DoodleLightning,
+  DoodleStar, DoodleSpeechBubble, DoodleMagicWand, DoodleLightning,
   DoodleClover, DoodleCalendar,
 } from "@/components/doodles"
 
@@ -112,7 +112,7 @@ export function SinsalCard({ name, positions }: { name: string; positions: Pos[]
         <p className="text-[14px] text-charcoal/85 leading-snug">{info.mean}.</p>
         {info.myth && (
           <div className="rounded-xl px-3 py-2.5 flex items-start gap-2" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
-            <Ico as={DoodleQuestionMark} size={16} />
+            <Ico as={DoodleMagicWand} size={16} />
             <div><span className="text-[13px] font-bold text-charcoal">무서운 이름, 사실은 </span>
               <span className="text-[13px] text-charcoal/75 leading-snug">{info.myth}</span></div>
           </div>
