@@ -8,6 +8,9 @@ import { ELEMENT_THEME } from "@/lib/ilju-calc"
 import { useUser } from "@/lib/UserContext"
 import { useFriends } from "@/hooks/useFriends"
 import { useMyDisplayCharacter } from "@/hooks/useMyDisplayCharacter"
+import { SOCIAL_BACKEND_ENABLED, ensureDevSession } from "@/lib/supabase/dev-session"
+import { fetchMyGuestbook, deleteGuestbookEntry } from "@/lib/social/guestbook"
+import { fetchMyRoom } from "@/lib/social/rooms"
 const withTime = (date: string) => /오전|오후/.test(date) ? date : date + " 오후 12:00"
 
 const STEM_TO_ELEM: Record<string, string> = {
@@ -20,7 +23,7 @@ const ELEM_BG_MAP: Record<string, string> = {
 }
 const friendBg = (iljuKey: string) => ELEM_BG_MAP[STEM_TO_ELEM[iljuKey[0]] ?? "토"]
 
-type GuestEntry = { id: string; author: string; message: string; date: string }
+type GuestEntry = { id: string; author: string; message: string; date: string; iljuKey?: string; isMe?: boolean }
 
 const CARD_COLORS = [
   { bg: "#FFFDE8", border: "#F0DC6C" },
@@ -51,6 +54,17 @@ export default function GuestbookPage() {
   const [editing, setEditing] = useState(false)
 
   useEffect(() => {
+    if (SOCIAL_BACKEND_ENABLED) {
+      let alive = true
+      ;(async () => {
+        await ensureDevSession()
+        const [r, gb] = await Promise.all([fetchMyRoom(), fetchMyGuestbook()])
+        if (!alive) return
+        if (r) setRoom(r)
+        setEntries(gb.map(e => ({ id: e.id, author: e.authorName, message: e.message, date: e.date, iljuKey: e.authorIljuKey, isMe: e.isMe })))
+      })()
+      return () => { alive = false }
+    }
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) setRoom(JSON.parse(saved))
@@ -61,10 +75,13 @@ export default function GuestbookPage() {
     } catch {}
   }, [])
 
-  const deleteEntry = (id: string) => {
-    const next = entries.filter(e => e.id !== id)
-    setEntries(next)
-    try { localStorage.setItem(gbKey, JSON.stringify(next)) } catch {}
+  const deleteEntry = async (id: string) => {
+    setEntries(prev => prev.filter(e => e.id !== id))
+    if (SOCIAL_BACKEND_ENABLED) { await deleteGuestbookEntry(id); return }
+    try {
+      const next = entries.filter(e => e.id !== id)
+      localStorage.setItem(gbKey, JSON.stringify(next))
+    } catch {}
   }
 
 
@@ -146,30 +163,29 @@ export default function GuestbookPage() {
                 entries.map((entry, i) => {
                   const color = CARD_COLORS[i % CARD_COLORS.length]
                   const tilt = i % 2 === 0 ? "rotate(-0.4deg)" : "rotate(0.3deg)"
+                  const isMe = entry.isMe ?? (entry.author === meName)
+                  const entryIlju = entry.iljuKey ?? friends.find(f => f.name === entry.author)?.iljuKey
+                  const entryFn = isMe ? meSvgFn : (entryIlju ? ILJU_SVG_ICONS[entryIlju] : null)
+                  const entryKey = isMe ? meDisplayKey : (entryIlju ?? "")
                   return (
                     <div key={entry.id} className="flex gap-2.5" style={{ transform: tilt }}>
                       <div
                         className="shrink-0 w-9 h-9 rounded-full overflow-hidden flex items-center justify-center"
                         style={{
-                          background: entry.author === meName ? meBg : (() => { const f = friends.find(f => f.name === entry.author); return f ? friendBg(f.iljuKey) : "#F1F5F9" })(),
+                          background: isMe ? meBg : (entryIlju ? friendBg(entryIlju) : "#F1F5F9"),
                           border: "1.5px dashed #D4B070",
                         }}
                       >
-                        {(() => {
-                          if (entry.author === meName) return <div className="w-full h-full">{meSvgFn?.(getIljuProfileViewBox(meDisplayKey))}</div>
-                          const friend = friends.find(f => f.name === entry.author)
-                          const fn = friend ? ILJU_SVG_ICONS[friend.iljuKey] : null
-                          return fn
-                            ? <div className="w-full h-full">{fn(getIljuProfileViewBox(friend!.iljuKey))}</div>
-                            : <span className="text-[12px] font-bold text-charcoal/50">{entry.author[0]}</span>
-                        })()}
+                        {entryFn
+                          ? <div className="w-full h-full">{entryFn(getIljuProfileViewBox(entryKey))}</div>
+                          : <span className="text-[12px] font-bold text-charcoal/50">{entry.author[0]}</span>}
                       </div>
                       <div
                         className="flex-1 rounded-xl rounded-tl-sm px-3 py-1.5 relative"
                         style={{ background: color.bg, border: `1.5px solid ${color.border}`, boxShadow: "2px 2px 0px rgba(0,0,0,0.06)" }}
                       >
                         <div className="flex items-baseline gap-2 mb-0.5">
-                          <span className="text-[12px] font-bold text-charcoal">{entry.author === meName ? "나" : entry.author}</span>
+                          <span className="text-[12px] font-bold text-charcoal">{isMe ? "나" : entry.author}</span>
                           <span className="text-[10px] text-text-muted">{withTime(entry.date)}</span>
                         </div>
                         <p className="text-[13px] font-normal text-charcoal/80 leading-snug break-all">{entry.message}</p>
