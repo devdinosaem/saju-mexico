@@ -90,7 +90,7 @@ const DONGMUN = [
 
 /* ── 컴포넌트 ───────────────────────────────────────────── */
 
-export default function MyHero() {
+export default function MyHero({ onEdit }: { onEdit?: () => void }) {
   const { user, ilju: registeredIlju, hasIlju } = useUser()
   const ilju = registeredIlju ?? ILJU_TYPES[0]
   const theme = ELEMENT_THEME[ilju.stemElement]
@@ -135,7 +135,7 @@ export default function MyHero() {
         </div>
 
         {/* 수정 */}
-        <button className="shrink-0 px-3 py-2 rounded-xl bg-charcoal/5 border border-charcoal/10 text-[12px] font-medium text-charcoal/60 active:opacity-70 transition-opacity">
+        <button onClick={onEdit} className="shrink-0 px-3 py-2 rounded-xl bg-charcoal/5 border border-charcoal/10 text-[12px] font-medium text-charcoal/60 active:opacity-70 transition-opacity">
           수정
         </button>
       </div>

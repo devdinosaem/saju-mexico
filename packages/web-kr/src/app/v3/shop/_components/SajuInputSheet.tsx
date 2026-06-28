@@ -10,6 +10,8 @@ type Props = {
   onSuccess?: (bd: MockBirthDate) => void
   initialData?: MockBirthDate
   skipSave?: boolean
+  title?: string        // 헤더 카피 (기본: 최초 입력 맥락)
+  submitLabel?: string  // 완료 버튼 카피
 }
 
 function getMaxDay(y: string, m: string): number {
@@ -25,7 +27,7 @@ function getMaxDay(y: string, m: string): number {
   return [4, 6, 9, 11].includes(mi) ? 30 : 31
 }
 
-export default function SajuInputSheet({ open, onClose, onSuccess, initialData, skipSave }: Props) {
+export default function SajuInputSheet({ open, onClose, onSuccess, initialData, skipSave, title, submitLabel }: Props) {
   const [name, setName]     = useState("")
   const [year, setYear]     = useState("")
   const [month, setMonth]   = useState("")
@@ -227,7 +229,7 @@ export default function SajuInputSheet({ open, onClose, onSuccess, initialData, 
             className="text-[17px] font-bold text-charcoal"
             style={{ fontFamily: "'BinggraeTaom', sans-serif" }}
           >
-            생년월일을 알려줘 ✦
+            {title ?? "생년월일을 알려줘 ✦"}
           </p>
 
           {/* 이름 */}
@@ -367,7 +369,7 @@ export default function SajuInputSheet({ open, onClose, onSuccess, initialData, 
 
           {/* CTA */}
           <CTAButton type="submit" disabled={!isValid}>
-            👑 내 사주카드 뽑기 👑
+            {submitLabel ?? "👑 내 사주카드 뽑기 👑"}
           </CTAButton>
 
         </form>

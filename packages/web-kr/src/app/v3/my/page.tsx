@@ -7,6 +7,7 @@ import MyHero from "./_components/MyHero"
 import MyIljuCard from "./_components/MyIljuCard"
 import MyongtaeCard from "./_components/MyongtaeCard"
 import MyMyeongsikCard from "./_components/MyMyeongsikCard"
+import OhneulSajuCard from "./_components/OhneulSajuCard"
 import MonthCalendar from "./_components/MonthCalendar"
 import SajuInputSheet from "../shop/_components/SajuInputSheet"
 import { PRICES, priceLabel } from "@/lib/prices"
@@ -68,10 +69,13 @@ export default function MyPage() {
   return (
     <div className="flex flex-col gap-4">
       {/* 프로필 히어로 (공유 시 카드 시트 오픈) */}
-      <MyHero />
+      <MyHero onEdit={() => setEditOpen(true)} />
 
       {/* 내 명태 (잔액 + 충전 + 내역) */}
       <MyongtaeCard />
+
+      {/* 오늘의 사주 (일일 운세 위젯) */}
+      <OhneulSajuCard />
 
       {/* 내 명식 (사주팔자 + 오행 분포) */}
       <MyMyeongsikCard onEdit={() => setEditOpen(true)} />
@@ -292,6 +296,8 @@ export default function MyPage() {
         open={editOpen}
         onClose={() => setEditOpen(false)}
         initialData={user.birthDate ?? undefined}
+        title={user.birthDate ? "내 명식 정보 수정 ✦" : "생년월일을 알려줘 ✦"}
+        submitLabel={user.birthDate ? "저장하기" : undefined}
         onSuccess={(bd) => {
           const ij = calcIlju(bd.year, bd.month, bd.day, bd.gender)
           saveMockIlju(ij.id)
