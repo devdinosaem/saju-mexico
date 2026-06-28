@@ -1345,7 +1345,7 @@ const _WaterChars: Array<{id: string; node: React.ReactNode}> = [
               <path d="M22 46 Q26 42 30 46 Q34 50 38 46" stroke="#2D2D2D" strokeWidth="0.8" fill="none" opacity="0.4" />
               <path d="M24 56 Q28 52 32 56 Q36 60 40 56" stroke="#2D2D2D" strokeWidth="0.8" fill="none" opacity="0.4" />
               {/* 얼굴 — 여성 ellipse */}
-              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.5" />
+              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5" />
               {/* 속눈썹 */}
               <path d="M31 31 Q34 29 37 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               <path d="M43 31 Q46 29 49 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />

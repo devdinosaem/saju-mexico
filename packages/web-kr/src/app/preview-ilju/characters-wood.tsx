@@ -1136,7 +1136,7 @@ const _WoodChars: Array<{id: string; node: React.ReactNode}> = [
               {/* 헤어 — 중단발 스트레이트, 짙은 슬레이트 (닫힌 Z) */}
               <path d="M18 32 Q18 10 40 8 Q62 10 62 32 L62 62 Q56 72 46 70 Q40 68 34 70 Q24 72 18 62 Z" fill="#374151" stroke="#2D2D2D" strokeWidth="1.5" />
               {/* 얼굴 */}
-              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="2" />
+              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="2" />
               {/* 속눈썹 */}
               <path d="M31 31 Q34 29 37 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               <path d="M43 31 Q46 29 49 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />

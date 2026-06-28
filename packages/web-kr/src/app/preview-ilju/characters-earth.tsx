@@ -1044,7 +1044,7 @@ const _EarthChars: Array<{id: string; node: React.ReactNode}> = [
               {/* 헤어 — 장발 웨이브 퍼머, 연한 갈색 (먼저 그림) */}
               <path d="M16 30 Q16 8 40 6 Q64 8 64 30 Q68 42 62 50 Q56 58 64 66 Q68 74 62 80 Q54 86 46 82 Q40 80 34 82 Q26 86 18 80 Q12 74 16 66 Q24 58 18 50 Q12 42 16 30 Z" fill="#C68642" stroke="#2D2D2D" strokeWidth="1.5" />
               {/* 얼굴 */}
-              <ellipse cx="40" cy="38" rx="15" ry="14" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="2" />
+              <ellipse cx="40" cy="38" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="2" />
               {/* 속눈썹 */}
               <path d="M31 33 Q34 31 37 33" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               <path d="M43 33 Q46 31 49 33" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
@@ -1443,7 +1443,7 @@ const _EarthChars: Array<{id: string; node: React.ReactNode}> = [
               <path d="M52 14 Q60 6 56 2 Q48 6 44 14Z" fill="#F9A8D4" stroke="#2D2D2D" strokeWidth="1.5" />
               <circle cx="40" cy="14" r="4" fill="#F472B6" stroke="#2D2D2D" strokeWidth="1.5" />
               {/* 얼굴 */}
-              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="2" />
+              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="2" />
               {/* 속눈썹 */}
               <path d="M31 31 Q34 29 37 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               <path d="M43 31 Q46 29 49 31" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />

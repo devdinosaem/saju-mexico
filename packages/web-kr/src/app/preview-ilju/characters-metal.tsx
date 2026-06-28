@@ -1039,7 +1039,7 @@ const _MetalChars: Array<{id: string; node: React.ReactNode}> = [
               {/* 머리카락 — 단정한 숏컷 */}
               <path d="M22 30 Q20 14 40 12 Q60 14 58 30" fill="#2D2D2D" />
               {/* 얼굴 */}
-              <ellipse cx="40" cy="38" rx="16" ry="15" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="2" />
+              <ellipse cx="40" cy="38" rx="16" ry="15" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="2" />
               {/* 속눈썹 */}
               <path d="M30 32 Q33 30 36 32" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               <path d="M44 32 Q47 30 50 32" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />

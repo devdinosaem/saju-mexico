@@ -89,7 +89,7 @@ const _FireChars: Array<{id: string; node: React.ReactNode}> = [
               <circle cx="21" cy="30" r="3" fill="#F87171" stroke="#2D2D2D" strokeWidth="1"/>
               <circle cx="59" cy="30" r="3" fill="#F87171" stroke="#2D2D2D" strokeWidth="1"/>
               {/* === FACE — drawn AFTER hair, covers center naturally === */}
-              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="1.5"/>
+              <ellipse cx="40" cy="36" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="1.5"/>
               {/* 속눈썹 */}
               <path d="M31 30 Q34 28 37 30" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
               <path d="M43 30 Q46 28 49 30" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
@@ -214,7 +214,7 @@ const _FireChars: Array<{id: string; node: React.ReactNode}> = [
               {/* 헤어 — 장발 스트레이트, 검정 (닫힌 Z) */}
               <path d="M18 30 Q18 10 40 8 Q62 10 62 30 L64 74 Q56 86 46 82 Q40 80 34 82 Q24 86 16 74 Z" fill="#2D2D2D" stroke="#2D2D2D" strokeWidth="1" />
               {/* 얼굴 */}
-              <ellipse cx="40" cy="34" rx="15" ry="14" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="2" />
+              <ellipse cx="40" cy="34" rx="15" ry="14" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="2" />
               {/* 속눈썹 */}
               <path d="M31 29 Q34 27 37 29" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               <path d="M43 29 Q46 27 49 29" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
@@ -334,7 +334,7 @@ const _FireChars: Array<{id: string; node: React.ReactNode}> = [
               <path d="M30 16 Q32 10 34 16" fill="#FACC15" stroke="none" />
               <path d="M42 12 Q44 6 46 12" fill="#FACC15" stroke="none" />
               {/* 얼굴 */}
-              <ellipse cx="40" cy="40" rx="14" ry="13" fill="#FDE68A" stroke="#2D2D2D" strokeWidth="2" />
+              <ellipse cx="40" cy="40" rx="14" ry="13" fill="#FDDCB5" stroke="#2D2D2D" strokeWidth="2" />
               {/* 속눈썹 */}
               <path d="M31 35 Q34 33 37 35" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
               <path d="M43 35 Q46 33 49 35" stroke="#2D2D2D" strokeWidth="1.5" fill="none" strokeLinecap="round" />
