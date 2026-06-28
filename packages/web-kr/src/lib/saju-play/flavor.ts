@@ -4,7 +4,8 @@
 // ════════════════════════════════════════════════════════════════
 import type { FC } from "react"
 import {
-  DoodleSprout, DoodleFire, DoodleEarth, DoodleDiamond, DoodleWave,
+  DoodleSprout, DoodleFire, DoodleDiamond, DoodleWave,
+  DoodleWood, DoodleFlameFive, DoodleEarth, DoodleMetal, DoodleWater,
   DoodleHeart, DoodleSparkle, DoodleLightning, DoodleMirror, DoodleSmiley,
   DoodleSuitcase, DoodleGoldBar, DoodleSpeechBubble, DoodleRing, DoodleStar,
   DoodleColorPalette, DoodleCalendar, DoodleMedal,
@@ -18,7 +19,10 @@ export type DoodleC = FC<{ className?: string }>
 // ── 오행 기본 토큰 ───────────────────────────────────────────────
 export const ELEM_BG: Record<Elem, string> = { 목: "#D1FAE5", 화: "#FEE2E2", 토: "#FEF3C7", 금: "#F1F5F9", 수: "#DBEAFE" }
 export const ELEM_COLOR: Record<Elem, string> = { 목: "#4ADE80", 화: "#F87171", 토: "#FBBF24", 금: "#94A3B8", 수: "#60A5FA" }
-export const ELEM_DOODLE: Record<Elem, DoodleC> = { 목: DoodleSprout, 화: DoodleFire, 토: DoodleEarth, 금: DoodleDiamond, 수: DoodleWave }
+// 오행 두들 = 표준 5종(preview-ilju 기준). 혼용 금지. 컨테이너 사용은 ElementSticker(ui.tsx).
+export const ELEM_DOODLE: Record<Elem, DoodleC> = { 목: DoodleWood, 화: DoodleFlameFive, 토: DoodleEarth, 금: DoodleMetal, 수: DoodleWater }
+// 표준 스티커 종횡비(preview-ilju) — ElementSticker가 참조. [w,h] (tailwind*4 px 기준)
+export const ELEM_STICKER_RATIO: Record<Elem, [number, number]> = { 목: [16, 18], 화: [14, 18], 토: [16, 16], 금: [14, 16], 수: [14, 18] }
 export const ELEM_LABEL: Record<Elem, string> = { 목: "목 기운", 화: "화 기운", 토: "토 기운", 금: "금 기운", 수: "수 기운" }
 
 // ── 그룹: 역할 / 개인 한마디 ─────────────────────────────────────

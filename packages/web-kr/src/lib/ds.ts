@@ -38,12 +38,7 @@ export const SURFACE = {
   sunken: "var(--surface-sunken)",
 } as const
 
-export const SHADOW = {
-  sm: "var(--shadow-sm)",
-  md: "var(--shadow-md)",
-  lg: "var(--shadow-lg)",
-  pop: "var(--shadow-pop)",
-} as const
+// 섀도우 정책 폐지(2026-06-29) — 깊이는 회색 선 테두리(--line-soft/--line-medium)로 표현.
 
 export const RADIUS = {
   sm: "var(--r-sm)", md: "var(--r-md)", lg: "var(--r-lg)", xl: "var(--r-xl)", full: "999px",

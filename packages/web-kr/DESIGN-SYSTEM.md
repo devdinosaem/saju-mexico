@@ -10,9 +10,9 @@
 ## 1. 원칙 (6)
 
 1. **흰색 대신 파스텔** — 카드는 순백(`#FFFFFF`)이 아니라 따뜻한 아이보리(`--surface-card`). 강조 박스는 의미색 파스텔.
-2. **소프트 섀도우만** — `0 Npx 0px #2D2D2D` 같은 블러 없는 하드 오프셋 섀도우 ❌. `border-2 border-charcoal` 두꺼운 차콜 외곽선 ❌. → `--shadow-*`(블러+낮은 불투명도) + `--line-soft` 경계.
-3. **두들 O, 이모지 최소** — 아이콘은 두들 SVG(`<Ico as={Doodle..} />`). 시스템 이모지(👑🔥💎…)는 지양.
-4. **폰트 역할 고정** — 제목/감성/기능 3역할을 일관되게 (아래 §3).
+2. **그림자 없음 — 회색 선 테두리만** — 섀도우는 톤앤매너와 안 맞아 **전면 폐지**. 깊이는 깔끔한 회색 선(`--line-soft`=charcoal/10, "내 스펙시트" 기준)으로. 하드 오프셋 섀도우·`border-2 border-charcoal`·`box-shadow` 모두 ❌.
+3. **두들 O, 이모지 최소** — 아이콘은 두들 SVG(`<Ico as={Doodle..} />`). 시스템 이모지(👑🔥💎…)는 지양. 오행 두들은 표준 5종만 (아래 §5).
+4. **폰트 역할 고정 + 가독성 우선** — 리포트 본문/서브텍스트의 주(主)는 **Pretendard/빙그레**. 감성체(Cafe24)는 **짧은 어절 포인트에만** (아래 §3).
 5. **일주 프로필 아바타 유지** — 그라데이션 링 + 오행 배경 + 두들 얼굴 조합은 우리 자산. 그대로 계승.
 6. **그라디언트는 시그니처** — 위계 최상위 블록·AI 요약에만 핵심 그라디언트(`GRADIENT`). 디폴트 핑크, 오행 필요 시 목/화/토/금/수. 남발 금지 (아래 §2 핵심 그라디언트).
 
@@ -73,9 +73,9 @@
 - **적용 컴포넌트**: `<Hero theme>` (배경 surface + glow), `<GradBadge theme>` (bold). 상담탭 말풍선([`consult/page.tsx`](src/app/v3/consult/page.tsx))도 `gradOf(elemKey).surface`로 여기서 파생 — 별도 색 정의 없음.
 - 새 오행/테마 추가 시 이 6종과 **동일한 밝기·채도 레벨**로 맞출 것.
 
-### 라인 / 섀도우 / 라운드
-- 경계: `--line-soft`(기본) · `--line-medium`(구분선)
-- 섀도우: `--shadow-sm`(카드) · `--shadow-md`(떠있는 카드/히어로) · `--shadow-lg`(시트·모달) · `--shadow-pop`(핑크 CTA)
+### 라인 / 라운드 (섀도우 없음)
+- 경계: `--line-soft`(기본 카드, charcoal/10) · `--line-medium`(구분선·강조 카드 `.ds-raised`)
+- **섀도우 토큰 폐지** — `box-shadow` 쓰지 않는다. 깊이는 위 회색 선으로.
 - 라운드: `--r-sm 12` · `--r-md 16` · `--r-lg 20`(카드) · `--r-xl 24`(히어로)
 
 ---
@@ -85,16 +85,36 @@
 | 역할 | 폰트 | 토큰 / 유틸 | 쓰는 곳 |
 |---|---|---|---|
 | **제목·강조·브랜드** | BinggraeTaom | `FONT.title` / `.font-title` | 섹션 제목, 카드 타이틀, 큰 숫자/브랜드 |
-| **감성 카피·말맛·인용** | Cafe24Dongdong | `FONT.flavor` / `.font-flavor` | 설명문, 다정한 한 줄, `"인용"` |
-| **기능·데이터·긴 본문** | Pretendard(기본) | 지정 불필요 | 라벨, 표/수치, 길게 읽는 본문 |
+| **기능·데이터·본문(主)** | Pretendard(기본) | 지정 불필요 | **모든 설명·서브텍스트·긴 본문**, 라벨, 표/수치 |
+| **감성 포인트(점)** | Cafe24Dongdong | `FONT.flavor` / `.font-flavor` | **짧은 어절·한 줄 카피·`"인용"` 에만** |
 
-> 기존엔 감성 폰트(Cafe24)를 거의 모든 본문에 남발 → 가독성/위계 흐림. **긴 본문·데이터는 Pretendard**, 감성 한 줄에만 Cafe24.
+> **가독성 규칙(중요).** 리포트는 읽는 화면이다. 본문·서브텍스트의 기본은 **Pretendard**, 제목은 **빙그레**.
+> 감성체(Cafe24)는 **문장 전체에 깔지 말 것** — 짧은 태그라인/한 줄 멘트/인용 등 **포인트로만**. 문단·여러 줄 설명에 `FONT.flavor`를 쓰면 위반.
 
 본문 최소 14px. 스케일: nano 11 · micro 12 · caption 13 · body 14 · h3 15 · h2 17 · h1 20 · display 24.
 
 ---
 
-## 4. 컴포넌트 ([`components/ds.tsx`](src/components/ds.tsx))
+## 4. 오행 컴포넌트 (표준)
+
+> **혼용 금지.** 오행 두들 스티커는 **표준 5종만**(기준: [`/preview-ilju`](http://localhost:3001/preview-ilju) "오행 5종 두들 스티커"). 매핑은 [`flavor.ts`](src/lib/saju-play/flavor.ts) `ELEM_DOODLE`(SSOT). 직접 두들을 노출하지 말고 컴포넌트를 쓴다.
+
+| 오행 | 표준 두들 | 색(`ELEM_COLOR`) |
+|---|---|---|
+| 목(木) | `DoodleWood` | `#4ADE80` |
+| 화(火) | `DoodleFlameFive` | `#F87171` |
+| 토(土) | `DoodleEarth` | `#FBBF24` |
+| 금(金) | `DoodleMetal` | `#94A3B8` |
+| 수(水) | `DoodleWater` | `#60A5FA` |
+
+**컴포넌트** ([`lib/saju-play/ui.tsx`](src/lib/saju-play/ui.tsx))
+- `<ElementSticker elem size bg>` — 표준 두들 + **필수 컨테이너**(둥근 박스·회색 선). `bg="tint"`면 오행 배경색. **스티커는 반드시 이걸로** (맨몸 두들 노출 ❌).
+- `<ElementBadge elem size>` — 오행 원형 뱃지(테두리 원 + 표준 내부 아트). 컴팩트 정체성 표시용.
+- `ElemBar`(막대) 등 작은 인라인 마커도 `ELEM_DOODLE`(표준)을 참조하므로 자동 일관.
+
+---
+
+## 5. 공용 컴포넌트 ([`components/ds.tsx`](src/components/ds.tsx))
 
 | 컴포넌트 | 용도 |
 |---|---|
@@ -112,7 +132,7 @@
 
 ---
 
-## 5. 마이그레이션 상태
+## 6. 마이그레이션 상태
 
 각 Phase는 **리스타일 + 컴포넌트 통합/depth 평탄화**를 함께 한다.
 

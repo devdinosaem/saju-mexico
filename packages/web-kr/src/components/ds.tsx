@@ -35,7 +35,7 @@ export function InfoBox({ accent = "info", icon, title, children, iconSize = 18,
       {icon && <Ico as={icon} size={iconSize} />}
       <div className="min-w-0 flex-1">
         {title && <p className="text-[14px] font-bold text-charcoal leading-tight">{title}</p>}
-        {children && <div className="text-[14px] text-charcoal/75 leading-snug" style={FONT.flavor}>{children}</div>}
+        {children && <div className="text-[14px] text-charcoal/75 leading-relaxed mt-0.5">{children}</div>}
       </div>
     </div>
   )
@@ -92,7 +92,7 @@ export function Hero({ icon, title, basis, children, theme = "pink", className =
   const grad = GRADIENT[theme]
   return (
     <div className={`rounded-[var(--r-xl)] px-4 py-4 flex flex-col gap-3 ${className}`}
-      style={{ background: grad.surface, border: "1px solid var(--line-soft)", boxShadow: `var(--shadow-md), 0 4px 20px ${grad.glow}` }}>
+      style={{ background: grad.surface, border: "1px solid var(--line-soft)" }}>
       <div className="flex items-center gap-2">
         {icon && <Ico as={icon} size={20} />}
         <span className="text-[15px] text-charcoal" style={FONT.title}>{title}</span>
@@ -108,7 +108,7 @@ export function GradBadge({ children, theme = "pink", className = "", as: Tag = 
   { children: ReactNode; theme?: GradTheme; className?: string; as?: "span" | "div" }) {
   return (
     <Tag className={`inline-flex items-center justify-center text-white font-bold rounded-full px-3 py-1 ${className}`}
-      style={{ background: GRADIENT[theme].bold, boxShadow: "var(--shadow-sm)" }}>
+      style={{ background: GRADIENT[theme].bold }}>
       {children}
     </Tag>
   )

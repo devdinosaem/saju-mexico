@@ -5,6 +5,8 @@
 // ════════════════════════════════════════════════════════════════
 import { FONT, ACCENT, GRADIENT, type Accent, type GradTheme } from "@/lib/ds"
 import { Card, InfoBox, SectionTitle, ChapterDivider, Hero, Prose, Basis, Ico, GradBadge } from "@/components/ds"
+import { ElementSticker, ElementBadge } from "@/lib/saju-play/ui"
+import { ELEMS, type Elem } from "@/lib/saju-play/engine"
 import {
   DoodleSparkles, DoodleHeart, DoodleStar, DoodleLightning, DoodleCrown,
   DoodleSpeechBubble, DoodleMoon, DoodleBook, DoodleKey, DoodleClover,
@@ -23,13 +25,6 @@ const ACCENTS: { key: Accent; label: string }[] = [
   { key: "ok", label: "ok · 긍정·건강" },
   { key: "special", label: "special · 특별·신비" },
 ]
-const SHADOWS = [
-  { name: "sm", v: "var(--shadow-sm)", note: "카드" },
-  { name: "md", v: "var(--shadow-md)", note: "히어로·떠있는 카드" },
-  { name: "lg", v: "var(--shadow-lg)", note: "시트·모달" },
-  { name: "pop", v: "var(--shadow-pop)", note: "핑크 CTA" },
-]
-
 function Label({ children }: { children: React.ReactNode }) {
   return <p className="text-[12px] text-text-muted mb-2" style={FONT.title}>{children}</p>
 }
@@ -141,29 +136,56 @@ export default function DesignSystemPage() {
           </div>
         </section>
 
-        {/* 3. 섀도우 — 하드 vs 소프트 */}
+        {/* 3. 깊이 = 회색 선 (섀도우 폐지) */}
         <section>
-          <ChapterDivider n={3} title="섀도우 — 소프트만" />
+          <ChapterDivider n={3} title="깊이 — 회색 선 (섀도우 없음)" />
           <div className="pt-3 flex flex-col gap-4">
             <div>
-              <Label>❌ 안티패턴 — 하드 차콜 섀도우 / 두꺼운 외곽선</Label>
+              <Label>❌ 안티패턴 — 섀도우(하드/소프트 모두) / 두꺼운 차콜 외곽선</Label>
               <div className="grid grid-cols-2 gap-3">
                 <div className="h-16 rounded-2xl flex items-center justify-center text-[12px] text-charcoal/70 bg-white"
-                  style={{ border: "2px solid #2D2D2D", boxShadow: "3px 3px 0px #2D2D2D" }}>네오브루탈</div>
+                  style={{ border: "2px solid #2D2D2D", boxShadow: "3px 3px 0px #2D2D2D" }}>하드 섀도우</div>
                 <div className="h-16 rounded-2xl flex items-center justify-center text-[12px] text-charcoal/70 bg-white"
-                  style={{ border: "2px solid #2D2D2D", boxShadow: "0 -4px 0px #2D2D2D" }}>하드 시트</div>
+                  style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.18)" }}>소프트 섀도우</div>
               </div>
             </div>
             <div>
-              <Label>✅ 소프트 섀도우 — 블러 + 낮은 불투명도</Label>
+              <Label>✅ 회색 선 테두리 — 기본 / 강조</Label>
               <div className="grid grid-cols-2 gap-3">
-                {SHADOWS.map(s => (
-                  <div key={s.name} className="h-16 rounded-[var(--r-lg)] flex flex-col items-center justify-center gap-0.5"
-                    style={{ background: "var(--surface-card)", border: "1px solid var(--line-soft)", boxShadow: s.v }}>
-                    <span className="text-[13px] font-bold text-charcoal">{s.name}</span>
-                    <span className="text-[10px] text-text-muted">{s.note}</span>
+                <div className="ds-card h-16 flex flex-col items-center justify-center gap-0.5">
+                  <span className="text-[13px] font-bold text-charcoal">기본</span>
+                  <span className="text-[10px] text-text-muted">--line-soft</span>
+                </div>
+                <div className="ds-card ds-raised h-16 flex flex-col items-center justify-center gap-0.5">
+                  <span className="text-[13px] font-bold text-charcoal">강조 (.ds-raised)</span>
+                  <span className="text-[10px] text-text-muted">--line-medium</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3.5 오행 컴포넌트 */}
+        <section>
+          <ChapterDivider n="五" title="오행 컴포넌트 — 표준" />
+          <div className="pt-3 flex flex-col gap-4">
+            <div>
+              <Label>ElementSticker — 표준 두들 + 필수 컨테이너</Label>
+              <div className="flex justify-between gap-2">
+                {ELEMS.map((e: Elem) => (
+                  <div key={e} className="flex flex-col items-center gap-1.5">
+                    <ElementSticker elem={e} size={30} />
+                    <span className="text-[11px] font-bold text-charcoal">{e}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+            <div>
+              <Label>ElementSticker bg=&quot;tint&quot; / ElementBadge</Label>
+              <div className="flex items-center gap-3">
+                {ELEMS.map((e: Elem) => <ElementSticker key={e} elem={e} size={24} bg="tint" />)}
+                <span className="w-px h-8" style={{ background: "var(--line-medium)" }} />
+                {ELEMS.map((e: Elem) => <ElementBadge key={e} elem={e} size={40} />)}
               </div>
             </div>
           </div>
