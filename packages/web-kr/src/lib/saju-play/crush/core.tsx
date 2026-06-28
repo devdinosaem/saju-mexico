@@ -17,7 +17,7 @@ import type { CompatSignals } from "./compat-engine"
 import {
   DoodleHeart, DoodleSparkle, DoodleSparkles, DoodleSpeechBubble, DoodlePencil, DoodlePolaroid,
   DoodleLightning, DoodleKey, DoodleHourglass, DoodleCalendar, DoodleTaegeuk,
-  DoodleRedString, DoodleClover, DoodleQuestionMark, DoodleBook,
+  DoodleRedString, DoodleClover, DoodlePush, DoodleBook,
 } from "@/components/doodles"
 
 type DoodleC = React.FC<{ className?: string }>
@@ -804,9 +804,9 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         <PullPushSim {...config.pushPull[eThem]} />
       </div>
 
-      {/* 지뢰 TOP 3 — 이 조합에서 절대 하지 말 것 */}
+      {/* 이건 조심해요 — 이 조합에서 역효과 나는 행동 */}
       <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleQuestionMark} basis={{ t: "일간 오행" }}>지뢰 TOP 3</SectionTitle>
+        <SectionTitle icon={DoodlePush} basis={{ t: "일간 오행" }}>이건 조심해요</SectionTitle>
         <div className="rounded-2xl px-4 py-3.5 flex flex-col gap-2.5" style={{ background: "#FEF2F2", border: "1.5px solid #FCA5A5" }}>
           {config.mines[eThem].map((m, i) => (
             <div key={i} className="flex items-start gap-2.5">
