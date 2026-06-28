@@ -253,6 +253,16 @@ const SectionTitle = ({ icon, children, basis }: { icon: DoodleC; children: Reac
     {basis && <Basis {...basis} />}
   </div>
 )
+// 챕터 구분선 — 결과 리포트 맥락 구획
+function ChapterDivider({ n, title }: { n: number; title: string }) {
+  return (
+    <div className="flex items-center gap-2.5 pt-3">
+      <span className="w-6 h-6 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: PINK }}>{n}</span>
+      <span className="text-[15px] text-charcoal shrink-0" style={BINGGRAE}>{title}</span>
+      <div className="flex-1 h-px" style={{ background: "#E5E7EB" }} />
+    </div>
+  )
+}
 // 하단 글로서리 — [용어, 깊은엔진여부, 쉬운설명]
 const GLOSSARY: [string, boolean, string][] = [
   ["종합 풀이", true, "아래 근거를 다 합쳐 읽은 풀이예요"],
@@ -536,6 +546,8 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         {(ai.status === "error" || ai.status === "idle") && <Prose text={fallbackProse} />}
       </div>
 
+      <ChapterDivider n={1} title="우리, 이런 사이야" />
+
       {/* 운명 신호 — 천간합/일지 합충 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleRedString} basis={{ t: "일간·일지 합충", deep: true }}>운명 신호</SectionTitle>
@@ -561,47 +573,6 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      {/* 결핍 채워주는 사람 — 용신 충족 (엔진 신호) */}
-      <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[myYongKr], border: `1.5px solid ${ELEM_COLOR[myYongKr]}` }}>
-        <Ico as={ELEM_DOODLE[myYongKr]} size={26} />
-        <div className="min-w-0">
-          <p className="text-[14px] font-bold text-charcoal flex items-center gap-1.5 flex-wrap">네 부족한 {myYongKr} 기운을 채워주는 사람 <Basis t="용신" deep /></p>
-          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{them.name || "그 사람"}은 네게 부족한 {myYongKr}을 {YONG_LV[signals.yongFulfill]} 채워줘. 옆에 있으면 숨통 트이는 결이야.</p>
-        </div>
-      </div>
-
-      {/* 매력 발산 지수 — 도화 (엔진 신호) */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleSparkles} basis={{ t: "도화", deep: true }}>매력 발산 지수</SectionTitle>
-        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
-          <div className="flex items-center justify-between">
-            <span className="text-[14px] font-bold text-charcoal">{signals.dohwa ? "지금 매력이 빛나는 시기" : "은은한 매력 구간"}</span>
-            <span className="text-[15px] font-bold" style={{ color: signals.dohwa ? PINK : "#94A3B8" }}>{dohwaVal}</span>
-          </div>
-          <div className="h-3 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
-            <div className="h-full rounded-full" style={{ width: `${dohwaVal}%`, background: signals.dohwa ? "linear-gradient(90deg,#FBBF24,#E84B6A)" : "#CBD5E1" }} />
-          </div>
-          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{signals.dohwa ? "지금이 들이대기 좋은 때. 자신감 있게 다가가도 통해." : "확 끌기보단 꾸준함으로 스며들 때야."}</p>
-        </div>
-      </div>
-
-      {/* 연애운 신호등 — 타이밍 (엔진 신호) */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleCalendar} basis={{ t: "대운·세운", deep: true }}>연애운 신호등</SectionTitle>
-        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex items-center gap-3.5">
-          <div className="flex flex-col gap-1.5 shrink-0 rounded-full px-1.5 py-2" style={{ background: "#2D2D2D" }}>
-            {["#EF4444", "#FBBF24", "#22C55E"].map((c, i) => {
-              const lit = signals.timingHot ? i === 2 : i === 1
-              return <span key={i} className="w-3 h-3 rounded-full" style={{ background: lit ? c : "#4B5563", boxShadow: lit ? `0 0 6px ${c}` : "none" }} />
-            })}
-          </div>
-          <div className="min-w-0">
-            <p className="text-[14px] font-bold text-charcoal">{signals.timingHot ? "인연이 움직이는 시기" : "잔잔한 흐름"}</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{signals.timingHot ? "네 연애운이 들어오는 때 — 적극적으로 움직여도 좋아." : "큰 바람은 약해 — 지금은 네가 먼저 만드는 게 핵심이야."}</p>
-          </div>
-        </div>
-      </div>
-
       {/* 끌림의 무게중심 — 역할 (엔진 신호) */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleHeart} basis={{ t: "일간 역할", deep: true }}>끌림의 무게중심</SectionTitle>
@@ -617,104 +588,12 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      {/* 썸 진행 지도 — 4단계 + 다음 액션 */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleRedString} basis={{ t: "오행 종합", deep: true }}>썸 진행 지도</SectionTitle>
-        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
-          <div className="flex items-center">
-            {config.journey.map((j, i) => (
-              <div key={i} className="flex items-center flex-1 last:flex-none">
-                <div className="flex flex-col items-center gap-1 shrink-0">
-                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-bold border-2"
-                    style={i === jIdx ? { background: PINK, color: "#FFF9F0", borderColor: PINK }
-                      : i < jIdx ? { background: "#FBD5E0", color: PINK, borderColor: "#FBD5E0" }
-                      : { background: "white", color: "#CBD5E1", borderColor: "#E5E7EB" }}>
-                    {i + 1}
-                  </span>
-                  <span className="text-[12px] font-bold" style={{ color: i === jIdx ? PINK : "#94A3B8" }}>{j.name}</span>
-                </div>
-                {i < config.journey.length - 1 && <div className="flex-1 h-0.5 mx-1 -mt-4" style={{ background: i < jIdx ? "#FBD5E0" : "#E5E7EB" }} />}
-              </div>
-            ))}
-          </div>
-          <div className="rounded-xl px-3 py-2.5" style={{ background: "#FFF0F5" }}>
-            <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>
-              <span className="font-bold" style={{ color: PINK }}>다음 칸으로 →</span> {config.journey[jIdx].tip}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* 두 사람 프로필 — 일주 캐릭터 */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleHeart} basis={{ t: "일간 오행" }}>두 사람 프로필</SectionTitle>
-        <div className="grid grid-cols-2 gap-2">
-          {people.map((x, i) => {
-            const per = config.persona[x.e]
-            return (
-              <div key={i} className="rounded-2xl bg-white border border-charcoal/10 px-3 py-3.5 flex flex-col items-center gap-1.5 text-center">
-                <Avatar iljuKey={x.k} size={60} />
-                <span className="text-[14px] font-bold text-charcoal">{x.label}</span>
-                <ElemBadge elem={x.e} />
-                <span className="text-[14px] font-bold" style={{ color: PINK }}>{per.tag}</span>
-                <span className="text-[13px] text-charcoal/60 leading-snug" style={GAEGU}>{per.line}</span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* 연애 세포 레이더차트 */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleSparkle} basis={{ t: "오행 종합", deep: true }}>연애 세포 활성도</SectionTitle>
-        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-1">
-          <RadarChart data={radar} />
-          <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>
-            가장 도드라지는 건 <span className="font-bold" style={{ color: PINK }}>{topCell.label}</span> ({topCell.value}) — {RADAR_TIP[topCell.label]}
-          </p>
-        </div>
-      </div>
-
-      {/* 상대 마음 여는 법 */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleKey} basis={{ t: "일간 오행" }}>{them.name || "그 사람"} 마음 여는 법</SectionTitle>
-        <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[eThem], border: `1.5px solid ${ELEM_COLOR[eThem]}` }}>
-          <Avatar iljuKey={themK} size={48} />
-          <div className="min-w-0">
-            <p className="text-[14px] font-bold text-charcoal">{open.title}</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{open.line}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* 그 사람 사용설명서 — 오행 매뉴얼 패러디 */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleBook} basis={{ t: "일간 오행" }}>{them.name || "그 사람"} 사용설명서</SectionTitle>
-        <div className="rounded-2xl bg-white border border-charcoal/10 overflow-hidden">
-          <div className="px-4 py-2.5 flex items-center gap-2 border-b border-charcoal/10" style={{ background: "#F8FAFC" }}>
-            <Avatar iljuKey={themK} size={28} />
-            <span className="text-[13px] text-text-muted">제품명 · {config.persona[eThem].tag}형</span>
-          </div>
-          {([["취급주의", "care"], ["충전법", "charge"], ["금지사항", "ban"], ["A/S", "as"]] as const).map(([k, key]) => (
-            <div key={k} className="px-4 py-2.5 flex gap-3 border-b border-charcoal/5 last:border-0">
-              <span className="text-[13px] font-bold shrink-0 w-16" style={{ color: PINK }}>{k}</span>
-              <span className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{config.manual[eThem][key]}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 끌리는 / 어긋나는 포인트 */}
-      <div className="grid grid-cols-1 gap-2">
-        <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#F0FFF4", border: "1.5px solid #86EFAC" }}>
-          <Ico as={DoodleHeart} size={18} />
-          <div><p className="text-[14px] font-bold text-charcoal">끌리는 포인트</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.chemi[rel].good}</p></div>
-        </div>
-        <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
-          <Ico as={DoodleLightning} size={18} />
-          <div><p className="text-[14px] font-bold text-charcoal">어긋나기 쉬운 포인트</p>
-            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.chemi[rel].care}</p></div>
+      {/* 결핍 채워주는 사람 — 용신 충족 (엔진 신호) */}
+      <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[myYongKr], border: `1.5px solid ${ELEM_COLOR[myYongKr]}` }}>
+        <Ico as={ELEM_DOODLE[myYongKr]} size={26} />
+        <div className="min-w-0">
+          <p className="text-[14px] font-bold text-charcoal flex items-center gap-1.5 flex-wrap">네 부족한 {myYongKr} 기운을 채워주는 사람 <Basis t="용신" deep /></p>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{them.name || "그 사람"}은 네게 부족한 {myYongKr}을 {YONG_LV[signals.yongFulfill]} 채워줘. 옆에 있으면 숨통 트이는 결이야.</p>
         </div>
       </div>
 
@@ -766,6 +645,111 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
+      {/* 연애 세포 레이더차트 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleSparkle} basis={{ t: "오행 종합", deep: true }}>연애 세포 활성도</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-1">
+          <RadarChart data={radar} />
+          <p className="text-[14px] text-charcoal/70 leading-snug text-center" style={GAEGU}>
+            가장 도드라지는 건 <span className="font-bold" style={{ color: PINK }}>{topCell.label}</span> ({topCell.value}) — {RADAR_TIP[topCell.label]}
+          </p>
+        </div>
+      </div>
+
+      <ChapterDivider n={2} title="그 사람 파헤치기" />
+
+      {/* 두 사람 프로필 — 일주 캐릭터 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleHeart} basis={{ t: "일간 오행" }}>두 사람 프로필</SectionTitle>
+        <div className="grid grid-cols-2 gap-2">
+          {people.map((x, i) => {
+            const per = config.persona[x.e]
+            return (
+              <div key={i} className="rounded-2xl bg-white border border-charcoal/10 px-3 py-3.5 flex flex-col items-center gap-1.5 text-center">
+                <Avatar iljuKey={x.k} size={60} />
+                <span className="text-[14px] font-bold text-charcoal">{x.label}</span>
+                <ElemBadge elem={x.e} />
+                <span className="text-[14px] font-bold" style={{ color: PINK }}>{per.tag}</span>
+                <span className="text-[13px] text-charcoal/60 leading-snug" style={GAEGU}>{per.line}</span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* 상대 마음 여는 법 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleKey} basis={{ t: "일간 오행" }}>{them.name || "그 사람"} 마음 여는 법</SectionTitle>
+        <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3" style={{ background: ELEM_BG[eThem], border: `1.5px solid ${ELEM_COLOR[eThem]}` }}>
+          <Avatar iljuKey={themK} size={48} />
+          <div className="min-w-0">
+            <p className="text-[14px] font-bold text-charcoal">{open.title}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{open.line}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* 그 사람 사용설명서 — 오행 매뉴얼 패러디 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleBook} basis={{ t: "일간 오행" }}>{them.name || "그 사람"} 사용설명서</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 overflow-hidden">
+          <div className="px-4 py-2.5 flex items-center gap-2 border-b border-charcoal/10" style={{ background: "#F8FAFC" }}>
+            <Avatar iljuKey={themK} size={28} />
+            <span className="text-[13px] text-text-muted">제품명 · {config.persona[eThem].tag}형</span>
+          </div>
+          {([["취급주의", "care"], ["충전법", "charge"], ["금지사항", "ban"], ["A/S", "as"]] as const).map(([k, key]) => (
+            <div key={k} className="px-4 py-2.5 flex gap-3 border-b border-charcoal/5 last:border-0">
+              <span className="text-[13px] font-bold shrink-0 w-16" style={{ color: PINK }}>{k}</span>
+              <span className="text-[14px] text-charcoal/75 leading-snug" style={GAEGU}>{config.manual[eThem][key]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <ChapterDivider n={3} title="어떻게 다가갈까" />
+
+      {/* 썸 진행 지도 — 4단계 + 다음 액션 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleRedString} basis={{ t: "오행 종합", deep: true }}>썸 진행 지도</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
+          <div className="flex items-center">
+            {config.journey.map((j, i) => (
+              <div key={i} className="flex items-center flex-1 last:flex-none">
+                <div className="flex flex-col items-center gap-1 shrink-0">
+                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-bold border-2"
+                    style={i === jIdx ? { background: PINK, color: "#FFF9F0", borderColor: PINK }
+                      : i < jIdx ? { background: "#FBD5E0", color: PINK, borderColor: "#FBD5E0" }
+                      : { background: "white", color: "#CBD5E1", borderColor: "#E5E7EB" }}>
+                    {i + 1}
+                  </span>
+                  <span className="text-[12px] font-bold" style={{ color: i === jIdx ? PINK : "#94A3B8" }}>{j.name}</span>
+                </div>
+                {i < config.journey.length - 1 && <div className="flex-1 h-0.5 mx-1 -mt-4" style={{ background: i < jIdx ? "#FBD5E0" : "#E5E7EB" }} />}
+              </div>
+            ))}
+          </div>
+          <div className="rounded-xl px-3 py-2.5" style={{ background: "#FFF0F5" }}>
+            <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>
+              <span className="font-bold" style={{ color: PINK }}>다음 칸으로 →</span> {config.journey[jIdx].tip}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 끌리는 / 어긋나는 포인트 */}
+      <div className="grid grid-cols-1 gap-2">
+        <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#F0FFF4", border: "1.5px solid #86EFAC" }}>
+          <Ico as={DoodleHeart} size={18} />
+          <div><p className="text-[14px] font-bold text-charcoal">끌리는 포인트</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.chemi[rel].good}</p></div>
+        </div>
+        <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ background: "#FFF7ED", border: "1.5px solid #FDB877" }}>
+          <Ico as={DoodleLightning} size={18} />
+          <div><p className="text-[14px] font-bold text-charcoal">어긋나기 쉬운 포인트</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{config.chemi[rel].care}</p></div>
+        </div>
+      </div>
+
       {/* 다가가는 전략 (처방전) */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleSpeechBubble} basis={{ t: "일간 오행" }}>다가가는 전략</SectionTitle>
@@ -792,6 +776,76 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
               <span className="text-[14px] font-bold text-charcoal">{a.label}</span>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* 밀당 가이드 (썸=밀당 / 짝사랑=현실·위로) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={config.extra.D} basis={{ t: "일간 오행" }}>{config.extra.title}</SectionTitle>
+        <div className="rounded-xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
+          <Ico as={DoodleLightning} size={16} />
+          <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>이 사람한텐 <span className="font-bold" style={{ color: PINK }}>{config.pushPull[eThem].best === "push" ? "당기기" : "풀기"}</span>가 더 통해요</p>
+        </div>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-1">
+          {config.extra.a.map((row, i) => (
+            <div key={i} className="flex items-start gap-3 py-2.5 border-b border-charcoal/5 last:border-0">
+              <span className="text-[14px] font-bold text-charcoal shrink-0 w-14">{row.k}</span>
+              <span className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{row.v}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 밀당 시뮬레이터 — 인터랙션 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleLightning} basis={{ t: "일간 오행" }}>밀당 시뮬레이터</SectionTitle>
+        <PullPushSim {...config.pushPull[eThem]} />
+      </div>
+
+      {/* 지뢰 TOP 3 — 이 조합에서 절대 하지 말 것 */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleQuestionMark} basis={{ t: "일간 오행" }}>지뢰 TOP 3</SectionTitle>
+        <div className="rounded-2xl px-4 py-3.5 flex flex-col gap-2.5" style={{ background: "#FEF2F2", border: "1.5px solid #FCA5A5" }}>
+          {config.mines[eThem].map((m, i) => (
+            <div key={i} className="flex items-start gap-2.5">
+              <span className="w-5 h-5 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: "#EF4444" }}>{i + 1}</span>
+              <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{m}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <ChapterDivider n={4} title="언제 움직일까" />
+
+      {/* 매력 발산 지수 — 도화 (엔진 신호) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleSparkles} basis={{ t: "도화", deep: true }}>매력 발산 지수</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
+          <div className="flex items-center justify-between">
+            <span className="text-[14px] font-bold text-charcoal">{signals.dohwa ? "지금 매력이 빛나는 시기" : "은은한 매력 구간"}</span>
+            <span className="text-[15px] font-bold" style={{ color: signals.dohwa ? PINK : "#94A3B8" }}>{dohwaVal}</span>
+          </div>
+          <div className="h-3 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
+            <div className="h-full rounded-full" style={{ width: `${dohwaVal}%`, background: signals.dohwa ? "linear-gradient(90deg,#FBBF24,#E84B6A)" : "#CBD5E1" }} />
+          </div>
+          <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{signals.dohwa ? "지금이 들이대기 좋은 때. 자신감 있게 다가가도 통해." : "확 끌기보단 꾸준함으로 스며들 때야."}</p>
+        </div>
+      </div>
+
+      {/* 연애운 신호등 — 타이밍 (엔진 신호) */}
+      <div className="flex flex-col gap-2.5">
+        <SectionTitle icon={DoodleCalendar} basis={{ t: "대운·세운", deep: true }}>연애운 신호등</SectionTitle>
+        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3.5 flex items-center gap-3.5">
+          <div className="flex flex-col gap-1.5 shrink-0 rounded-full px-1.5 py-2" style={{ background: "#2D2D2D" }}>
+            {["#EF4444", "#FBBF24", "#22C55E"].map((c, i) => {
+              const lit = signals.timingHot ? i === 2 : i === 1
+              return <span key={i} className="w-3 h-3 rounded-full" style={{ background: lit ? c : "#4B5563", boxShadow: lit ? `0 0 6px ${c}` : "none" }} />
+            })}
+          </div>
+          <div className="min-w-0">
+            <p className="text-[14px] font-bold text-charcoal">{signals.timingHot ? "인연이 움직이는 시기" : "잔잔한 흐름"}</p>
+            <p className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{signals.timingHot ? "네 연애운이 들어오는 때 — 적극적으로 움직여도 좋아." : "큰 바람은 약해 — 지금은 네가 먼저 만드는 게 핵심이야."}</p>
+          </div>
         </div>
       </div>
 
@@ -825,42 +879,6 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
         </div>
       </div>
 
-      {/* 지뢰 TOP 3 — 이 조합에서 절대 하지 말 것 */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleQuestionMark} basis={{ t: "일간 오행" }}>지뢰 TOP 3</SectionTitle>
-        <div className="rounded-2xl px-4 py-3.5 flex flex-col gap-2.5" style={{ background: "#FEF2F2", border: "1.5px solid #FCA5A5" }}>
-          {config.mines[eThem].map((m, i) => (
-            <div key={i} className="flex items-start gap-2.5">
-              <span className="w-5 h-5 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={{ background: "#EF4444" }}>{i + 1}</span>
-              <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>{m}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 모드 전용 (썸=밀당 / 짝사랑=현실·위로) */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={config.extra.D} basis={{ t: "일간 오행" }}>{config.extra.title}</SectionTitle>
-        <div className="rounded-xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
-          <Ico as={DoodleLightning} size={16} />
-          <p className="text-[14px] text-charcoal/80 leading-snug" style={GAEGU}>이 사람한텐 <span className="font-bold" style={{ color: PINK }}>{config.pushPull[eThem].best === "push" ? "당기기" : "풀기"}</span>가 더 통해요</p>
-        </div>
-        <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-1">
-          {config.extra.a.map((row, i) => (
-            <div key={i} className="flex items-start gap-3 py-2.5 border-b border-charcoal/5 last:border-0">
-              <span className="text-[14px] font-bold text-charcoal shrink-0 w-14">{row.k}</span>
-              <span className="text-[14px] text-charcoal/70 leading-snug" style={GAEGU}>{row.v}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 밀당 시뮬레이터 — 인터랙션 */}
-      <div className="flex flex-col gap-2.5">
-        <SectionTitle icon={DoodleLightning} basis={{ t: "일간 오행" }}>밀당 시뮬레이터</SectionTitle>
-        <PullPushSim {...config.pushPull[eThem]} />
-      </div>
-
       {/* 고백 럭키 */}
       <div className="flex flex-col gap-2.5">
         <SectionTitle icon={DoodleClover} basis={{ t: "일간 오행" }}>고백 럭키</SectionTitle>
@@ -879,6 +897,8 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
           ))}
         </div>
       </div>
+
+      <ChapterDivider n={5} title="더 보기" />
 
       {/* 내 썸 랭킹 — 분석한 상대들 순위 */}
       <div className="flex flex-col gap-2.5">
