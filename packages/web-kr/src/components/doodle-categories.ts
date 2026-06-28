@@ -94,7 +94,7 @@ export type DoodleEntry = {
   name: string;               // 영문 키 — 식별자, 불변, 고객 비노출
   label?: string;             // 한글 상품명 — 고객 노출 (감성 네이밍). 마이그레이션 중 옵셔널, 완료 후 필수 승격
   comp: DoodleComp;
-  element?: StickerElement;   // 오행 — 필터·방 오행점수 집계용. 마이그레이션 중 옵셔널, 완료 후 필수 승격
+  element: StickerElement;    // 오행 — 필터·방 오행점수 집계용. 필수 (303종 분류 완료, 2026-06-28 승격)
 };
 export type DoodleCategory = { id: string; label: string; stickers: DoodleEntry[] };
 
