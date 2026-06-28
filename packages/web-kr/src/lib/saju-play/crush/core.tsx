@@ -238,11 +238,11 @@ function PersonForm({ label, hint, p, set }: {
   )
 }
 
-// 근거 칩 — 깊은 엔진 근거(deep)=핑크, 일간 오행=회색
-function Basis({ t, deep }: { t: string; deep?: boolean }) {
+// 근거 칩 — 항목이 어떤 사주를 근거로 했는지 (핑크 단일톤). deep은 데이터용(미사용 표시).
+function Basis({ t }: { t: string; deep?: boolean }) {
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] font-bold shrink-0"
-      style={deep ? { background: "#FFF0F5", color: PINK } : { background: "#F1F5F9", color: "#94A3B8" }}>
+      style={{ background: "#FFF0F5", color: PINK }}>
       <Ico as={DoodleTaegeuk} size={11} /> {t}
     </span>
   )
@@ -905,7 +905,7 @@ export default function CrushFunnel({ config }: { config: CrushConfig }) {
             </div>
           ))}
         </div>
-        <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>핑크 칩은 깊은 명리(천간합·용신·도화 등), 회색 칩은 일간 오행 기반이에요.</p>
+        <p className="text-[13px] text-text-muted leading-snug" style={GAEGU}>칩은 각 항목이 어떤 사주를 근거로 했는지 알려줘요.</p>
       </div>
     </div>
   )

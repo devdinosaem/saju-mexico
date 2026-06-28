@@ -32,6 +32,24 @@ function Ico({ as: D, size = 18 }: { as: DoodleC; size?: number }) {
   )
 }
 
+/** 사주 근거 칩 — 항목이 어떤 사주를 근거로 했는지 (핑크 단일톤) */
+function Basis({ t }: { t: string }) {
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] font-bold shrink-0" style={{ background: "#FFF0F5", color: "#E84B6A" }}>
+      <Ico as={DoodleTaegeuk} size={11} /> {t}
+    </span>
+  )
+}
+/** 제목 + 근거 칩 한 줄 */
+function TitleRow({ icon, t, children }: { icon: DoodleC; t: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <p className="text-[15px] text-charcoal flex items-center gap-1.5 min-w-0" style={BINGGRAE}><Ico as={icon} size={18} /> {children}</p>
+      <Basis t={t} />
+    </div>
+  )
+}
+
 const ELEMS = ["목", "화", "토", "금", "수"] as const
 type Elem = (typeof ELEMS)[number]
 
@@ -340,7 +358,7 @@ export default function CompatFunnelPage() {
 
       {/* [2] 그룹 롤 배정 */}
       <div className="flex flex-col gap-2.5">
-        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleMedal} size={18} /> 우리 모임 역할</p>
+        <TitleRow icon={DoodleMedal} t="일간 오행">우리 모임 역할</TitleRow>
         <div className="grid grid-cols-2 gap-2">
           {parts.map((p, i) => {
             const r = ROLE[elemOf(p.iljuKey)]
@@ -360,7 +378,7 @@ export default function CompatFunnelPage() {
       {/* 공주·왕자 팔자 — 성별별 1명 (여만→공주만, 남만→왕자만, 혼합→각 1) */}
       {(princess || prince) && (
         <div className="flex flex-col gap-2.5">
-          <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleCrown} size={18} /> 공주·왕자 팔자</p>
+          <TitleRow icon={DoodleCrown} t="일간 오행">공주·왕자 팔자</TitleRow>
           <div className={`grid ${princess && prince ? "grid-cols-2" : "grid-cols-1"} gap-2`}>
             {princess && (
               <div className="rounded-2xl px-3 py-3 flex flex-col items-center gap-1 text-center" style={{ background: "#FFF0F5", border: "1.5px solid #F9A8C4" }}>
@@ -390,7 +408,7 @@ export default function CompatFunnelPage() {
 
       {/* [3] 오행 밸런스 */}
       <div className="flex flex-col gap-2.5">
-        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleTaegeuk} size={18} /> 우리 모임 오행 밸런스</p>
+        <TitleRow icon={DoodleTaegeuk} t="오행 분포">우리 모임 오행 밸런스</TitleRow>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-2.5">
           {ELEMS.map(e => (
             <div key={e} className="flex items-center gap-2.5">
@@ -408,7 +426,7 @@ export default function CompatFunnelPage() {
 
       {/* [4] 페어별 궁합 */}
       <div className="flex flex-col gap-2.5">
-        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleHeart} size={18} /> 페어별 궁합</p>
+        <TitleRow icon={DoodleHeart} t="오행 상생상극">페어별 궁합</TitleRow>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-3 flex flex-col">
           {allPairs(parts).map((pr, i, arr) => (
             <div key={i} className={`flex items-center gap-2.5 py-2 ${i < arr.length - 1 ? "border-b border-charcoal/5" : ""}`}>
@@ -424,7 +442,7 @@ export default function CompatFunnelPage() {
 
       {/* [5] 개인별 한마디 */}
       <div className="flex flex-col gap-2.5">
-        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleSpeechBubble} size={18} /> 각자에게 한마디</p>
+        <TitleRow icon={DoodleSpeechBubble} t="일간 오행">각자에게 한마디</TitleRow>
         <div className="flex flex-col gap-2">
           {parts.map((p, i) => (
             <div key={i} className="flex gap-2.5 rounded-2xl bg-white border border-charcoal/10 px-3 py-2.5">
@@ -440,7 +458,7 @@ export default function CompatFunnelPage() {
 
       {/* [6] 상황별 궁합 */}
       <div className="flex flex-col gap-2.5">
-        <p className="text-[15px] text-charcoal flex items-center gap-1.5" style={BINGGRAE}><Ico as={DoodleCompass} size={18} /> 상황별 궁합</p>
+        <TitleRow icon={DoodleCompass} t="오행 종합">상황별 궁합</TitleRow>
         <div className="rounded-2xl bg-white border border-charcoal/10 px-4 py-4 flex flex-col gap-3">
           {situational(parts, score).map(s => (
             <div key={s.key} className="flex flex-col gap-1">
@@ -466,6 +484,7 @@ export default function CompatFunnelPage() {
               <p className="text-[14px] font-bold text-charcoal leading-tight">이 모임엔 {miss[0]}({miss[0]}) 기운이 없어요</p>
               <p className="text-[14px] text-charcoal/60">{miss[0]}({miss[0]}) 기운을 채우는 활동을 같이 해봐요</p>
             </div>
+            <Basis t="오행 보완" />
           </div>
           <div className="flex flex-col gap-2">
             {ELEM_FILL[miss[0]].map((a, i) => (
@@ -498,6 +517,7 @@ export default function CompatFunnelPage() {
           <p className="text-[14px] text-text-muted">이 모임 다음 만나기 좋은 날</p>
           <p className="text-[14px] font-bold text-charcoal flex items-center gap-1">7월 12일 (토) · 화기운 충전 <Ico as={DoodleFire} size={14} /></p>
         </div>
+        <Basis t="택일" />
       </div>
 
       <div className="flex flex-col gap-2">
