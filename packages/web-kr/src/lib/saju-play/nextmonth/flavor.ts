@@ -38,6 +38,14 @@ export const AREA: { key: AreaKey; label: string; D: DoodleC }[] = [
   { key: "health", label: "건강", D: DoodleClover },
   { key: "rel", label: "관계", D: DoodleSpeechBubble },
 ]
+// 영역별 점수 구간 한 줄 (hi≥72 / lo≤42 / 그 외 mid)
+export const AREA_LINE: Record<AreaKey, { hi: string; mid: string; lo: string }> = {
+  love: { hi: "끌림이 도는 달 — 표현하면 통해", mid: "잔잔한 애정운 — 자연스럽게 가", lo: "혼자 시간도 필요한 달 — 서두르지 마" },
+  work: { hi: "치고 나가기 좋은 달 — 성과가 보여", mid: "꾸준히 가면 되는 달", lo: "벌이기보다 정리·마무리에 집중" },
+  money: { hi: "돈이 붙는 달 — 기회를 잡아", mid: "큰 변동 없는 무난한 재물운", lo: "지출 관리·충동구매 주의" },
+  health: { hi: "컨디션 좋은 달 — 활동량 늘려도 OK", mid: "무난해 — 기본 루틴만 지켜", lo: "피로·잔병 주의 — 쉼표를 챙겨" },
+  rel: { hi: "사람 덕 보는 달 — 먼저 연락해봐", mid: "관계는 평온 — 있는 인연을 챙겨", lo: "오해 생기기 쉬워 — 말 한 번 더 확인" },
+}
 
 // 용신 오행 → 이 달의 행운 아이템 (Ch5)
 export const LUCKY: Record<Elem, { color: string; dir: string; num: string; item: string; D: DoodleC }> = {
